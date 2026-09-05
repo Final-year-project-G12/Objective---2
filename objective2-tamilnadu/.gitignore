@@ -1,0 +1,15 @@
+# Archives and generated artifacts too large or unnecessary for source control
+data.zip
+results/tamilnadu/surrogate/models.pkl
+results/tamilnadu/plots/interactive/
+
+# Large regenerated Objective 1 input files
+data/objective1/suntimes.csv
+data/objective1/daily_aggregates_tamilnadu.csv
+
+# Python cache and local environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
