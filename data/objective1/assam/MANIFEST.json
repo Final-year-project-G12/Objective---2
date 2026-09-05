@@ -1,0 +1,46 @@
+{
+  "state": "assam",
+  "generated_utc": "2026-09-04T18:24:58+00:00",
+  "generator": "build_obj1_frozen_package.py",
+  "files": {
+    "climate_signature_assam.csv": {
+      "role": "core",
+      "status": "MISSING",
+      "source": null
+    },
+    "cluster_assignments_levelA_assam.csv": {
+      "role": "core",
+      "status": "MISSING",
+      "source": null
+    },
+    "cluster_profiles_assam.csv": {
+      "role": "core",
+      "status": "MISSING",
+      "source": null
+    },
+    "mcdm_rankings_assam.csv": {
+      "role": "core",
+      "status": "MISSING",
+      "source": null
+    },
+    "pcm_properties.csv": {
+      "role": "core",
+      "status": "ok",
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\PCM_data\\data\\PCM_Properties_cleaned_mice_pmm_detailed.csv",
+      "bytes": 34909,
+      "rows": 55,
+      "sha256": "5d3cd0dedb613d91837aaeb25fe11957681a58f49698511f314c4a06ca8cc0b1"
+    },
+    "weather_files": {
+      "status": "MISSING",
+      "source": null
+    }
+  },
+  "missing": [
+    "climate_signature_assam.csv",
+    "cluster_assignments_levelA_assam.csv",
+    "cluster_profiles_assam.csv",
+    "mcdm_rankings_assam.csv",
+    "weather_files/"
+  ]
+}

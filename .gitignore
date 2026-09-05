@@ -102,6 +102,12 @@ data/processed/
 *.parquet
 *.feather
 
+# Oversize Objective-1 intermediates (exceed GitHub's 100 MB file limit).
+# Regenerate locally with the Objective-1 pipeline scripts.
+data/objective1/*/suntimes.csv
+data/objective1/rajasthan/daily_aggregates_rajasthan.csv
+data/objective1/tamil_nadu/daily_aggregates_tamilnadu.csv
+
 # ============================================================
 # Temporary / Cache Files
 # ============================================================
