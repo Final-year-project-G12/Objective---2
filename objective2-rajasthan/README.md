@@ -6,19 +6,25 @@ implementation) — only the state-specific inputs differ (weather, regimes,
 PCM shortlist, mains temperature, demand profile).
 
 Start at [`docs/00_MASTER_OVERVIEW.md`](docs/00_MASTER_OVERVIEW.md) for
-phase status (Phases 0–5 done — simulator verified **GO, 5/5 gates
-clean** as `sim_v1_rajasthan`, and a **165-case DOE dataset** built;
-Phase 6 onward not started yet) and the one finding carried forward
-(every DOE case exceeds the 65 °C PCM safety limit under the frozen
-collector sizing). [`results/README.md`](results/README.md) documents
-every output file phase-by-phase, with the inference drawn from it.
+phase status (**Phases 0–8 complete** — the full Objective 2 ~40-hour
+deliverable set: simulator verified **GO** as `sim_v1_rajasthan`, a
+165-case DOE, a tree surrogate at useful-energy hold-out R² = 0.9998, a
+simulator-confirmed optimization pass, and a 120-draw robustness pass +
+recommendation cards + Objective 3 contract). **Headline result:** under
+the frozen config the deployable design in all three regimes is a plain
+sensible tank (the Objective 1 PCM shortlist gains < 0.15 % useful energy
+and 0/45 PCM candidates clear the 65 °C limit) — and Phase 8 shows that
+plain tank is **not robustly safe** (P(temp-safe) 0.33–0.51), so an
+active overheat bypass is handed to Objective 3 as a requirement.
+[`results/README.md`](results/README.md) documents every output file
+phase-by-phase, with the inference drawn from it.
 
 ## Layout
 
 ```
 objective2-rajasthan/
 ├── config.py                         # shared paths (mirror of objective2-tamilnadu/config.py)
-├── pipeline.py                       # CLI entry point (geometry/simulate/verify/doe wired; surrogate/optimize/plots arrive with their phase)
+├── pipeline.py                       # CLI entry point (geometry/simulate/verify/doe/surrogate/optimize/handoff wired; only plots not wired)
 ├── check_climate_signature.py        # Phase 0 sanity check (Bug-Fix 8)
 ├── configs/
 │   ├── system_config_shared.yaml     # FROZEN — byte-identical for all 4 states, do not edit
@@ -33,15 +39,26 @@ objective2-rajasthan/
 │   │   ├── demand_profile.py  energy_balance.py  tank_model.py  run_case.py
 │   ├── verify/                       # Phase 4 gate battery (ported from Tamil Nadu; state-specific test inputs swapped)
 │   │   └── gates.py
-│   └── doe/                          # Phase 5 reduced DOE (generate_cases byte-identical to Tamil Nadu)
-│       ├── generate_cases.py  run_batch.py  split_cases.py
+│   ├── doe/                          # Phase 5 reduced DOE (generate_cases byte-identical to Tamil Nadu)
+│   │   ├── generate_cases.py  run_batch.py  split_cases.py
+│   ├── surrogate/                    # Phase 6 tree surrogate (train/evaluate ported from Tamil Nadu; features remapped to RJ Obj1 headers)
+│   │   ├── features.py  train.py  evaluate.py
+│   ├── optimize/                     # Phase 7 surrogate search + simulator confirmation + selection rule (ported from Tamil Nadu)
+│   │   ├── search.py  select_deployable.py
+│   ├── robustness/                   # Phase 8 D2.7 — Monte Carlo robustness (new; no TN reference)
+│   │   └── monte_carlo.py
+│   └── handoff/                      # Phase 8 D2.8/D2.9 — recommendation cards + Objective 3 contract (new)
+│       ├── recommendation_card.py  obj3_contract.py
 ├── docs/
 │   ├── 00_MASTER_OVERVIEW.md          # phase status, code map, the safety-limit finding
 │   ├── 01_PHASE1_CONFIG_AND_STATE_SETUP.md
 │   ├── 02_PHASE2_GEOMETRY_CONSTRAINTS.md
 │   ├── 03_PHASE3_GREYBOX_SIMULATOR.md
 │   ├── 04_PHASE4_VERIFICATION_GATES.md
-│   └── 05_PHASE5_DOE.md
+│   ├── 05_PHASE5_DOE.md
+│   ├── 06_PHASE6_SURROGATE.md
+│   ├── 07_PHASE7_OPTIMIZATION.md
+│   └── 08_PHASE8_ROBUSTNESS_HANDOFF.md
 ├── data/
 │   ├── objective1/                   # frozen Objective 1 outputs (cluster_profiles, mcdm_topk, pcm_database, ...)
 │   ├── weather/                      # per-regime daily + hourly weather (clusters 0-2)
@@ -169,3 +186,75 @@ with the design vector, `geom_*` outputs, performance metrics,
 infeasible-retained (all `bounds_violation`, 32.7% ≈ TN's 32.6%); 138
 train / 27 holdout.** Every valid case exceeds the 65 °C PCM safety limit
 — see [`docs/05_PHASE5_DOE.md`](docs/05_PHASE5_DOE.md).
+
+### Phase 6 — tree surrogate (train + hold-out eval)
+
+```
+python pipeline.py --state rajasthan --stage surrogate
+```
+
+Trains one `ExtraTreesRegressor` (300 trees) per performance target from
+the 93 valid `train` rows of the Phase 5 parquet, each against a
+`LinearRegression` baseline on the same split, plus an
+`ExtraTreesClassifier` for feasibility. `train.py`/`evaluate.py` are
+ported from `objective2-tamilnadu/` (same model family, hyper-params,
+split logic); `features.py` keeps TN's four feature groups but remaps the
+climate/confidence column names to Rajasthan's Objective 1 table headers
+(39 features vs TN's 36). Runtime ~10 s. Writes
+`results/phase6_surrogate_metrics.csv`,
+`results/phase6_surrogate_error_by_group.csv`,
+`results/phase6_surrogate_models.pkl` (git-ignored),
+`results/phase6_surrogate_feature_cols.json`. **Result: useful-energy
+hold-out R² = 0.9998 (exit target > 0.80); solar_fraction & unmet_energy
+R² ≥ 0.9996; feasibility classifier 100% accuracy / 100% infeasible
+recall.** Linear ties or slightly beats the tree on three low-variance
+targets — reported honestly. The surrogate is a proposal ranker, not the
+oracle (Bug-Fix 5). See [`docs/06_PHASE6_SURROGATE.md`](docs/06_PHASE6_SURROGATE.md).
+
+### Phase 7 — one optimization pass + simulator confirmation
+
+```
+python pipeline.py --state rajasthan --stage optimize
+```
+
+Searches 400 random design vectors per regime×PCM pair (12 pairs),
+filters each through the real Phase 2 geometry gate, scores survivors
+with the Phase 6 surrogate, takes the top 5 per pair (**60 candidates**),
+**re-runs every one in the real simulator** (non-negotiable, Bug-Fix 5),
+then applies the pre-declared selection rule (`pareto_tolerance_pct = 5%`:
+reject temperature-unsafe → within 5 % of best useful energy → min pump
+energy → min PCM mass → min capsule count → max margin).
+`src/optimize/{search,select_deployable}.py` are ported from
+`objective2-tamilnadu/` unchanged except the flat `results/phase7_*`
+paths. Runtime ~6 min. Writes `results/phase7_surrogate_top_candidates.csv`,
+`results/phase7_optimized_designs.csv`,
+`results/phase7_deployable_design_per_regime.csv`. **Result: plain
+(sensible-only) tank is the deployable design in all 3 regimes**;
+surrogate-vs-simulator mean error 0.025 % (0/60 > 15 %); only 15/60
+candidates pass temperature safety and **all 15 are plain-tank** (0/45 PCM
+candidates pass). See [`docs/07_PHASE7_OPTIMIZATION.md`](docs/07_PHASE7_OPTIMIZATION.md).
+
+### Phase 8 — light robustness + recommendation cards + Objective 3 handoff
+
+```
+python pipeline.py --state rajasthan --stage handoff --mc-draws 120
+```
+
+Runs **120 Monte Carlo draws per regime** (360 total) on the Phase 7
+deployable designs — perturbing weather (GHI + T_amb noise), demand
+volume (±20 %), demand timing (±30 min) and mains temp (±2 °C) — then
+writes one recommendation card per regime (D2.8) and the Objective 3
+environment contract (D2.9). `src/robustness/` + `src/handoff/` are new
+(Tamil Nadu stops at Phase 7); the Monte Carlo perturbs only through
+`run_case`'s existing knobs + a temporary `load_hourly_weather` wrap, so
+`run_case` stays byte-identical. Runtime ~18 min. Writes
+`results/phase8_robustness.csv` (+ `_draws.csv`),
+`results/phase8_recommendation_cards.md`,
+`results/obj3_environment_contract_rajasthan.json`. **Result: NOT robust
+— P(temp-safe) = 0.33–0.51 across the three regimes** (P(meet annual
+demand) 0.78–0.98 clears its bar). Even the plain tank breaches the
+75 °C water scald limit in half to two-thirds of draws under realistic
+variability, so the contract's `safety_shield` forces a `bypass` action
+at `T_water ≥ 72 °C` — an Objective 3 requirement, not an option. Exit
+check met: 3 cards + 3 regimes in the contract. See
+[`docs/08_PHASE8_ROBUSTNESS_HANDOFF.md`](docs/08_PHASE8_ROBUSTNESS_HANDOFF.md).

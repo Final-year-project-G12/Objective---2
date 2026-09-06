@@ -14,10 +14,13 @@ the stages implemented so far for Rajasthan are wired here:
     simulate   — Phase 3 grey-box enthalpy simulator, one full-year case
     verify     — Phase 4 reduced verification gate battery (Gates 1-5)
     doe        — Phase 5 reduced DOE: generate + simulate + 80/20 split
+    surrogate  — Phase 6 tree surrogate: train + hold-out eval by regime/PCM
+    optimize   — Phase 7 one surrogate pass + simulator confirmation + selection rule
+    handoff    — Phase 8 light robustness (Monte Carlo) + recommendation cards + Obj3 contract
 
   ARRIVES WITH ITS PHASE (see objective2-tamilnadu/pipeline.py for the
   full dispatch table)
-    surrogate, optimize, plots
+    plots
 
 USAGE
   python pipeline.py --state rajasthan --stage geometry
@@ -26,6 +29,9 @@ USAGE
   python pipeline.py --state rajasthan --stage simulate --cluster 0 --no-pcm
   python pipeline.py --state rajasthan --stage verify
   python pipeline.py --state rajasthan --stage doe
+  python pipeline.py --state rajasthan --stage surrogate
+  python pipeline.py --state rajasthan --stage optimize
+  python pipeline.py --state rajasthan --stage handoff [--mc-draws 120]
 """
 
 import argparse
@@ -37,21 +43,29 @@ from src.simulation.run_case import run_case
 from src.verify.gates import run_all_gates
 from src.doe.run_batch import run_batch
 from src.doe.split_cases import run_split
+from src.surrogate.train import train_surrogate
+from src.surrogate.evaluate import evaluate_by_group
+from src.optimize.select_deployable import run_phase7
+from src.robustness.monte_carlo import run_robustness, N_DRAWS_DEFAULT
+from src.handoff.recommendation_card import write_cards
+from src.handoff.obj3_contract import write_contract
 
-_PENDING_STAGES = ("surrogate", "optimize", "plots")
+_PENDING_STAGES = ("plots",)
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Objective 2 pipeline — Rajasthan (Phases 2-5 wired)")
+    ap = argparse.ArgumentParser(description="Objective 2 pipeline — Rajasthan (Phases 2-8 wired)")
     ap.add_argument("--state", required=True, help="e.g. rajasthan")
     ap.add_argument("--stage", required=True,
-                    choices=["geometry", "simulate", "verify", "doe", *_PENDING_STAGES])
+                    choices=["geometry", "simulate", "verify", "doe", "surrogate", "optimize", "handoff", *_PENDING_STAGES])
     ap.add_argument("--cluster", type=int, default=0, help="climate regime cluster_id (simulate stage)")
     ap.add_argument("--pcm", default="RT50", help="PCM name from mcdm_topk_by_cluster.csv")
     ap.add_argument("--diameter", type=float, default=0.08, help="capsule diameter, m")
     ap.add_argument("--count", type=int, default=19, help="capsule count")
     ap.add_argument("--flow", type=float, default=0.030, help="flow rate, kg/s")
     ap.add_argument("--no-pcm", action="store_true", help="run the plain-tank baseline (ignores --pcm)")
+    ap.add_argument("--mc-draws", type=int, default=N_DRAWS_DEFAULT,
+                    help="Phase 8 Monte Carlo draws per regime (handoff stage; min 50)")
     args = ap.parse_args()
 
     if args.stage == "geometry":
@@ -82,6 +96,24 @@ def main():
         run_batch(args.state)
         print("\nApplying case-level train/hold-out split ...")
         run_split(args.state)
+
+    elif args.stage == "surrogate":
+        print(f"Phase 6 — training the surrogate for state={args.state}")
+        train_surrogate(args.state)
+        print("\nEvaluating hold-out error by regime/PCM ...")
+        evaluate_by_group(args.state)
+
+    elif args.stage == "optimize":
+        print(f"Phase 7 — optimization pass + simulator confirmation for state={args.state}")
+        run_phase7(args.state)
+
+    elif args.stage == "handoff":
+        print(f"Phase 8 — light robustness + recommendation cards + Obj3 contract for state={args.state}")
+        run_robustness(args.state, args.mc_draws)
+        print("\nWriting recommendation cards ...")
+        write_cards(args.state)
+        print("\nWriting the Objective 3 environment contract ...")
+        write_contract(args.state)
 
     elif args.stage in _PENDING_STAGES:
         raise SystemExit(
