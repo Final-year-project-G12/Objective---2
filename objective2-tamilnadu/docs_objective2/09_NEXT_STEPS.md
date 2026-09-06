@@ -1,5 +1,16 @@
 # 09 — What Phase 8 Needs From This Code, and What to Decide First
 
+> **Status update: Phase 8 is now complete** (see
+> `10_PHASE8_ROBUSTNESS_HANDOFF.md` and `RESULTS.md`). This document was
+> written before Phase 8 existed, as a briefing for whoever built it — it
+> is kept as-is because the **decision it raises below is still
+> unresolved** and does not go away just because Phase 8 has since run;
+> Phase 8's robustness results (every regime fails the 95% temperature-
+> safety bar, and the PCM regime additionally fails the 75% demand bar)
+> make this decision more urgent, not less. The "Reusable building
+> blocks" and "Not built yet" sections at the bottom are historical —
+> read `10_PHASE8_ROBUSTNESS_HANDOFF.md` for what actually exists now.
+
 Phases 1–7 are done for Tamil Nadu: simulator verified (GO), 215-case
 DOE run, surrogate trained (R²>0.98 on every target), one optimization
 pass complete with 100 simulator-confirmed candidates. This note is what
@@ -57,8 +68,10 @@ to test best in a re-run.
   Phase 8's Monte Carlo, since "weather" is one of the 3–4 dominant
   uncertainty sources the framework doc requires covering.
 
-## Not built yet
+## Not built yet (at the time this document was originally written)
 
 `src/robustness/`, `src/handoff/` (Objective 3 contract + recommendation
-cards) — Phase 8 is not started. `results/tamilnadu/recommendation_cards.md`
-and `obj3_environment_contract_tamilnadu.json` do not exist yet.
+cards) were not started when this section was written. **They now exist**
+— see `10_PHASE8_ROBUSTNESS_HANDOFF.md`. `results/tamilnadu/
+recommendation_cards.md` and `obj3_environment_contract_tamilnadu.json`
+are both generated and current.

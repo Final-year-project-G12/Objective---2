@@ -28,13 +28,17 @@ from src.surrogate.train import train_surrogate
 from src.surrogate.evaluate import evaluate_by_group
 from src.optimize.select_deployable import run_phase7
 from src.plots.make_plots import main as make_all_plots
+from src.robustness.monte_carlo import run_all as run_robustness
+from src.handoff.build_recommendation_cards import run as build_recommendation_cards
+from src.handoff.build_obj3_contract import run as build_obj3_contract
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Objective 2 pipeline (Phases 1-7)")
+    ap = argparse.ArgumentParser(description="Objective 2 pipeline (Phases 1-8)")
     ap.add_argument("--state", required=True, help="e.g. tamilnadu")
     ap.add_argument("--stage", required=True,
-                     choices=["geometry", "simulate", "verify", "doe", "surrogate", "optimize", "plots"])
+                     choices=["geometry", "simulate", "verify", "doe", "surrogate", "optimize", "plots",
+                              "robustness", "handoff"])
     ap.add_argument("--cluster", type=int, default=0, help="climate regime cluster_id (simulate stage)")
     ap.add_argument("--pcm", default="n-Octacosane (C28)", help="PCM name from mcdm_topk_by_cluster.csv")
     ap.add_argument("--diameter", type=float, default=0.08, help="capsule diameter, m")
@@ -81,6 +85,15 @@ def main():
     elif args.stage == "plots":
         print(f"Generating Phase 2-7 justification plots for state={args.state}")
         make_all_plots(args.state)
+
+    elif args.stage == "robustness":
+        print(f"Phase 8a — Monte Carlo robustness analysis for state={args.state}")
+        run_robustness(args.state)
+
+    elif args.stage == "handoff":
+        print(f"Phase 8b — recommendation cards + Objective 3 contract for state={args.state}")
+        build_recommendation_cards(args.state)
+        build_obj3_contract(args.state)
 
 
 if __name__ == "__main__":

@@ -58,7 +58,8 @@ def confirm_candidates(state: str, candidates: pd.DataFrame) -> pd.DataFrame:
                     if k in ("useful_energy_kWh", "solar_fraction", "unmet_energy_kWh",
                               "pump_energy_kWh", "pcm_mass_kg", "mean_f_melt",
                               "max_water_temp_C", "max_pcm_temp_C", "n_safety_violations",
-                              "residual_pct_of_collector")})
+                              "residual_pct_of_collector", "delivery_temp_hours",
+                              "mains_temp_C")})
 
         pred_e, sim_e = cand.get("pred_useful_energy_kWh"), m["useful_energy_kWh"]
         row["surrogate_vs_sim_error_pct"] = (abs(pred_e - sim_e) / sim_e * 100.0

@@ -29,6 +29,7 @@ from src.design.schema import DesignVector
 from src.design.constraints import check_design
 from src.io_utils import load_design_bounds, load_system_config
 from src.surrogate.features import build_feature_table, feature_target_split
+from src.doe.generate_cases import _stable_hash
 
 N_CANDIDATES_PER_PAIR = 400
 SEARCH_SEED = 20260905
@@ -58,7 +59,7 @@ def _candidate_row(regime_id, pcm_id, design: DesignVector, geom: dict) -> dict:
 
 def search_regime_pcm(state: str, regime_id: int, pcm_id, models: dict, feature_cols: list,
                        n_candidates: int = N_CANDIDATES_PER_PAIR, top_n: int = 5, seed: int = None):
-    seed = seed if seed is not None else SEARCH_SEED + regime_id * 97 + (hash(pcm_id) % 997 if pcm_id else 0)
+    seed = seed if seed is not None else SEARCH_SEED + regime_id * 97 + (_stable_hash(pcm_id) % 997 if pcm_id else 0)
     bounds = load_design_bounds()
     system_config = load_system_config()
     diam, count, flow = _random_candidates(bounds, n_candidates, seed)
