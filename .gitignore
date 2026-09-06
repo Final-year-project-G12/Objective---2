@@ -151,3 +151,6 @@ backups/
 
 # Claude / AI coding assistant temporary files
 .claude/
+
+data/objective1/rajasthan/objective1/daily_aggregates_rajasthan.csv
+data/objective1/rajasthan/objective1/suntimes.csv

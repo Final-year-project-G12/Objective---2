@@ -1,0 +1,6 @@
+cluster_id,n_candidates,spearman_rho,p_value,interpretation
+0,15,-0.01608579730793425,0.9546262478858053,weak agreement — diagnose before trusting the MCDM ranking here
+1,9,0.7166666666666667,0.02981803569584527,partial agreement
+2,13,0.3548834168830705,0.23410611092438025,weak agreement — diagnose before trusting the MCDM ranking here
+3,13,-0.17056412284302613,0.5774442802833083,weak agreement — diagnose before trusting the MCDM ranking here
+4,9,-0.0,1.0,weak agreement — diagnose before trusting the MCDM ranking here

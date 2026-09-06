@@ -1,0 +1,94 @@
+"""
+pipeline.py
+=============
+Objective 2 entry point for Rajasthan. One parameterized script for every
+state — `--state` only ever selects which config/weather/PCM/demand files
+are read; the code path is identical regardless of state
+(O2_Unified_PerState_Execution_Framework.md file-layout contract).
+
+Structure and CLI contract mirror objective2-tamilnadu/pipeline.py. Only
+the stages implemented so far for Rajasthan are wired here:
+
+  IMPLEMENTED
+    geometry   — Phase 2 geometry & constraint boundary self-test
+    simulate   — Phase 3 grey-box enthalpy simulator, one full-year case
+    verify     — Phase 4 reduced verification gate battery (Gates 1-5)
+    doe        — Phase 5 reduced DOE: generate + simulate + 80/20 split
+
+  ARRIVES WITH ITS PHASE (see objective2-tamilnadu/pipeline.py for the
+  full dispatch table)
+    surrogate, optimize, plots
+
+USAGE
+  python pipeline.py --state rajasthan --stage geometry
+  python pipeline.py --state rajasthan --stage simulate --cluster 0 \\
+      --pcm "RT50" --diameter 0.08 --count 24 --flow 0.025
+  python pipeline.py --state rajasthan --stage simulate --cluster 0 --no-pcm
+  python pipeline.py --state rajasthan --stage verify
+  python pipeline.py --state rajasthan --stage doe
+"""
+
+import argparse
+import json
+
+from src.design.schema import DesignVector
+from src.design.constraints import run_boundary_self_test
+from src.simulation.run_case import run_case
+from src.verify.gates import run_all_gates
+from src.doe.run_batch import run_batch
+from src.doe.split_cases import run_split
+
+_PENDING_STAGES = ("surrogate", "optimize", "plots")
+
+
+def main():
+    ap = argparse.ArgumentParser(description="Objective 2 pipeline — Rajasthan (Phases 2-5 wired)")
+    ap.add_argument("--state", required=True, help="e.g. rajasthan")
+    ap.add_argument("--stage", required=True,
+                    choices=["geometry", "simulate", "verify", "doe", *_PENDING_STAGES])
+    ap.add_argument("--cluster", type=int, default=0, help="climate regime cluster_id (simulate stage)")
+    ap.add_argument("--pcm", default="RT50", help="PCM name from mcdm_topk_by_cluster.csv")
+    ap.add_argument("--diameter", type=float, default=0.08, help="capsule diameter, m")
+    ap.add_argument("--count", type=int, default=19, help="capsule count")
+    ap.add_argument("--flow", type=float, default=0.030, help="flow rate, kg/s")
+    ap.add_argument("--no-pcm", action="store_true", help="run the plain-tank baseline (ignores --pcm)")
+    args = ap.parse_args()
+
+    if args.stage == "geometry":
+        print(f"Phase 2 — geometry & constraint boundary self-test "
+              f"(state-agnostic; state={args.state} unused here)")
+        _rows, all_deterministic = run_boundary_self_test()
+        raise SystemExit(0 if all_deterministic else 1)
+
+    elif args.stage == "simulate":
+        pcm_name = None if args.no_pcm else args.pcm
+        design = DesignVector(capsule_diameter_m=args.diameter, n_capsule=args.count,
+                              flow_rate_kg_s=args.flow)
+        print(f"Phase 3 — running 1 full-year case: state={args.state} cluster={args.cluster} "
+              f"pcm={pcm_name} design={design.as_dict()}")
+        out = run_case(args.state, args.cluster, pcm_name, design, record_hourly=True)
+        if not out["valid"]:
+            print(f"REJECTED at Phase 2 geometry gate: reason={out['reason']}")
+            return
+        print(json.dumps(out["metrics"], indent=2, default=str))
+
+    elif args.stage == "verify":
+        print(f"Phase 4 — running verification gates 1-5 for state={args.state}")
+        _gates, go_no_go = run_all_gates(args.state)
+        raise SystemExit(0 if go_no_go == "GO" else 1)
+
+    elif args.stage == "doe":
+        print(f"Phase 5 — generating and running the DOE batch for state={args.state}")
+        run_batch(args.state)
+        print("\nApplying case-level train/hold-out split ...")
+        run_split(args.state)
+
+    elif args.stage in _PENDING_STAGES:
+        raise SystemExit(
+            f"Stage '{args.stage}' is not wired for Rajasthan yet — it arrives with its "
+            f"phase. See objective2-tamilnadu/pipeline.py for the reference implementation."
+        )
+
+
+if __name__ == "__main__":
+    main()
