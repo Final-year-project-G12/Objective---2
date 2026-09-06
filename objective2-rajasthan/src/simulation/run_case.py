@@ -29,13 +29,23 @@ def run_case(state: str, cluster_id: int, pcm_name: str, design: DesignVector,
              system_config: dict = None, design_bounds: dict = None,
              volume_multiplier: float = 1.0, timing_shift_hours: float = 0.0,
              mains_temp_override_C: float = None, system_config_overrides: dict = None,
-             pcm_record_overrides: dict = None, record_hourly: bool = True):
+             pcm_record_overrides: dict = None, weather_perturbation: dict = None,
+             record_hourly: bool = True):
     """Returns a dict: {geometry, valid, reason, metrics, hourly (DataFrame)}.
 
     If the design is geometrically invalid, the simulator is never run
     (metrics=None, reason carries the rejection code) — mirrors the
     framework doc's "geometry engine rejects invalid designs transparently"
     requirement.
+
+    weather_perturbation: optional {"ghi_multiplier": float | array,
+    "tamb_delta_C": float | array} — used by Phase 8's Monte Carlo
+    (src/robustness/monte_carlo.py) as the documented medoid+noise proxy
+    for weather-year uncertainty, since no member-point weather file
+    exists for this project (40-hr cut list). Accepts either a scalar or
+    a per-hour array (pandas broadcasts either against the hourly weather
+    series identically) — Phase 8 passes per-hour arrays for the
+    two-level (annual + per-hour) noise model.
     """
     system_config = system_config or load_system_config()
     if system_config_overrides:
@@ -56,6 +66,12 @@ def run_case(state: str, cluster_id: int, pcm_name: str, design: DesignVector,
                  if pcm_record is not None else None)
 
     weather = load_hourly_weather(state, cluster_id)
+    if weather_perturbation:
+        weather = weather.copy()
+        ghi_mult = weather_perturbation.get("ghi_multiplier", 1.0)
+        tamb_delta = weather_perturbation.get("tamb_delta_C", 0.0)
+        weather["GHI_Wm2"] = (weather["GHI_Wm2"] * ghi_mult).clip(lower=0.0)
+        weather["T_amb_C"] = weather["T_amb_C"] + tamb_delta
     demand_df = load_demand_profile(state)
     demand_model = load_demand_model(demand_df, volume_multiplier, timing_shift_hours)
 

@@ -14,8 +14,9 @@ recommendation cards + Objective 3 contract). **Headline result:** under
 the frozen config the deployable design in all three regimes is a plain
 sensible tank (the Objective 1 PCM shortlist gains < 0.15 % useful energy
 and 0/45 PCM candidates clear the 65 °C limit) — and Phase 8 shows that
-plain tank is **not robustly safe** (P(temp-safe) 0.33–0.51), so an
-active overheat bypass is handed to Objective 3 as a requirement.
+plain tank is **not robustly safe** (P(temp-safe) 0.45–0.57), so an
+active overheat bypass is handed to Objective 3 as a requirement (see
+[`docs/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md`](docs/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md)).
 [`results/README.md`](results/README.md) documents every output file
 phase-by-phase, with the inference drawn from it.
 
@@ -24,7 +25,7 @@ phase-by-phase, with the inference drawn from it.
 ```
 objective2-rajasthan/
 ├── config.py                         # shared paths (mirror of objective2-tamilnadu/config.py)
-├── pipeline.py                       # CLI entry point — all 8 stages wired (geometry/simulate/verify/doe/surrogate/optimize/handoff/plots)
+├── pipeline.py                       # CLI entry point — all 9 stages wired (geometry/simulate/verify/doe/surrogate/optimize/robustness/handoff/plots)
 ├── check_climate_signature.py        # Phase 0 sanity check (Bug-Fix 8)
 ├── configs/
 │   ├── system_config_shared.yaml     # FROZEN — byte-identical for all 4 states, do not edit
@@ -45,11 +46,11 @@ objective2-rajasthan/
 │   │   ├── features.py  train.py  evaluate.py
 │   ├── optimize/                     # Phase 7 surrogate search + simulator confirmation + selection rule (ported from Tamil Nadu)
 │   │   ├── search.py  select_deployable.py
-│   ├── robustness/                   # Phase 8 D2.7 — Monte Carlo robustness (new; no TN reference)
-│   │   └── monte_carlo.py
-│   ├── handoff/                      # Phase 8 D2.8/D2.9 — recommendation cards + Objective 3 contract (new)
-│   │   ├── recommendation_card.py  obj3_contract.py
-│   └── plots/                        # Phase 2-7 justification figures (ported from Tamil Nadu; flat paths, 3-regime grids)
+│   ├── robustness/                   # Phase 8 D2.7 — Monte Carlo robustness (built here first; TN's later pass adopted this methodology)
+│   │   └── monte_carlo.py            # run_all() — naming matches objective2-tamilnadu/src/robustness/
+│   ├── handoff/                      # Phase 8 D2.8/D2.9 — recommendation cards + Objective 3 contract
+│   │   ├── build_recommendation_cards.py  build_obj3_contract.py   # run() — naming matches objective2-tamilnadu/src/handoff/
+│   └── plots/                        # Phase 2-8 justification figures (ported from Tamil Nadu; flat paths, 3-regime grids)
 │       └── make_plots.py
 ├── docs/
 │   ├── 00_MASTER_OVERVIEW.md          # phase status, code map, the safety-limit finding
@@ -61,7 +62,8 @@ objective2-rajasthan/
 │   ├── 06_PHASE6_SURROGATE.md
 │   ├── 07_PHASE7_OPTIMIZATION.md
 │   ├── 08_PHASE8_ROBUSTNESS_HANDOFF.md
-│   └── plots/                        # 00_INDEX.md + 6 per-phase figure walkthroughs
+│   ├── OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md
+│   └── plots/                        # 00_INDEX.md + 7 per-phase figure walkthroughs
 ├── data/
 │   ├── objective1/                   # frozen Objective 1 outputs (cluster_profiles, mcdm_topk, pcm_database, ...)
 │   ├── weather/                      # per-regime daily + hourly weather (clusters 0-2)
@@ -240,40 +242,52 @@ candidates pass). See [`docs/07_PHASE7_OPTIMIZATION.md`](docs/07_PHASE7_OPTIMIZA
 ### Phase 8 — light robustness + recommendation cards + Objective 3 handoff
 
 ```
-python pipeline.py --state rajasthan --stage handoff --mc-draws 120
+python pipeline.py --state rajasthan --stage robustness --mc-draws 120
+python pipeline.py --state rajasthan --stage handoff
 ```
 
-Runs **120 Monte Carlo draws per regime** (360 total) on the Phase 7
-deployable designs — perturbing weather (GHI + T_amb noise), demand
-volume (±20 %), demand timing (±30 min) and mains temp (±2 °C) — then
-writes one recommendation card per regime (D2.8) and the Objective 3
-environment contract (D2.9). `src/robustness/` + `src/handoff/` are new
-(Tamil Nadu stops at Phase 7); the Monte Carlo perturbs only through
-`run_case`'s existing knobs + a temporary `load_hourly_weather` wrap, so
-`run_case` stays byte-identical. Runtime ~18 min. Writes
+`robustness` runs **120 Monte Carlo draws per regime** (360 total) on the
+Phase 7 deployable designs — perturbing weather (GHI + T_amb noise via
+`run_case`'s `weather_perturbation` keyword), demand volume (±20 %),
+demand timing (±30 min) and mains temp (±2 °C). `handoff` then writes one
+recommendation card per regime (D2.8) and the Objective 3 environment
+contract (D2.9). `src/robustness/` + `src/handoff/` are this project's own
+Phase 8 build; Tamil Nadu's later Phase 8 pass adopted this methodology
+(two-level noise, fixed thresholds, 120 draws) and, in the other
+direction, contributed the `weather_perturbation` seam and finer-grained
+metrics folded back in here — see
+[`docs/08_PHASE8_ROBUSTNESS_HANDOFF.md`](docs/08_PHASE8_ROBUSTNESS_HANDOFF.md),
+"Alignment with the Tamil Nadu implementation." File/function naming
+(`build_recommendation_cards.py` / `build_obj3_contract.py`, entry point
+`run(state)`; `monte_carlo.py`'s `run_all(state, n_draws)`) and the
+two-stage `robustness`/`handoff` split now match
+`objective2-tamilnadu/pipeline.py` exactly. Runtime ~18 min for
+`robustness`, seconds for `handoff`. Writes
 `results/phase8_robustness.csv` (+ `_draws.csv`),
 `results/phase8_recommendation_cards.md`,
 `results/obj3_environment_contract_rajasthan.json`. **Result: NOT robust
-— P(temp-safe) = 0.33–0.51 across the three regimes** (P(meet annual
-demand) 0.78–0.98 clears its bar). Even the plain tank breaches the
-75 °C water scald limit in half to two-thirds of draws under realistic
+— P(temp-safe) = 0.45–0.57 across the three regimes** (P(meet annual
+demand) 0.80–0.99 clears its bar). Even the plain tank breaches the
+75 °C water scald limit in roughly half of draws under realistic
 variability, so the contract's `safety_shield` forces a `bypass` action
 at `T_water ≥ 72 °C` — an Objective 3 requirement, not an option. Exit
-check met: 3 cards + 3 regimes in the contract. See
-[`docs/08_PHASE8_ROBUSTNESS_HANDOFF.md`](docs/08_PHASE8_ROBUSTNESS_HANDOFF.md).
+check met: 3 cards + 3 regimes in the contract. Full Objective 3 hand-off
+brief: [`docs/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md`](docs/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md).
 
-### Plots — Phase 2–7 justification figures
+### Plots — Phase 2–8 justification figures
 
 ```
 python pipeline.py --state rajasthan --stage plots
 ```
 
-Regenerates all **15 figures** from the current phase outputs (re-runs
-one Phase 3 sample case + the Phase 4 gate cases; reads Phases 5–7 files),
+Regenerates all **17 figures** from the current phase outputs (re-runs
+one Phase 3 sample case + the Phase 4 gate cases; reads Phases 5–8 files),
 saved twice under `results/plots/`: `static/*.png` (committed) and
 `interactive/*.html` (self-contained, git-ignored). `src/plots/make_plots.py`
 is ported from `objective2-tamilnadu/` — figure code unchanged, only the
 flat `results/phaseN_*` paths, 3-regime subplot grids and Rajasthan's PCM
-names differ. Needs `plotly` + `kaleido` (installed). Runtime ~1–2 min.
-Each figure's "what it shows / what to infer / viva caption" walkthrough
-is in [`docs/plots/`](docs/plots/00_INDEX.md).
+names differ; the two Phase 8 figures (robustness probabilities,
+useful-energy P5–P95 intervals) were added this pass. Needs `plotly` +
+`kaleido` (installed). Runtime ~1–2 min. Each figure's "what it shows /
+what to infer / viva caption" walkthrough is in
+[`docs/plots/`](docs/plots/00_INDEX.md).
