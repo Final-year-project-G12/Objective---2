@@ -6,21 +6,17 @@ state — `--state` only ever selects which config/weather/PCM/demand files
 are read; the code path is identical regardless of state
 (O2_Unified_PerState_Execution_Framework.md file-layout contract).
 
-Structure and CLI contract mirror objective2-tamilnadu/pipeline.py. Only
-the stages implemented so far for Rajasthan are wired here:
+Structure and CLI contract mirror objective2-tamilnadu/pipeline.py. All
+eight Objective 2 phases are wired for Rajasthan:
 
-  IMPLEMENTED
-    geometry   — Phase 2 geometry & constraint boundary self-test
-    simulate   — Phase 3 grey-box enthalpy simulator, one full-year case
-    verify     — Phase 4 reduced verification gate battery (Gates 1-5)
-    doe        — Phase 5 reduced DOE: generate + simulate + 80/20 split
-    surrogate  — Phase 6 tree surrogate: train + hold-out eval by regime/PCM
-    optimize   — Phase 7 one surrogate pass + simulator confirmation + selection rule
-    handoff    — Phase 8 light robustness (Monte Carlo) + recommendation cards + Obj3 contract
-
-  ARRIVES WITH ITS PHASE (see objective2-tamilnadu/pipeline.py for the
-  full dispatch table)
-    plots
+  geometry   — Phase 2 geometry & constraint boundary self-test
+  simulate   — Phase 3 grey-box enthalpy simulator, one full-year case
+  verify     — Phase 4 reduced verification gate battery (Gates 1-5)
+  doe        — Phase 5 reduced DOE: generate + simulate + 80/20 split
+  surrogate  — Phase 6 tree surrogate: train + hold-out eval by regime/PCM
+  optimize   — Phase 7 one surrogate pass + simulator confirmation + selection rule
+  handoff    — Phase 8 light robustness (Monte Carlo) + recommendation cards + Obj3 contract
+  plots      — Phase 2-7 justification figures (Plotly; needs plotly + kaleido)
 
 USAGE
   python pipeline.py --state rajasthan --stage geometry
@@ -32,6 +28,7 @@ USAGE
   python pipeline.py --state rajasthan --stage surrogate
   python pipeline.py --state rajasthan --stage optimize
   python pipeline.py --state rajasthan --stage handoff [--mc-draws 120]
+  python pipeline.py --state rajasthan --stage plots
 """
 
 import argparse
@@ -49,15 +46,14 @@ from src.optimize.select_deployable import run_phase7
 from src.robustness.monte_carlo import run_robustness, N_DRAWS_DEFAULT
 from src.handoff.recommendation_card import write_cards
 from src.handoff.obj3_contract import write_contract
-
-_PENDING_STAGES = ("plots",)
+from src.plots.make_plots import main as make_all_plots
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Objective 2 pipeline — Rajasthan (Phases 2-8 wired)")
+    ap = argparse.ArgumentParser(description="Objective 2 pipeline — Rajasthan (all 8 phases wired)")
     ap.add_argument("--state", required=True, help="e.g. rajasthan")
     ap.add_argument("--stage", required=True,
-                    choices=["geometry", "simulate", "verify", "doe", "surrogate", "optimize", "handoff", *_PENDING_STAGES])
+                    choices=["geometry", "simulate", "verify", "doe", "surrogate", "optimize", "handoff", "plots"])
     ap.add_argument("--cluster", type=int, default=0, help="climate regime cluster_id (simulate stage)")
     ap.add_argument("--pcm", default="RT50", help="PCM name from mcdm_topk_by_cluster.csv")
     ap.add_argument("--diameter", type=float, default=0.08, help="capsule diameter, m")
@@ -115,11 +111,9 @@ def main():
         print("\nWriting the Objective 3 environment contract ...")
         write_contract(args.state)
 
-    elif args.stage in _PENDING_STAGES:
-        raise SystemExit(
-            f"Stage '{args.stage}' is not wired for Rajasthan yet — it arrives with its "
-            f"phase. See objective2-tamilnadu/pipeline.py for the reference implementation."
-        )
+    elif args.stage == "plots":
+        print(f"Generating Phase 2-7 justification plots for state={args.state}")
+        make_all_plots(args.state)
 
 
 if __name__ == "__main__":
