@@ -1,0 +1,21 @@
+cluster_id,season,Ta_mean_season,L_required_season,top1,top2,top3,flips_from_annual
+0,Winter,26.374848047746617,321.80065821639795,n-Octacosane (C28),n-Hexacosane (C26),RT57HC,False
+0,Summer,31.537127729775275,256.9727499694821,n-Octacosane (C28),PureTemp 58,savE® OM55,False
+0,Monsoon,31.353826509927234,259.2746466883338,n-Octacosane (C28),PureTemp 58,savE® OM55,False
+0,Retreat,28.750303190648218,291.96969253183966,n-Octacosane (C28),PureTemp 58,n-Hexacosane (C26),False
+1,Winter,25.87163778702821,328.1199726704997,n-Octacosane (C28),RT64HC,n-Nonacosane (C29),False
+1,Summer,30.618288525637762,268.511532695041,n-Octacosane (C28),RT57HC,n-Hexacosane (C26),False
+1,Monsoon,28.3514289273617,296.9787555301918,n-Octacosane (C28),RT57HC,n-Hexacosane (C26),False
+1,Retreat,27.227885674051294,311.08821170526386,n-Octacosane (C28),n-Hexacosane (C26),RT57HC,False
+2,Winter,26.746131511882922,317.13808047377427,n-Octacosane (C28),PureTemp 53,PureTemp 58,False
+2,Summer,31.58440865543278,256.37899610507515,savE® OM55,PureTemp 60,PureTemp 53,True
+2,Monsoon,31.480653445724535,257.6819540285913,savE® OM55,PureTemp 60,PureTemp 53,True
+2,Retreat,28.894846641858813,290.154515871537,n-Octacosane (C28),PureTemp 60,PureTemp 53,False
+3,Winter,27.590993697766862,306.52830114344374,n-Octacosane (C28),PureTemp 53,PureTemp 60,False
+3,Summer,32.18689986312412,248.8129115188873,savE® OM55,Palmitic-stearic acid/Expanded graphite,PureTemp 60,True
+3,Monsoon,31.52210759239551,257.16137285469716,savE® OM55,PureTemp 60,PureTemp 53,True
+3,Retreat,29.403565796183006,283.7660207315338,n-Octacosane (C28),PureTemp 53,PureTemp 60,False
+4,Winter,26.085404296431527,325.4354928454129,n-Octacosane (C28),RT64HC,n-Nonacosane (C29),False
+4,Summer,29.277628260073477,285.34754430999726,n-Octacosane (C28),RT57HC,n-Hexacosane (C26),False
+4,Monsoon,27.464158383965465,308.12109901416164,n-Octacosane (C28),n-Hexacosane (C26),RT57HC,False
+4,Retreat,26.730513987152197,317.3342053493427,n-Octacosane (C28),RT64HC,n-Hexacosane (C26),False
