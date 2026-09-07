@@ -383,6 +383,33 @@ def phase8_useful_energy_intervals(state, out_dir, robustness_summary, deployabl
     _save(fig, "phase8_useful_energy_intervals", out_dir)
 
 
+def phase6b_multifidelity(state, out_dir, speedup_report, efficiency_df):
+    fig = make_subplots(rows=1, cols=2, subplot_titles=(
+        "Total simulator runtime: high- vs low-fidelity (215 cases)",
+        "Hold-out R2 vs high-fidelity training fraction (useful_energy_kWh)"))
+
+    fig.add_trace(go.Bar(
+        x=["High fidelity\n(Phase 5, adaptive sub-stepping)", "Low fidelity\n(fixed dt, no sub-stepping)"],
+        y=[speedup_report["high_fidelity_total_runtime_s"], speedup_report["low_fidelity_total_runtime_s"]],
+        marker_color=["#1f77b4", "#ff7f0e"],
+        text=[f"{speedup_report['high_fidelity_total_runtime_s']:.0f}s", f"{speedup_report['low_fidelity_total_runtime_s']:.0f}s"],
+        textposition="outside", showlegend=False,
+    ), row=1, col=1)
+    fig.add_annotation(text=f"speedup: {speedup_report['speedup_x']:.1f}x", x=0.5, y=1.08,
+                        xref="x domain", yref="y domain", showarrow=False, row=1, col=1)
+
+    sub = efficiency_df[efficiency_df["target"] == "useful_energy_kWh"].sort_values("hf_training_fraction")
+    for model_name, color in [("high_fidelity_only", "#7f7f7f"), ("multi_fidelity_augmented", "#2ca02c")]:
+        s = sub[sub["model"] == model_name]
+        fig.add_trace(go.Scatter(x=s["hf_training_fraction"] * 100, y=s["R2"], mode="lines+markers",
+                                  name=model_name, line=dict(color=color)), row=1, col=2)
+    fig.update_xaxes(title_text="% of Phase-5 high-fidelity training rows used", row=1, col=2)
+    fig.update_yaxes(title_text="hold-out R2 (same fixed hold-out set as Phase 6)", row=1, col=2)
+    fig.update_yaxes(title_text="total runtime (s)", row=1, col=1)
+    fig.update_layout(title=f"Phase 6b — multi-fidelity surrogate: speedup + sample-efficiency — {state}")
+    _save(fig, "phase6b_multifidelity", out_dir, width=1250)
+
+
 def phase7_safety_compliance(state, out_dir, optimized):
     counts = optimized.groupby(["regime_id", "meets_temperature_safety"]).size().unstack(fill_value=0)
     fig = go.Figure()
@@ -422,6 +449,17 @@ def main(state: str):
     print("Phase 6 ...")
     phase6_parity_plots(state, out_dir, design_cases)
     phase6_feature_importance(state, out_dir)
+
+    mf_report_path = RESULTS_DIR / state / "multifidelity_speedup_report.json"
+    mf_efficiency_path = RESULTS_DIR / state / "multifidelity_sample_efficiency.csv"
+    if mf_report_path.exists() and mf_efficiency_path.exists():
+        print("Phase 6b ...")
+        with open(mf_report_path, "r", encoding="utf-8") as f:
+            speedup_report = json.load(f)
+        efficiency_df = pd.read_csv(mf_efficiency_path)
+        phase6b_multifidelity(state, out_dir, speedup_report, efficiency_df)
+    else:
+        print("Phase 6b ... skipped (multifidelity_speedup_report.json not found -- run --stage multifidelity first)")
 
     print("Phase 7 ...")
     optimized = pd.read_csv(RESULTS_DIR / state / "optimized_designs.csv")

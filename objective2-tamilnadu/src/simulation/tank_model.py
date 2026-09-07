@@ -79,10 +79,20 @@ class SimulationResult:
 
 def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: float,
              design: DesignRuntime, pcm_props: PCMThermalProps, system_config: dict,
-             record_hourly: bool = True) -> SimulationResult:
+             record_hourly: bool = True, fidelity: str = "high") -> SimulationResult:
     """Runs the simulator across every hour in weather_hourly (repeats the
     24-hour demand curve every day). Returns per-hour summaries + the
-    annual energy accumulator."""
+    annual energy accumulator.
+
+    fidelity: "high" (default, unchanged behaviour) uses the adaptive
+    stiffness-based sub-stepping documented above (melt-band refinement +
+    per-step stiffness check, up to MAX_SUBSTEPS). "low" disables both --
+    exactly one fixed-size sub-step per hour (dt_total_s from
+    system_config, nominally 5 min) regardless of PCM state -- a cheap,
+    less-accurate proxy used only by the Phase 6b multi-fidelity surrogate
+    (src/surrogate/multifidelity.py) as an extra, fast input feature; never
+    used for Phase 4/7/8's authoritative numbers."""
+    low_fidelity = (fidelity == "low")
     solver = system_config["solver"]
     dt_total_s = solver["timestep_s"]
     n_substeps_per_hour = int(round(3600 / dt_total_s))
@@ -155,9 +165,9 @@ def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: fl
 
         for sub in range(n_substeps_per_hour):
             in_band = has_pcm and (pcm_props.Ts_C - band_margin <= T_pcm <= pcm_props.Tl_C + band_margin)
-            n_sub = n_sub_in_band if in_band else 1
+            n_sub = 1 if low_fidelity else (n_sub_in_band if in_band else 1)
 
-            if has_pcm:
+            if has_pcm and not low_fidelity:
                 # Adaptive stiffness check: the PCM node is coupled to the
                 # water node via a one-substep-lagged explicit term, so if
                 # the PCM's own thermal time constant (m*cp/UA) is shorter

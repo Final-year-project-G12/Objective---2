@@ -30,7 +30,7 @@ def run_case(state: str, cluster_id: int, pcm_name: str, design: DesignVector,
              volume_multiplier: float = 1.0, timing_shift_hours: float = 0.0,
              mains_temp_override_C: float = None, system_config_overrides: dict = None,
              pcm_record_overrides: dict = None, weather_perturbation: dict = None,
-             record_hourly: bool = True):
+             record_hourly: bool = True, fidelity: str = "high"):
     """Returns a dict: {geometry, valid, reason, metrics, hourly (DataFrame)}.
 
     If the design is geometrically invalid, the simulator is never run
@@ -42,6 +42,12 @@ def run_case(state: str, cluster_id: int, pcm_name: str, design: DesignVector,
     -- used by Phase 8's Monte Carlo (src/robustness/monte_carlo.py) as the
     documented medoid+noise proxy for weather-year uncertainty, since no
     member-point weather file exists for this project (40-hr cut list).
+
+    fidelity: "high" (default) or "low" -- passed straight through to
+    src/simulation/tank_model.py's run_year(). "low" is only ever used by
+    the Phase 6b multi-fidelity surrogate (src/surrogate/multifidelity.py)
+    to generate a cheap extra feature; every authoritative Phase 4/5/7/8
+    number in this project is fidelity="high".
     """
     system_config = system_config or load_system_config()
     if system_config_overrides:
@@ -92,7 +98,7 @@ def run_case(state: str, cluster_id: int, pcm_name: str, design: DesignVector,
                                      cp_liquid_J_kgK=2000.0, conductivity_W_mK=0.2, density_kg_m3=800.0)
 
     result = run_year(weather, demand_model, mains_temp_C, runtime, pcm_props, system_config,
-                       record_hourly=record_hourly)
+                       record_hourly=record_hourly, fidelity=fidelity)
 
     target_temp_C = system_config["delivery"]["target_temp_C"]
     cp_w = system_config["water"]["cp_J_kgK"]

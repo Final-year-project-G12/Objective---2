@@ -19,8 +19,9 @@ results digest and `OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md` for the hand-off.
 | Phase 4 | Simulator verification, Gates 1–5 (`src/verify/gates.py`) | COMPLETE — **GO** |
 | Phase 5 | D2.4 — DOE (`src/doe/`) — 215 cases, 145 valid | COMPLETE |
 | Phase 6 | D2.5 — surrogate (`src/surrogate/`) — R²>0.98 every target | COMPLETE |
+| Phase 6b | Multi-fidelity surrogate augmentation (`src/surrogate/multifidelity.py`) — extra evidence, closes an audit gap | COMPLETE |
 | Phase 7 | D2.6 — optimization + simulator confirmation (`src/optimize/`) | COMPLETE |
-| Phase 8 | D2.7/D2.8/D2.9 — robustness, recommendation cards, Objective 3 contract (`src/robustness/`, `src/handoff/`) | COMPLETE |
+| Phase 8 | D2.7/D2.8/D2.9 — robustness (real 10-yr historical weather ensemble), recommendation cards, Objective 3 contract with a fully specified reward function (`src/robustness/`, `src/handoff/`) | COMPLETE |
 
 ## Code map
 
@@ -59,12 +60,14 @@ objective2_design_optimization/
 │   ├── surrogate/
 │   │   ├── features.py                # NEW — Phase 6 feature table (design+climate+PCM+confidence)
 │   │   ├── train.py                   # NEW — Phase 6 ExtraTrees + linear baseline + feasibility clf
-│   │   └── evaluate.py                # NEW — Phase 6 error breakdown by regime/PCM
+│   │   ├── evaluate.py                # NEW — Phase 6 error breakdown by regime/PCM
+│   │   └── multifidelity.py           # NEW — Phase 6b low-fidelity speedup + sample-efficiency experiment
 │   ├── optimize/
 │   │   ├── search.py                  # NEW — Phase 7 surrogate-scored random search
 │   │   └── select_deployable.py       # NEW — Phase 7 simulator-confirm + selection rule
 │   ├── robustness/
-│   │   └── monte_carlo.py             # NEW — Phase 8 Monte Carlo robustness analysis
+│   │   ├── monte_carlo.py             # NEW — Phase 8 Monte Carlo robustness analysis
+│   │   └── weather_ensemble.py        # NEW — Phase 8 real 10-year historical weather ensemble
 │   ├── handoff/
 │   │   ├── build_recommendation_cards.py  # NEW — Phase 8 per-regime cards
 │   │   └── build_obj3_contract.py         # NEW — Phase 8 Objective 3 environment contract
@@ -76,15 +79,18 @@ objective2_design_optimization/
     ├── design_cases.parquet / .csv            # Phase 5 output (215 cases)
     ├── surrogate_metrics.csv, surrogate/models.pkl   # Phase 6 output
     ├── surrogate_error_by_group.csv            # Phase 6 output
+    ├── design_cases_lowfid.parquet / .csv       # Phase 6b low-fidelity re-run of every DOE case
+    ├── multifidelity_speedup_report.json        # Phase 6b speedup + low-fidelity accuracy
+    ├── multifidelity_sample_efficiency.csv      # Phase 6b sample-efficiency experiment
     ├── surrogate_top_candidates.csv            # Phase 7 intermediate output
     ├── optimized_designs.csv                   # Phase 7 PCM-comparison report
     ├── deployable_design_per_regime.csv        # Phase 7 final selection
-    ├── robustness_results.csv, robustness_summary.csv  # Phase 8 Monte Carlo output
+    ├── robustness_results.csv, robustness_summary.csv  # Phase 8 Monte Carlo output (real 10-yr weather ensemble)
     ├── recommendation_cards.md                 # Phase 8 per-regime cards
     ├── obj3_environment_contract_tamilnadu.json  # Phase 8 Objective 3 hand-off
     └── plots/
-        ├── interactive/*.html                  # 17 self-contained interactive figures
-        └── static/*.png                        # same 17 figures as flat images
+        ├── interactive/*.html                  # 18 self-contained interactive figures
+        └── static/*.png                        # same 18 figures as flat images
 ```
 
 Everything under `src/` is **state-agnostic** — `state="tamilnadu"` is just
@@ -126,18 +132,19 @@ the deployable-design rule picks the zero-PCM-mass plain tank in **4 of
 **2. No design is temperature-robust under realistic uncertainty, and the
 PCM regime is worst on every axis.** Phase 8's Monte Carlo robustness
 analysis (120 draws/design, PCM property/weather/demand/mains-temperature
-uncertainty, fixed cross-state-comparable thresholds) found that
-delivery-temperature reliability is never a problem, but **none** of the
-5 regimes meets the framework's 95% temperature-safety bar — plain-tank
-regimes range 67–87% safe, and the one PCM regime is worst at just
-**44%** safe, because a PCM design must respect two temperature limits
-instead of one. That same PCM regime is also the *only* one to fail the
-75% demand-reliability bar (70%) — the only regime failing both criteria
+uncertainty, fixed cross-state-comparable thresholds, and a real 10-year
+historical weather ensemble — see below) found that delivery-temperature
+reliability is never a problem, but **none** of the 5 regimes meets the
+framework's 95% temperature-safety bar — plain-tank regimes range
+71.7–92.5% safe, and the one PCM regime is worst at just **40.8%** safe,
+because a PCM design must respect two temperature limits instead of one.
+That same PCM regime is also the *only* one to fail the 75%
+demand-reliability bar (69.2%) — the only regime failing both criteria
 at once (`10_PHASE8_ROBUSTNESS_HANDOFF.md`). This is a genuine consequence
 of having no active high-temperature safety shield anywhere in Phases
 1–7's physics, not a bug — and it is now a specified, non-optional
-requirement (with a 3°C precautionary guard band) in the Objective 3
-hand-off contract.
+requirement (with a 3°C precautionary guard band and a fully specified
+default reward function) in the Objective 3 hand-off contract.
 
 Both findings are the optimizer/analysis working correctly, not a defect
 — exactly the kind of result Objective 2 exists to surface. See
@@ -155,9 +162,10 @@ the safety finding.
 - `07_PHASE6_SURROGATE.md` — surrogate features, models, hold-out accuracy
 - `08_PHASE7_OPTIMIZATION.md` — optimization search, simulator confirmation, the PCM-vs-plain-tank finding
 - `09_NEXT_STEPS.md` — the PCM-design decision the team should make
-- `10_PHASE8_ROBUSTNESS_HANDOFF.md` — Monte Carlo methodology, the temperature-safety finding, recommendation cards, Objective 3 contract
+- `10_PHASE8_ROBUSTNESS_HANDOFF.md` — Monte Carlo methodology (including the real 10-year historical weather ensemble), the temperature-safety finding, recommendation cards, Objective 3 contract
+- `11_MULTIFIDELITY_SURROGATE.md` — Phase 6b's low-fidelity speedup and sample-efficiency experiment
 - `OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md` — what Objective 3 needs from this project and what to do first
-- `plots/00_INDEX.md` and `plots/02_...` through `plots/08_...md` — the 17
+- `plots/00_INDEX.md` and `plots/02_...` through `plots/08_...md` — the 18
   justification figures (interactive HTML + static PNG) for Phases 2-8,
   with what each one shows, what to infer, and how to explain it
 - `HOW_TO_RUN.md` — exact commands to reproduce everything above (and whether any external simulator/MATLAB is needed — it isn't)

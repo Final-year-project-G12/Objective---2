@@ -40,12 +40,20 @@ hand-copy numbers out of it. It contains, per climate regime:
   band below each hard limit** (bypass at 72°C water / 62°C PCM, not at
   75°C/65°C themselves), so the shield engages before, not exactly at, the
   hard limit
+- a **fully specified `reward_function`** — formula, normalized reference
+  magnitudes (computed from this state's own 5 selected designs), default
+  weights `w1..w5` with an explicit rationale for each, precise
+  `Penalty_safety_t`/`Penalty_bypass_t` definitions tied to the same
+  guard-band trigger as the safety shield, and a tuning procedure. These
+  are ready-to-train-with defaults, not a placeholder — see §3 point 4
+  below.
 - three reset scenarios (fully solid / partially charged / fully liquid
   initial PCM state)
 - the acceptance-test checklist required before any DRL training starts
 - an explicit `deferred_future_work` list (four-state comparison,
-  active-learning/NSGA-II, member-point robustness, widened PCM bounds,
-  hardware validation) — read it before assuming any of these are done
+  active-learning/NSGA-II, sub-daily/hourly multi-year weather records,
+  widened PCM bounds, hardware validation) — read it before assuming any
+  of these are done
 
 ## 2. What Objective 2 is telling Objective 3 about the physical system
 
@@ -79,12 +87,14 @@ a reward function — the physical story matters for reward shaping:
   nominal candidates searched violated the safety limit at some point in
   the year; Phase 8's Monte Carlo robustness analysis (120 draws/design
   under weather/demand/property uncertainty, using fixed
-  cross-state-comparable thresholds) found something worse — **every one
+  cross-state-comparable thresholds and, as of the latest run, a real
+  10-year historical weather ensemble rather than an assumed noise range)
+  found something worse — **every one
   of the 5 selected designs fails the framework's 95% temperature-safety
-  bar**, ranging from 67–87% safe for the plain-tank regimes down to just
-  **44%** safe for the one regime with real PCM (regime 4) — see
+  bar**, ranging from 71.7-92.5% safe for the plain-tank regimes down to just
+  **40.8%** safe for the one regime with real PCM (regime 4) — see
   `10_PHASE8_ROBUSTNESS_HANDOFF.md` for the full table. Regime 4 also
-  fails the 75% demand-reliability bar (70%) — the **only** regime to fail
+  fails the 75% demand-reliability bar (69.2%) — the **only** regime to fail
   both criteria at once, making it the weakest performer in the state on
   every robustness axis, not just temperature. The `safety_shield` block
   in the contract already trips on a 3°C precautionary margin below each
@@ -113,10 +123,13 @@ a reward function — the physical story matters for reward shaping:
    physics. The physics (enthalpy model, heat transfer, collector,
    hydraulics) should be reused unchanged; only the control surface
    changes (fixed flow_rate_kg_s becomes an action instead of a constant).
-4. **Freeze the reward weights (w1..w5 in the contract's
-   `reward_components_suggested`) before training**, and record them in
-   Objective 3's own frozen config — this project deliberately left them
-   unset because that is Objective 3's decision, not Objective 2's.
+4. **Start from the contract's `reward_function` defaults, don't invent
+   new ones from scratch.** The contract now ships fully specified default
+   weights (`w1..w5`) with an explicit rationale each — copy them into
+   Objective 3's own frozen config as the training starting point, then
+   follow the contract's `tuning_procedure` list if retuning is needed
+   after a first training run. This is no longer an open decision blocking
+   training start, only a documented starting point Objective 3 may adjust.
 5. **Run the acceptance test with a trivial rule-based controller**
    (e.g. "charge whenever irradiance is high and PCM isn't full, discharge
    during demand hours, bypass otherwise") before writing any learning
@@ -133,10 +146,13 @@ a reward function — the physical story matters for reward shaping:
 
 ## 4. What Objective 2 explicitly did NOT resolve (don't assume it did)
 
-- No unseen-weather-year or member-point re-confirmation of the final
-  designs (medoid-only, 40-hr cut list) — Objective 3's own weather
-  train/val/test split (§13.3) is genuinely unstarted work, not something
-  to look for in Objective 2's outputs.
+- Phase 8's Monte Carlo now draws its *annual* weather magnitude from a
+  real 10-year historical ensemble (see `10_PHASE8_ROBUSTNESS_HANDOFF.md`),
+  but no unseen-weather-year or member-point re-confirmation of the final
+  designs' *hourly* shape exists yet (medoid-only, 40-hr cut list) —
+  Objective 3's own weather train/val/test split (§13.3) is still
+  genuinely unstarted work, not something to look for in Objective 2's
+  outputs.
 - No widened PCM design bounds and no re-investigation of the
   `Tm_target_C` derivation (see `09_NEXT_STEPS.md`) — if the project
   later decides to revisit either, Objective 3's contract will need to be

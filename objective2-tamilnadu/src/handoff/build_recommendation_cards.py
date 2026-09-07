@@ -50,8 +50,9 @@ def build_card(state: str, regime: dict, deployable_row: pd.Series, robustness_r
                   f"{regime['population_covered']:,} people")
     lines.append(f"- State: Tamil Nadu | Medoid weather file: `{regime['weather_hourly']}`")
     lines.append(f"- Elevation: flat 150 m approximation (Objective 1 limitation, carried forward unchanged)")
-    lines.append(f"- Member-point robustness: NOT run (medoid-only, 40-hr cut list; weather uncertainty in the "
-                  f"robustness section below uses a noise proxy instead — see Caveats)")
+    lines.append(f"- Member-point robustness: NOT run (medoid-only for sub-daily/hourly shape; the annual "
+                  f"weather magnitude below is now a real 10-year historical ensemble, not a noise proxy — "
+                  f"see Caveats)")
     lines.append("")
     lines.append("### Climate")
     lines.append(f"- Tm_target_C (Objective 1, climate/delivery-anchored): {regime['Tm_target_C']}")
@@ -136,9 +137,12 @@ def build_card(state: str, regime: dict, deployable_row: pd.Series, robustness_r
     lines.append("")
 
     lines.append("### Caveats")
-    lines.append("- Single representative (medoid) weather year; no unseen-year or member-point "
-                  "re-confirmation performed (40-hr cut list) -- weather uncertainty in the robustness "
-                  "section above is a statistical noise proxy, not a second real weather sequence.")
+    lines.append("- The robustness section's annual GHI/temperature variability is drawn from Objective "
+                  "1's real 10-year (2016-2025) daily weather archive for this regime "
+                  "(src/robustness/weather_ensemble.py) -- a genuine historical-year ensemble, not an "
+                  "assumed range. The within-year HOURLY shape still comes from a single medoid year plus "
+                  "synthetic per-hour jitter (no member-point/multi-year hourly data was pulled for this "
+                  "project, 40-hr cut list).")
     lines.append("- Melting treated as a narrow +/-1 K band around a single reported Tm_C (no measured "
                   "solidus/liquidus interval in the PCM database).")
     lines.append("- Liquid natural convection inside the capsule is not resolved -- a fixed x2 effective-"

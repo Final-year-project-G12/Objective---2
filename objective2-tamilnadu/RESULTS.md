@@ -98,6 +98,35 @@ Details: `docs_objective2/07_PHASE6_SURROGATE.md`, `docs_objective2/plots/06_sur
 
 ---
 
+## Phase 6b — Multi-fidelity surrogate augmentation (bonus phase)
+
+Added a cheap `fidelity="low"` mode to the simulator itself (fixed
+timestep, no adaptive sub-stepping — `src/simulation/tank_model.py`),
+re-ran all 215 DOE cases at low fidelity, and used the result both as a
+standalone cheap predictor and as an extra input feature to the Phase 6
+surrogate.
+
+- **Speedup: 1.53×** (fair, order-randomized, same-process timing — an
+  initial version of this comparison mixed timings from two different
+  process runs and produced a nonsensical result; corrected before being
+  reported here).
+- **Low-fidelity-only accuracy**: R²=0.999 (useful_energy_kWh), 0.982
+  (solar_fraction), 0.997 (unmet_energy_kWh) vs. the real simulator — a
+  cheap proxy that's already highly informative on its own.
+- **Sample-efficiency finding**: augmenting a *shrunken* high-fidelity
+  training set with the free low-fidelity feature matches or beats the
+  high-fidelity-only baseline at every tested training fraction for
+  `solar_fraction`/`unmet_energy_kWh`/`pump_energy_kWh` (e.g. at 50%
+  high-fidelity data, `solar_fraction` R² goes from 0.970 to 0.983 with
+  the low-fidelity feature added) — i.e. Phase 6's accuracy can be
+  approached with meaningfully less expensive simulator data if a cheap
+  low-fidelity proxy exists.
+
+Plots: `phase6b_multifidelity`.
+Details: `docs_objective2/11_MULTIFIDELITY_SURROGATE.md`
+
+---
+
 ## Phase 7 — Optimization pass + simulator confirmation
 
 400 candidates/pair searched (8,000 total), top 5/pair (100 total)
@@ -141,26 +170,45 @@ cross-state comparability (see `docs_objective2/
 10_PHASE8_ROBUSTNESS_HANDOFF.md`, "Alignment with the Rajasthan
 implementation," for exactly what changed and why).
 
+**Upgrade**: the annual GHI-scale/ambient-offset component is no longer a
+synthetic assumed range (the original `U(0.93,1.07)` / `U(-1.5,+1.5°C)`).
+It is now drawn from a genuine **10-year (2016–2025) historical weather
+ensemble** built from Objective 1's own daily ERA5/POWER archive
+(`src/robustness/weather_ensemble.py`, reading `data/objective1/
+daily_aggregates_tamilnadu.csv` — 133 population-grid points, all 10 years
+complete on disk but previously unused past Objective 1's climate
+signature step). Each Monte Carlo draw's annual weather is now one of the
+10 real observed years for that climate regime, not an assumed
+distribution shape (per-hour jitter within the year is still synthetic —
+documented in `10_PHASE8_ROBUSTNESS_HANDOFF.md`, not hidden).
+
 | Regime | Design | P(meets delivery) | P(meets demand) | P(temperature-safe) | Robust? | Useful energy P5–P50–P95 (kWh) | Max water T P95 |
 |---|---|---|---|---|---|---|---|
-| 0 | Plain tank | 100% | 85% | 87% | No | 1557 – 1677 – 1812 | 76.1°C |
-| 1 | Plain tank | 100% | 91% | 79% | No | 1660 – 1797 – 1939 | 76.8°C |
-| 2 | Plain tank | 100% | 95% | 67% | No | 1623 – 1755 – 1889 | 79.3°C |
-| 3 | Plain tank | 100% | 96% | 78% | No | 1695 – 1822 – 1951 | 78.0°C |
-| 4 | n-Octacosane | 100% | **70%** | **44%** | No | 1492 – 1619 – 1738 | 75.1°C |
+| 0 | Plain tank | 100% | 89.2% | 92.5% | No | 1568 – 1668 – 1763 | 75.1°C |
+| 1 | Plain tank | 100% | 90.0% | 80.0% | No | 1700 – 1800 – 1931 | 77.3°C |
+| 2 | Plain tank | 100% | 94.2% | 71.7% | No | 1659 – 1744 – 1867 | 77.6°C |
+| 3 | Plain tank | 100% | 95.0% | 79.2% | No | 1716 – 1810 – 1920 | 77.1°C |
+| 4 | n-Octacosane | 100% | **69.2%** | **40.8%** | No | 1531 – 1616 – 1703 | 73.8°C |
 
-**Headline finding**: delivery-temperature reliability is never the
-problem (100% everywhere). Under the fixed (not self-referential)
-demand threshold, **regime 4 — the one regime that actually uses PCM —
-is revealed as the weakest performer on *both* remaining axes at once**:
-only 70% demand-reliable (below the 75% target) and just 44%
-temperature-safe (the worst of all five, and the only one to fail both
-robustness criteria simultaneously). Every regime fails the ≥95%
-temperature-safety bar regardless of PCM. This is a genuine consequence
-of having no active high-temperature safety shield anywhere in Phases
-1–7's physics, not a bug — and it is now the **fourth independent method**
-(after Gate 3, Phase 6's feature importance, and Phase 7's full search)
-pointing at the same PCM regime as the weakest link in this deployment.
+**Headline finding holds under the real historical-year methodology**:
+delivery-temperature reliability is never the problem (100% everywhere).
+Under the fixed (not self-referential) demand threshold, **regime 4 — the
+one regime that actually uses PCM — is still revealed as the weakest
+performer on *both* remaining axes at once**: only 69.2% demand-reliable
+(below the 75% target) and just 40.8% temperature-safe (the worst of all
+five, and the only one to fail both robustness criteria simultaneously).
+Every regime fails the ≥95% temperature-safety bar regardless of PCM.
+Replacing the assumed weather-noise range with real observed inter-annual
+variability moved every regime's numbers by only a few points (real
+Tamil Nadu year-to-year GHI variability turns out to be narrower than the
+±7% originally assumed) and changed no qualitative conclusion — if
+anything this strengthens confidence in the finding, since it now survives
+a second, independently-sourced weather methodology. This is a genuine
+consequence of having no active high-temperature safety shield anywhere
+in Phases 1–7's physics, not a bug — and it is now the **fourth
+independent method** (after Gate 3, Phase 6's feature importance, and
+Phase 7's full search) pointing at the same PCM regime as the weakest
+link in this deployment.
 
 **One real bug found and fixed during development**: the first
 robustness implementation double-counted plain-tank designs against the
@@ -196,9 +244,10 @@ Details: `docs_objective2/10_PHASE8_ROBUSTNESS_HANDOFF.md`
    the framework's 95% temperature-safety bar, because Phases 1–7 never
    modeled an active overheat-protection mechanism. Under a fixed,
    cross-state-comparable demand threshold, the one PCM regime (4) is
-   worse than every plain-tank regime on **both** demand reliability (70%)
-   and temperature safety (44%) — the only regime to fail both bars at
-   once.
+   worse than every plain-tank regime on **both** demand reliability
+   (69.2%) and temperature safety (40.8%) — the only regime to fail both
+   bars at once. This holds under Phase 8's real 10-year historical
+   weather ensemble, not just the original synthetic-noise version.
 
 Four independent methods — the Gate 3 baseline comparison, Phase 6's
 feature-importance analysis, Phase 7's 400-candidate search, and Phase
@@ -222,11 +271,12 @@ assumption.
 | `simulator_verification_report.txt` | 4 | Gate 1–5 full readout |
 | `design_cases.parquet` / `.csv` | 5 | 215-case DOE database |
 | `surrogate_metrics.csv`, `surrogate_error_by_group.csv`, `surrogate/models.pkl` | 6 | trained models + accuracy |
+| `design_cases_lowfid.parquet`, `multifidelity_speedup_report.json`, `multifidelity_sample_efficiency.csv`, `multifidelity_runtime_benchmark.csv` | 6b | low-fidelity re-run, speedup, sample-efficiency experiment |
 | `surrogate_top_candidates.csv`, `optimized_designs.csv`, `deployable_design_per_regime.csv` | 7 | search → confirm → select |
-| `robustness_results.csv`, `robustness_summary.csv` | 8 | Monte Carlo draws + per-regime summary |
+| `robustness_results.csv`, `robustness_summary.csv` | 8 | Monte Carlo draws (real 10-yr weather ensemble) + per-regime summary |
 | `recommendation_cards.md` | 8 | one card per regime |
-| `obj3_environment_contract_tamilnadu.json` | 8 | frozen Objective 3 hand-off package |
-| `plots/interactive/*.html`, `plots/static/*.png` | 2–8 | 17 justification figures |
+| `obj3_environment_contract_tamilnadu.json` | 8 | frozen Objective 3 hand-off package, incl. fully specified reward function |
+| `plots/interactive/*.html`, `plots/static/*.png` | 2–8 | 18 justification figures |
 
 ## Where to go next
 

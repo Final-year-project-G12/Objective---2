@@ -17,18 +17,34 @@ value — a self-referential threshold would let a poorly-performing
 nominal design look "just as robust" as a strong one purely by having a
 low bar to clear, which defeats the point of a cross-state comparison.
 
+HISTORICAL-YEAR WEATHER ENSEMBLE (upgrade over the original synthetic
+version — closes the audit gap "Monte Carlo limited to medoid weather +
+noise, no historical-year ensemble"): the annual GHI-scale/T_amb-offset
+component is no longer an assumed uniform range. It is drawn from
+src/robustness/weather_ensemble.py's empirical 10-year (2016-2025)
+population-weighted annual archive for this cluster (Objective 1's
+daily_aggregates_<state>.csv, previously used only by 04b_climate_
+signature.py and otherwise sitting unused on disk) — i.e. each draw's
+annual weather really is one of the 10 actual observed years for this
+climate regime, not a synthetic assumption. A small Gaussian jitter
+(1% GHI / 0.1 C T_amb) is layered on the chosen year purely to smooth
+the 10 discrete support points into a continuous distribution — it does
+not change the underlying real-year magnitude. Per-hour jitter within
+the year remains synthetic (sub-daily multi-year data was not pulled for
+this project), documented here rather than hidden.
+
 For each of the 5 deployable designs selected in Phase 7
 (`deployable_design_per_regime.csv`), draws N=120 independent scenarios
 from:
 
   - PCM latent heat        : +/-10% uniform                  (skipped for the plain-tank baseline -- no PCM to perturb)
-  - Weather                : annual GHI scale ~ U(0.93, 1.07) x per-hour
-                              iid noise ~ N(1, 0.04); annual T_amb offset
-                              ~ U(-1.5, +1.5) C + per-hour iid noise
-                              ~ N(0, 0.4) C -- "medoid + noise" proxy for
-                              an unseen weather year, since no
-                              member-point weather file exists for this
-                              project (40-hr cut list)
+  - Weather                : annual (GHI scale, T_amb offset) sampled from
+                              one of 10 REAL observed years for this
+                              cluster (weather_ensemble.py) + small
+                              smoothing jitter, x per-hour iid noise
+                              ~ N(1, 0.04) for GHI and ~N(0, 0.4) C for
+                              T_amb (sub-daily shape still comes from the
+                              single medoid year's hourly file)
   - Demand                 : +/-20% volume (uniform), +/-30 min timing shift (uniform)
   - Inlet/mains temperature : +/-2 C (uniform)
 
@@ -58,6 +74,7 @@ from config import RESULTS_DIR
 from src.design.schema import DesignVector
 from src.io_utils import get_pcm_properties, load_system_config, load_hourly_weather
 from src.simulation.run_case import run_case
+from src.robustness.weather_ensemble import load_historical_ensemble
 
 N_DRAWS = 120
 MC_SEED = 20260905
@@ -71,12 +88,19 @@ SOLAR_FRACTION_DELIVERY_THRESHOLD = 0.45
 SOLAR_FRACTION_DEMAND_THRESHOLD = 0.50
 
 
-def _sample_scenario(rng, has_pcm: bool, n_hours: int) -> dict:
-    annual_ghi_scale = rng.uniform(0.93, 1.07)
+def _sample_scenario(rng, has_pcm: bool, n_hours: int, historical_pairs) -> dict:
+    # Historical-year draw: pick one of the N real observed years for this
+    # cluster (weather_ensemble.py), then jitter slightly to smooth the
+    # discrete year-support into a continuous distribution (does not
+    # change the real magnitude, just avoids only ever drawing exactly
+    # N distinct annual values across 120 draws).
+    year_ghi_scale, year_tamb_offset_C = historical_pairs[rng.integers(0, len(historical_pairs))]
+    annual_ghi_scale = year_ghi_scale * rng.normal(1.0, 0.01)
+    annual_tamb_offset_C = year_tamb_offset_C + rng.normal(0.0, 0.1)
+
     hourly_ghi_noise = rng.normal(1.0, 0.04, size=n_hours)
     ghi_multiplier_array = np.clip(annual_ghi_scale * hourly_ghi_noise, 0.5, 1.5)
 
-    annual_tamb_offset_C = rng.uniform(-1.5, 1.5)
     hourly_tamb_noise_C = rng.normal(0.0, 0.4, size=n_hours)
     tamb_delta_array = annual_tamb_offset_C + hourly_tamb_noise_C
 
@@ -103,11 +127,12 @@ def run_monte_carlo_for_design(state: str, row: pd.Series, n_draws: int = N_DRAW
 
     base_latent = get_pcm_properties(state, pcm_id)["latent_heat_kJ_kg"] if pcm_id else None
     n_hours = len(load_hourly_weather(state, int(row["regime_id"])))
+    historical_pairs = load_historical_ensemble(state, int(row["regime_id"]))
     rng = np.random.default_rng(seed + int(row["regime_id"]) * 131)
 
     draws = []
     for i in range(n_draws):
-        s = _sample_scenario(rng, pcm_id is not None, n_hours)
+        s = _sample_scenario(rng, pcm_id is not None, n_hours, historical_pairs)
         pcm_overrides = ({"latent_heat_kJ_kg": base_latent * s["latent_heat_mult"]}
                           if pcm_id is not None else None)
         out = run_case(

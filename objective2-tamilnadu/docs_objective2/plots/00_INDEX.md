@@ -28,8 +28,9 @@ every figure from the current results.
 | `04_verification_plots.md` | Phase 4 — Gate 1 residuals, Gate 3 baseline comparison, Gate 5 sensitivity |
 | `05_doe_plots.md` | Phase 5 — DOE sample coverage, outcome distribution |
 | `06_surrogate_plots.md` | Phase 6 — parity plots, feature importance |
+| `06b_multifidelity_plots.md` | Phase 6b — multi-fidelity speedup + sample-efficiency |
 | `07_optimization_plots.md` | Phase 7 — Pareto view, surrogate-vs-simulator, safety compliance |
-| `08_robustness_plots.md` | Phase 8 — robustness probabilities, useful-energy percentile intervals |
+| `08_robustness_plots.md` | Phase 8 — robustness probabilities (real 10-yr historical weather ensemble), useful-energy percentile intervals |
 
 ## One-line justification per phase (for a viva or report caption)
 
@@ -47,8 +48,13 @@ every figure from the current results.
   on 100 designs it wasn't directly trained on, and the Pareto view shows
   *why* the optimizer picked the plain tank in 4/5 regimes — it's sitting
   almost on top of the PCM cluster, at zero mass."
+- **Phase 6b**: "a cheap low-fidelity simulator pass, used as an extra
+  surrogate feature, recovers most of Phase 6's accuracy even when the
+  expensive high-fidelity training set is cut sharply — the practical
+  case for multi-fidelity modeling, demonstrated rather than only cited."
 - **Phase 8**: "delivery temperature is met 100% of the time everywhere,
-  but under a fixed, cross-state-comparable demand threshold the one
-  regime that actually uses PCM fails both the 75% demand bar (70%) and
-  the 95% temperature-safety bar (44%) — the only regime to fail both at
-  once, and the worst on every robustness axis in the state."
+  but under a fixed, cross-state-comparable demand threshold and a real
+  10-year historical weather ensemble, the one regime that actually uses
+  PCM fails both the 75% demand bar (69.2%) and the 95% temperature-safety
+  bar (40.8%) — the only regime to fail both at once, and the worst on
+  every robustness axis in the state."

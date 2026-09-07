@@ -6,10 +6,13 @@ regime, each aggregating 120 real Monte Carlo simulator re-runs) and
 `deployable_design_per_regime.csv` for the nominal reference point.
 
 *(Methodology note: thresholds and weather-noise model were revised to
-align with the parallel Rajasthan implementation of this framework — see
-`docs_objective2/10_PHASE8_ROBUSTNESS_HANDOFF.md`, "Alignment with the
-Rajasthan implementation." Both plots below reflect the current, aligned
-methodology.)*
+align with the parallel Rajasthan implementation of this framework, and
+the annual weather-noise component was further upgraded to draw from a
+real 10-year (2016-2025) historical weather ensemble instead of an
+assumed range — see `docs_objective2/10_PHASE8_ROBUSTNESS_HANDOFF.md`,
+"Alignment with the Rajasthan implementation" and "Second upgrade: a real
+historical-year weather ensemble." Both plots below reflect the current,
+final methodology.)*
 
 ---
 
@@ -23,12 +26,12 @@ lines.
 
 **What we infer**: the purple bars (delivery temperature) sit at 100% for
 every regime — that was never at risk anywhere. The blue bars (demand)
-now show real variation, because the threshold is fixed rather than
-self-referential: 85–96% for the four plain-tank regimes, but only
-**70%** for regime 4 — the one PCM regime, and the only one that dips
+show real variation, because the threshold is fixed rather than
+self-referential: 89.2–95.0% for the four plain-tank regimes, but only
+**69.2%** for regime 4 — the one PCM regime, and the only one that dips
 below the 75% demand line. The green bars (temperature-safety) tell a
-starker story: 67–87% for the plain-tank regimes, down to **44%** for
-regime 4 — every single regime below the 95% line, and regime 4 the
+starker story: 71.7–92.5% for the plain-tank regimes, down to **40.8%**
+for regime 4 — every single regime below the 95% line, and regime 4 the
 furthest below both of its thresholds simultaneously. Regime 4's bars
 being the shortest on *both* the blue and green metrics, at the same
 time, is the single most visually obvious feature of the chart.
@@ -42,7 +45,11 @@ just 'the PCM regime with a safety problem' — it's the worst-performing
 regime in the state on reliability of any kind, PCM or not. That's a
 sharper, more defensible claim than the temperature-only story alone,
 and you can see both bars failing together in the same regime, not just
-read it off two separate numbers."*
+read it off two separate numbers. This chart also survived a second
+methodology change intact: replacing the assumed weather-noise range with
+Objective 1's real 10-year observed weather archive moved every bar by
+only a few points and flipped no conclusion — the finding isn't an
+artifact of one particular noise assumption."*
 
 ---
 

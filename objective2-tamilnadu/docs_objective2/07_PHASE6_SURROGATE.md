@@ -94,3 +94,7 @@ No neural-network/Gaussian-process comparison, no full 4-way ablation
 — both explicitly deferred per the reduced spec. XGBoost was not tried;
 Extra Trees already reaches R²>0.98 on every target, so there was no
 signal that a second tree-based family was needed for this dataset size.
+GP uncertainty quantification remains open (a genuine methodological
+alternative, not attempted here); multi-fidelity modeling — a related but
+distinct gap flagged in the same review — is now addressed separately in
+Phase 6b, see `11_MULTIFIDELITY_SURROGATE.md`.

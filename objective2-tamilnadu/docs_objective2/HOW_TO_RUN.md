@@ -137,6 +137,35 @@ errors); plain tank selected in 4/5 regimes, n-Octacosane in regime 4 —
 see `docs_objective2/08_PHASE7_OPTIMIZATION.md` for the full explanation
 of why, and `09_NEXT_STEPS.md` for the decision this implies before Phase 8.
 
+## 7b. Phase 6b — multi-fidelity surrogate augmentation (optional, extra evidence)
+
+```
+python pipeline.py --state tamilnadu --stage multifidelity
+```
+
+Requires Phase 5's `design_cases.parquet` (does not require Phase 6/7 to
+have run). Re-runs the same 215 DOE case specs at a cheap LOW-fidelity
+simulator setting (fixed timestep, no adaptive sub-stepping —
+`src/simulation/tank_model.py`'s `fidelity="low"`), measures the speedup
+vs. the already-recorded high-fidelity runtime, then runs a
+sample-efficiency experiment: the same ExtraTrees architecture Phase 6
+uses, trained at shrinking high-fidelity data fractions (100/75/50/25%),
+with and without the free low-fidelity prediction as an extra feature,
+always evaluated on Phase 6's fixed hold-out set. Runtime: a few minutes
+(215 cheap low-fidelity re-runs + several small ExtraTrees fits). Writes:
+- `results/tamilnadu/design_cases_lowfid.parquet` (+ `.csv`)
+- `results/tamilnadu/multifidelity_speedup_report.json`
+- `results/tamilnadu/multifidelity_sample_efficiency.csv`
+
+Expected result: 1.53× speedup (fair, order-randomized timing);
+low-fidelity-only R²>0.98 vs. the real simulator on 3 of 4 targets;
+augmenting a shrunken high-fidelity training set with the free
+low-fidelity feature matches or beats the high-fidelity-only baseline at
+every tested training fraction for `solar_fraction`/`unmet_energy_kWh`/
+`pump_energy_kWh`. See `docs_objective2/11_MULTIFIDELITY_SURROGATE.md` for
+the full methodology and results (closes the audit gap "multi-fidelity
+surrogate not explored").
+
 ## 8. Phase 8 — robustness analysis
 
 ```
@@ -155,13 +184,20 @@ in this project) — safe to run unattended. Writes:
 - `results/tamilnadu/robustness_results.csv` (600 rows, every draw)
 - `results/tamilnadu/robustness_summary.csv` (5 rows, per-regime probabilities/intervals)
 
+The annual GHI-scale/T_amb-offset component of the weather noise is drawn
+from a real 10-year (2016-2025) historical weather ensemble
+(`src/robustness/weather_ensemble.py`, built from Objective 1's
+`data/objective1/daily_aggregates_tamilnadu.csv` archive) rather than an
+assumed uniform range — see `docs_objective2/10_PHASE8_ROBUSTNESS_HANDOFF.md`,
+"Second upgrade: a real historical-year weather ensemble."
+
 Expected result: P(meets delivery temperature) = 100% everywhere;
-P(meets annual demand) ranges 85–96% for the 4 plain-tank regimes and
-only **70%** for the one PCM regime (regime 4); P(temperature-safe)
-ranges 67–87% for the plain-tank regimes and just **44%** for regime 4 —
-the only regime failing *both* the 75% demand bar and the 95% safety bar
-at once, and every regime fails the safety bar regardless of PCM (see
-`docs_objective2/10_PHASE8_ROBUSTNESS_HANDOFF.md`).
+P(meets annual demand) ranges 89.2–95.0% for the 4 plain-tank regimes and
+only **69.2%** for the one PCM regime (regime 4); P(temperature-safe)
+ranges 71.7–92.5% for the plain-tank regimes and just **40.8%** for
+regime 4 — the only regime failing *both* the 75% demand bar and the 95%
+safety bar at once, and every regime fails the safety bar regardless of
+PCM (see `docs_objective2/10_PHASE8_ROBUSTNESS_HANDOFF.md`).
 
 ## 9. Phase 8 — recommendation cards + Objective 3 hand-off contract
 

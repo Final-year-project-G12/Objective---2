@@ -31,14 +31,15 @@ from src.plots.make_plots import main as make_all_plots
 from src.robustness.monte_carlo import run_all as run_robustness
 from src.handoff.build_recommendation_cards import run as build_recommendation_cards
 from src.handoff.build_obj3_contract import run as build_obj3_contract
+from src.surrogate.multifidelity import run as run_multifidelity
 
 
 def main():
     ap = argparse.ArgumentParser(description="Objective 2 pipeline (Phases 1-8)")
     ap.add_argument("--state", required=True, help="e.g. tamilnadu")
     ap.add_argument("--stage", required=True,
-                     choices=["geometry", "simulate", "verify", "doe", "surrogate", "optimize", "plots",
-                              "robustness", "handoff"])
+                     choices=["geometry", "simulate", "verify", "doe", "surrogate", "multifidelity",
+                              "optimize", "plots", "robustness", "handoff"])
     ap.add_argument("--cluster", type=int, default=0, help="climate regime cluster_id (simulate stage)")
     ap.add_argument("--pcm", default="n-Octacosane (C28)", help="PCM name from mcdm_topk_by_cluster.csv")
     ap.add_argument("--diameter", type=float, default=0.08, help="capsule diameter, m")
@@ -77,6 +78,10 @@ def main():
         train_surrogate(args.state)
         print("\nEvaluating hold-out error by regime/PCM ...")
         evaluate_by_group(args.state)
+
+    elif args.stage == "multifidelity":
+        print(f"Phase 6b — multi-fidelity surrogate augmentation for state={args.state}")
+        run_multifidelity(args.state)
 
     elif args.stage == "optimize":
         print(f"Phase 7 — optimization pass + simulator confirmation for state={args.state}")
