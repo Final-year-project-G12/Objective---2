@@ -1,0 +1,44 @@
+========================================================================
+PHASE 0 -- RAJASTHAN CLIMATE-SIGNATURE SANITY CHECK (Bug-Fix 8)
+========================================================================
+state yaml : configs\states\rajasthan.yaml
+weather dir: data\weather
+
+Rajasthan Cluster 0 medoid (RJP_0132): mean GHI 5.12 kWh/m2/d, mean Ta 25.4 C, regime size 114 points
+    GHI in (3.0, 7.0) kWh/m2/d .......... OK
+    Apr-Jun mean daily-max Ta 39.8 C (abs max 47.6 C) in (33.0, 47.0) ... OK
+    medoid id matches Objective 1 ......... OK (O1: RJP_0132)
+    regime size matches cluster_profiles .. OK (O1: 114)
+    duplicate (point_id,date) rows ........ 0    calendar gaps: 0   [OK]
+    date span ............................ 2016-01-01 .. 2025-12-31  (3653 days)
+    Tm_target / L_required (O1 ceiling) ... 57.0 C / 312.8 kJ/kg
+    hot-dry corroboration (O1 profile) ... CDD24=12348  DTR=13.5 C  Ta_p95=35.6 C  cloudy_frac=0.016  kt_daily=0.87
+    --> regime 0: PASS
+
+Rajasthan Cluster 1 medoid (RJP_0202): mean GHI 5.40 kWh/m2/d, mean Ta 26.2 C, regime size 103 points
+    GHI in (3.0, 7.0) kWh/m2/d .......... OK
+    Apr-Jun mean daily-max Ta 40.3 C (abs max 48.3 C) in (33.0, 47.0) ... OK
+    medoid id matches Objective 1 ......... OK (O1: RJP_0202)
+    regime size matches cluster_profiles .. OK (O1: 103)
+    duplicate (point_id,date) rows ........ 0    calendar gaps: 0   [OK]
+    date span ............................ 2016-01-01 .. 2025-12-31  (3653 days)
+    Tm_target / L_required (O1 ceiling) ... 57.0 C / 304.1 kJ/kg
+    hot-dry corroboration (O1 profile) ... CDD24=15837  DTR=13.8 C  Ta_p95=36.4 C  cloudy_frac=0.005  kt_daily=0.90
+    --> regime 1: PASS
+
+Rajasthan Cluster 2 medoid (RJP_0055): mean GHI 5.06 kWh/m2/d, mean Ta 25.8 C, regime size 103 points
+    GHI in (3.0, 7.0) kWh/m2/d .......... OK
+    Apr-Jun mean daily-max Ta 41.1 C (abs max 49.0 C) in (33.0, 47.0) ... OK
+    medoid id matches Objective 1 ......... OK (O1: RJP_0055)
+    regime size matches cluster_profiles .. OK (O1: 103)
+    duplicate (point_id,date) rows ........ 0    calendar gaps: 0   [OK]
+    date span ............................ 2016-01-01 .. 2025-12-31  (3653 days)
+    Tm_target / L_required (O1 ceiling) ... 57.0 C / 319.9 kJ/kg
+    hot-dry corroboration (O1 profile) ... CDD24=14789  DTR=13.7 C  Ta_p95=35.9 C  cloudy_frac=0.009  kt_daily=0.87
+    --> regime 2: PASS
+
+========================================================================
+OVERALL: PASSED -- safe to proceed to Phase 1/2
+Signature is hot-dry / high-clearness (not Tamil Nadu coastal-humid, not Assam humid-cloudy).
+3/3 regimes passed.
+========================================================================

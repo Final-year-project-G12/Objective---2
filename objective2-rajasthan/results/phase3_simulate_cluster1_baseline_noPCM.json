@@ -1,0 +1,27 @@
+﻿Phase 3 — running 1 full-year case: state=rajasthan cluster=1 pcm=None design={'capsule_diameter_m': 0.08, 'n_capsule': 19, 'flow_rate_kg_s': 0.03, 'capsule_shape': 'sphere', 'capsule_arrangement': 'staggered'}
+{
+  "state": "rajasthan",
+  "cluster_id": 1,
+  "pcm_name": null,
+  "mains_temp_C": 25.783,
+  "useful_energy_kWh": 1673.3612712344016,
+  "solar_fraction": 0.5822767178623138,
+  "delivery_temp_hours": 3447,
+  "unmet_energy_kWh": 1022.0805274420705,
+  "pump_energy_kWh": 1.6603159462045095e-08,
+  "collector_energy_kWh": 1753.877108064435,
+  "loss_energy_kWh": 80.77542951091871,
+  "charge_energy_kWh": 0.0,
+  "discharge_energy_kWh": 0.0,
+  "residual_pct_of_collector": 0.0004491323818194542,
+  "pcm_mass_kg": 0.0,
+  "max_water_temp_C": 72.37973414445759,
+  "max_pcm_temp_C": 72.37973414445759,
+  "n_safety_violations": 0,
+  "final_f_melt": 0.0,
+  "complete_melt_cycles": 0,
+  "n_hours_simulated": 8760,
+  "mean_f_melt": 0.0,
+  "min_f_melt": 0.0,
+  "max_f_melt": 0.0
+}

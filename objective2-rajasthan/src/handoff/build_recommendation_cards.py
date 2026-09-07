@@ -1,6 +1,6 @@
 """
-src/handoff/recommendation_card.py
-=====================================
+src/handoff/build_recommendation_cards.py
+=============================================
 Phase 8 / D2.8 — one recommendation card per climate regime
 (framework doc §12). Reads only frozen Objective 1 tables + the Phase 7
 deployable selection + the Phase 8 robustness summary; computes nothing
@@ -10,6 +10,9 @@ Each card carries: regime/climate summary, the Objective 1 PCM shortlist
 with its MCDM rank, the selected geometry + flow, simulator-confirmed
 performance, the Phase 8 robustness probabilities, the surrogate-vs-
 simulator delta, the decision rationale, and an explicit caveats block.
+
+Naming (`build_recommendation_cards.py`, entry point `run(state)`)
+matches `objective2-tamilnadu/src/handoff/build_recommendation_cards.py`.
 """
 
 import sys
@@ -127,20 +130,24 @@ def write_cards(state: str):
         lines.append(f"\n### Robustness — {int(rob['n_draws'])} Monte Carlo draws "
                      f"(weather+noise, demand volume ±20 %, demand timing ±30 min, mains ±2 °C)")
         lines.append(f"\n| P(meet delivery temp) | P(meet annual demand) | P(temp-safe) | "
-                     f"Useful energy P5–P95 | Max water T P95 |")
-        lines.append(f"|---|---|---|---|---|")
-        lines.append(f"| {_fmt(rob['P_meet_delivery_temp'],2)} | {_fmt(rob['P_meet_annual_demand'],2)} | "
-                     f"{_fmt(rob['P_temp_safe'],2)} | {_fmt(rob['useful_energy_p5_kWh'],0)}–"
-                     f"{_fmt(rob['useful_energy_p95_kWh'],0)} kWh | {_fmt(rob['max_water_temp_C_p95'],1)} °C |")
-        robust_verdict = ("**ROBUST**" if bool(rob["robust"])
+                     f"P(exceeds max safe temp) | Useful energy P5–P95 | Max water T P95 |")
+        lines.append(f"|---|---|---|---|---|---|")
+        p_temp_safe = 1.0 - float(rob['p_temperature_violation'])
+        lines.append(f"| {_fmt(rob['p_meets_delivery_temp'],2)} | {_fmt(rob['p_meets_annual_demand'],2)} | "
+                     f"{_fmt(p_temp_safe,2)} | {_fmt(rob['p_exceeds_max_safe_temp'],2)} | "
+                     f"{_fmt(rob['useful_energy_p05_kWh'],0)}–{_fmt(rob['useful_energy_p95_kWh'],0)} kWh | "
+                     f"{_fmt(rob['max_water_temp_p95_C'],1)} °C |")
+        robust_verdict = ("**ROBUST**" if bool(rob["robust_per_framework_rule"])
                           else "**NOT ROBUST — reported as a caveat, not hidden**")
         lines.append(f"\nThreshold: robust if P(meet annual demand) ≥ ~0.75 **and** P(temp-safe) ≥ ~0.95. "
                      f"Result: {robust_verdict}.")
-        if not bool(rob["robust"]):
-            lines.append(f"\nThe binding failure is **P(temp-safe) = {_fmt(rob['P_temp_safe'],2)}**: under "
-                         f"realistic weather/demand/mains variability the tank exceeds the {int(max_water_C)} °C "
-                         f"water limit in a large fraction of draws. The deployable design's nominal margin "
-                         f"is only {_fmt(dep['constraint_margin_C'],1)} °C, which a +GHI / +mains draw erases. "
+        if not bool(rob["robust_per_framework_rule"]):
+            lines.append(f"\nThe binding failure is **P(temp-safe) = {_fmt(p_temp_safe,2)}** (any flagged "
+                         f"safety sub-hour) / **P(exceeds max safe temp) = {_fmt(rob['p_exceeds_max_safe_temp'],2)}** "
+                         f"(the reported annual max clearing the hard limit): under realistic weather/demand/"
+                         f"mains variability the tank exceeds the {int(max_water_C)} °C water limit in a large "
+                         f"fraction of draws. The deployable design's nominal margin is only "
+                         f"{_fmt(dep['constraint_margin_C'],1)} °C, which a +GHI / +mains draw erases. "
                          f"This is the same hot-dry-climate + frozen-collector-sizing issue flagged since "
                          f"Phase 3; it makes an **active high-temperature bypass (Objective 3) a requirement, "
                          f"not an option** for Rajasthan.")
@@ -175,6 +182,11 @@ def write_cards(state: str):
     return CARDS_PATH
 
 
+def run(state: str):
+    """Entry point name matches objective2-tamilnadu/src/handoff/build_recommendation_cards.py."""
+    return write_cards(state)
+
+
 if __name__ == "__main__":
     state = sys.argv[1] if len(sys.argv) > 1 else "rajasthan"
-    write_cards(state)
+    run(state)
