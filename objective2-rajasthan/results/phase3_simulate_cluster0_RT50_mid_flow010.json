@@ -1,0 +1,27 @@
+﻿Phase 3 — running 1 full-year case: state=rajasthan cluster=0 pcm=RT50 design={'capsule_diameter_m': 0.04, 'n_capsule': 12, 'flow_rate_kg_s': 0.01, 'capsule_shape': 'sphere', 'capsule_arrangement': 'staggered'}
+{
+  "state": "rajasthan",
+  "cluster_id": 0,
+  "pcm_name": "RT50",
+  "mains_temp_C": 25.092,
+  "useful_energy_kWh": 1586.8644091797826,
+  "solar_fraction": 0.5499325965789384,
+  "delivery_temp_hours": 2912,
+  "unmet_energy_kWh": 1140.8171316365642,
+  "pump_energy_kWh": 1.7235330120059068e-11,
+  "collector_energy_kWh": 1664.2709888382835,
+  "loss_energy_kWh": 77.700825454498,
+  "charge_energy_kWh": 5.2104733664076,
+  "discharge_energy_kWh": 5.21380218370808,
+  "residual_pct_of_collector": 0.00036319799040181633,
+  "pcm_mass_kg": 0.3538689965003543,
+  "max_water_temp_C": 68.67711406605247,
+  "max_pcm_temp_C": 68.63755564625183,
+  "n_safety_violations": 2347,
+  "final_f_melt": 0.0,
+  "complete_melt_cycles": 179,
+  "n_hours_simulated": 8760,
+  "mean_f_melt": 0.2246210021105876,
+  "min_f_melt": 0.0,
+  "max_f_melt": 1.0
+}

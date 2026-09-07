@@ -81,10 +81,6 @@ runs/
 wandb/
 mlruns/
 
-# Experiment outputs
-experiments/output/
-outputs/
-results/
 
 # ============================================================
 # Large / Generated Data

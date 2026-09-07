@@ -1,0 +1,11 @@
+﻿Phase 2 — geometry & constraint boundary self-test (state-agnostic; state=rajasthan unused here)
+  min_diameter_min_count       valid=False reason=bounds_violation     deterministic=True
+  max_diameter_max_count       valid=True  reason=None                 deterministic=True
+  min_diameter_max_count       valid=False reason=bounds_violation     deterministic=True
+  max_diameter_min_count       valid=True  reason=None                 deterministic=True
+  mid_case                     valid=True  reason=None                 deterministic=True
+  flow_below_min               valid=False reason=flow_out_of_range    deterministic=True
+  flow_above_max               valid=False reason=flow_out_of_range    deterministic=True
+  oversized_diameter_for_tank  valid=False reason=bounds_violation     deterministic=True
+
+  All boundary cases deterministic: True

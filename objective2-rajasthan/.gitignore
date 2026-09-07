@@ -2,8 +2,6 @@
 # (this repo is already state-specific, so results/ is flat — no results/<state>/ nesting)
 data.zip
 results/phase6_surrogate_models.pkl
-results/plots/interactive/
-
 # Large regenerated Objective 1 input files
 data/objective1/suntimes.csv
 data/objective1/daily_aggregates_rajasthan.csv
