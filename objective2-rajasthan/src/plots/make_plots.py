@@ -1,7 +1,7 @@
 """
 src/plots/make_plots.py
 ==========================
-Generates the justification plots for Phases 2-7, one function per figure.
+Generates the justification plots for Phases 2-8, one function per figure.
 Every figure is built once in Plotly and saved TWICE:
   results/plots/interactive/<name>.html   -- self-contained (all JS inlined),
                                              fully interactive (zoom, pan,
@@ -49,6 +49,7 @@ SURROGATE_MODELS_PATH = RESULTS_DIR / "phase6_surrogate_models.pkl"
 DESIGN_CASES_PATH = RESULTS_DIR / "phase5_design_cases.parquet"
 OPTIMIZED_PATH = RESULTS_DIR / "phase7_optimized_designs.csv"
 DEPLOYABLE_PATH = RESULTS_DIR / "phase7_deployable_design_per_regime.csv"
+ROBUSTNESS_PATH = RESULTS_DIR / "phase8_robustness.csv"
 
 # Rajasthan Objective 1 rank-1 PCM for cluster 0 (matches src/verify/gates.py).
 PCM_C0 = "RT50"
@@ -367,6 +368,62 @@ def phase7_safety_compliance(state, out_dir, optimized):
 
 
 # ═══════════════════════════════════════════════════════════════════════
+# PHASE 8 — robustness & Objective 3 hand-off
+# Ported from objective2-tamilnadu/src/plots/make_plots.py. Same two
+# figures; adapted to Rajasthan's 3-regime data and phase8_robustness.csv
+# column names (p_meets_delivery_temp / p_meets_annual_demand /
+# p_temperature_violation, matching Tamil Nadu's aligned schema —
+# see docs/08_PHASE8_ROBUSTNESS_HANDOFF.md).
+# ═══════════════════════════════════════════════════════════════════════
+
+def phase8_robustness_probabilities(state, out_dir, robustness_summary):
+    labels = [f"Regime {r} ({p})" for r, p in zip(robustness_summary["regime_id"], robustness_summary["pcm_id"])]
+    fig = go.Figure()
+    fig.add_trace(go.Bar(x=labels, y=robustness_summary["p_meets_delivery_temp"] * 100,
+                          name="P(meets delivery temp)", marker_color="#9467bd"))
+    fig.add_trace(go.Bar(x=labels, y=robustness_summary["p_meets_annual_demand"] * 100,
+                          name="P(meets annual demand)", marker_color="#1f77b4"))
+    fig.add_trace(go.Bar(x=labels, y=(1 - robustness_summary["p_temperature_violation"]) * 100,
+                          name="P(temperature-safe)", marker_color="#2ca02c"))
+    fig.add_hline(y=75, line_dash="dash", line_color="#1f77b4", annotation_text="75% demand threshold")
+    fig.add_hline(y=95, line_dash="dash", line_color="#2ca02c", annotation_text="95% temp-safety threshold")
+    fig.update_layout(barmode="group",
+                       title=f"Phase 8 — robustness probabilities (120 Monte Carlo draws/design) — {state}",
+                       yaxis_title="probability (%)")
+    _save(fig, "phase8_robustness_probabilities", out_dir, width=1150)
+
+
+def phase8_useful_energy_intervals(state, out_dir, robustness_summary, deployable):
+    fig = go.Figure()
+    for _, row in robustness_summary.iterrows():
+        cid = row["regime_id"]
+        label = f"Regime {cid} ({row['pcm_id']})"
+        fig.add_trace(go.Scatter(
+            x=[row["useful_energy_p05_kWh"], row["useful_energy_p95_kWh"]], y=[label, label],
+            mode="lines", line=dict(color="#1f77b4", width=6), showlegend=False,
+            hovertemplate="P5-P95: %{x:.0f} kWh<extra></extra>",
+        ))
+        fig.add_trace(go.Scatter(
+            x=[row["useful_energy_p50_kWh"]], y=[label], mode="markers",
+            marker=dict(color="#1f77b4", size=10, symbol="circle"),
+            name="P50 (median)", showlegend=bool(row["regime_id"] == robustness_summary["regime_id"].iloc[0]),
+            hovertemplate="P50: %{x:.0f} kWh<extra></extra>",
+        ))
+        nominal_row = deployable[deployable["regime_id"] == cid]
+        if not nominal_row.empty:
+            fig.add_trace(go.Scatter(
+                x=[float(nominal_row.iloc[0]["sim_useful_energy_kWh"])], y=[label], mode="markers",
+                marker=dict(color="black", size=13, symbol="diamond"),
+                name="nominal (Phase 7)", showlegend=bool(cid == robustness_summary["regime_id"].iloc[0]),
+                hovertemplate="nominal: %{x:.0f} kWh<extra></extra>",
+            ))
+    fig.update_layout(title=f"Phase 8 — useful-energy 5th-50th-95th percentile interval per regime "
+                             f"(120 Monte Carlo draws) — {state}",
+                       xaxis_title="useful_energy_kWh")
+    _save(fig, "phase8_useful_energy_intervals", out_dir)
+
+
+# ═══════════════════════════════════════════════════════════════════════
 
 def main(state: str):
     out_dir = PLOTS_DIR
@@ -402,6 +459,14 @@ def main(state: str):
     phase7_pareto_by_regime(state, out_dir, optimized, deployable)
     phase7_surrogate_vs_simulator(state, out_dir, optimized)
     phase7_safety_compliance(state, out_dir, optimized)
+
+    if ROBUSTNESS_PATH.exists():
+        print("Phase 8 ...")
+        robustness_summary = pd.read_csv(ROBUSTNESS_PATH)
+        phase8_robustness_probabilities(state, out_dir, robustness_summary)
+        phase8_useful_energy_intervals(state, out_dir, robustness_summary, deployable)
+    else:
+        print("Phase 8 ... skipped (phase8_robustness.csv not found — run --stage robustness first)")
 
     print(f"\nAll plots saved under: {out_dir}")
     print(f"  Static PNGs:       {out_dir / 'static'}")
