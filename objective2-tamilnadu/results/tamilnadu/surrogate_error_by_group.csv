@@ -1,0 +1,46 @@
+target,group_type,group,MAE,n
+useful_energy_kWh,regime,0,0.6733894870816736,6
+useful_energy_kWh,regime,1,0.26479593302360627,6
+useful_energy_kWh,regime,2,0.6805394744524923,6
+useful_energy_kWh,regime,3,0.8254081541743972,6
+useful_energy_kWh,regime,4,0.21959610440217148,6
+useful_energy_kWh,pcm,PureTemp 58,0.7895050665658422,6
+useful_energy_kWh,pcm,RT64HC,0.398904881637975,4
+useful_energy_kWh,pcm,n-Hexacosane (C26),0.3385365558524427,10
+useful_energy_kWh,pcm,n-Octacosane (C28),0.6264359434334665,10
+solar_fraction,regime,0,0.00022172638939292147,6
+solar_fraction,regime,1,0.00022266711071794454,6
+solar_fraction,regime,2,0.00034572272270109544,6
+solar_fraction,regime,3,0.00027567539973103833,6
+solar_fraction,regime,4,0.00022706799813219472,6
+solar_fraction,pcm,PureTemp 58,0.00014511316228836094,6
+solar_fraction,pcm,RT64HC,0.000263954732064392,4
+solar_fraction,pcm,n-Hexacosane (C26),0.0003142574913249763,10
+solar_fraction,pcm,n-Octacosane (C28),0.00026880849088136707,10
+unmet_energy_kWh,regime,0,0.5930268326925064,6
+unmet_energy_kWh,regime,1,0.9340464943683552,6
+unmet_energy_kWh,regime,2,1.1909080679400479,6
+unmet_energy_kWh,regime,3,1.0001095324989062,6
+unmet_energy_kWh,regime,4,0.4998718932823749,6
+unmet_energy_kWh,pcm,PureTemp 58,0.35587982703483095,6
+unmet_energy_kWh,pcm,RT64HC,1.127347891924785,4
+unmet_energy_kWh,pcm,n-Hexacosane (C26),0.41488177810408616,10
+unmet_energy_kWh,pcm,n-Octacosane (C28),1.4514288613744157,10
+pump_energy_kWh,regime,0,1.4862664519589852e-09,6
+pump_energy_kWh,regime,1,2.0268126485905413e-09,6
+pump_energy_kWh,regime,2,1.906036213427499e-09,6
+pump_energy_kWh,regime,3,2.851997619305451e-09,6
+pump_energy_kWh,regime,4,1.744706528065838e-09,6
+pump_energy_kWh,pcm,PureTemp 58,2.319423826092217e-09,6
+pump_energy_kWh,pcm,RT64HC,2.247083713462576e-09,4
+pump_energy_kWh,pcm,n-Hexacosane (C26),1.6514987247959506e-09,10
+pump_energy_kWh,pcm,n-Octacosane (C28),2.0675051709726774e-09,10
+pcm_mass_kg,regime,0,0.06894639549111155,6
+pcm_mass_kg,regime,1,0.02009436045476598,6
+pcm_mass_kg,regime,2,0.043780214592255305,6
+pcm_mass_kg,regime,3,0.04036127321321815,6
+pcm_mass_kg,regime,4,0.02730656645089589,6
+pcm_mass_kg,pcm,PureTemp 58,0.026132945844412503,6
+pcm_mass_kg,pcm,RT64HC,0.015770256079781386,4
+pcm_mass_kg,pcm,n-Hexacosane (C26),0.03961640421957631,10
+pcm_mass_kg,pcm,n-Octacosane (C28),0.05868901196321176,10

@@ -1,0 +1,39 @@
+{
+  "n_cases_total": 215,
+  "n_cases_both_valid": 116,
+  "n_cases_in_runtime_benchmark": 146,
+  "high_fidelity_total_runtime_s": 750.672901391983,
+  "low_fidelity_total_runtime_s": 490.2002363204956,
+  "speedup_x": 1.5313597297027597,
+  "runtime_benchmark_note": "hf/lf runtimes above are from a fresh, order-randomized, same-process re-timing of both fidelities (benchmark_fidelity_runtime()), NOT from design_cases.parquet's stale runtime_s column -- an initial version of this comparison mixed a fresh low-fidelity timing against an old high-fidelity timing recorded in a separate process days earlier and produced a nonsensical >1x slowdown for low fidelity; this is the corrected measurement.",
+  "low_fidelity_accuracy_by_target": [
+    {
+      "target": "useful_energy_kWh",
+      "low_fidelity_only_R2": 0.9989571531876004,
+      "low_fidelity_only_MAE": 1.6580177636400792,
+      "low_fidelity_only_mean_bias_pct": -0.03225578122076702,
+      "n_cases": 116
+    },
+    {
+      "target": "solar_fraction",
+      "low_fidelity_only_R2": 0.9823511207541186,
+      "low_fidelity_only_MAE": 0.0008276814931242231,
+      "low_fidelity_only_mean_bias_pct": 0.04164462437329453,
+      "n_cases": 116
+    },
+    {
+      "target": "unmet_energy_kWh",
+      "low_fidelity_only_R2": 0.9969331290282826,
+      "low_fidelity_only_MAE": 2.1159717769600954,
+      "low_fidelity_only_mean_bias_pct": -0.04613375731307701,
+      "n_cases": 116
+    },
+    {
+      "target": "pump_energy_kWh",
+      "low_fidelity_only_R2": 0.6892204337751374,
+      "low_fidelity_only_MAE": 4.129437778875913e-09,
+      "low_fidelity_only_mean_bias_pct": 594.4904706315481,
+      "n_cases": 116
+    }
+  ]
+}
