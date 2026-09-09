@@ -1,0 +1,18 @@
+{
+  "state": "assam",
+  "n_estimators": 300,
+  "random_state": 20260905,
+  "n_jobs": -1,
+  "n_total_cases": 165,
+  "n_train_cases": 138,
+  "n_holdout_cases": 27,
+  "n_valid_train_cases": 93,
+  "n_valid_holdout_cases": 18,
+  "n_features": 29,
+  "primary_targets": [
+    "useful_energy_kWh",
+    "solar_fraction",
+    "unmet_energy_kWh",
+    "pump_energy_kWh"
+  ]
+}

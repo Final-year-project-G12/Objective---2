@@ -1,0 +1,47 @@
+{
+  "0": {
+    "point_id": "ASP_0012",
+    "lat": 26.375,
+    "lon": 92.125,
+    "rows": 8760,
+    "start": "2025-01-01 00:00:00+00:00",
+    "end": "2025-12-31 23:00:00+00:00",
+    "null_count": 0,
+    "annual_GHI_kWh_m2": 887.02,
+    "daily_GHI_mean_kWh_m2": 2.43,
+    "mean_Tamb_C": 25.92,
+    "mean_RH_pct": 77.8,
+    "mean_WS_ms": 1.71,
+    "mean_Tmains_C": 19.92
+  },
+  "1": {
+    "point_id": "ASP_0092",
+    "lat": 26.875,
+    "lon": 94.875,
+    "rows": 8760,
+    "start": "2025-01-01 00:00:00+00:00",
+    "end": "2025-12-31 23:00:00+00:00",
+    "null_count": 0,
+    "annual_GHI_kWh_m2": 919.97,
+    "daily_GHI_mean_kWh_m2": 2.52,
+    "mean_Tamb_C": 24.93,
+    "mean_RH_pct": 81.1,
+    "mean_WS_ms": 1.29,
+    "mean_Tmains_C": 18.93
+  },
+  "2": {
+    "point_id": "ASP_0028",
+    "lat": 27.625,
+    "lon": 94.875,
+    "rows": 8760,
+    "start": "2025-01-01 00:00:00+00:00",
+    "end": "2025-12-31 23:00:00+00:00",
+    "null_count": 0,
+    "annual_GHI_kWh_m2": 831.64,
+    "daily_GHI_mean_kWh_m2": 2.278,
+    "mean_Tamb_C": 22.68,
+    "mean_RH_pct": 81.3,
+    "mean_WS_ms": 1.12,
+    "mean_Tmains_C": 16.68
+  }
+}

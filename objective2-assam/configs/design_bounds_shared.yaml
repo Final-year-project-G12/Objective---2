@@ -1,0 +1,34 @@
+# ============================================================================
+# design_bounds_shared.yaml  —  FROZEN, Phase 0A
+# ============================================================================
+# Identical for all four states. From O2_Unified_PerState_Execution_Framework.md
+# "DESIGN-SPACE BOUNDS — IDENTICAL FOR ALL STATES".
+#
+# 40-hr corner cut (documented, not silently dropped): capsule shape is
+# sphere-only and arrangement is staggered-only. Full spec explores all
+# shape x arrangement combinations — noted as future work.
+#
+# NOTE on the two "thickness" variables: for a sphere, the maximum PCM
+# conduction distance (center to surface) equals the radius, i.e.
+# thickness = capsule_diameter / 2. We therefore sample capsule_diameter_m
+# directly (the independent geometric variable) and DERIVE
+# pcm_thickness_m = capsule_diameter_m / 2, then check it against
+# pcm_thickness_m bounds below. Both bounds are kept so a design that
+# passes the diameter bound but produces a thickness out of range is still
+# caught explicitly (reason code in src/design/constraints.py).
+# ============================================================================
+
+version: "config_v1.0_2026-09-05"
+
+pcm_thickness_m:        {min: 0.02, max: 0.10}     # derived = diameter/2, checked independently
+capsule_diameter_m:     {min: 0.02, max: 0.08}
+capsule_count:           {min: 8, max: 24, step: 1}   # integer
+capsule_shape:           [sphere]                       # 40-hr: sphere only
+capsule_arrangement:     [staggered]                    # 40-hr: staggered only
+pcm_volume_fraction:     {min: 0.10, max: 0.20}      # derived from N_capsule*V_capsule / V_tank
+pcm_volume_fraction_levels_to_include_in_doe: [0.10, 0.15, 0.20]   # Chen audit baseline
+flow_rate_kg_s:          {min: 0.010, max: 0.050}
+
+geometry:
+  spacing_min_m: 0.003          # minimum capsule surface-to-surface clearance
+  passage_min_fraction: 0.05    # minimum free-flow (void) volume fraction of the tank

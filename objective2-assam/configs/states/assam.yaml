@@ -1,0 +1,90 @@
+# ============================================================================
+# states/assam.yaml  —  Phase 0/1 output (Assam, version-locked)
+# ============================================================================
+# References the shared configs and Objective 1 frozen inputs sitting under
+# data/objective1/, data/weather/, data/demand/.
+# Generated from final verified Assam Objective 1 outputs:
+#   - data/objective1/cluster_profiles_assam.csv (K=3 final GMM profiles)
+#   - data/objective1/cluster_assignments_assam.csv (129 grid points)
+#   - data/objective1/manifest_assam.json (O1 provenance: commit e5a5e820)
+#   - data/objective1/swh_design_specification_assam.csv
+#   - data/objective1/physics_validation_assam.csv
+#
+# NOTE ON PCM CANDIDATE UNIVERSE:
+# Objective 1 did not produce a confirmed-feasible K=3 MCDM ranking (strict
+# evidence audit n_confirmed = 0 across all clusters). The historical K=4 MCDM
+# ranking was physically invalidated in Phase 10 (rho = -0.52 to -0.64; RT44HC
+# ranked last in solar fraction). The shortlist below represents the
+# "Objective 2 Physics-Validated Candidate Universe" based on Phase 9/10
+# 10-year simulation performance (savE® OM48 #1 delivery, savE® OM50 #2 delivery).
+# ============================================================================
+
+state: assam
+state_config_version: "state_config_assam_v1.0"
+objective1_manifest: data/objective1/manifest_assam.json
+
+shared_config:
+  system_config: configs/system_config_shared.yaml
+  design_bounds: configs/design_bounds_shared.yaml
+pareto_tolerance_pct: 5.0
+
+demand_profile:
+  file: data/demand/demand_profile_assam.csv
+  daily_total_L: 100.0
+  documented_reason: >
+    Matches Assam Objective 1 SWH design specification (05b_swh_design_specification.py)
+    and 10-year physics validation (10_physics_validation.py) at 100 L/day
+    (50 L morning at 07:00 IST, 50 L evening at 19:00 IST) so Objective 1 thermal sizing
+    and Objective 2 simulated performance evaluate the identical household specification.
+    See data/demand/ASSAM_DEMAND_VALIDATION.md.
+
+mains_temperature_C:
+  range_low: 15.0
+  range_high: 28.0
+  source: "O2_Updated_MultiState_Framework.md Table 205 (Assam: 15-28 C) and Assam Objective 1 swh_design_specification.csv"
+
+climate_signature_sanity_check:
+  annual_GHI_daily_kWh_expected_band: [2.0, 4.5]
+  humidity_signature_expected: "humid-subtropical: prolonged monsoonal cloud attenuation, high atmospheric extinction, RH > 70%"
+  elevation_note: "Assam valley-to-hill elevation proxy carried through unchanged from Objective 1."
+  status: PASSED
+  evidence: >
+    cluster_profiles_assam.csv: GHI_daily_kWh_est in [3.68, 4.08] kWh/m2/day;
+    2025 exported weather GHI daily mean in [2.28, 2.52] kWh/m2/day across medoids
+    ASP_0012, ASP_0092, ASP_0028; Ta_mean in [22.6, 25.9] C; RH_mean in [75.8, 79.0]%.
+    Zero timestamp gaps in 2025 hourly series (8760 hours each).
+
+# One entry per Level-A GMM regime discovered by Objective 1 (K_FINAL=3 for Assam).
+# Medoids derived programmatically via 5 standardized GMM features in Phase 9.
+regimes:
+  - cluster_id: 0
+    label: "Lower Brahmaputra Valley, moist valley regime, medoid ASP_0012 (33 pts)"
+    n_points: 33
+    population_covered: 4757891
+    Tm_target_C: 44.0
+    T_mains_est_C: 19.89
+    L_required_kJ_per_kg: 252.09
+    weather_hourly: data/weather/weather_regime_assam_cluster0_hourly.csv
+    pcm_shortlist: ["savE® OM48", "savE® OM50", "savE® OM46"]
+
+  - cluster_id: 1
+    label: "Upper Assam Tea Belt, warm valley regime, medoid ASP_0092 (61 pts)"
+    n_points: 61
+    population_covered: 4271199
+    Tm_target_C: 44.0
+    T_mains_est_C: 19.10
+    L_required_kJ_per_kg: 258.69
+    weather_hourly: data/weather/weather_regime_assam_cluster1_hourly.csv
+    pcm_shortlist: ["savE® OM48", "savE® OM50", "savE® OM46"]
+
+  - cluster_id: 2
+    label: "Barak Valley & Southern Hills, elevated cooler hill regime, medoid ASP_0028 (35 pts)"
+    n_points: 35
+    population_covered: 2466324
+    Tm_target_C: 44.0
+    T_mains_est_C: 16.59
+    L_required_kJ_per_kg: 279.70
+    weather_hourly: data/weather/weather_regime_assam_cluster2_hourly.csv
+    pcm_shortlist: ["savE® OM48", "savE® OM50", "savE® OM46"]
+
+pcm_database_file: data/objective1/pcm_database_assam.csv

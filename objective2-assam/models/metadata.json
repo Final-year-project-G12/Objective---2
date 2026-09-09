@@ -1,0 +1,14 @@
+{
+  "creation_date": "2026-09-10",
+  "state": "assam",
+  "provenance": {
+    "source_parquet": "results/phase5_design_cases.parquet",
+    "simulator_version": "sim_v1_assam",
+    "feature_schema": "29 canonical non-leaking features"
+  },
+  "governing_constraints": {
+    "pcm_thickness_definition": "geom_pcm_thickness_m = capsule_diameter_m / 2",
+    "pcm_volume_fraction_definition": "N * V_capsule / V_tank (derived)"
+  },
+  "verdict": "PASS"
+}

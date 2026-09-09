@@ -1,0 +1,14 @@
+# Archives and generated artifacts too large or unnecessary for source control
+# (this repo is already state-specific, so results/ is flat — no results/<state>/ nesting)
+data.zip
+results/phase6_surrogate_models.pkl
+# Large regenerated Objective 1 input files
+data/objective1/suntimes.csv
+data/objective1/daily_aggregates_rajasthan.csv
+
+# Python cache and local environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env

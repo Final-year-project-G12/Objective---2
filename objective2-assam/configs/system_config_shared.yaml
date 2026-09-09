@@ -1,0 +1,87 @@
+# ============================================================================
+# system_config_shared.yaml  —  FROZEN, Phase 0A
+# ============================================================================
+# Identical for Tamil Nadu, Rajasthan, Assam, Uttarakhand. Do NOT edit per
+# state — only configs/states/<state>.yaml varies (weather, regimes, PCM
+# shortlist, mains temperature, demand profile). See
+# O2_Unified_PerState_Execution_Framework.md, "CRITICAL DESIGN DECISIONS —
+# FROZEN FOR ALL STATES".
+#
+# Every value below is either a fixed engineering assumption (cited) or a
+# solver setting. Changing this file after Phase 4 verification means every
+# state must re-run from DOE onward (framework doc, Phase 0 gate).
+# ============================================================================
+
+version: "config_v1.0_2026-09-05"
+
+collector:
+  type: flat_plate
+  area_m2: 1.5                     # domestic SWH baseline [Singh et al. 2025, §3]
+  fr_tau_alpha: 0.75                # F_R*(τα), combined optical/removal efficiency [typical FPC]
+  fr_ul_W_m2K: 4.5                  # F_R*U_L, typical flat-plate loss coefficient (3.5-6 W/m2K range)
+  min_irradiance_cutoff_Wm2: 10.0   # below this, pump assumed off -> zero collector coupling (Gate 2)
+
+tank:
+  volume_L: 50.0                   # domestic standard [Chen et al. 2025, Table 1]
+  height_to_diameter_ratio: 2.0     # standard vertical domestic tank proportion (assumption)
+  insulation_m: 0.05                # 5 cm foam
+  U_tank_W_m2K: 0.8                 # tank-wall U-value [framework doc §3.1]
+  # NON-NEGOTIABLE: ambient tank loss Q_loss = U_tank*A_tank*(T_w-T_amb) must stay
+  # active in every case. Omitting this was the Objective 1 TN solar-fraction
+  # blow-up failure mode (FYP_Tamil_Nadu_Phase_Audits, Phase 7/8 audit).
+
+pcm_integration:
+  mode: direct_encapsulation         # not indirect HX — simplifies scope
+  capsule_wall_material: aluminium
+  capsule_wall_thickness_m: 0.0008   # 0.8 mm Al shell
+  capsule_wall_conductivity_W_mK: 205.0   # aluminium
+  liquid_convection_enhancement: 2.0      # effective-conductivity multiplier once f_melt >= 0.5
+                                            # (documented simplification for unresolved natural convection)
+  melting_half_width_K: 1.0          # PCM database only reports a single Tm_C, not (Ts,Tl);
+                                       # we treat melting as a narrow band Tm +/- this value.
+
+pump:
+  flow_min_kg_s: 0.010
+  flow_max_kg_s: 0.050
+  efficiency: 0.60
+
+safety:
+  max_water_temp_C: 75.0             # scald prevention
+  max_pcm_temp_C: 65.0                # material-stability limit (Rubitherm datasheets)
+  max_pressure_bar: 3.5
+
+delivery:
+  target_temp_C: 45.0                # usable hot water
+
+water:
+  cp_J_kgK: 4186.0
+  density_kg_m3: 1000.0
+  conductivity_W_mK: 0.63            # ~ value near 40-50 C
+  # crude temperature-independent Prandtl number used by the packed-bed
+  # correlation in heat_transfer.py (documented simplification)
+  prandtl: 4.3
+
+solver:
+  method: backward_euler_lagged_pcm  # linear-implicit water node, PCM temperature
+                                       # lagged one sub-step (see src/simulation/tank_model.py docstring)
+  timestep_s: 300                     # 5 min nominal
+  substeps_in_melt_band: 6            # extra sub-stepping when T_pcm is within the melt band
+  melt_band_margin_K: 2.0             # how far outside [Ts,Tl] still counts as "fast-changing"
+  abs_tol: 1.0e-6
+  rel_tol: 1.0e-9
+  initial_water_temp_C: 30.0          # cold-start default (overridable per Gate-2 test)
+  initial_pcm_state: solid            # "solid" | "liquid" | "mid" -> sets initial melt fraction
+
+selection:
+  pareto_tolerance_pct: 5.0           # pre-declared, framework doc Bug-Fix 7 — do not override later
+
+verification:
+  gate1_residual_pass_pct: 0.1        # mean residual <0.1% -> proceed
+  gate1_residual_warn_pct: 0.5        # 0.1-0.5% -> document, proceed only if other gates pass
+                                        # >0.5% -> STOP (framework doc Phase 4 go/no-go)
+  gate4_benchmark_solar_fraction_low_pct: 54.0   # Singh et al. 2025 cited SWH-PCM benchmark band
+  gate4_benchmark_solar_fraction_high_pct: 84.0
+  gate4_benchmark_note: >
+    Chen et al. 2025 also report 94.2% storage efficiency / 31.7 h retention on a
+    comparable configuration; both benchmarks are calibration references, not
+    universal constants (framework doc Bug-Fix 3 / Gate 4).

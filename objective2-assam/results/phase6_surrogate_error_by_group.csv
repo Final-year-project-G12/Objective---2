@@ -1,0 +1,37 @@
+target,group_type,group,MAE,n
+useful_energy_kWh,regime,0,0.798261518742701,6
+useful_energy_kWh,regime,1,0.6767005638333027,6
+useful_energy_kWh,regime,2,0.617275926801104,6
+useful_energy_kWh,pcm,savE® OM46,0.5882988726429895,6
+useful_energy_kWh,pcm,savE® OM48,1.1339501111782322,6
+useful_energy_kWh,pcm,savE® OM50,0.36998902555588603,6
+solar_fraction,regime,0,0.00032712591848097866,6
+solar_fraction,regime,1,0.0002962359750293871,6
+solar_fraction,regime,2,0.00042052114714900374,6
+solar_fraction,pcm,savE® OM46,0.0002811477452407396,6
+solar_fraction,pcm,savE® OM48,0.0005587667401927657,6
+solar_fraction,pcm,savE® OM50,0.0002039685552258641,6
+unmet_energy_kWh,regime,0,0.3580996004300327,6
+unmet_energy_kWh,regime,1,0.3609746693526669,6
+unmet_energy_kWh,regime,2,0.4911764538223906,6
+unmet_energy_kWh,pcm,savE® OM46,0.34171830393182745,6
+unmet_energy_kWh,pcm,savE® OM48,0.6410838734830122,6
+unmet_energy_kWh,pcm,savE® OM50,0.22744854619025054,6
+pump_energy_kWh,regime,0,1.7561121687191904e-09,6
+pump_energy_kWh,regime,1,2.724782313282477e-09,6
+pump_energy_kWh,regime,2,2.33761531993544e-09,6
+pump_energy_kWh,pcm,savE® OM46,2.524727564977074e-09,6
+pump_energy_kWh,pcm,savE® OM48,1.745532365434902e-09,6
+pump_energy_kWh,pcm,savE® OM50,2.548249871525132e-09,6
+pcm_mass_kg,regime,0,0.057324666753443866,6
+pcm_mass_kg,regime,1,0.03894725058109124,6
+pcm_mass_kg,regime,2,0.023278913387916284,6
+pcm_mass_kg,pcm,savE® OM46,0.043880954452571674,6
+pcm_mass_kg,pcm,savE® OM48,0.03709837598426894,6
+pcm_mass_kg,pcm,savE® OM50,0.03857150028561077,6
+mean_f_melt,regime,0,0.0009499576194871273,6
+mean_f_melt,regime,1,0.0009666117743248546,6
+mean_f_melt,regime,2,0.0012641478053855508,6
+mean_f_melt,pcm,savE® OM46,0.000901908330013565,6
+mean_f_melt,pcm,savE® OM48,0.001057511518097724,6
+mean_f_melt,pcm,savE® OM50,0.0012212973510862437,6

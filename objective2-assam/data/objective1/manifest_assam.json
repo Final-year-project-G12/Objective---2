@@ -1,0 +1,62 @@
+{
+  "objective1_git_commit": "e5a5e820597e89be76acd2fb0037c77eaaac3721",
+  "upstream_repository": "m:/Final_year_pro/PCM-Selection-ML-model/era5-assam",
+  "clustering": {
+    "K": 3,
+    "cluster_0": {
+      "medoid": "ASP_0012",
+      "lat": 26.375,
+      "lon": 92.125,
+      "n_points": 33
+    },
+    "cluster_1": {
+      "medoid": "ASP_0092",
+      "lat": 26.875,
+      "lon": 94.875,
+      "n_points": 61
+    },
+    "cluster_2": {
+      "medoid": "ASP_0028",
+      "lat": 27.625,
+      "lon": 94.875,
+      "n_points": 35
+    }
+  },
+  "file_hashes_sha256": {
+    "cluster_profiles_assam": {
+      "path": "m:\\Final_year_pro\\PCM-Selection-ML-model\\era5-assam\\data\\processed\\clustering\\cluster_profiles_assam.csv",
+      "sha256": "305774e90babd52de4b88b219e3dc929babca85d23901201a59620b332c50117",
+      "size_bytes": 1140
+    },
+    "cluster_assignments_assam": {
+      "path": "m:\\Final_year_pro\\PCM-Selection-ML-model\\era5-assam\\data\\processed\\clustering\\cluster_assignments_assam.csv",
+      "sha256": "e078068b53409eea27cd7148a9466957b52009e55bb2a6b272abc95a0bb37e1f",
+      "size_bytes": 11668
+    },
+    "population_grid_points": {
+      "path": "m:\\Final_year_pro\\PCM-Selection-ML-model\\era5-assam\\data\\processed\\population_grid_points.csv",
+      "sha256": "a4a847e68a628b1f6950c1a8746ea2efc7ed33f7a59d99b1d3e1ff846df2cb41",
+      "size_bytes": 6634
+    },
+    "pcm_database_final": {
+      "path": "m:\\Final_year_pro\\PCM-Selection-ML-model\\era5-assam\\data\\processed\\pcm\\pcm_database_final.csv",
+      "sha256": "15ec41b9b1a9ad915871df2498c3561cab67817b18b5c43227a10fe435409e8c",
+      "size_bytes": 19960
+    },
+    "physics_validation_assam": {
+      "path": "m:\\Final_year_pro\\PCM-Selection-ML-model\\era5-assam\\data\\processed\\pcm\\physics_validation_assam.csv",
+      "sha256": "135c7eb6c00f76ee1c69001fa55dc538fe8b245f16d152de2f408fc5583bf639",
+      "size_bytes": 7459
+    },
+    "mcdm_vs_physics_comparison": {
+      "path": "m:\\Final_year_pro\\PCM-Selection-ML-model\\era5-assam\\data\\processed\\pcm\\mcdm_vs_physics_comparison.csv",
+      "sha256": "4588885a3c7d444cd951584e86c41cd1e4f1c1ccac003cc408305a448565cca7",
+      "size_bytes": 4972
+    },
+    "swh_design_specification": {
+      "path": "m:\\Final_year_pro\\PCM-Selection-ML-model\\era5-assam\\data\\processed\\design\\swh_design_specification.csv",
+      "sha256": "7d6c5c35c7ba947d91a4a72cd0ce2b8e933fdb1f249a5129006e5d8f7b362032",
+      "size_bytes": 846
+    }
+  }
+}
