@@ -1,0 +1,15 @@
+# Archives and generated artifacts too large or unnecessary for source control
+data.zip
+results/uttarakhand/surrogate/models.pkl
+results/uttarakhand/plots/interactive/
+
+# Large regenerated Objective 1 input files
+data/objective1/suntimes.csv
+data/objective1/daily_aggregates_uttarakhand.csv
+
+# Python cache and local environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env

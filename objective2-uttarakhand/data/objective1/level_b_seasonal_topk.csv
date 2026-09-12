@@ -1,0 +1,21 @@
+cluster_id,season,Ta_mean_season,L_required_season,top1,top2,top3,flips_from_annual
+0,Winter,12.125326969068583,166.91538130747892,PureTemp 58,PlusICE A58,Palmitic-stearic acid/Expanded graphite,False
+0,Summer,21.256928467312896,128.6904974358282,PureTemp 58,PlusICE A58,Palmitic-stearic acid/Expanded graphite,False
+0,Monsoon,24.58248223198787,114.76972937689875,PureTemp 58,PlusICE A58,Palmitic-stearic acid/Expanded graphite,False
+0,Retreat,20.196438840984886,133.12970701163727,PureTemp 58,PlusICE A58,Palmitic-stearic acid/Expanded graphite,False
+1,Winter,11.030196301180256,171.49959828325944,Palmitic-stearic acid/Expanded graphite,savE® OM55,RT60,True
+1,Summer,19.776219422345022,134.8887454980637,Palmitic-stearic acid/Expanded graphite,savE® OM55,RT60,True
+1,Monsoon,23.752424491354063,118.24435107919189,Palmitic-stearic acid/Expanded graphite,savE® OM55,RT60,True
+1,Retreat,19.106816250494862,137.69086717542854,Palmitic-stearic acid/Expanded graphite,savE® OM55,RT60,True
+2,Winter,6.722527353766074,189.5315004971352,PureTemp 58,PlusICE A58,Palmitic-stearic acid/Expanded graphite,False
+2,Summer,13.86764148951731,159.62205272488055,PureTemp 58,PlusICE A58,Palmitic-stearic acid/Expanded graphite,False
+2,Monsoon,19.531936984592036,135.91131178249773,PureTemp 58,PlusICE A58,Palmitic-stearic acid/Expanded graphite,False
+2,Retreat,14.771084404690383,155.84024068196604,PureTemp 58,PlusICE A58,Palmitic-stearic acid/Expanded graphite,False
+3,Winter,15.863013077704728,151.26942725672802,Palmitic-stearic acid/Expanded graphite,savE® OM55,RT60,True
+3,Summer,27.495556329072983,102.5756012065005,Palmitic-stearic acid/Expanded graphite,savE® OM55,RT60,True
+3,Monsoon,29.97973611361741,92.17682462839751,Palmitic-stearic acid/Expanded graphite,savE® OM55,RT60,True
+3,Retreat,25.0678396738353,112.73802312532541,Palmitic-stearic acid/Expanded graphite,savE® OM55,RT60,True
+4,Winter,11.649025402583414,168.90917966478585,PureTemp 58,PlusICE A58,Palmitic-stearic acid/Expanded graphite,False
+4,Summer,20.525123964438713,131.75383108485954,PureTemp 58,PlusICE A58,Palmitic-stearic acid/Expanded graphite,False
+4,Monsoon,24.3135311397608,115.89555864896128,PureTemp 58,PlusICE A58,Palmitic-stearic acid/Expanded graphite,False
+4,Retreat,19.797334471622253,134.80035790178925,PureTemp 58,PlusICE A58,Palmitic-stearic acid/Expanded graphite,False

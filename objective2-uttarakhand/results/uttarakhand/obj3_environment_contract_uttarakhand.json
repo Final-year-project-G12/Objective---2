@@ -1,0 +1,428 @@
+{
+  "state": "uttarakhand",
+  "contract_version": "obj3_contract_v1.0",
+  "validated_simulator_version": "sim_v1_uttarakhand",
+  "source": "Objective 2 Phases 1-8 (see docs_objective2/ for full methodology and verification)",
+  "global_limits": {
+    "delivery_target_C": 50.0,
+    "max_safe_water_temp_C": 75.0,
+    "max_safe_pcm_temp_C": 65.0,
+    "max_pressure_bar": 3.5,
+    "irradiance_cutoff_Wm2": 10.0,
+    "flow_envelope_kg_s": {
+      "min": 0.01,
+      "max": 0.05
+    }
+  },
+  "static_design_per_regime": [
+    {
+      "regime_id": 0,
+      "regime_membership_rule": "GMM cluster 0 of K=5 (Objective 1, cluster_assignments_uttarakhand.csv); a new site is assigned to this regime by its max_membership_prob column",
+      "selected_pcm": null,
+      "is_plain_tank_no_pcm": true,
+      "capsule_shape": null,
+      "capsule_arrangement": null,
+      "capsule_diameter_m": null,
+      "max_pcm_conduction_distance_m": null,
+      "n_capsule": 0,
+      "pcm_mass_kg": 0.0,
+      "tank_volume_L": 50.0,
+      "tank_insulation_m": 0.05,
+      "tank_U_value_W_m2K": 0.8,
+      "collector_area_m2": 1.5,
+      "collector_fr_tau_alpha": 0.75,
+      "collector_fr_ul_W_m2K": 4.5,
+      "heat_exchanger": "none -- direct potable-tank encapsulation (system_config_shared.yaml, pcm_integration.mode)",
+      "nominal_flow_kg_s": 0.0118506534669495,
+      "flow_envelope_kg_s": {
+        "min": 0.01,
+        "max": 0.05
+      },
+      "pump_efficiency": 0.6,
+      "max_pressure_bar": 3.5,
+      "min_delivery_temp_C": 50.0,
+      "max_safe_water_temp_C": 75.0,
+      "max_safe_pcm_temp_C": 65.0,
+      "mains_temp_est_C": 19.4,
+      "validated_simulator_version": "sim_v1_uttarakhand",
+      "performance_at_selection": {
+        "useful_energy_kWh": 1675.2526193523086,
+        "solar_fraction": 0.4070509196956491,
+        "unmet_energy_kWh": 2316.5297906487403,
+        "constraint_margin_C": -0.1368816341209537
+      }
+    },
+    {
+      "regime_id": 1,
+      "regime_membership_rule": "GMM cluster 1 of K=5 (Objective 1, cluster_assignments_uttarakhand.csv); a new site is assigned to this regime by its max_membership_prob column",
+      "selected_pcm": null,
+      "is_plain_tank_no_pcm": true,
+      "capsule_shape": null,
+      "capsule_arrangement": null,
+      "capsule_diameter_m": null,
+      "max_pcm_conduction_distance_m": null,
+      "n_capsule": 0,
+      "pcm_mass_kg": 0.0,
+      "tank_volume_L": 50.0,
+      "tank_insulation_m": 0.05,
+      "tank_U_value_W_m2K": 0.8,
+      "collector_area_m2": 1.5,
+      "collector_fr_tau_alpha": 0.75,
+      "collector_fr_ul_W_m2K": 4.5,
+      "heat_exchanger": "none -- direct potable-tank encapsulation (system_config_shared.yaml, pcm_integration.mode)",
+      "nominal_flow_kg_s": 0.0292938102564308,
+      "flow_envelope_kg_s": {
+        "min": 0.01,
+        "max": 0.05
+      },
+      "pump_efficiency": 0.6,
+      "max_pressure_bar": 3.5,
+      "min_delivery_temp_C": 50.0,
+      "max_safe_water_temp_C": 75.0,
+      "max_safe_pcm_temp_C": 65.0,
+      "mains_temp_est_C": 17.0,
+      "validated_simulator_version": "sim_v1_uttarakhand",
+      "performance_at_selection": {
+        "useful_energy_kWh": 1625.3182942419662,
+        "solar_fraction": 0.3738199444636814,
+        "unmet_energy_kWh": 2638.2274456061177,
+        "constraint_margin_C": 4.8044395709263625
+      }
+    },
+    {
+      "regime_id": 2,
+      "regime_membership_rule": "GMM cluster 2 of K=5 (Objective 1, cluster_assignments_uttarakhand.csv); a new site is assigned to this regime by its max_membership_prob column",
+      "selected_pcm": {
+        "pcm_id": "PureTemp 58",
+        "Tm_C": 58.0,
+        "latent_heat_kJ_kg": 225.0,
+        "TC_W_mK": 0.2,
+        "density_solid_kg_m3": 890.0,
+        "density_liquid_kg_m3": 810.0,
+        "Cp_solid_kJ_kgK": 2.47,
+        "Cp_liquid_kJ_kgK": 2.71,
+        "any_property_imputed": true
+      },
+      "is_plain_tank_no_pcm": false,
+      "capsule_shape": "sphere",
+      "capsule_arrangement": "staggered",
+      "capsule_diameter_m": 0.0438323320197407,
+      "max_pcm_conduction_distance_m": 0.02191616600987035,
+      "n_capsule": 10,
+      "pcm_mass_kg": 0.3924391806568391,
+      "tank_volume_L": 50.0,
+      "tank_insulation_m": 0.05,
+      "tank_U_value_W_m2K": 0.8,
+      "collector_area_m2": 1.5,
+      "collector_fr_tau_alpha": 0.75,
+      "collector_fr_ul_W_m2K": 4.5,
+      "heat_exchanger": "none -- direct potable-tank encapsulation (system_config_shared.yaml, pcm_integration.mode)",
+      "nominal_flow_kg_s": 0.0116487907078574,
+      "flow_envelope_kg_s": {
+        "min": 0.01,
+        "max": 0.05
+      },
+      "pump_efficiency": 0.6,
+      "max_pressure_bar": 3.5,
+      "min_delivery_temp_C": 50.0,
+      "max_safe_water_temp_C": 75.0,
+      "max_safe_pcm_temp_C": 65.0,
+      "mains_temp_est_C": 7.4,
+      "validated_simulator_version": "sim_v1_uttarakhand",
+      "performance_at_selection": {
+        "useful_energy_kWh": 1527.2095343507317,
+        "solar_fraction": 0.2804384961156619,
+        "unmet_energy_kWh": 3913.60133271911,
+        "constraint_margin_C": 7.972214857898002
+      }
+    },
+    {
+      "regime_id": 3,
+      "regime_membership_rule": "GMM cluster 3 of K=5 (Objective 1, cluster_assignments_uttarakhand.csv); a new site is assigned to this regime by its max_membership_prob column",
+      "selected_pcm": null,
+      "is_plain_tank_no_pcm": true,
+      "capsule_shape": null,
+      "capsule_arrangement": null,
+      "capsule_diameter_m": null,
+      "max_pcm_conduction_distance_m": null,
+      "n_capsule": 0,
+      "pcm_mass_kg": 0.0,
+      "tank_volume_L": 50.0,
+      "tank_insulation_m": 0.05,
+      "tank_U_value_W_m2K": 0.8,
+      "collector_area_m2": 1.5,
+      "collector_fr_tau_alpha": 0.75,
+      "collector_fr_ul_W_m2K": 4.5,
+      "heat_exchanger": "none -- direct potable-tank encapsulation (system_config_shared.yaml, pcm_integration.mode)",
+      "nominal_flow_kg_s": 0.0396276742020537,
+      "flow_envelope_kg_s": {
+        "min": 0.01,
+        "max": 0.05
+      },
+      "pump_efficiency": 0.6,
+      "max_pressure_bar": 3.5,
+      "min_delivery_temp_C": 50.0,
+      "max_safe_water_temp_C": 75.0,
+      "max_safe_pcm_temp_C": 65.0,
+      "mains_temp_est_C": 21.8,
+      "validated_simulator_version": "sim_v1_uttarakhand",
+      "performance_at_selection": {
+        "useful_energy_kWh": 1563.787307508668,
+        "solar_fraction": 0.4075102327733115,
+        "unmet_energy_kWh": 2133.1874786419507,
+        "constraint_margin_C": 2.04369583728527
+      }
+    },
+    {
+      "regime_id": 4,
+      "regime_membership_rule": "GMM cluster 4 of K=5 (Objective 1, cluster_assignments_uttarakhand.csv); a new site is assigned to this regime by its max_membership_prob column",
+      "selected_pcm": null,
+      "is_plain_tank_no_pcm": true,
+      "capsule_shape": null,
+      "capsule_arrangement": null,
+      "capsule_diameter_m": null,
+      "max_pcm_conduction_distance_m": null,
+      "n_capsule": 0,
+      "pcm_mass_kg": 0.0,
+      "tank_volume_L": 50.0,
+      "tank_insulation_m": 0.05,
+      "tank_U_value_W_m2K": 0.8,
+      "collector_area_m2": 1.5,
+      "collector_fr_tau_alpha": 0.75,
+      "collector_fr_ul_W_m2K": 4.5,
+      "heat_exchanger": "none -- direct potable-tank encapsulation (system_config_shared.yaml, pcm_integration.mode)",
+      "nominal_flow_kg_s": 0.0175132383221715,
+      "flow_envelope_kg_s": {
+        "min": 0.01,
+        "max": 0.05
+      },
+      "pump_efficiency": 0.6,
+      "max_pressure_bar": 3.5,
+      "min_delivery_temp_C": 50.0,
+      "max_safe_water_temp_C": 75.0,
+      "max_safe_pcm_temp_C": 65.0,
+      "mains_temp_est_C": 16.8,
+      "validated_simulator_version": "sim_v1_uttarakhand",
+      "performance_at_selection": {
+        "useful_energy_kWh": 1624.0476122260409,
+        "solar_fraction": 0.3720080889326367,
+        "unmet_energy_kWh": 2661.8966938885555,
+        "constraint_margin_C": 5.490981904818696
+      }
+    }
+  ],
+  "dynamic_state_schema": {
+    "description": "One observation per control timestep. Fields marked measurable=false need an estimator (energy-balance + calibrated melt-fraction observer), not a raw sensor.",
+    "fields": [
+      {
+        "name": "I_t",
+        "unit": "W/m2",
+        "measurable": true,
+        "source": "pyranometer or weather feed"
+      },
+      {
+        "name": "T_amb_t",
+        "unit": "C",
+        "measurable": true,
+        "source": "ambient sensor"
+      },
+      {
+        "name": "T_water_t",
+        "unit": "C",
+        "measurable": true,
+        "source": "tank thermocouple"
+      },
+      {
+        "name": "T_pcm_t",
+        "unit": "C",
+        "measurable": false,
+        "source": "estimator (no direct PCM sensor assumed)"
+      },
+      {
+        "name": "f_melt_t",
+        "unit": "fraction [0,1]",
+        "measurable": false,
+        "source": "estimator, derived from T_pcm_t via the frozen enthalpy model"
+      },
+      {
+        "name": "H_pcm_t",
+        "unit": "J/kg",
+        "measurable": false,
+        "source": "estimator (integral of Q_pcm)"
+      },
+      {
+        "name": "T_in_t",
+        "unit": "C",
+        "measurable": true,
+        "source": "mains/inlet sensor"
+      },
+      {
+        "name": "T_out_t",
+        "unit": "C",
+        "measurable": true,
+        "source": "delivery-point sensor"
+      },
+      {
+        "name": "D_t",
+        "unit": "kg/s or L",
+        "measurable": true,
+        "source": "flow meter at the draw-off point"
+      },
+      {
+        "name": "t_day",
+        "unit": "hour of day [0,24)",
+        "measurable": true,
+        "source": "clock"
+      },
+      {
+        "name": "d_season",
+        "unit": "categorical/cyclical encoding",
+        "measurable": true,
+        "source": "calendar"
+      },
+      {
+        "name": "mdot_t",
+        "unit": "kg/s",
+        "measurable": true,
+        "source": "commanded/measured pump flow"
+      },
+      {
+        "name": "dp_t",
+        "unit": "Pa",
+        "measurable": true,
+        "source": "differential pressure sensor or Ergun estimate from mdot_t"
+      },
+      {
+        "name": "E_unmet_t",
+        "unit": "kWh (cumulative)",
+        "measurable": false,
+        "source": "estimator, from T_out_t vs delivery target"
+      },
+      {
+        "name": "mode_t",
+        "unit": "categorical {charge, discharge, bypass}",
+        "measurable": true,
+        "source": "controller's own last commanded mode"
+      }
+    ]
+  },
+  "action_space": {
+    "discrete_version": {
+      "actions": [
+        "charge",
+        "discharge",
+        "bypass"
+      ],
+      "note": "simulator applies a validated flow-rate and valve command for each mode"
+    },
+    "hybrid_version": {
+      "mode": [
+        "charge",
+        "discharge",
+        "bypass"
+      ],
+      "continuous": {
+        "flow_rate_kg_s": "within this regime's flow_envelope_kg_s above"
+      },
+      "note": "preferred if hardware can modulate pump/valve continuously -- this project's pump range (0.010-0.050 kg/s) is continuous, so the hybrid version is RECOMMENDED"
+    },
+    "recommended": "hybrid_version",
+    "hard_rule": "the controller must never command a flow or temperature outside this regime's flow_envelope_kg_s / max_safe_water_temp_C / max_safe_pcm_temp_C -- the safety shield below overrides the policy if it tries"
+  },
+  "safety_shield": [
+    {
+      "condition": "T_water_t >= 72.0 C (precautionary, 3.0 C below the 75.0 C hard limit -- tripping exactly AT the hard limit risks overshoot from sensor/control lag, per Phase 8's own P(temp-safe) results showing this margin matters)",
+      "action": "force bypass, stop collector circulation"
+    },
+    {
+      "condition": "T_pcm_t >= 62.0 C (PCM regimes only, 3.0 C below the 65.0 C hard limit)",
+      "action": "force bypass/discharge, stop charging"
+    },
+    {
+      "condition": "dp_t or estimated pressure > max_pressure_bar",
+      "action": "force bypass, reduce flow to minimum"
+    },
+    {
+      "condition": "commanded flow outside flow_envelope_kg_s",
+      "action": "clip to nearest bound before executing"
+    },
+    {
+      "condition": "dry-run (pump commanded on, flow sensor reads ~0)",
+      "action": "stop pump, raise fault"
+    },
+    {
+      "condition": "sensor failure / missing reading for a required field",
+      "action": "fall back to bypass (safe default), raise fault"
+    }
+  ],
+  "reset_scenarios": [
+    {
+      "name": "fully_solid",
+      "initial_pcm_state": "solid",
+      "initial_water_temp_C": 30.0,
+      "note": "matches src/simulation/tank_model.py's default cold-start condition"
+    },
+    {
+      "name": "partially_charged",
+      "initial_pcm_state": "mid",
+      "initial_water_temp_C": 30.0,
+      "note": "PCM initialized at Tm_C (roughly 50% notional charge state)"
+    },
+    {
+      "name": "fully_liquid",
+      "initial_pcm_state": "liquid",
+      "initial_water_temp_C": 30.0,
+      "note": "stresses discharge-heavy policies from a fully-charged start"
+    }
+  ],
+  "weather_sequences": {
+    "training_validation_test": "NOT YET SPLIT -- only one medoid weather year per regime exists (data/weather/weather_regime_<state>_cluster<k>_hourly.csv); Objective 3 must not assume separate train/val/test weather years are already prepared (40-hr cut list, see Objective 2 docs_objective2/09_NEXT_STEPS.md)"
+  },
+  "demand_profile_file": "data/demand/demand_profile_uttarakhand.csv",
+  "time_step_s": 300,
+  "reward_function": {
+    "status": "FULLY SPECIFIED -- the default weights below are ready to train with. Objective 3 may retune (see tuning_procedure) but is not blocked waiting on this specification, unlike the earlier version of this contract.",
+    "formula": "r_t = w1*(Q_delivered_t/Q_delivered_ref) - w2*(E_unmet_t/E_unmet_ref) - w3*(E_pump_t/E_pump_ref) - w4*Penalty_safety_t - w5*Penalty_bypass_t",
+    "normalization_references": {
+      "note": "each energy term is divided by a per-hour nominal reference magnitude (this state's 5 Phase-7-selected designs' own simulator-confirmed annual output / 8760h) so terms of very different natural size (kWh of heat vs. a 0/1 penalty flag) contribute comparably before weights are applied -- the same normalize-then-weight pattern used by Xu et al. (2024), \"Multi-objective deep reinforcement learning for a water heating system with solar energy and heat recovery\", Applied Energy (https://www.sciencedirect.com/science/article/abs/pii/S0360544224000677), for combining heterogeneous reward terms in a closely related system.",
+      "Q_delivered_ref_kWh_per_hour": 0.183,
+      "E_unmet_ref_kWh_per_hour": 0.312,
+      "E_pump_ref_kWh_per_hour": 1e-06,
+      "pump_energy_note": "pump energy at this project's selected designs is ~1e-11 kWh/yr (essentially zero at these flow rates/pressure drops -- consistent with Phase 7's own finding that pump energy is negligible relative to thermal energy in this design space), so E_pump_ref falls back to the 1e-6 floor above rather than a division-by-near-zero blowup; w3's practical effect on training will be minimal until a design with non-negligible pumping cost is in play."
+    },
+    "default_weights": {
+      "w1_delivered_energy": 1.0,
+      "w2_unmet_energy": 1.0,
+      "w3_pump_energy": 0.1,
+      "w4_safety_penalty": 10.0,
+      "w5_bypass_switching_penalty": 0.05,
+      "rationale": "w1=w2=1.0 treats delivering energy and avoiding unmet demand symmetrically -- the same two quantities this project's own P(meets delivery)/P(meets demand) Phase 8 metrics already track. w3=0.1 reflects pump energy being a genuine but secondary cost (Phase 6's own feature-importance finding: pump energy is a small, near-linear term at this project's reachable PCM-volume fractions -- docs_objective2/07_PHASE6_SURROGATE.md). w4=10.0 makes the safety penalty dominate any single-step energy gain, consistent with the safety shield above being a hard override, not a soft preference. w5=0.05 is a small switching-cost term that discourages bypass chattering without discouraging a genuinely necessary safety bypass (which is already rewarded via avoiding the much larger w4 penalty)."
+    },
+    "penalty_term_definitions": {
+      "Penalty_safety_t": "1.0 if T_water_t >= 72.0 C OR (PCM regime) T_pcm_t >= 62.0 C, else 0.0 -- the SAME 3.0 C guard-band trigger as this contract's safety_shield above, so the reward penalizes the policy for approaching the limit, not only for a hard violation the shield would already have blocked from occurring.",
+      "Penalty_bypass_t": "1.0 if mode_t == 'bypass' AND mode_{t-1} != 'bypass' (a NEW transition into bypass), else 0.0 -- penalizes switching, not sustained bypass, so the agent is not punished for correctly remaining in bypass across an extended unsafe period."
+    },
+    "tuning_procedure": [
+      "Start training with the default weights above -- they are not placeholders.",
+      "If the trained policy tolerates safety near-misses, raise w4.",
+      "If the policy bypasses far more often than the safety shield alone requires, lower w4 slightly, or check Penalty_safety_t is wired to the guard-banded trigger above, not the hard limit.",
+      "If pump energy is not a real cost concern for the target hardware, w3 may be set to 0 -- it is the only weight here without a safety implication.",
+      "Re-run this contract's acceptance_test_before_drl_training list after any weight change, before trusting a newly trained policy."
+    ]
+  },
+  "acceptance_test_before_drl_training": [
+    "every action stays within flow_envelope_kg_s / temperature limits above",
+    "charge/discharge/bypass transitions are physically valid",
+    "the environment conserves energy (reuse Phase 4 Gate 1's <0.1% residual check)",
+    "the safety shield cannot be bypassed by the policy",
+    "the same seed reproduces the same trajectory",
+    "simulator output matches this Objective 2 re-evaluation for identical actions"
+  ],
+  "deferred_future_work": [
+    "Full four-state comparison (Assam, Uttarakhand not yet run through this pipeline)",
+    "Active-learning optimization loop / full NSGA-II Pareto search (Phase 7 here is a single surrogate-scored search pass, not an iterative refine-and-repeat loop)",
+    "Sub-daily (hourly) multi-year weather records -- Phase 8's historical-year ensemble (src/robustness/weather_ensemble.py) now uses 10 REAL observed annual GHI/T_amb values per regime instead of a synthetic range, but the within-year HOURLY shape still comes from a single medoid year plus synthetic per-hour jitter, since only daily-resolution multi-year data was pulled for this project",
+    "Widened design bounds to reach the documented 15-20% PCM-volume levels (currently capped at ~12.9% by the frozen capsule diameter/count bounds -- see docs_objective2/02_PHASE2_GEOMETRY_CONSTRAINTS.md)",
+    "Experimental (hardware) validation of the simulator against a physical lab rig (Objective 4 scope)"
+  ]
+}

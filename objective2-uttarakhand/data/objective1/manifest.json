@@ -1,0 +1,650 @@
+{
+  "generated_at_utc": "2026-09-12T07:29:11.811419+00:00",
+  "objective1_root": "D:\\PCM-Selection-ML-model\\era5-uttarakhand",
+  "small_structural_files": [
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\processed\\population_grid_points.csv",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\population_grid_points.csv",
+      "sha256": "6d363bdbcb51e5be0a1a64e95270b4a6c41943953269dcd48476e440121c1c49",
+      "size_bytes": 2886,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\processed\\suntimes.csv",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\suntimes.csv",
+      "sha256": "24c0613ecda278597f88028aec44362938350201e67e802e9a8fc414e0dc4ac5",
+      "size_bytes": 28438635,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\processed\\daily_aggregates_uttarakhand.csv",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\daily_aggregates_uttarakhand.csv",
+      "sha256": "2673c802039706bb8f3d7c7f9e20fc9216d1da49d124da262d5536b6b45a4a32",
+      "size_bytes": 21954339,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\processed\\tier2_signature_uttarakhand.csv",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\tier2_signature_uttarakhand.csv",
+      "sha256": "6c217865b385d3587fc16d9ba2563217334b6115cb944370592d540c40be11b4",
+      "size_bytes": 12439,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\processed\\era5_power_agreement_uttarakhand.csv",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\era5_power_agreement_uttarakhand.csv",
+      "sha256": "92e5ff0c4445f2d7e16cfeee1752610e32162984ecb43d79ffa803772e5df879",
+      "size_bytes": 3867,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\processed\\signatures\\climate_signature_uttarakhand.csv",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\climate_signature_uttarakhand.csv",
+      "sha256": "0fe567acbfbda2876ad86e82948d4ba3825630f721ef59f2790442b58a2fec3c",
+      "size_bytes": 66191,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\processed\\signatures\\pca_loadings.csv",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\pca_loadings.csv",
+      "sha256": "6e48398d5415c73db4eade2f8cb55e5a001c7bcd5afba53fe3286eb42486c973",
+      "size_bytes": 353,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\processed\\clustering\\cluster_assignments_uttarakhand.csv",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\cluster_assignments_uttarakhand.csv",
+      "sha256": "799ed69d313f83540cda1f0c56a4a7a51ae7a625487d59c090bb6e3be63efc25",
+      "size_bytes": 4489,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\processed\\clustering\\cluster_profiles_uttarakhand.csv",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\cluster_profiles_uttarakhand.csv",
+      "sha256": "c143f0aa57d76f0ac806be2ccd18d6a55200893be93ecf952404665f9b5f91f4",
+      "size_bytes": 6504,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\processed\\clustering\\bic_selection_uttarakhand.csv",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\bic_selection_uttarakhand.csv",
+      "sha256": "59f005e00e3a140d59507409fe7bb9a2e39f5344d5df4c5a946b37a6ff742522",
+      "size_bytes": 825,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\processed\\clustering\\kmeans_comparison_uttarakhand.csv",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\kmeans_comparison_uttarakhand.csv",
+      "sha256": "313ac1b786c0da24309810a42ba21fb6120287a1756382a95aa248ff5d530782",
+      "size_bytes": 223,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\processed\\pcm\\pcm_database_uttarakhand.csv",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\pcm_database_uttarakhand.csv",
+      "sha256": "d61e95c2b17b395e9828820e44f41a21cb0de53bf7a57eb7848171e4fe4cc757",
+      "size_bytes": 13885,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\processed\\pcm\\feasibility_survivors_by_cluster.csv",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\feasibility_survivors_by_cluster.csv",
+      "sha256": "613d977876715e210ecb4f503eb1d6e989de2fa00855a53e5504321130dcd22e",
+      "size_bytes": 97900,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\processed\\pcm\\mcdm_topk_by_cluster.csv",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\mcdm_topk_by_cluster.csv",
+      "sha256": "5530437bf54b08069c4de602413e3a2b65d42b49a4a4de00592da946d359dc75",
+      "size_bytes": 10921,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\processed\\pcm\\mcdm_full_scores_by_cluster.csv",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\mcdm_full_scores_by_cluster.csv",
+      "sha256": "7ca3c182086a12196fb933686a165745c570730f0311453132dbed43c7327563",
+      "size_bytes": 94624,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\processed\\pcm\\monte_carlo_stability.csv",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\monte_carlo_stability.csv",
+      "sha256": "88bb50d942b471476d113780eddb5e30227d26833588d383e87a9968672a7f42",
+      "size_bytes": 8008,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\processed\\pcm\\physics_validation_results.csv",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\physics_validation_results.csv",
+      "sha256": "f8e65916661cb56245441c0ad0f34d72140516d0a8f7792eb7c4e59a77b7881f",
+      "size_bytes": 6396,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\processed\\pcm\\physics_validation_spearman.csv",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\physics_validation_spearman.csv",
+      "sha256": "136b7faf30341a2f1563662e5ada5572c340579a26aced1e3c2e8c96183fa670",
+      "size_bytes": 571,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\processed\\pcm\\level_b_seasonal_topk.csv",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\level_b_seasonal_topk.csv",
+      "sha256": "b3793b90f41242bf167afacca3fa56f91c9344f76873df8aef5523e485b425ae",
+      "size_bytes": 2378,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\processed\\pcm\\level_b_seasonal_summary.md",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\level_b_seasonal_summary.md",
+      "sha256": "78526e960d8b329c049b3b824649acbe9151d068e6447b930587e298e4658b18",
+      "size_bytes": 2483,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\processed\\pcm\\recommendation_cards.md",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\recommendation_cards.md",
+      "sha256": "22fdb0cbc6a4cecb8a54ea5d0719cb1ba1e9754944765c8355a573a3893f6a8b",
+      "size_bytes": 6882,
+      "status": "copied"
+    }
+  ],
+  "large_referenced_files": [
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\processed\\climate_uttarakhand_points.csv",
+      "dest": null,
+      "sha256": "26e344c0b8383250feb590f2e3900adb648385d07f41f6655f06903c5f3ff169",
+      "size_bytes": 197733548,
+      "status": "referenced_only"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\preprocessed\\uttarakhand_cleaned_physical.csv",
+      "dest": null,
+      "sha256": "55f0a24764b911a137dc3d64f0b2a68acee9a6502bfb917e97a6e866c5a1393a",
+      "size_bytes": 595883115,
+      "status": "referenced_only"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\preprocessed\\uttarakhand_cleaned_scaled.csv",
+      "dest": null,
+      "sha256": "162355fe7e0da95201a04089db2e63b06d6016e60fa4ce88928d53e57712047f",
+      "size_bytes": 656159326,
+      "status": "referenced_only"
+    }
+  ],
+  "medoid_points": [
+    {
+      "cluster_id": 0,
+      "point_id": "UKP_0004"
+    },
+    {
+      "cluster_id": 1,
+      "point_id": "UKP_0002"
+    },
+    {
+      "cluster_id": 2,
+      "point_id": "UKP_0023"
+    },
+    {
+      "cluster_id": 3,
+      "point_id": "UKP_0001"
+    },
+    {
+      "cluster_id": 4,
+      "point_id": "UKP_0007"
+    }
+  ],
+  "medoid_raw_weather_files": [
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0004_2016.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0004_2016.json",
+      "cluster_id": 0,
+      "point_id": "UKP_0004",
+      "sha256": "0803c577780876502b7aeefc35885eb1b8386f8557676a273d02e28f845b1716",
+      "size_bytes": 811516,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0004_2017.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0004_2017.json",
+      "cluster_id": 0,
+      "point_id": "UKP_0004",
+      "sha256": "1bb29cb31819880cc5f17de55c96525da28ba00a0b22c7ed54e29f6b012f3e03",
+      "size_bytes": 809418,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0004_2018.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0004_2018.json",
+      "cluster_id": 0,
+      "point_id": "UKP_0004",
+      "sha256": "d911edf62efc8e057b3243e881794b3ba92260c0c9128dfc57ae8b2489bd1dcb",
+      "size_bytes": 808950,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0004_2019.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0004_2019.json",
+      "cluster_id": 0,
+      "point_id": "UKP_0004",
+      "sha256": "85983f910d29001027fa7a0248584366ac41cb8d9e5586e877891f7f13b5b3ab",
+      "size_bytes": 809029,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0004_2020.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0004_2020.json",
+      "cluster_id": 0,
+      "point_id": "UKP_0004",
+      "sha256": "19ff9bb0b5f93208cc52d931f49ad029a428704c3771581874fb719b9a88da65",
+      "size_bytes": 811546,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0004_2021.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0004_2021.json",
+      "cluster_id": 0,
+      "point_id": "UKP_0004",
+      "sha256": "08bc913847eda38e56ae172779e771b8f2b94891f7efeb44198d739c319eaa00",
+      "size_bytes": 809289,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0004_2022.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0004_2022.json",
+      "cluster_id": 0,
+      "point_id": "UKP_0004",
+      "sha256": "e7f43e69704d5fbcbff22282d57fe9cf150617f34c53fb6b791db2832710e7f0",
+      "size_bytes": 809013,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0004_2023.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0004_2023.json",
+      "cluster_id": 0,
+      "point_id": "UKP_0004",
+      "sha256": "072915535c3aae4ca2502b1399d6d18b44fca11203f849f2b76fff786b45aadf",
+      "size_bytes": 809536,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0004_2024.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0004_2024.json",
+      "cluster_id": 0,
+      "point_id": "UKP_0004",
+      "sha256": "2c7d4c7c393a9f380213516c587213d0776009377d1c0cdeb21b0a5cf7eee6ae",
+      "size_bytes": 811270,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0004_2025.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0004_2025.json",
+      "cluster_id": 0,
+      "point_id": "UKP_0004",
+      "sha256": "95f43637f27e9bffcb232232fa74c3a25934f375f571a13b218e7de9af9c86e3",
+      "size_bytes": 809348,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0002_2016.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0002_2016.json",
+      "cluster_id": 1,
+      "point_id": "UKP_0002",
+      "sha256": "aa98b3182d87393d3f15440571d786e57c9a98270512936af93af73103364499",
+      "size_bytes": 811116,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0002_2017.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0002_2017.json",
+      "cluster_id": 1,
+      "point_id": "UKP_0002",
+      "sha256": "23d7ee8da36de2828e4a4c99b4d0c2a40ba4e8888814e13fd8dc2fe8fbab23dd",
+      "size_bytes": 808505,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0002_2018.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0002_2018.json",
+      "cluster_id": 1,
+      "point_id": "UKP_0002",
+      "sha256": "f65677d05148acff3bf0bddfed8d943c86b34a301b836f306f5f02254691af65",
+      "size_bytes": 808383,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0002_2019.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0002_2019.json",
+      "cluster_id": 1,
+      "point_id": "UKP_0002",
+      "sha256": "b953fea9f8bf84c6f85e35c73091c35ae0d3046414d274aa853e77b1a9096f0e",
+      "size_bytes": 808142,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0002_2020.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0002_2020.json",
+      "cluster_id": 1,
+      "point_id": "UKP_0002",
+      "sha256": "17e1495c4fcd798f9c9cc857183f8a9a8c100151bf96e705466a742a46857b2c",
+      "size_bytes": 810404,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0002_2021.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0002_2021.json",
+      "cluster_id": 1,
+      "point_id": "UKP_0002",
+      "sha256": "23529e5076d6d6fb86e4aca94c925c6f1b5d292d66b911ca5c3cc5bcb8af8eea",
+      "size_bytes": 808560,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0002_2022.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0002_2022.json",
+      "cluster_id": 1,
+      "point_id": "UKP_0002",
+      "sha256": "6e147940023ba6996baf57313d0b206450ffb771c71f58f3ceea16634686d64b",
+      "size_bytes": 808364,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0002_2023.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0002_2023.json",
+      "cluster_id": 1,
+      "point_id": "UKP_0002",
+      "sha256": "c764bce5b5e5900ceee127afedefa0fb52365273f115dae412c3ce20a3086567",
+      "size_bytes": 808598,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0002_2024.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0002_2024.json",
+      "cluster_id": 1,
+      "point_id": "UKP_0002",
+      "sha256": "4a36e1edb7fc3d0ab598ef4352c4af95b170f65c81b1aff40d4bd9551750d0d2",
+      "size_bytes": 810495,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0002_2025.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0002_2025.json",
+      "cluster_id": 1,
+      "point_id": "UKP_0002",
+      "sha256": "e0ccf7171e05f55a2b1ab336dd3760e23cce0a1fc67c4ff3c9e2299b46820cb2",
+      "size_bytes": 808482,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0023_2016.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0023_2016.json",
+      "cluster_id": 2,
+      "point_id": "UKP_0023",
+      "sha256": "d75637053649f9a2ee963be36e943bb1c89e018ceb480e5ffec8600392056f2b",
+      "size_bytes": 808712,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0023_2017.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0023_2017.json",
+      "cluster_id": 2,
+      "point_id": "UKP_0023",
+      "sha256": "48853ec6aeb06709a806b258e94c60b460314baa1693a9a7b420ffa91ce73311",
+      "size_bytes": 806837,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0023_2018.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0023_2018.json",
+      "cluster_id": 2,
+      "point_id": "UKP_0023",
+      "sha256": "fc08042cc7c68d63e75b196638dd363e8f072c21e595a4ade2d7c08a174d3566",
+      "size_bytes": 806652,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0023_2019.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0023_2019.json",
+      "cluster_id": 2,
+      "point_id": "UKP_0023",
+      "sha256": "defbdd8a0ab856e55c179380f0a4af550520d562b61915125eb3342e0eb217a7",
+      "size_bytes": 807283,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0023_2020.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0023_2020.json",
+      "cluster_id": 2,
+      "point_id": "UKP_0023",
+      "sha256": "242c562ed4f0d84478bb0051fe9d7a0cb180720cb695eb6c44e62cc97cea23cd",
+      "size_bytes": 809140,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0023_2021.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0023_2021.json",
+      "cluster_id": 2,
+      "point_id": "UKP_0023",
+      "sha256": "57dd442e1d2ebf96636681e90f98fdc0ff2ba55fb3d9bb382f0f22a96814f216",
+      "size_bytes": 806574,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0023_2022.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0023_2022.json",
+      "cluster_id": 2,
+      "point_id": "UKP_0023",
+      "sha256": "e76a9a975140ce2c99c9c13b6d62557b140f1d6a7f57e3a8483bdc01ee488a82",
+      "size_bytes": 806938,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0023_2023.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0023_2023.json",
+      "cluster_id": 2,
+      "point_id": "UKP_0023",
+      "sha256": "738babe85853333ee77a5a3b9b28f25327854764bb8ad9c063dbda554684193f",
+      "size_bytes": 806263,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0023_2024.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0023_2024.json",
+      "cluster_id": 2,
+      "point_id": "UKP_0023",
+      "sha256": "1ed5ef9d367eb73c7867c3da1402d800a303f515df3a0eef64d43db9b430ac4f",
+      "size_bytes": 809181,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0023_2025.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0023_2025.json",
+      "cluster_id": 2,
+      "point_id": "UKP_0023",
+      "sha256": "323beda66822719f9f2c724a9f67d30b58a66276d92cb12696f53a7096c83939",
+      "size_bytes": 806598,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0001_2016.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0001_2016.json",
+      "cluster_id": 3,
+      "point_id": "UKP_0001",
+      "sha256": "2238a6e10e52f21aecd20c21cbd2dffa7b300d57807fd4cf60ff7fc9084114af",
+      "size_bytes": 811372,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0001_2017.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0001_2017.json",
+      "cluster_id": 3,
+      "point_id": "UKP_0001",
+      "sha256": "34b8f96fedc102d0cb6a28ce41bfa3b10612c709a8b0873950f7a45b51d198fd",
+      "size_bytes": 809173,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0001_2018.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0001_2018.json",
+      "cluster_id": 3,
+      "point_id": "UKP_0001",
+      "sha256": "2f7f2d62a2bf3ec1fa37e3c392f84855d6ea67f4a1a287c86c9e2b0c6bb5e341",
+      "size_bytes": 808786,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0001_2019.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0001_2019.json",
+      "cluster_id": 3,
+      "point_id": "UKP_0001",
+      "sha256": "05d53b6537ec7fda88d5222e5576e4eb7c16c7ca3bf8358b10fa6960cac3ae90",
+      "size_bytes": 808643,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0001_2020.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0001_2020.json",
+      "cluster_id": 3,
+      "point_id": "UKP_0001",
+      "sha256": "8223c894216cc676c165345c01e991f274f15874076f108dccdfb5b9d38808f3",
+      "size_bytes": 810995,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0001_2021.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0001_2021.json",
+      "cluster_id": 3,
+      "point_id": "UKP_0001",
+      "sha256": "0abf4febf339be8f9c0eaf9c71f78b1725f1f81e7e5ed520d21b913bf4aab09d",
+      "size_bytes": 808948,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0001_2022.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0001_2022.json",
+      "cluster_id": 3,
+      "point_id": "UKP_0001",
+      "sha256": "fd263531f349afc8f93c991f81801bebfe73afc7deb967a61e4f742fc88742da",
+      "size_bytes": 808732,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0001_2023.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0001_2023.json",
+      "cluster_id": 3,
+      "point_id": "UKP_0001",
+      "sha256": "26d56eae8eabbfc136a69922ca976a2bffe06344fe641bc31ada910bbdd7096d",
+      "size_bytes": 809019,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0001_2024.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0001_2024.json",
+      "cluster_id": 3,
+      "point_id": "UKP_0001",
+      "sha256": "4a29701e0b025e32719e056a8c7479ccecf4d50239ba1aa793f99c5008f46500",
+      "size_bytes": 811123,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0001_2025.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0001_2025.json",
+      "cluster_id": 3,
+      "point_id": "UKP_0001",
+      "sha256": "9f11ba8e18134f034a651f90d1254076e352fe004d662996581ef5e04647fcc0",
+      "size_bytes": 809083,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0007_2016.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0007_2016.json",
+      "cluster_id": 4,
+      "point_id": "UKP_0007",
+      "sha256": "6c2b82c1cc8a9f763ca0b0ee289126427c5d811eef8914a753659bf6c5dabe54",
+      "size_bytes": 810860,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0007_2017.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0007_2017.json",
+      "cluster_id": 4,
+      "point_id": "UKP_0007",
+      "sha256": "25a5c6210de3e94e38c02a9c4fed4be562e295e11890260b80d05accd211d801",
+      "size_bytes": 808307,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0007_2018.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0007_2018.json",
+      "cluster_id": 4,
+      "point_id": "UKP_0007",
+      "sha256": "fb4c7867ce072a4abd80a9f6159e151f66e4ba87d44a331246fdd9bcb3a899cf",
+      "size_bytes": 808176,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0007_2019.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0007_2019.json",
+      "cluster_id": 4,
+      "point_id": "UKP_0007",
+      "sha256": "ac51c5082c81c5d643e1de2fff235e33676e20a72639257d58b875f5281dc1f4",
+      "size_bytes": 807897,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0007_2020.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0007_2020.json",
+      "cluster_id": 4,
+      "point_id": "UKP_0007",
+      "sha256": "a47e97b8297bcf90f1184403c0a936371026a7fbcd60775064e8292a892ea5cf",
+      "size_bytes": 810211,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0007_2021.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0007_2021.json",
+      "cluster_id": 4,
+      "point_id": "UKP_0007",
+      "sha256": "76f89530b636213481d1bdfc790b6d6ee0fbba65a6fbe86c3e6a8c24faaac88a",
+      "size_bytes": 808275,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0007_2022.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0007_2022.json",
+      "cluster_id": 4,
+      "point_id": "UKP_0007",
+      "sha256": "11bc406856cf3d4608443a36c02f672f596b389a78c4027299f6016478e8dfc9",
+      "size_bytes": 808226,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0007_2023.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0007_2023.json",
+      "cluster_id": 4,
+      "point_id": "UKP_0007",
+      "sha256": "797ae916d90a20413c5989ec7df352e13803631912bc5c5c60515009980dfa6e",
+      "size_bytes": 808487,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0007_2024.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0007_2024.json",
+      "cluster_id": 4,
+      "point_id": "UKP_0007",
+      "sha256": "fb44ebd3363dd5871b6e183ff87c0a1c71805f8cef0dc7e41734d6a932354425",
+      "size_bytes": 810221,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\PCM-Selection-ML-model\\era5-uttarakhand\\data\\raw\\nasapower\\power_UKP_0007_2025.json",
+      "dest": "D:\\Objective---2\\objective2-uttarakhand\\data\\objective1\\raw_weather\\power_UKP_0007_2025.json",
+      "cluster_id": 4,
+      "point_id": "UKP_0007",
+      "sha256": "0c5a1224a3be3fcaabd449ac734cd58721b7e5e02ff33614877f660efab0af08",
+      "size_bytes": 808255,
+      "status": "copied"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+# Run these from inside objective2-uttarakhand/, in this exact order.
+# Steps 1-2 need files that only exist on YOUR machine (your real
+# Objective 1 outputs + raw NASA POWER cache) — I cannot run these for you.
+# Steps 3 onward will then produce real, correct Uttarakhand output.
+
+# STEP 1 — copies your real Objective 1 CSVs + hashes them into a manifest
+python build_input_package.py
+
+# STEP 2 — builds real per-cluster hourly/daily weather from your raw NASA POWER cache
+python build_regime_weather.py
+
+# STEP 3 — synthetic demand curve (already generated for you, re-run only if you change assumptions)
+python build_demand_profile.py
+
+# STEP 4 onward — the actual Objective 2 pipeline, one phase at a time
+python pipeline.py --state uttarakhand --stage geometry
+python pipeline.py --state uttarakhand --stage simulate
+python pipeline.py --state uttarakhand --stage verify
+python pipeline.py --state uttarakhand --stage doe
+python pipeline.py --state uttarakhand --stage surrogate
+python pipeline.py --state uttarakhand --stage optimize
+python pipeline.py --state uttarakhand --stage robustness
+python pipeline.py --state uttarakhand --stage handoff
+
+# Outputs land in: results/uttarakhand/
+#   design_cases.csv, optimized_designs.csv, deployable_design_per_regime.csv,
+#   surrogate_metrics.csv, robustness_results.csv, recommendation_cards.md,
+#   obj3_environment_contract_uttarakhand.json, plots/static/*.png

@@ -1,0 +1,46 @@
+target,group_type,group,MAE,n
+useful_energy_kWh,regime,0,0.26271412800842125,6
+useful_energy_kWh,regime,1,0.42988408951646306,6
+useful_energy_kWh,regime,2,0.25522563070660453,6
+useful_energy_kWh,regime,3,0.5139879124967214,6
+useful_energy_kWh,regime,4,0.5355861984081306,6
+useful_energy_kWh,pcm,Palmitic-stearic acid/Expanded graphite,0.9060399145617453,4
+useful_energy_kWh,pcm,PlusICE A58,0.4217647217716755,6
+useful_energy_kWh,pcm,PureTemp 58,0.38157862218606625,10
+useful_energy_kWh,pcm,n-Octacosane (C28),0.2013853544080348,10
+solar_fraction,regime,0,9.303900528269866e-05,6
+solar_fraction,regime,1,0.0003374631756928685,6
+solar_fraction,regime,2,4.3516747166137217e-05,6
+solar_fraction,regime,3,0.0002411492409879016,6
+solar_fraction,regime,4,8.68386277984486e-05,6
+solar_fraction,pcm,Palmitic-stearic acid/Expanded graphite,0.0004526952976815074,4
+solar_fraction,pcm,PlusICE A58,8.760296460913475e-05,6
+solar_fraction,pcm,PureTemp 58,0.00013324840654691528,10
+solar_fraction,pcm,n-Octacosane (C28),0.00011431577377183367,10
+unmet_energy_kWh,regime,0,0.36736977492235684,6
+unmet_energy_kWh,regime,1,1.4310311636528847,6
+unmet_energy_kWh,regime,2,0.21305918486897704,6
+unmet_energy_kWh,regime,3,0.4898506865355709,6
+unmet_energy_kWh,regime,4,0.47471194257809657,6
+unmet_energy_kWh,pcm,Palmitic-stearic acid/Expanded graphite,1.8962351680980873,4
+unmet_energy_kWh,pcm,PlusICE A58,0.43042808265909116,6
+unmet_energy_kWh,pcm,PureTemp 58,0.3521981246439282,10
+unmet_energy_kWh,pcm,n-Octacosane (C28),0.4166646100561138,10
+pump_energy_kWh,regime,0,6.261953486716751e-09,6
+pump_energy_kWh,regime,1,1.5091817928003191e-09,6
+pump_energy_kWh,regime,2,1.999582640523908e-09,6
+pump_energy_kWh,regime,3,1.5334620271942515e-09,6
+pump_energy_kWh,regime,4,2.229291148302995e-09,6
+pump_energy_kWh,pcm,Palmitic-stearic acid/Expanded graphite,1.972455265172915e-09,4
+pump_energy_kWh,pcm,PlusICE A58,1.869027820407651e-09,6
+pump_energy_kWh,pcm,PureTemp 58,3.143919543915624e-09,10
+pump_energy_kWh,pcm,n-Octacosane (C28),3.065764315093554e-09,10
+pcm_mass_kg,regime,0,0.03415448768732399,6
+pcm_mass_kg,regime,1,0.0054128933668409485,6
+pcm_mass_kg,regime,2,0.005308574653372589,6
+pcm_mass_kg,regime,3,0.011612916456403832,6
+pcm_mass_kg,regime,4,0.015396884599847449,6
+pcm_mass_kg,pcm,Palmitic-stearic acid/Expanded graphite,0.002810533657162828,4
+pcm_mass_kg,pcm,PlusICE A58,0.014047422092524945,6
+pcm_mass_kg,pcm,PureTemp 58,0.014768772336777614,10
+pcm_mass_kg,pcm,n-Octacosane (C28),0.01881001500311557,10
