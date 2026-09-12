@@ -20,7 +20,7 @@ is unchanged; only the flat results/phaseN_* input paths, the 3-regime
 subplot grids (TN has 5), Rajasthan's PCM names in the sample/gate cases,
 and the title-string case counts differ.
 
-Run: python -m src.plots.make_plots rajasthan   (needs plotly + kaleido)
+Run: python -m src.plots.make_plots assam   (needs plotly + kaleido)
 """
 
 import json
@@ -42,7 +42,7 @@ from src.surrogate.features import build_feature_table, feature_target_split
 
 TEMPLATE = "plotly_white"
 
-# Rajasthan flat-scheme result paths (this repo uses results/phaseN_*, not
+# Assam flat-scheme result paths (this repo uses results/phaseN_*, not
 # TN's results/<state>/ subdirectory).
 PLOTS_DIR = RESULTS_DIR / "plots"
 SURROGATE_MODELS_PATH = RESULTS_DIR / "phase6_surrogate_models.pkl"
@@ -50,6 +50,9 @@ DESIGN_CASES_PATH = RESULTS_DIR / "phase5_design_cases.parquet"
 OPTIMIZED_PATH = RESULTS_DIR / "phase7_optimized_designs.csv"
 DEPLOYABLE_PATH = RESULTS_DIR / "phase7_deployable_design_per_regime.csv"
 ROBUSTNESS_PATH = RESULTS_DIR / "phase8_robustness.csv"
+
+# Assam Objective 2 validated rank-1 PCM for cluster 0 (matches src/verify/gates.py).
+PCM_C0 = "savE® OM48"
 
 def get_rank1_pcms(state: str) -> dict:
     from src.io_utils import load_state_config
@@ -68,7 +71,10 @@ def _save(fig: go.Figure, name: str, out_dir, width=1000, height=620):
     static_dir.mkdir(parents=True, exist_ok=True)
     interactive_dir.mkdir(parents=True, exist_ok=True)
     fig.update_layout(template=TEMPLATE, width=width, height=height)
-    fig.write_image(str(static_dir / f"{name}.png"), scale=2)
+    try:
+        fig.write_image(str(static_dir / f"{name}.png"), scale=2)
+    except Exception as e:
+        print(f"  [WARN] Could not write static PNG: {e}")
     fig.write_html(str(interactive_dir / f"{name}.html"), include_plotlyjs="inline")
     print(f"  [OK] {name}")
 
@@ -182,7 +188,7 @@ def phase3_energy_breakdown(state, out_dir, metrics):
 
 def phase4_gate1_residuals(state, out_dir):
     pcm_map = get_rank1_pcms(state)
-    pcm_c0 = pcm_map.get(0, "RT50")
+    pcm_c0 = pcm_map.get(0, PCM_C0)
     pcm_c1 = pcm_map.get(1, pcm_c0)
     pcm_c2 = pcm_map.get(2, pcm_c0)
     cases = [
@@ -210,7 +216,7 @@ def phase4_gate1_residuals(state, out_dir):
 def phase4_gate3_baseline_comparison(state, out_dir):
     cid = 0
     pcm_map = get_rank1_pcms(state)
-    pcm = pcm_map.get(0, "RT50")
+    pcm = pcm_map.get(0, PCM_C0)
     plain = run_case(state, cid, None, DesignVector(0.08, 14, 0.030), record_hourly=False)["metrics"]
     fixed = run_case(state, cid, pcm, DesignVector(0.08, 24, 0.030), record_hourly=False)["metrics"]
     optimized = run_case(state, cid, pcm, DesignVector(0.08, 19, 0.040), record_hourly=False)["metrics"]
@@ -230,7 +236,7 @@ def phase4_gate3_baseline_comparison(state, out_dir):
 def phase4_gate5_sensitivity(state, out_dir):
     cid = 0
     pcm_map = get_rank1_pcms(state)
-    pcm = pcm_map.get(0, "RT50")
+    pcm = pcm_map.get(0, PCM_C0)
     design = DesignVector(0.05, 18, 0.040)
     record = get_pcm_properties(state, pcm)
 
@@ -349,7 +355,7 @@ def phase7_pareto_by_regime(state, out_dir, optimized, deployable):
                                       mode="markers", marker=dict(size=16, symbol="star", color="black"),
                                       name="selected", legendgroup="selected", showlegend=(row, col) == (1, 1)),
                           row=row, col=col)
-    fig.update_layout(title=f"Phase 7 — useful energy vs PCM mass, all 60 confirmed candidates — {state}",
+    fig.update_layout(title=f"Phase 7 — useful energy vs PCM mass, {len(optimized)} confirmed candidates — {state}",
                        height=480, width=1200)
     fig.update_xaxes(title_text="PCM mass (kg)")
     fig.update_yaxes(title_text="useful energy (kWh)")
@@ -365,13 +371,29 @@ def phase7_surrogate_vs_simulator(state, out_dir, optimized):
                               text=optimized["pcm_id"], hovertemplate="%{text}<extra></extra>", name="candidates"))
     fig.add_trace(go.Scatter(x=[lo, hi], y=[lo, hi], mode="lines", line=dict(color="gray", dash="dash"),
                               name="perfect agreement"))
+    mean_err = ((abs(optimized["pred_useful_energy_kWh"] - optimized["sim_useful_energy_kWh"]) /
+                 optimized["sim_useful_energy_kWh"] * 100.0).mean() if not optimized.empty else 0.0)
     fig.update_layout(title=f"Phase 7 — surrogate-predicted vs simulator-confirmed useful energy "
-                             f"(60 candidates, mean error 0.03%) — {state}",
+                             f"({len(optimized)} candidates, mean error {mean_err:.2f}%) — {state}",
                        xaxis_title="simulator useful_energy_kWh", yaxis_title="surrogate-predicted useful_energy_kWh")
     _save(fig, "phase7_surrogate_vs_simulator", out_dir)
 
 
 def phase7_safety_compliance(state, out_dir, optimized):
+    if "meets_temperature_safety" not in optimized.columns:
+        system_config = load_system_config()
+        max_water_C = system_config["safety"]["max_water_temp_C"]
+        max_pcm_C = system_config["safety"]["max_pcm_temp_C"]
+        meets = []
+        for _, row in optimized.iterrows():
+            pcm_id = row.get("pcm_id")
+            safe_w = row.get("sim_max_water_temp_C", 0) <= max_water_C if "sim_max_water_temp_C" in row else True
+            safe_pcm = (row.get("sim_max_pcm_temp_C", 0) <= max_pcm_C) if (pcm_id != "NONE_plain_tank" and "sim_max_pcm_temp_C" in row) else True
+            safe_n = row.get("sim_n_safety_violations", 0) == 0
+            meets.append(safe_w and safe_pcm and safe_n)
+        optimized = optimized.copy()
+        optimized["meets_temperature_safety"] = meets
+
     counts = optimized.groupby(["regime_id", "meets_temperature_safety"]).size().unstack(fill_value=0)
     fig = go.Figure()
     fig.add_trace(go.Bar(x=counts.index, y=counts.get(True, 0), name="meets safety", marker_color="#2ca02c"))
@@ -488,5 +510,5 @@ def main(state: str):
 
 
 if __name__ == "__main__":
-    state = sys.argv[1] if len(sys.argv) > 1 else "rajasthan"
+    state = sys.argv[1] if len(sys.argv) > 1 else "assam"
     main(state)
