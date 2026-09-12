@@ -1,0 +1,13 @@
+cluster_id,season,Ta_mean_season,L_required_season,top1,top2,top3,n_survivors_season,flips_from_annual
+0,Winter,19.90361991464608,403.0663411118745,-,-,-,0,
+0,Summer,31.60343888146719,256.140014526535,RT45HC,Lauric acid (C12),n-Tricosane (C23),6,True
+0,Monsoon,29.8864088527384,277.7024776273112,RT45HC,n-Tricosane (C23),n-Docosane (C22),5,True
+0,Retreat,26.875446983194102,315.5141367850485,RT45HC,n-Docosane (C22),n-Tricosane (C23),4,True
+1,Winter,19.177525657985647,412.18463278701626,-,-,-,0,
+1,Summer,31.823099303740975,253.38151894362082,Palmitic-Stearic eutectic (64.2/35.8),savE® OM50,Paraffin/HDPE PCM3,9,False
+1,Monsoon,32.13065094852067,249.51928538847744,Palmitic-Stearic eutectic (64.2/35.8),savE® OM50,Paraffin/HDPE PCM3,9,False
+1,Retreat,28.505048270326352,295.04960382124165,n-Tetracosane (C24),PlusICE A52,savE® OM49,3,True
+2,Winter,17.70797129490581,430.6392964785728,-,-,-,0,
+2,Summer,30.625282354631292,268.4237041905402,savE® OM50,PlusICE A50,savE® OM49,4,True
+2,Monsoon,31.450307846069332,258.0630340690613,savE® OM50,Paraffin/HDPE PCM3,Paraffin/HDPE PCM6,7,True
+2,Retreat,26.941136547060694,314.6892072420118,savE® OM49,n-Tricosane (C23),-,2,True

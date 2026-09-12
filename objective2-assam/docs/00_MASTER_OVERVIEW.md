@@ -1,236 +1,186 @@
-# 00 — Objective 2 Master Overview (Rajasthan, Phases 0–8 — COMPLETE)
+# 00 — Objective 2 Master Overview (Assam, Phases 0–7 run; Phase 8 not yet built)
 
 ## What this covers
 
 Objective 2 turns Objective 1's output — climate regimes + a shortlisted
 PCM per regime — into a **physical PCM-storage design and a validated
-simulator** that Objective 3 can build a controller against. This set of
-docs covers the phases implemented so far for **Rajasthan**, out of the
-~40-hour per-state execution plan (`O2_Unified_PerState_Execution_Framework.md`):
+simulator** that Objective 3 can build a controller against. This file
+was previously a leftover copy of `objective2-rajasthan`'s master
+overview (wrong medoids, wrong PCMs, wrong demand volume, and Phase 8
+numbers that were never produced for Assam). It has been rewritten from
+Assam's actual `results/` files.
 
 | Phase | Deliverable | Status |
 |---|---|---|
-| Phase 0 | Frozen Objective 1 inputs + climate-signature sanity check (Bug-Fix 8) | COMPLETE — **PASSED, 3/3 regimes** |
-| Phase 1 | D2.1 — frozen state config (`configs/states/rajasthan.yaml`) | COMPLETE |
-| Phase 2 | D2.2 — geometry & constraint engine (`src/design/`) | COMPLETE |
-| Phase 3 | D2.3 — grey-box enthalpy simulator (`src/simulation/`) | COMPLETE (smoke-tested) |
-| Phase 4 | Simulator verification, Gates 1–5 (`src/verify/gates.py`) | COMPLETE — **GO, 5/5 gates clean**, `sim_v1_rajasthan` |
+| Phase 0 | Frozen Objective 1 inputs + climate-signature sanity check | PASSED (per `configs/states/assam.yaml`'s embedded check — no standalone `results/phase0_*` report file exists in this repo) |
+| Phase 1 | D2.1 — frozen state config (`configs/states/assam.yaml`) | COMPLETE |
+| Phase 2 | D2.2 — geometry & constraint engine (`src/design/`) | COMPLETE (state-agnostic, shared with all states) |
+| Phase 3 | D2.3 — grey-box enthalpy simulator (`src/simulation/`) | COMPLETE (state-agnostic engine; no standalone `results/phase3_simulate_*.json` smoke-run files saved for Assam — see `04_…` Gate 1/2 cases for the closest equivalent numbers) |
+| Phase 4 | Simulator verification, Gates 1–5 (`src/verify/gates.py`) | COMPLETE — **GO, but only 4/5 gates clean (Gate 3 FAILS)**, `sim_v1_assam` |
 | Phase 5 | D2.4 — reduced DOE (`src/doe/`) | COMPLETE — **165 cases (111 valid / 54 infeasible-retained), 138/27 train/holdout** |
-| Phase 6 | D2.5 — surrogate (`src/surrogate/`) | COMPLETE — **useful-energy hold-out R² = 0.9998 (target > 0.80)** |
-| Phase 7 | D2.6 — optimization + simulator confirmation (`src/optimize/`) | COMPLETE — **plain tank wins all 3 regimes; 0/45 PCM candidates pass temperature safety** |
-| Phase 8 | D2.7–D2.9 — robustness + recommendation cards + Obj3 handoff (`src/robustness/`, `src/handoff/`) | COMPLETE — **NOT robust (P(temp-safe) 0.45–0.57); 3 cards + contract written** |
+| Phase 6 | D2.5 — surrogate (`src/surrogate/`) | COMPLETE — **useful-energy hold-out R² = 0.9977 (target > 0.80)**, 29 features |
+| Phase 7 | D2.6 — optimization + simulator confirmation | COMPLETE, run via a **bespoke `scripts/run_phase7_optimization.py`**, not the ported `src/optimize/` module — see caveat below. Result as reported: a PCM design "PASSED" in all 3 regimes. **Independently checked here: this verdict is wrong** — see "The safety-verdict bug" below. |
+| Phase 8 | D2.7–D2.9 — robustness + recommendation cards + Obj3 handoff | **NOT RUN.** `src/robustness/monte_carlo.py` and `src/handoff/build_*.py` exist (ported, same as Rajasthan/Tamil Nadu) but there is no `results/phase8_*` file and no `obj3_environment_contract_assam.json` anywhere in this repo. Any document that previously described Phase 8 "results" for Assam was describing Rajasthan's numbers by mistake. |
 
-Rajasthan has completed **all of Phases 1–8** — Phases 1–7 to Tamil Nadu's
-level (Tamil Nadu itself stops at Phase 7), and Phase 8 built fresh
-because `objective2-tamilnadu` has no `src/robustness/` or `src/handoff/`
-to port (its `09_NEXT_STEPS.md` says so). `src/design/`,
-`src/simulation/`, `src/doe/generate_cases.py` are byte-identical to
-Tamil Nadu (state-agnostic by the framework doc); `verify/gates.py`
-swaps only its per-state test inputs (3 clusters not 5; Rajasthan's PCM
-shortlist; one extra informational Cluster-0 check); `doe/run_batch.py` +
-`doe/split_cases.py`, `surrogate/{train,evaluate}.py` and
-`optimize/{search,select_deployable}.py` differ only in the
-`sim_v1_rajasthan` tag / flat `results/phaseN_*` paths / one sampling arg;
-`surrogate/features.py` keeps TN's four feature groups but remaps column
-names to Rajasthan's Objective 1 table headers (see `06_…`);
-`plots/make_plots.py` is ported with the flat paths, 3-regime subplot
-grids and Rajasthan's PCM names. `src/robustness/monte_carlo.py` and
-`src/handoff/build_*.py` were this project's **own, first-built**
-implementation of Phase 8 — Tamil Nadu's later Phase 8 pass adopted this
-project's methodology (two-level weather noise, fixed cross-state
-thresholds, 120 draws), and in turn contributed back a cleaner
-`weather_perturbation` seam on `run_case()` and finer-grained robustness
-metrics, both folded back in here (`08_…`, "Alignment with the Tamil
-Nadu implementation"). File/function naming in `src/handoff/` and the
-`pipeline.py` `robustness`/`handoff` stage split now match Tamil Nadu's
-layout exactly. **The full Tamil Nadu tree is now mirrored, in both
-directions.**
+## Climate regimes actually used (from `configs/states/assam.yaml` / `data/objective1/cluster_profiles_assam.csv`)
 
-## Code map (what actually exists today)
+K_FINAL = 3 (Level-A GMM), same as Rajasthan's regime count but a
+**different climate, different medoids, different PCM shortlist**:
 
-```
-objective2-rajasthan/
-├── config.py                          # path constants
-├── check_climate_signature.py         # Phase 0 — sanity check that the frozen weather is genuinely Rajasthan's
-├── pipeline.py                        # CLI entry point — all 9 stages wired: geometry/simulate/verify/doe/surrogate/optimize/robustness/handoff/plots
-├── configs/
-│   ├── system_config_shared.yaml      # Phase 0A — frozen, byte-identical across all 4 states
-│   ├── design_bounds_shared.yaml      # Phase 0A — frozen, byte-identical across all 4 states
-│   └── states/rajasthan.yaml          # Phase 1 — this state's inputs (regimes, PCM shortlist, mains temp, demand)
-├── src/
-│   ├── io_utils.py                    # shared config/data loaders (byte-identical to Tamil Nadu)
-│   ├── design/
-│   │   ├── schema.py                  # DesignVector (byte-identical to Tamil Nadu)
-│   │   ├── geometry.py                # geometry + Ergun hydraulics (byte-identical to Tamil Nadu)
-│   │   └── constraints.py             # valid/invalid + reason codes + boundary self-test (byte-identical to Tamil Nadu)
-│   ├── simulation/
-│   │   ├── capsule_enthalpy.py        # enthalpy model (byte-identical to Tamil Nadu)
-│   │   ├── collector_model.py         # flat-plate collector (byte-identical to Tamil Nadu)
-│   │   ├── heat_transfer.py           # UA_eff, Wakao-Kaguei (byte-identical to Tamil Nadu)
-│   │   ├── hydraulic_model.py         # runtime pump-power wrapper (byte-identical to Tamil Nadu)
-│   │   ├── demand_profile.py          # demand-curve model (byte-identical to Tamil Nadu)
-│   │   ├── energy_balance.py          # energy accounting (byte-identical to Tamil Nadu)
-│   │   ├── tank_model.py              # core timestep solver, incl. both Phase-4-discovered bug fixes (byte-identical to Tamil Nadu)
-│   │   └── run_case.py                # one-case orchestrator (byte-identical to Tamil Nadu)
-│   ├── verify/
-│   │   └── gates.py                  # Phase 4 — Gates 1–5 (ported from Tamil Nadu; state-specific test inputs swapped)
-│   ├── doe/
-│   │   ├── generate_cases.py        # Phase 5 — LHS + boundary + baseline case specs (byte-identical to Tamil Nadu)
-│   │   ├── run_batch.py             # Phase 5 — run every case through geometry gate + simulator, 1 row/case (n_lhs_per_pair=12)
-│   │   └── split_cases.py           # Phase 5 — stratified 80/20 case-level train/holdout split
-│   ├── surrogate/
-│   │   ├── features.py             # Phase 6 — feature table (TN groups; column names remapped to RJ Objective 1 headers)
-│   │   ├── train.py                # Phase 6 — Extra Trees per target + linear baseline + feasibility classifier
-│   │   └── evaluate.py             # Phase 6 — hold-out MAE broken down by regime and by PCM
-│   ├── optimize/
-│   │   ├── search.py              # Phase 7 — 400 random candidates/pair -> geometry gate -> surrogate score -> top 5
-│   │   └── select_deployable.py   # Phase 7 — re-run top candidates in real simulator + pre-declared selection rule
-│   ├── robustness/
-│   │   └── monte_carlo.py                 # Phase 8 D2.7 — run_all(): 120 MC draws/regime via run_case's weather_perturbation seam; p_meets_*, p_temperature_violation, p_exceeds_max_safe_temp, P5-P95
-│   ├── handoff/
-│   │   ├── build_recommendation_cards.py  # Phase 8 D2.8 — run(): one card per regime (results/phase8_recommendation_cards.md)
-│   │   └── build_obj3_contract.py         # Phase 8 D2.9 — run(): obj3_environment_contract_rajasthan.json (naming matches Tamil Nadu's src/handoff/)
-│   └── plots/
-│       └── make_plots.py          # Phase 2-8 justification figures (Plotly; ported from Tamil Nadu, flat paths + 3-regime grids)
-├── data/
-│   ├── objective1/                    # frozen Objective 1 outputs (see data/README.md)
-│   ├── weather/                       # per-regime medoid weather (hourly + daily), clusters 0-2
-│   └── demand/demand_profile_rajasthan.csv
-├── docs/
-│   ├── 00_MASTER_OVERVIEW.md          # this file
-│   ├── 01_PHASE1_CONFIG_AND_STATE_SETUP.md
-│   ├── 02_PHASE2_GEOMETRY_CONSTRAINTS.md
-│   ├── 03_PHASE3_GREYBOX_SIMULATOR.md
-│   ├── 04_PHASE4_VERIFICATION_GATES.md
-│   ├── 05_PHASE5_DOE.md
-│   ├── 06_PHASE6_SURROGATE.md
-│   ├── 07_PHASE7_OPTIMIZATION.md
-│   ├── 08_PHASE8_ROBUSTNESS_HANDOFF.md
-│   ├── OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md   # the Objective 3 hand-off brief (ported from Tamil Nadu)
-│   └── plots/                        # 00_INDEX.md + 7 per-phase figure walkthroughs (viva/report captions)
-└── results/
-    ├── phase0_climate_signature_check.txt          # Phase 0 output (PASSED, 3/3)
-    ├── phase2_geometry_boundary_selftest.txt       # Phase 2 output (8/8 deterministic)
-    ├── phase3_simulate_cluster*_*.json             # Phase 3 output — 6 smoke-run cases
-    ├── phase4_simulator_verification_report.txt    # Phase 4 output (GO, 5/5 gates clean)
-    ├── phase5_design_cases.parquet                 # Phase 5 output — 165 rows, 1 per simulation (+ .csv copy)
-    ├── phase6_surrogate_metrics.csv / _error_by_group.csv / _models.pkl (gitignored) / _feature_cols.json
-    ├── phase7_surrogate_top_candidates.csv         # Phase 7 — 60 surrogate-ranked candidates (proposal only)
-    ├── phase7_optimized_designs.csv                # Phase 7 — all 60 re-run in the real simulator (PCM-comparison report)
-    ├── phase7_deployable_design_per_regime.csv     # Phase 7 — final selection, 1 row per regime
-    ├── phase8_robustness.csv / _robustness_draws.csv   # Phase 8 D2.7 — per-regime summary + every MC draw
-    ├── phase8_recommendation_cards.md              # Phase 8 D2.8 — one card per regime
-    ├── obj3_environment_contract_rajasthan.json    # Phase 8 D2.9 — Objective 3 handoff contract
-    ├── plots/static/*.png (17) + plots/interactive/*.html (17, gitignored)   # Phase 2-8 figures
-    └── README.md                                   # what each file above contains + the inference drawn from it
-```
+| cluster_id | label | medoid | n_points | population | T_mains_est_C | L_required_kJ/kg |
+|---|---|---|---|---|---|---|
+| 0 | Lower Brahmaputra Valley (moist valley) | ASP_0012 | 33 | 4,757,891 | 19.89 | 252.09 |
+| 1 | Upper Assam Tea Belt (warm valley) | ASP_0092 | 61 | 4,271,199 | 19.10 | 258.69 |
+| 2 | Barak Valley & Southern Hills (elevated, cooler) | ASP_0028 | 35 | 2,466,324 | 16.59 | 279.70 |
 
-`src/design/`, `src/simulation/` and `src/doe/generate_cases.py` are
-**state-agnostic** — verified directly (`diff -rq` against
-`objective2-tamilnadu/` returns nothing, see `02_…` / `03_…` / `05_…`).
-`src/verify/gates.py`, `src/doe/{run_batch,split_cases}.py`,
-`src/surrogate/{train,evaluate}.py` and
-`src/optimize/{search,select_deployable}.py` are the TN implementations
-with only their per-state inputs / output paths / one sampling argument
-changed — logic, thresholds, hyper-parameters, the >15% large-error rule
-and the pre-declared selection rule all unchanged. `src/surrogate/features.py`
-keeps TN's four feature groups but remaps the climate/confidence column
-names to Rajasthan's Objective 1 table headers (`06_…`). `src/robustness/`
-and `src/handoff/` were this project's own Phase 8 build (TN stopped at
-Phase 7 when this was first written); TN's later Phase 8 pass adopted
-this project's methodology wholesale, and its one genuine improvement — a
-`weather_perturbation` keyword directly on `run_case()`, replacing the
-original temporary `load_hourly_weather` monkey-patch — has been folded
-back here, along with matching TN's finer-grained robustness metrics and
-its `build_recommendation_cards.py` / `build_obj3_contract.py` naming
-(`08_…`, "Alignment with the Tamil Nadu implementation").
+`Tm_target_C = 44.0 °C` for all three regimes. PCM shortlist is
+**identical across all 3 regimes**: `savE® OM48, savE® OM50, savE® OM46`
+— per `assam.yaml`'s own note, this is **not** an Objective 1 MCDM
+Top-3 in the usual sense: Objective 1's confirmed-feasible K=3 MCDM
+ranking returned zero confirmed candidates, and the earlier K=4 ranking
+was physically invalidated in Objective 1's own Phase 10 (ρ = −0.52 to
+−0.64 correlation with actual solar-fraction performance; the old
+rank-1 PCM RT44HC came last). The shortlist actually used here is
+Objective 1's **Phase 9/10 physics-validated candidate universe**
+(10-year simulation ranking), not a clustering+MCDM output — this is a
+material difference from how Rajasthan/Tamil Nadu's shortlists were
+built, and should be stated as such in the paper rather than described
+as "MCDM Top-3."
 
-## Headline result: Phases 0–8 complete
+**Demand: 100 L/day** (50 L morning @ 07:00 IST + 50 L evening @ 19:00
+IST) — **not** 300 L/day. This matches Assam Objective 1's own SWH
+design specification and 10-year physics validation, but it means
+Assam's absolute energy numbers (~650–710 kWh/year useful energy) are
+**not directly comparable** to Rajasthan/Tamil Nadu's (~1550–1700
+kWh/year) without normalizing for the 3× smaller demand — a fact any
+four-state comparison chapter must state explicitly.
+
+Mains temperature range: 15–28 °C (framework doc, Assam row); point
+estimates per regime 16.59–19.89 °C, noticeably colder than
+Rajasthan's 24.5–25.8 °C.
+
+## Headline results, phase by phase (from the actual `results/` files)
 
 ```
-Phase 0 (climate signature):  PASSED   3/3 regimes — genuinely hot-dry/high-clearness Rajasthan weather
-Phase 2 (geometry self-test): PASS     8/8 boundary cases deterministic, matches Tamil Nadu line-for-line
-Phase 3 (simulator smoke run): completes cleanly, energy residual ~3-16e-4% (well under 0.1% Gate-1 threshold)
-Phase 4 (verification gates):  GO      5/5 gates clean — sim_v1_rajasthan; verifies one gate cleaner than Tamil Nadu
-Phase 5 (reduced DOE):         165 cases — 111 valid / 54 infeasible-retained (all bounds_violation, 32.7% ≈ TN's 32.6%); 138 train / 27 holdout
-Phase 6 (surrogate):          useful-energy hold-out R²=0.9998 (Extra Trees), past the >0.80 exit target; feasibility classifier 100%/100%
-Phase 7 (optimize + confirm): plain tank wins all 3 regimes; surrogate-vs-sim mean error 0.025% (0/60 >15%); 0/45 PCM candidates pass temperature safety
-Phase 8 (robustness+handoff): NOT robust — P(temp-safe) 0.45–0.57 across regimes (P(demand) 0.80–0.99 OK); 3 recommendation cards + obj3 contract written
+Phase 4 (verification gates): GO but only 4/5 gates clean — Gate 3 FAILS.
+    Gate 1: PASS (residual 0.000000% on all 5 cases)
+    Gate 2: PASS (10/10 + 1 informational: plain-tank Cluster 0 hits 66.83 °C,
+            already above the 65 °C PCM limit, on solar input alone)
+    Gate 3: FAIL — plain tank (SF 62.51%) beats BOTH the fixed-PCM design
+            (SF 61.54%) AND the capability-check PCM matched to the tank's
+            own operating range (SF 60.65%). Objective 1's rank-1 PCM
+            (savE® OM48) does not beat the plain tank in this 50 L /
+            12.9%-fraction geometry. This is a stronger warning than
+            Rajasthan (where Gate 3 passed) or Tamil Nadu.
+    Gate 4: PASS (61.76% inside the cited 54-84% band)
+    Gate 5: PASS (3/3)
+    Overall: 4/5 clean, residual well under 0.5% -> GO per the framework's
+    ">=3/5 clean" rule -- but Gate 3's failure was a signal, later ignored
+    by Phase 7 (see below).
+
+Phase 5 (DOE): 165 cases, 111 valid / 54 infeasible (all bounds_violation,
+    32.7% -- same diameter/thickness interaction as every other state),
+    138 train / 27 holdout.
+
+Phase 6 (surrogate): useful-energy holdout R^2 = 0.9977 (Extra Trees),
+    0.9981 (Linear -- ties/slightly beats the tree here). Feasibility
+    classifier 100%/100%. 29 features (not Rajasthan's 39 -- Assam's
+    Objective 1 tables carry fewer climate columns).
+
+Phase 7 (optimize): run via scripts/run_phase7_optimization.py (a
+    DIFFERENT search than the ported src/optimize/search.py +
+    select_deployable.py used elsewhere) -- 1,000 candidates/pair x 12
+    pairs = 12,000 candidates, 7,966 feasible, a "5% Near-Best Rule" +
+    6-tier hierarchical tie-break (not the simple pareto_tolerance_pct
+    rule), 21 top candidates, 5 re-simulated in the real sim_v1_assam.
+    REPORTED verdict: "PASS -- 0/0 safety violations, PASSED at <=95 C
+    water / <=90 C PCM." ACTUAL verdict (checked against this project's
+    own frozen 75 C / 65 C limits in system_config_shared.yaml): FAILS.
+    See "The safety-verdict bug" below. This is not a one-off: 79/111
+    (71%) of Phase 5's valid DOE rows already exceed the 65 C PCM limit,
+    so most of the design space Phase 7 searched was unsafe to begin
+    with -- Phase 7 needed the filter it skipped.
+
+Phase 8 (robustness+handoff): NOT RUN for Assam. No results/phase8_*.csv,
+    no obj3_environment_contract_assam.json anywhere in this repo.
 ```
 
-Phase 4 detail: Gate 1 max residual 0.0016% (pass < 0.1%); Gate 2 10/10
-limiting cases; Gate 3 **RT50 beats the plain tank** in Rajasthan (SF
-55.08% vs 54.97%) — unlike TN's n-Octacosane, which didn't; Gate 4 solar
-fraction 55.07% is **inside** the cited 54–84% band (TN's was just below).
-Phase 5 detail: 9 regime×PCM pairs × (12 LHS + 6 boundary) + 3 no-PCM
-baselines; 54 infeasible rows all `bounds_violation` from the
-diameter/thickness bound interaction (`02_…`), kept with reason codes.
-Full readouts in `04_…` / `05_…` and the matching `results/phase4_*` /
-`results/phase5_*` files.
+## The safety-verdict bug — read this before citing Phase 7's "PASS"
 
-## The one finding carried forward — DOE scale, then robustness scale
+`system_config_shared.yaml` (frozen, identical across all 4 states) sets:
 
-Objective 1's rank-1 PCM for Rajasthan's Cluster 0 (**RT50**, `Tm = 48 °C`)
-gets driven **past the 65 °C PCM material-stability limit for a large
-fraction of the year, regardless of PCM loading**. Phase 3 smoke runs saw
-896–3,142 violation sub-hours; the Phase 4 Gate 2 report records that the
-**plain tank alone** (no PCM) reaches 68.6 °C in Cluster 0. **Phase 5
-generalises it:** across all 111 valid DOE cases, `max_pcm_temp_C` spans
-68.2–72.7 °C and **108 / 111 log `n_safety_violations > 0`** — every
-regime, every one of the six shortlisted PCMs. This is a consequence of
-Rajasthan's hot-dry, high-clearness solar input against the frozen 1.5 m²
-collector / 50 L tank, not a capsule-sizing problem. Phase 6's surrogate
-learned this dataset faithfully (it does not "fix" the physics — it
-predicts the same overheating). **Phase 7 resolved it as designed:** with
-the 65 °C PCM limit applied as a hard selection filter, **0 / 45 PCM
-candidates** passed temperature safety in any regime (vs 15/15 plain-tank
-candidates), so the deployable design for all three regimes is a **plain
-(sensible-only) 50 L tank**. The best PCM geometry the search found beats
-the best plain-tank geometry by only +0.07–0.15 % useful energy — two
-orders of magnitude under the 5 % Pareto tolerance — and fails safety
-anyway. This is the same negative result Phase 4 Gate 3 and Phase 5
-reached, now confirmed by a 400-candidate-per-pair search with full
-simulator re-confirmation. See `07_PHASE7_OPTIMIZATION.md`.
+```yaml
+safety:
+  max_water_temp_C: 75.0
+  max_pcm_temp_C: 65.0
+```
 
-**Phase 8 pushed it one step further:** 120 Monte Carlo draws per regime
-(weather + demand + mains variability, via `run_case`'s
-`weather_perturbation` seam) show the fallback **plain tank is not
-robustly safe either** — P(temp-safe) = 0.45–0.57, i.e. it breaches the
-75 °C water scald limit in roughly half of draws (P95 max water
-84.6–88.2 °C), while still mostly meeting the demand bar (P(demand)
-0.80–0.99). So
-the Objective 2 conclusion for Rajasthan is a **load-bearing negative**:
-no shortlisted PCM is deployable, and the sensible-only fallback needs an
-**active overheat bypass** to be safe. That bypass is an Objective 3
-control action — hence the `obj3_environment_contract_rajasthan.json`
-safety-shield block forces `bypass` at `T_water ≥ 72 °C`. The follow-up
-(widen PCM bounds **and** add the bypass shield, or revisit the frozen
-1.5 m² / 50 L sizing for hot-dry climates) is out of Objective 2's 40-hr
-scope, named rather than silently dropped.
+`scripts/run_phase7_optimization.py` reads these correctly and computes
+`water_temp_safety_margin_C = 75 - sim_max_water_temp_C` and
+`pcm_temp_safety_margin_C = 65 - sim_max_pcm_temp_C` for every candidate
+(lines ~349–352) — this is the same real safety envelope Rajasthan and
+Tamil Nadu's Phase 7 used to reject PCM candidates. Reading
+`results/phase7_deployable_design_per_regime.csv` directly:
 
-## Documents in this folder
+| Regime | PCM selected | Max PCM temp (°C) | PCM margin to 65 °C | Max water temp (°C) | Water margin to 75 °C | `n_safety_violations` |
+|---|---|---|---|---|---|---|
+| 0 | savE® OM46 | 66.21 | **−1.21** | 66.51 | +9.01 | 13 |
+| 1 | savE® OM48 | 67.95 | **−2.95** | 68.60 | +6.40 | 313 |
+| 2 | savE® OM48 | 70.09 | **−5.09** | 70.71 | +4.29 | 215 |
 
-- `01_PHASE1_CONFIG_AND_STATE_SETUP.md` — frozen configs, this state's input file, the Phase 0 sanity check
-- `02_PHASE2_GEOMETRY_CONSTRAINTS.md` — geometry engine, Ergun hydraulics, bounds finding (identical engine to Tamil Nadu; the 12.9%-not-20% finding carries over unchanged since it depends only on the frozen shared bounds, not the state)
-- `03_PHASE3_GREYBOX_SIMULATOR.md` — enthalpy model, energy balance, solver design, both bug fixes (inherited, already fixed in the shared engine), plus Rajasthan's own Cluster-0 smoke-run numbers
-- `04_PHASE4_VERIFICATION_GATES.md` — the reduced 5-gate battery, ported from Tamil Nadu with state-specific test inputs; Rajasthan result: GO, 5/5 gates clean, `sim_v1_rajasthan`
-- `05_PHASE5_DOE.md` — the reduced DOE: 165-case sampling plan, the 54 retained infeasible rows, the 80/20 split, and the DOE-scale safety-limit finding
-- `06_PHASE6_SURROGATE.md` — the tree surrogate: 39 features (TN's groups, RJ column names), hold-out R²≈1.0 on the key targets, the honest linear-vs-tree comparison, the feature-name adaptation table
-- `07_PHASE7_OPTIMIZATION.md` — one surrogate pass + 60-candidate simulator confirmation + the pre-declared selection rule; result: plain tank deployable in all 3 regimes, 0/45 PCM candidates pass safety
-- `08_PHASE8_ROBUSTNESS_HANDOFF.md` — 120-draw Monte Carlo (NOT robust: P(temp-safe) 0.45–0.57), the D2.8 recommendation cards, the D2.9 Objective 3 contract
-- `OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md` — the Objective 3 hand-off brief: what the contract contains, what it means physically, concrete first steps, and what Objective 2 explicitly left unresolved
-- `plots/00_INDEX.md` (+ `02_…`–`08_…`) — a walkthrough of each of the 17 Phase 2–8 figures: what it shows, what to infer, and the one-line viva/report caption
-- `../results/README.md` — what every file in `results/` contains and what to infer from it, phase by phase
+**All 3 of Assam's Phase 7 "deployable" designs exceed the frozen 65 °C
+PCM material-stability limit**, by 1.2–5.1 °C, and log 13–313
+safety-violation sub-hours over the simulated year — this is exactly
+the failure mode Rajasthan/Tamil Nadu's Phase 7 was designed to filter
+out (`meets_temperature_safety` in the ported `select_deployable.py`),
+and it is the same physical phenomenon as Rajasthan's Gate-2/Phase-5
+overheating finding, not a new bug in the simulator.
+
+`results/phase7_optimization_report.md` §5 nonetheless prints:
+
+```
+Max PCM Temp   Acceptance Standard <= 90.0°C   ... PASSED
+```
+
+That 90 °C figure does not exist anywhere in this project's frozen
+config — it is invented in the report-generation code
+(`scripts/run_phase7_optimization.py`, line ~573/602), which computes
+the correct negative margin against the real 65 °C limit and then
+**prints a hardcoded "PASSED" against a different, unrelated 90 °C
+threshold without checking the actual sign of the margin it just
+computed.** This is a genuine bug in the report template, not a policy
+decision to relax the limit — nowhere is a deliberate 90 °C PCM / 95 °C
+water limit documented or justified for Assam.
+
+**Practical consequence:** as things stand, Assam has **no
+Phase-7-validated deployable design** under this project's own
+pre-declared safety rule. The honest options, in order of preference:
+1. Re-run Phase 7's selection against the correct 65 °C / 75 °C limits
+   (likely forcing the plain tank in some or all regimes, as it did for
+   Rajasthan and 4/5 of Tamil Nadu's regimes) — the physically
+   consistent choice, and the one that matches how the other two states'
+   Phase 7 was done.
+2. If a deliberately wider PCM temperature ceiling for Assam is wanted
+   (e.g. because the shortlisted PCMs' Tm ≈ 44–51 °C sit differently
+   here), that must be a stated, justified change to
+   `system_config_shared.yaml` or a documented per-state override — not
+   a silent mismatch between the config and the report.
 
 ## What remains (not built)
 
-- **Nothing in the Tamil Nadu tree.** `src/plots/` is ported (all 17
-  figures, including Phase 8's two) and `--stage plots` is wired; the
-  full per-state pipeline is mirrored, and the file/function naming in
-  `src/handoff/` and `pipeline.py`'s stage list now matches Tamil Nadu's
-  layout exactly.
-- Named future work carried in the Objective 3 contract's
-  `deferred_future_work`: the four-state comparison, an active-learning
-  optimization loop / full NSGA-II, full-draw robustness with a real
-  alternate weather series, and widened design bounds for 15–20 % PCM
-  fraction (a Phase-0-gate decision, since the bounds are frozen).
+- **Phase 8 end-to-end for Assam**: run `python pipeline.py --state assam
+  --stage robustness` then `--stage handoff` (code already exists,
+  ported and untouched) once Phase 7's deployable designs are on solid
+  ground.
+- **The safety-verdict bug above must be resolved** before any Phase 7
+  Assam number is cited in the paper as "validated" or "deployable."
+- **A Phase-0 standalone report file** (`results/phase0_climate_signature_check.txt`)
+  and **Phase-3 smoke-run JSON files** (`results/phase3_simulate_*.json`)
+  don't exist for Assam the way they do for Rajasthan/Tamil Nadu — the
+  underlying checks were done (see `assam.yaml`'s embedded Phase 0 note
+  and Phase 4's Gate 1/2 cases) but not saved as separate artifacts.
+- **`docs/01`–`docs/08` and `OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md`** have
+  been updated to Assam's actual numbers alongside this file; `docs/plots/`
+  was not audited in this pass (still describes the figures generically
+  and wasn't found to contain fabricated numbers, only unverified
+  Rajasthan-era captions in places — treat with the same caution).

@@ -132,7 +132,15 @@ the 28–41% range — structurally below the 50% fixed demand bar. The
 temperature-safety picture is mixed: regime 2 (the PCM regime) is the
 **safest** at 0.0% safety violations (the PCM absorbs excess heat), while
 regimes 0 and 3 are worst (55.8% and 35.8% violation probability
-respectively). See `10_PHASE8_ROBUSTNESS_HANDOFF.md` for the full table.
+respectively). Regime 0's weakness starts before any Monte Carlo noise
+is even added: its selected plain-tank design is **nominally** 0.14 °C
+over the 75 °C water limit (`constraint_margin_C = -0.137`,
+`meets_temperature_safety=False` in `deployable_design_per_regime.csv`)
+— every candidate tried in that regime failed the safety filter, so the
+selection rule's fallback ("widen to all confirmed candidates") picked
+the least-bad one rather than a genuinely safe one. See
+`08_PHASE7_OPTIMIZATION.md` and `10_PHASE8_ROBUSTNESS_HANDOFF.md` for
+the full detail.
 
 Both findings are the optimizer/analysis working correctly, not a defect
 — exactly the kind of result Objective 2 exists to surface. The low solar

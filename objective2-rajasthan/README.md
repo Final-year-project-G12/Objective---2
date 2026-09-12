@@ -132,8 +132,7 @@ the 15–20% seen in the literature) within the frozen bounds.
 ### Phase 3 — grey-box enthalpy simulator, one full-year case
 
 ```
-python pipeline.py --state rajasthan --stage simulate --cluster 0 \
-    --pcm "RT50" --diameter 0.08 --count 24 --flow 0.025
+python pipeline.py --state rajasthan --stage simulate --cluster 0 --pcm "RT50" --diameter 0.08 --count 24 --flow 0.025
 python pipeline.py --state rajasthan --stage simulate --cluster 1 --no-pcm
 ```
 
@@ -291,3 +290,18 @@ useful-energy P5–P95 intervals) were added this pass. Needs `plotly` +
 `kaleido` (installed). Runtime ~1–2 min. Each figure's "what it shows /
 what to infer / viva caption" walkthrough is in
 [`docs/plots/`](docs/plots/00_INDEX.md).
+
+
+```powershell
+
+python check_climate_signature.py                          # Phase 0 sanity check
+python pipeline.py --state rajasthan --stage geometry       # Phase 2
+python pipeline.py --state rajasthan --stage simulate --cluster 0 --pcm "RT50" --diameter 0.08 --count 24 --flow 0.025   # Phase 3 (example case)
+python pipeline.py --state rajasthan --stage verify         # Phase 4 (~2-3 min)
+python pipeline.py --state rajasthan --stage doe             # Phase 5 (~13 min)
+python pipeline.py --state rajasthan --stage surrogate       # Phase 6 (~10 s)
+python pipeline.py --state rajasthan --stage optimize        # Phase 7 (~6 min)
+python pipeline.py --state rajasthan --stage robustness --mc-draws 120   # Phase 8a (~18 min)
+python pipeline.py --state rajasthan --stage handoff          # Phase 8b (seconds)
+python pipeline.py --state rajasthan --stage plots            # Phase 2-8 figures (~1-2 min, needs plotly+kaleido)
+```

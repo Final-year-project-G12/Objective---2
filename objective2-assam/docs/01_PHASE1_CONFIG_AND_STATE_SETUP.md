@@ -1,126 +1,90 @@
-# 01 — Phase 1 Audit: Frozen Configuration & State Setup (Rajasthan)
+# 01 — Phase 1 Audit: Frozen Configuration & State Setup (Assam)
 
 Files: `configs/system_config_shared.yaml`, `configs/design_bounds_shared.yaml`,
-`configs/states/rajasthan.yaml`. Loader: `src/io_utils.py`. Phase 0 sanity
-check: `check_climate_signature.py`.
+`configs/states/assam.yaml`. Loader: `src/io_utils.py`.
 
-> `system_config_shared.yaml`, `design_bounds_shared.yaml`, and `src/io_utils.py`
-> are **byte-identical** to `objective2-tamilnadu/`'s copies (verified). Only
-> `configs/states/rajasthan.yaml` is state-specific — this audit therefore mirrors
-> the Tamil Nadu reference audit's structure, with Rajasthan's own numbers.
+> Rewritten from Assam's actual `configs/states/assam.yaml` — the
+> previous version of this doc described Rajasthan's regimes, PCMs, and
+> 300 L/day demand with no Assam content.
 
-## Purpose
+## `system_config_shared.yaml` / `design_bounds_shared.yaml` — frozen, shared across all 4 states
 
-Freeze everything Phase 2–4 needs, once, so the simulator can never be
-compared against a moving target. Per
-`O2_Unified_PerState_Execution_Framework.md`, Phase 0: the two
-`*_shared.yaml` files are identical for all four states (Tamil Nadu,
-Rajasthan, Assam, Uttarakhand); only `configs/states/<state>.yaml` varies.
+Same collector (1.5 m², F_R(τα)=0.75), tank (50 L, H:D=2:1, U_tank=0.8
+W/m²K), safety limits (**max water 75 °C, max PCM 65 °C**, max pressure
+3.5 bar), delivery target (45 °C — see caveat below on Assam's own
+`Tm_target_C`), and sphere-only/staggered-only design bounds (diameter
+0.02–0.08 m, count 8–24, flow 0.010–0.050 kg/s) as every other state.
+These files are byte-identical across states by design — nothing here
+is Assam-specific.
 
-## `system_config_shared.yaml` — what's frozen and why
+## `configs/states/assam.yaml` — Phase 1's actual output
 
-| Category | Value | Source |
-|---|---|---|
-| Collector | 1.5 m², F_R(τα)=0.75, F_R·U_L=4.5 W/m²K | Domestic FPC baseline [Singh 2025] |
-| Tank | 50 L, height:diameter=2:1, U_tank=0.8 W/m²K | Chen et al. 2025 Table 1 |
-| PCM integration | Direct encapsulation, Al capsule wall (0.8mm, 205 W/mK) | Framework doc §3.1 |
-| Pump | 0.010–0.050 kg/s, η=0.60 | Framework doc §3.1 |
-| Safety | max water 75°C, max PCM 65°C, max pressure 3.5 bar | Framework doc §3.1 |
-| Delivery | target 45°C | Framework doc §3.1 |
-| Solver | backward-Euler (linear-implicit water node, lagged PCM), dt=300s, adaptive sub-stepping | Barqawi 2025 §4c |
-| Selection | Pareto tolerance = 5% | Framework doc §9.5 (pre-declared, Bug-Fix 7) |
-| Verification | Gate 1 pass <0.1%, warn <0.5%; Gate 4 benchmark band 54-84% | Framework doc §5, Singh 2025 |
+- **3 Level-A GMM regimes** (`cluster_id` 0–2, K_FINAL=3, same regime
+  count as Rajasthan but a different climate and different medoids):
 
-Same two config-only additions as Tamil Nadu (not per-state, both live in
-the shared file): `melting_half_width_K` (the PCM database reports a
-single `Tm_C`, not a measured solidus/liquidus interval) and
-`initial_water_temp_C` / `initial_pcm_state` (Gate 2's initial-condition
-tests need these overridable).
+  | Cluster | Label | Medoid | n_points | Population | T_mains_est_C | L_required_kJ/kg |
+  |---|---|---|---|---|---|---|
+  | 0 | Lower Brahmaputra Valley (moist valley) | ASP_0012 | 33 | 4,757,891 | 19.89 | 252.09 |
+  | 1 | Upper Assam Tea Belt (warm valley) | ASP_0092 | 61 | 4,271,199 | 19.10 | 258.69 |
+  | 2 | Barak Valley & Southern Hills (elevated, cooler) | ASP_0028 | 35 | 2,466,324 | 16.59 | 279.70 |
 
-**This is the config that produces the Cluster-0 safety finding in the
-master overview.** `safety.max_pcm_temp_C = 65.0` and `tank.volume_L = 50.0`
-are both frozen here, identical to Tamil Nadu — the finding is not a
-Rajasthan-specific config choice, it is what this shared config does when
-fed Rajasthan's much hotter collector input (see Phase 0 section below).
+  `Tm_target_C = 44.0 °C` for all 3 clusters (lower than Rajasthan's
+  57.0 °C — Assam's colder mains water needs a smaller lift to the
+  45 °C delivery target, consistent with the framework's delivery-
+  anchored `Tm_target_C` derivation).
 
-## `design_bounds_shared.yaml` — what's frozen and why
+- **PCM shortlist**: identical across all 3 regimes —
+  `savE® OM48, savE® OM50, savE® OM46`. Per `assam.yaml`'s own embedded
+  note, this is **not** a standard Objective 1 MCDM Top-3: Objective 1's
+  confirmed-feasible K=3 MCDM ranking for Assam returned **zero**
+  confirmed candidates, and an earlier K=4 MCDM ranking was physically
+  invalidated in Objective 1's own Phase 10 (ρ = −0.52 to −0.64
+  correlation between MCDM rank and actual simulated solar-fraction
+  performance; the old rank-1 PCM, RT44HC, came last). The 3 PCMs used
+  here are Objective 1's **Phase 9/10 physics-validated candidate
+  universe** instead — a materially different provenance from
+  Rajasthan/Tamil Nadu's shortlists, and it should be described that way
+  in any paper section rather than as "MCDM Top-3."
 
-Sphere-only, staggered-only (the framework doc's documented 40-hr corner
-cut). Capsule diameter 0.02–0.08 m, capsule count 8–24 (integer), PCM
-volume fraction 0.10–0.20 of tank volume, flow 0.010–0.050 kg/s. Same
-diameter/thickness derivation and the same consequence (max reachable PCM
-fraction is 12.9%, not 20%) as Tamil Nadu — see `02_PHASE2_GEOMETRY_CONSTRAINTS.md`.
+- **Demand profile**: **100 L/day** (50 L @ 07:00 IST + 50 L @ 19:00
+  IST), `data/demand/demand_profile_assam.csv` — matches Assam
+  Objective 1's own SWH design specification and 10-year physics
+  validation. **This is 1/3 of Rajasthan/Tamil Nadu's 300 L/day**, so
+  Assam's absolute energy numbers are not directly comparable across
+  states without normalizing for demand.
 
-## `configs/states/rajasthan.yaml` — Phase 1's actual output
+- **Mains temperature**: 15–28 °C range (framework doc, Assam row);
+  per-regime point estimates 16.59–19.89 °C — noticeably colder than
+  Rajasthan's 24.5–25.8 °C, consistent with Assam's humid-subtropical,
+  less solar-intense climate.
 
-Every field was read directly off the frozen Objective 1 files already
-sitting in `data/objective1/` — nothing in this file is invented:
+## Phase 0 — climate-signature sanity check: PASSED (embedded, no standalone report file)
 
-- **3 Level-A GMM regimes** (`cluster_id` 0–2) — Rajasthan's Objective 1
-  clustering chose `K_FINAL=3` (Tamil Nadu chose 5; this is Objective 1's
-  own model-selection result, not an Objective 2 choice). Each regime
-  carries its population count, `Tm_target_C` (57.0 °C for all 3
-  Rajasthan clusters, same value as Tamil Nadu — both states' Objective 1
-  pipelines use the same delivery-anchored target), `T_mains_est_C`
-  (24.5–25.8 °C across clusters — noticeably lower spread than Tamil
-  Nadu's, but read directly off `climate_signature_rajasthan.csv`, not
-  estimated), `L_required_kJ_per_kg`, and paths to that cluster's medoid
-  hourly/daily weather files — read from `cluster_profiles_rajasthan.csv`.
-- **PCM shortlist per regime** — the Top-3 names per cluster from
-  `mcdm_topk_by_cluster.csv`: Cluster 0 gets `RT50, RT45HC, Lauric acid
-  (C12)`; Clusters 1 and 2 both get `savE® OM50, Paraffin/HDPE PCM3,
-  Paraffin/HDPE PCM6` (same Top-3 set for both — Objective 1's MCDM
-  consensus, not a copy-paste error; both clusters are the state's
-  "hot, higher-demand" regimes per `cluster_profile_cards_rajasthan.md`).
-- **Demand profile**: 300 L/day, `data/demand/demand_profile_rajasthan.csv`
-  — matches `04_climate_signature_rajasthan.py`'s `NIGHT_DRAW_TOTAL_L=300`
-  assumption (Avargani et al. 2021), and deliberately kept identical to
-  Tamil Nadu's total so the four-state comparison stays fair (per
-  `build_demand_profile.py`'s own docstring).
-- **Mains temperature**: 18–30 °C range from the framework doc's Rajasthan
-  state-input row; the per-regime point estimate the simulator actually
-  uses (`T_mains_est_C`, 24.5–25.8 °C) is the population-weighted mean of
-  the point-level column in `climate_signature_rajasthan.csv`, already
-  inside that range.
-- **Elevation**: unlike Tamil Nadu (which has no dedicated elevation
-  script), Rajasthan's Objective 1 has `00c_attach_elevation.py` — a real
-  per-point elevation attach, not a flat approximation. This is carried
-  through unchanged into Objective 2 (nothing in Phase 1–3 reads elevation
-  directly, but it is part of the frozen climate signature record).
+Unlike Rajasthan (which has a separate `check_climate_signature.py` /
+`results/phase0_climate_signature_check.txt`), Assam's Phase 0 check
+result is recorded directly inside `assam.yaml`'s
+`climate_signature_sanity_check` block rather than as a standalone
+results file:
 
-## Phase 0 — climate-signature sanity check (Bug-Fix 8): PASSED, 3/3 regimes
+- Annual GHI daily band expected 2.0–4.5 kWh/m²/day;
+  `cluster_profiles_assam.csv` reports 3.68–4.08 kWh/m²/day (climate
+  estimate) and the exported 2025 hourly weather gives 2.28–2.52
+  kWh/m²/day daily mean across the 3 medoids — both inside/consistent
+  with the expected humid-subtropical band.
+- `Ta_mean` 22.6–25.9 °C, `RH_mean` 75.8–79.0% — matches the stated
+  "humid-subtropical, monsoonal cloud attenuation, RH > 70%" signature,
+  visibly different from Rajasthan's hot-dry signature.
+- Zero timestamp gaps across all 3 medoids' 2025 hourly series (8,760
+  hours each).
+- **Status: PASSED.**
 
-`check_climate_signature.py` confirms the frozen weather under
-`data/weather/` is genuinely Rajasthan's (hot, dry, high-clearness), not
-another state's, and that each daily file is internally clean. Full
-output: `results/phase0_climate_signature_check.txt` — see
-`results/README.md` for what each line means and the inference drawn.
-
-Summary of what passed, per regime:
-
-| Cluster | Medoid | Mean GHI (kWh/m²/d) | Apr–Jun mean daily-max T_a (°C) | CDD24 | Verdict |
-|---|---|---|---|---|---|
-| 0 | RJP_0132 | 5.12 | 39.8 | 12,348 | PASS |
-| 1 | RJP_0202 | 5.40 | 40.3 | 15,837 | PASS |
-| 2 | RJP_0055 | 5.06 | 41.1 | 14,789 | PASS |
-
-All three sit inside the expected 3.0–7.0 kWh/m²/day dry-climate GHI band
-and the 33–47 °C Rajasthan summer daily-max band; medoid ids and regime
-sizes both match Objective 1's own `cluster_profiles_rajasthan.csv` and
-`medoid_points_rajasthan.csv` exactly; zero duplicate (point_id, date)
-rows and zero calendar gaps across all 3,653 days (2016–2025) in every
-regime's weather file. The hot-dry signature (high CDD24, large DTR,
-high daytime clearness, low cloud fraction) is confirmed independently of
-the GHI/temperature bands, and is visibly different from Tamil Nadu's
-coastal-humid or Assam's humid-cloudy signatures — this is the evidence
-that the weather actually being simulated is Rajasthan's, not a
-mis-copied file from another state's `data/weather/` folder.
+If a standalone `results/phase0_climate_signature_check.txt` is wanted
+for Assam (for consistency with Rajasthan/Tamil Nadu's audit trail),
+`check_climate_signature.py` would need to be run with `--state assam`
+— not done in this repo as of this audit.
 
 ## How Phase 1 was verified
 
-`load_state_config("rajasthan")` in `src/io_utils.py` is exercised every
-time any Phase 2/3 function runs (every one of them resolves its weather/
-PCM/demand paths through it) — so every successful Phase 2/3 run in this
-project is itself an implicit Phase 1 integration test, same as Tamil
-Nadu. There is no separate Phase 1 script beyond the Phase 0 sanity check;
-see `HOW_TO_RUN`-equivalent commands in `../README.md`.
+Same as every state: `load_state_config("assam")` in `src/io_utils.py`
+is exercised on every Phase 2+ run, so every successful downstream run
+is an implicit Phase 1 integration test.

@@ -68,7 +68,7 @@ except Exception:
 _saved_config = sys.modules.pop("config", None)
 sys.path.insert(0, str(OBJ1_ROOT))
 _spec = importlib.util.spec_from_file_location(
-    "mcdm08", OBJ1_ROOT / f"08_mcdm_ranking_{STATE}.py")
+    "mcdm08", OBJ1_ROOT / "08_mcdm_ranking.py")
 M = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(M)
 sys.path.remove(str(OBJ1_ROOT))
@@ -116,16 +116,17 @@ def build_full_scores():
     weights_by_cluster = {}
     for prof in profiles.itertuples():
         cid, tm_target, cluster_hsi = prof.cluster_id, prof.Tm_target_C, prof.HSI_sunrise
+        l_required = float(prof.L_required_kJ_per_kg)
         cand = survivors[survivors["cluster_id"] == cid].reset_index(drop=True)
 
-        matrix = M.build_criteria_matrix(cand, tm_target)
+        matrix = M.build_criteria_matrix(cand, tm_target, l_required)
         ent_w = M.entropy_weights(matrix)
         cluster_prior_w = M.reweight_corrosion_for_cluster(prior_w, cluster_hsi,
                                                            hsi_min, hsi_max)
         blend_w = M.blended_weights(ent_w, cluster_prior_w)
         weights_by_cluster[cid] = blend_w
 
-        borda, ranks, scores = M.run_pipeline_once(cand, blend_w, tm_target, matrix)
+        borda, ranks, scores = M.run_pipeline_once(cand, blend_w, tm_target, l_required, matrix)
         _, vikor_S, vikor_R = M.vikor(matrix, blend_w)
         copeland_scores = M.copeland(ranks)
         W = M.kendalls_w(ranks)
@@ -171,7 +172,7 @@ def build_full_scores():
     full = pd.DataFrame(rows)
 
     # Monte Carlo columns come from O1's frozen table — never recomputed here.
-    mc_src = OBJ1_PROCESSED_DIR / f"mcdm_rankings_{STATE}.csv"
+    mc_src = OBJ1_PROCESSED_DIR / "mcdm_full_rankings.csv"
     if mc_src.exists():
         mc = pd.read_csv(mc_src)
         mc_cols = [c for c in mc.columns if c.startswith("mc_")]
@@ -203,7 +204,7 @@ def build_full_scores():
                  ("borda_score", "borda_score_o1")]
         bad = {a: int((chk[a] != chk[b]).sum()) for a, b in pairs}
         status = "IDENTICAL to O1" if not any(bad.values()) else f"MISMATCH {bad}"
-        print(f"  rank cross-check vs mcdm_rankings_{STATE}.csv: {status}")
+        print(f"  rank cross-check vs {mc_src.name}: {status}")
     return full, weights_by_cluster, profiles
 
 
@@ -275,7 +276,7 @@ def build_seasonal(full, weights_by_cluster, profiles):
                              "flips_from_annual": None})
                 continue
 
-            matrix = M.build_criteria_matrix(surv.reset_index(drop=True), tm_target)
+            matrix = M.build_criteria_matrix(surv.reset_index(drop=True), tm_target, l_required)
             ci = M.topsis(matrix, weights)
             ranked = ci.sort_values(ascending=False)
             top3 = list(ranked.index[:3]) + ["-"] * max(0, 3 - len(ranked))

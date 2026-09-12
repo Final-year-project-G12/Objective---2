@@ -31,7 +31,7 @@ Objective 1 design targets: `Tm_target_C` = 57.0 °C, `L_required` = 312.8 kJ/kg
 
 | Capsule diameter | Capsule count | Flow rate | PCM volume fraction | PCM mass |
 |---|---|---|---|---|
-| 0.0441 m | 23 | 0.0349 kg/s | 0.0206 | 0.000 kg |
+| 0.0488 m | 23 | 0.0315 kg/s | 0.0280 | 0.000 kg |
 
 *(For the plain-tank selection the capsule diameter/count are the search's nominal values; `run_case` forces `n_capsule_effective = 0`, so the tank is simulated as plain sensible-water storage.)*
 
@@ -43,7 +43,7 @@ Objective 1 design targets: `Tm_target_C` = 57.0 °C, `L_required` = 312.8 kJ/kg
 
 ### Surrogate vs simulator
 
-Surrogate predicted useful energy 1587.3 kWh; simulator confirmed 1585.7 kWh — **delta 0.098 %** (well inside the 15 % large-error rule; the surrogate was a proposal ranker only, Bug-Fix 5).
+Surrogate predicted useful energy 1587.3 kWh; simulator confirmed 1585.7 kWh — **delta 0.102 %** (well inside the 15 % large-error rule; the surrogate was a proposal ranker only, Bug-Fix 5).
 
 ### Robustness — 120 Monte Carlo draws (weather+noise, demand volume ±20 %, demand timing ±30 min, mains ±2 °C)
 
@@ -95,7 +95,7 @@ Objective 1 design targets: `Tm_target_C` = 57.0 °C, `L_required` = 304.1 kJ/kg
 
 | Capsule diameter | Capsule count | Flow rate | PCM volume fraction | PCM mass |
 |---|---|---|---|---|
-| 0.0407 m | 14 | 0.0298 kg/s | 0.0099 | 0.000 kg |
+| 0.0400 m | 8 | 0.0183 kg/s | 0.0054 | 0.000 kg |
 
 *(For the plain-tank selection the capsule diameter/count are the search's nominal values; `run_case` forces `n_capsule_effective = 0`, so the tank is simulated as plain sensible-water storage.)*
 
@@ -107,7 +107,7 @@ Objective 1 design targets: `Tm_target_C` = 57.0 °C, `L_required` = 304.1 kJ/kg
 
 ### Surrogate vs simulator
 
-Surrogate predicted useful energy 1674.8 kWh; simulator confirmed 1673.4 kWh — **delta 0.087 %** (well inside the 15 % large-error rule; the surrogate was a proposal ranker only, Bug-Fix 5).
+Surrogate predicted useful energy 1674.7 kWh; simulator confirmed 1673.4 kWh — **delta 0.080 %** (well inside the 15 % large-error rule; the surrogate was a proposal ranker only, Bug-Fix 5).
 
 ### Robustness — 120 Monte Carlo draws (weather+noise, demand volume ±20 %, demand timing ±30 min, mains ±2 °C)
 
@@ -159,7 +159,7 @@ Objective 1 design targets: `Tm_target_C` = 57.0 °C, `L_required` = 319.9 kJ/kg
 
 | Capsule diameter | Capsule count | Flow rate | PCM volume fraction | PCM mass |
 |---|---|---|---|---|
-| 0.0443 m | 8 | 0.0127 kg/s | 0.0073 | 0.000 kg |
+| 0.0413 m | 14 | 0.0310 kg/s | 0.0103 | 0.000 kg |
 
 *(For the plain-tank selection the capsule diameter/count are the search's nominal values; `run_case` forces `n_capsule_effective = 0`, so the tank is simulated as plain sensible-water storage.)*
 
@@ -171,7 +171,7 @@ Objective 1 design targets: `Tm_target_C` = 57.0 °C, `L_required` = 319.9 kJ/kg
 
 ### Surrogate vs simulator
 
-Surrogate predicted useful energy 1593.3 kWh; simulator confirmed 1592.3 kWh — **delta 0.065 %** (well inside the 15 % large-error rule; the surrogate was a proposal ranker only, Bug-Fix 5).
+Surrogate predicted useful energy 1593.4 kWh; simulator confirmed 1592.3 kWh — **delta 0.069 %** (well inside the 15 % large-error rule; the surrogate was a proposal ranker only, Bug-Fix 5).
 
 ### Robustness — 120 Monte Carlo draws (weather+noise, demand volume ±20 %, demand timing ±30 min, mains ±2 °C)
 

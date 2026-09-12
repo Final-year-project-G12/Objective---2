@@ -98,10 +98,12 @@ SMALL_FILES = [
     (f"koppen_validation_{STATE}.csv", f"koppen_validation_{STATE}.csv"),
     (f"level_b_feature_importance_{STATE}.csv", f"level_b_feature_importance_{STATE}.csv"),
     # Phase 5-6 — feasibility + MCDM (calibrated branch only, see NOTES)
-    (f"feasibility_survivors_{STATE}_kappa_calibrated.csv",
+    ("feasibility_survivors_by_cluster_kappa_calibrated.csv",
      "feasibility_survivors_by_cluster.csv"),
-    (f"mcdm_rankings_{STATE}.csv", f"mcdm_rankings_{STATE}.csv"),
-    (f"mcdm_method_agreement_{STATE}.csv", f"mcdm_method_agreement_{STATE}.csv"),
+    ("mcdm_full_rankings.csv", f"mcdm_rankings_{STATE}.csv"),
+    ("mcdm_topk_by_cluster.csv", "mcdm_topk_by_cluster.csv"),
+    ("monte_carlo_stability.csv", "monte_carlo_stability.csv"),
+    ("mcdm_method_agreement.csv", f"mcdm_method_agreement_{STATE}.csv"),
     # Phase 7-8 — physics validation + sensitivity
     (f"physics_validation_{STATE}.csv", "physics_validation_results.csv"),
     (f"spearman_rho_by_cluster_{STATE}.csv", "physics_validation_spearman.csv"),
@@ -173,46 +175,6 @@ def copy_small_files():
     for src, dest_name in EXTERNAL_FILES:
         copy_one(src, dest_name, entries)
     return entries
-
-
-def derive_mcdm_views(entries):
-    """Cut the two Tamil-Nadu-shaped views out of Rajasthan's single ranking table.
-
-    Rajasthan writes one wide mcdm_rankings_{state}.csv; Tamil Nadu's downstream code
-    expects mcdm_topk_by_cluster.csv and monte_carlo_stability.csv. Both are pure
-    projections of the wide table — no re-ranking happens here.
-
-    Top-K uses the pipeline's own ``top3_at_lambda05`` flag (top 3 by Borda score at
-    the blended lambda=0.5 weights, 08_mcdm_ranking_rajasthan.py:891), NOT a re-sort,
-    so the frozen Top-3 is exactly the one O1 reported.
-    """
-    src = FROZEN_DIR / f"mcdm_rankings_{STATE}.csv"
-    if not src.exists():
-        print("  [SKIP] mcdm_rankings not present — derived views not built.")
-        return
-
-    df = pd.read_csv(src)
-
-    topk = df[df["top3_at_lambda05"] == True].copy()          # noqa: E712 (pandas mask)
-    topk = topk.sort_values(["cluster_id", "borda_score"], ascending=[True, False])
-    topk["consensus_rank"] = topk.groupby("cluster_id").cumcount() + 1
-    cols = ["cluster_id", "consensus_rank", "pcm_id", "borda_score", "copeland_score",
-            "TOPSIS_rank", "PROMETHEE_II_rank", "VIKOR_rank", "GRA_rank",
-            "top3_at_lambda00", "mc_top3_inclusion_pct", "mc_top1_retention_pct",
-            "kendalls_w_cluster", "n_survivors_in_cluster", "candidate_pool_status"]
-    dest = FROZEN_DIR / "mcdm_topk_by_cluster.csv"
-    topk[[c for c in cols if c in topk.columns]].to_csv(dest, index=False)
-    print(f"  [OK] mcdm_topk_by_cluster.csv  ({len(topk)} rows, "
-          f"{topk['cluster_id'].nunique()} clusters x top-3)")
-    entries.append(_entry(f"derived from {src.name} (top3_at_lambda05 flag)",
-                          dest, "derived"))
-
-    mc_cols = [c for c in df.columns if c.startswith("mc_")]
-    dest = FROZEN_DIR / "monte_carlo_stability.csv"
-    df[["cluster_id", "pcm_id"] + mc_cols].to_csv(dest, index=False)
-    print(f"  [OK] monte_carlo_stability.csv  ({len(df)} rows, "
-          f"{len(mc_cols)} MC columns)")
-    entries.append(_entry(f"derived from {src.name} (mc_* columns)", dest, "derived"))
 
 
 def reference_large_files():
@@ -335,8 +297,6 @@ def main():
 
     print("\n[1/5] Copying small structural tables ...")
     small_entries = copy_small_files()
-    print("\n  Deriving Tamil-Nadu-shaped MCDM views from the wide ranking table ...")
-    derive_mcdm_views(small_entries)
 
     print("\n[2/5] Hashing (not copying) large per-event/per-hour Objective 1 files ...")
     large_entries = reference_large_files()

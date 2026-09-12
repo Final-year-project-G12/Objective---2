@@ -51,9 +51,9 @@ the whole search.
 
 | Regime | Winning design | Diameter (m) | Count | Flow (kg/s) | Useful energy (kWh) | Solar fraction | Max water T (°C) | Margin to 75 °C |
 |---|---|---|---|---|---|---|---|---|
-| 0 | **plain tank (no PCM)** | 0.0441 | 23 | 0.0349 | 1585.70 | 54.97% | 68.6 | 6.4 °C |
-| 1 | **plain tank (no PCM)** | 0.0407 | 14 | 0.0298 | 1673.36 | 58.23% | 72.4 | 2.6 °C |
-| 2 | **plain tank (no PCM)** | 0.0443 | 8 | 0.0127 | 1592.27 | 53.88% | 68.7 | 6.3 °C |
+| 0 | **plain tank (no PCM)** | 0.0488 | 23 | 0.0315 | 1585.70 | 54.97% | 68.6 | 6.4 °C |
+| 1 | **plain tank (no PCM)** | 0.0400 | 8 | 0.0183 | 1673.36 | 58.23% | 72.4 | 2.6 °C |
+| 2 | **plain tank (no PCM)** | 0.0413 | 14 | 0.0310 | 1592.27 | 53.88% | 68.7 | 6.3 °C |
 
 (`n_capsule` / diameter are reported for the plain-tank rows but not
 physically used — `run_case.py` forces `n_capsule_effective = 0` whenever

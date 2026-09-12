@@ -288,7 +288,7 @@ target. See `../docs/05_PHASE5_DOE.md`.
 | DOE runtime | 809 s | ~4.9 s/valid case |
 
 Across the 111 valid rows: `solar_fraction` 0.538–0.587 (mean 0.559),
-`geom_pcm_volume_fraction` 0.007–0.108, `max_pcm_temp_C` 68.2–72.7 °C.
+`geom_pcm_volume_fraction` 0.0064–0.1138, `max_pcm_temp_C` 68.2–72.7 °C.
 
 ### Inference
 
@@ -429,9 +429,9 @@ min PCM mass → min capsule count → max constraint margin. Ported from
 
 | Regime | Design | d (m) | n | flow (kg/s) | Useful energy (kWh) | Solar fraction | Max water T (°C) | Margin to 75 °C |
 |---|---|---|---|---|---|---|---|---|
-| 0 | plain tank | 0.0441 | 23 | 0.0349 | 1585.70 | 54.97% | 68.6 | 6.4 °C |
-| 1 | plain tank | 0.0407 | 14 | 0.0298 | 1673.36 | 58.23% | 72.4 | **2.6 °C** |
-| 2 | plain tank | 0.0443 | 8 | 0.0127 | 1592.27 | 53.88% | 68.7 | 6.3 °C |
+| 0 | plain tank | 0.0488 | 23 | 0.0315 | 1585.70 | 54.97% | 68.6 | 6.4 °C |
+| 1 | plain tank | 0.0400 | 8 | 0.0183 | 1673.36 | 58.23% | 72.4 | **2.6 °C** |
+| 2 | plain tank | 0.0413 | 14 | 0.0310 | 1592.27 | 53.88% | 68.7 | 6.3 °C |
 
 - **Surrogate accuracy in practice:** mean surrogate-vs-simulator error
   0.025% across all 60 confirmed candidates (max 0.100%); **0/60**

@@ -38,11 +38,31 @@ surrogate, the geometry engine, and the simulator are all self-consistent.
 
 | Regime | Winning PCM | Diameter (m) | Count | Flow (kg/s) | Useful energy (kWh) | Solar fraction | PCM mass (kg) |
 |---|---|---|---|---|---|---|---|
-| 0 | **plain tank (no PCM)** | 0.0487 | 9 | 0.0119 | 1675.3 | 40.71% | 0 |
+| 0 | **plain tank (no PCM)** † | 0.0487 | 9 | 0.0119 | 1675.3 | 40.71% | 0 |
 | 1 | **plain tank (no PCM)** | 0.0501 | 9 | 0.0293 | 1625.3 | 37.38% | 0 |
 | 2 | **PureTemp 58** | 0.0438 | 10 | 0.0116 | 1527.2 | 28.04% | 0.392 kg |
 | 3 | **plain tank (no PCM)** | 0.0429 | 10 | 0.0396 | 1563.8 | 40.75% | 0 |
 | 4 | **plain tank (no PCM)** | 0.0441 | 8 | 0.0175 | 1624.0 | 37.20% | 0 |
+
+† **Regime 0's winning design does not itself clear the temperature-safety
+filter — worth stating explicitly, not just leaving in the raw CSV.**
+`deployable_design_per_regime.csv` shows regime 0's selected plain tank
+with `meets_temperature_safety=False` and `constraint_margin_C=-0.137`
+(max water 75.14 °C, 0.14 °C over the 75 °C limit, with 1 flagged
+safety-violation sub-hour). `selection_rule_pool_size=20` for this
+regime — every one of the 20 confirmed candidates, not just a
+within-tolerance subset — confirms `select_deployable.py`'s
+"no candidate met the temperature-safety rule; widening to all
+simulator-confirmed candidates" fallback fired here: **no design tried
+in regime 0, PCM or plain, cleared 75 °C nominally.** This is already
+disclosed per-regime in `results/uttarakhand/recommendation_cards.md`
+("Constraint margin (temperature): -0.14 C below the tightest safety
+limit") and reflected in the contract's
+`performance_at_selection.constraint_margin_C`, but is easy to miss
+reading this table alone — it is also the direct explanation for why
+regime 0 has the worst P(temp-safe) in Phase 8 (44.2%, `10_…`): the
+nominal design starts out already marginally unsafe, so almost any
+unfavorable weather/demand draw pushes it further over.
 
 ## The headline finding: PCM wins only in regime 2 (the coldest regime)
 

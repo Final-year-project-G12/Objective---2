@@ -100,6 +100,19 @@ overheating — the PCM absorbs excess heat before it can reach 75°C. Regimes
 respectively), both plain-tank designs in warmer regimes. This is a
 climate-specific reversal worth highlighting in a multi-state comparison.
 
+**Regime 0's 55.8% is not purely a robustness finding — it starts from an
+already-marginal nominal design.** `deployable_design_per_regime.csv`
+shows regime 0's selected plain tank at `constraint_margin_C = -0.137`
+(max water 75.14 °C, already 0.14 °C over the 75 °C limit with 1
+nominal safety violation) — Phase 7's selection-rule fallback picked it
+because *no* candidate tried in that regime cleared the safety filter
+(`selection_rule_pool_size=20` = every confirmed candidate, not a
+within-tolerance subset; see `08_PHASE7_OPTIMIZATION.md`). So regime 0's
+55.8% Monte Carlo violation rate is "a design that's already at the edge
+tips over under about half of realistic draws," not "a safe design that
+sometimes fails under stress" — worth stating precisely in any paper
+section citing this number.
+
 **This strengthens the Phase 7 finding**: regime 2's PCM win is not just
 a marginal useful-energy advantage — it is also the most temperature-safe
 design in the state, confirming that PureTemp 58 is genuinely beneficial in

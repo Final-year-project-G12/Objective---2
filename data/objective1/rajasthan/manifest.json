@@ -1,0 +1,560 @@
+{
+  "generated_at_utc": "2026-09-12T10:39:37.845211+00:00",
+  "state": "rajasthan",
+  "objective1_root": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan",
+  "medoid_selection_method": "physics_lib.find_medoid \u2014 nearest point to cluster mean in standardized (*_z) clustering space",
+  "small_structural_files": [
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\population_grid_points.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\population_grid_points.csv",
+      "status": "copied",
+      "sha256": "3ed89949fb27f8ca35d1a465625c2477e861e2aaed92cd39564cd82be918d84c",
+      "size_bytes": 25596
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\era5_power_agreement_rajasthan.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\era5_power_agreement_rajasthan.csv",
+      "status": "copied",
+      "sha256": "41a890eb492558d13d927b3b482d5d77c6592a4d06333b7d3e58cf0a82057dba",
+      "size_bytes": 3896
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\daily_aggregates_rajasthan_summary.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\daily_aggregates_summary_rajasthan.csv",
+      "status": "copied",
+      "sha256": "4c71dbf9aa75316673d6ae7b66efbf789d949f90b1cdfeee153c294ebc215202",
+      "size_bytes": 70893
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\quality_report_rajasthan.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\quality_report_rajasthan.json",
+      "status": "copied",
+      "sha256": "0f529805063f52d04571d87dc9b2324ebbb3d14f63625a16535a06bb57a6ad32",
+      "size_bytes": 498830
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\climate_signature_rajasthan.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\climate_signature_rajasthan.csv",
+      "status": "copied",
+      "sha256": "dd7ed6c919c7bf705e6fb5b77d25e8e20a2315e51d5327aca46d1bc4529a3a96",
+      "size_bytes": 514051
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\cluster_assignments_rajasthan_levelA.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\cluster_assignments_levelA_rajasthan.csv",
+      "status": "copied",
+      "sha256": "72f7f1ff603180a4b55e80384ebbd8a6ba8be4f82bd29d2cd3fc7b1ff4f85dc2",
+      "size_bytes": 42682
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\cluster_assignments_rajasthan_levelB.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\cluster_assignments_levelB_rajasthan.csv",
+      "status": "copied",
+      "sha256": "2e92c7cbe8f08dbeea3fec0d385d44a19067a69336ca0389da7e79ba452a092d",
+      "size_bytes": 162118
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\cluster_profiles_rajasthan.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\cluster_profiles_rajasthan.csv",
+      "status": "copied",
+      "sha256": "27856dcd53c32d787437864a1b1a0a94280d0c8d4ef7f04670c44653ec889ee2",
+      "size_bytes": 2542
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\bic_selection_rajasthan.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\bic_selection_rajasthan.csv",
+      "status": "copied",
+      "sha256": "5b0c7bedf91bbf79f6b139a1fb339b8edbdcce57b1e5fb2b14b52fef37ed96d0",
+      "size_bytes": 1772
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\bic_selection_rajasthan_levelB.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\bic_selection_levelB_rajasthan.csv",
+      "status": "copied",
+      "sha256": "8c659a6561feb0919dd2ef63e178b51a2897e2c3ab24ce8717997d1c50a76cd8",
+      "size_bytes": 1171
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\koppen_validation_rajasthan.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\koppen_validation_rajasthan.csv",
+      "status": "copied",
+      "sha256": "00413ffaf7e62e1a952fad8c53cc5828e479ece5235eeca0151e62ac15e1dfd6",
+      "size_bytes": 68
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\level_b_feature_importance_rajasthan.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\level_b_feature_importance_rajasthan.csv",
+      "status": "copied",
+      "sha256": "5ff6b6468db73d727f6fd771409a48f1af62f713657a2b1049ce913f1e51aecb",
+      "size_bytes": 818
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\feasibility_survivors_by_cluster_kappa_calibrated.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\feasibility_survivors_by_cluster.csv",
+      "status": "copied",
+      "sha256": "c28b90206d2fc9128b85010a6a6e79defbf062fc4cbc669a696adf3ec626cb8e",
+      "size_bytes": 52928
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\mcdm_full_rankings.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\mcdm_rankings_rajasthan.csv",
+      "status": "copied",
+      "sha256": "6f46578203ca33f7f07162f043f526d2f481b78c48aa8491103dffc2b19a8184",
+      "size_bytes": 41922
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\mcdm_topk_by_cluster.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\mcdm_topk_by_cluster.csv",
+      "status": "copied",
+      "sha256": "bd398f8be68c6cda9b9910156da57f42e0874f442caa5a3ae2331a9cf7894dc5",
+      "size_bytes": 11332
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\monte_carlo_stability.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\monte_carlo_stability.csv",
+      "status": "copied",
+      "sha256": "fdf9b0d5061474a61dacd069f4fb93c99194d059ed5141fcb067994601ebcdfe",
+      "size_bytes": 3978
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\mcdm_method_agreement.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\mcdm_method_agreement_rajasthan.csv",
+      "status": "copied",
+      "sha256": "4678e84377418a3d0ca59386a5bff8d0e6007f93d91a90bf1d57638311815e41",
+      "size_bytes": 1027
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\physics_validation_rajasthan.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\physics_validation_results.csv",
+      "status": "copied",
+      "sha256": "69c51313e4095c50a48c5d021547025506669326dc1a205481e2468d74822901",
+      "size_bytes": 52175
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\spearman_rho_by_cluster_rajasthan.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\physics_validation_spearman.csv",
+      "status": "copied",
+      "sha256": "c248eada43a0a2b40f4a88ecdd07aa25f94daa2f77ad96ee2b02e5a5cc6940db",
+      "size_bytes": 453
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\calibration_check_rajasthan.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\calibration_check_rajasthan.csv",
+      "status": "copied",
+      "sha256": "69c963ee4cc9ab61c902c20bdf7c16ddb2a84fb88d35e0fc1b694ebebad819ac",
+      "size_bytes": 307
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\pcm_mass_sensitivity_rajasthan.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\pcm_mass_sensitivity_rajasthan.csv",
+      "status": "copied",
+      "sha256": "91139e70c0843786b4c98309deaf54812b7d28db319d41a3c1f954bdd5aa880c",
+      "size_bytes": 636
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\phase8_supercooling_sweep_rajasthan.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\phase8_supercooling_sweep_rajasthan.csv",
+      "status": "copied",
+      "sha256": "e06d9bad19769bf1b19042a739e4065e969c190f75a53d09e2ee4bf6e7d9db61",
+      "size_bytes": 495
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\PCM_data\\data\\PCM_Properties_cleaned_mice_pmm_detailed.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\pcm_properties.csv",
+      "status": "copied",
+      "sha256": "5d3cd0dedb613d91837aaeb25fe11957681a58f49698511f314c4a06ca8cc0b1",
+      "size_bytes": 34909
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\outputs\\recommendation_cards_rajasthan.md",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\recommendation_cards.md",
+      "status": "copied",
+      "sha256": "073ef6e2c9de45bca53766522a4dba488220ab6dce82652ff8905273ab07ce9c",
+      "size_bytes": 23393
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\outputs\\cluster_profile_cards_rajasthan.md",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\cluster_profile_cards_rajasthan.md",
+      "status": "copied",
+      "sha256": "0d21755a6e22a4af166ed631d4f744a9738509b4e4dde99887c2b5165adc2967",
+      "size_bytes": 5667
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\physics_validation_summary_rajasthan.txt",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\physics_validation_summary_rajasthan.txt",
+      "status": "copied",
+      "sha256": "51fcd249b8c8621e832d0b201beabd874fd7ab2227e82b488ee96dfa8f66c71e",
+      "size_bytes": 6198
+    },
+    {
+      "source": "derived from cluster_assignments + climate_signature via physics_lib.find_medoid",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\medoid_points_rajasthan.csv",
+      "status": "derived",
+      "sha256": "c821f3d8839709d1c1cfcc915ad4661f51abcbaa0050eed1a4bf3bab93245a1d",
+      "size_bytes": 249
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\suntimes.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\suntimes_medoids_rajasthan.csv",
+      "status": "subset",
+      "sha256": "97f4688ea1bf6477819ad2ea782c50f5c52b07d2bb593596104acff3a8d5328d",
+      "size_bytes": 1895937,
+      "rows_kept": 32877,
+      "rows_scanned": 3506880
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\daily_aggregates_rajasthan.csv",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\daily_aggregates_medoids_rajasthan.csv",
+      "status": "subset",
+      "sha256": "9d0941c04e432c5139e765a618786e61b70525786668c4686655e807b113d4df",
+      "size_bytes": 1336548,
+      "rows_kept": 10959,
+      "rows_scanned": 1168960
+    }
+  ],
+  "large_referenced_files": [
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\suntimes.csv",
+      "dest": null,
+      "sha256": "f6e53efe854b88e2abba013ea33f6fb0a3fdf248b9c6bbb811f405213bfad064",
+      "size_bytes": 202230110,
+      "status": "referenced_only"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\daily_aggregates_rajasthan.csv",
+      "dest": null,
+      "sha256": "1fb5f9de612db7ec64643a9d66bd1e54673cfb12ba0b0f6d3544bb9b87c9c216",
+      "size_bytes": 146934856,
+      "status": "referenced_only"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\climate_rajasthan_points.csv",
+      "dest": null,
+      "sha256": "79e7da869bc280757c15678fbf7b9eed35b050a9abadcdc1e6bc50126c0ae98a",
+      "size_bytes": 1493676067,
+      "status": "referenced_only"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\processed\\climate_rajasthan_points_clean.csv",
+      "dest": null,
+      "sha256": "69b70cc411383d4f9c2d1f55745ac0fcf9a7a5a9cbabea7f3bbbe6814a29963e",
+      "size_bytes": 1552522148,
+      "status": "referenced_only"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\preprocessed\\rajasthan_cleaned_physical.csv",
+      "dest": null,
+      "sha256": "bc0a2cb1926b02e9f978bb35551aba9a7bf17ddc87d126b07f9342f9ae027360",
+      "size_bytes": 4228868674,
+      "status": "referenced_only"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\preprocessed\\rajasthan_cleaned_scaled.csv",
+      "dest": null,
+      "sha256": "8e23d2bd21b4901b953528d18e7046fff04e7936de38cf4c5d1298b20cf4a925",
+      "size_bytes": 4677155096,
+      "status": "referenced_only"
+    }
+  ],
+  "medoid_points": [
+    {
+      "cluster_id": 0,
+      "point_id": "RJP_0094",
+      "lat": 24.125,
+      "lon": 74.125,
+      "population": 223620.37957692143,
+      "max_membership_prob": 1.0,
+      "cluster_n_points": 109
+    },
+    {
+      "cluster_id": 1,
+      "point_id": "RJP_0192",
+      "lat": 26.875,
+      "lon": 73.375,
+      "population": 149925.8997913003,
+      "max_membership_prob": 1.0,
+      "cluster_n_points": 83
+    },
+    {
+      "cluster_id": 2,
+      "point_id": "RJP_0083",
+      "lat": 26.625,
+      "lon": 75.875,
+      "population": 245699.89906430244,
+      "max_membership_prob": 0.9999999999999432,
+      "cluster_n_points": 128
+    }
+  ],
+  "medoid_raw_weather_files": [
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0094_2016.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0094_2016.json",
+      "cluster_id": 0,
+      "point_id": "RJP_0094",
+      "sha256": "d2944ccc5c44a86a6f6ffb10d40ea1c89839db19fc98ae8841549e18a19c8d97",
+      "size_bytes": 811557,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0094_2017.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0094_2017.json",
+      "cluster_id": 0,
+      "point_id": "RJP_0094",
+      "sha256": "265db64d0c959b59c5d02f2278929d891897673d7921b005b14cbdcfa58f0049",
+      "size_bytes": 809211,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0094_2018.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0094_2018.json",
+      "cluster_id": 0,
+      "point_id": "RJP_0094",
+      "sha256": "368754e73830a3ee449907fc17e82ae5b378e3940c48a458fde836d15966cb37",
+      "size_bytes": 809193,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0094_2019.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0094_2019.json",
+      "cluster_id": 0,
+      "point_id": "RJP_0094",
+      "sha256": "8383a44417b8d93d17ea68a7062904d3333de9ae9502726a952e5f654c621830",
+      "size_bytes": 809226,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0094_2020.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0094_2020.json",
+      "cluster_id": 0,
+      "point_id": "RJP_0094",
+      "sha256": "30abba4e5c37a045f9146daa967872ba99f7b18e02fb92429d20a3aaef3f1b5e",
+      "size_bytes": 811743,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0094_2021.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0094_2021.json",
+      "cluster_id": 0,
+      "point_id": "RJP_0094",
+      "sha256": "d7208259cde13f1a21508e30fe21256d8881b8a37c9cd2ae05cd95bcc4e4d7f3",
+      "size_bytes": 809193,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0094_2022.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0094_2022.json",
+      "cluster_id": 0,
+      "point_id": "RJP_0094",
+      "sha256": "15049b71cd21ed5d387689ce2e4223276108c66e390603fbe0bd4156ad6fd265",
+      "size_bytes": 809168,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0094_2023.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0094_2023.json",
+      "cluster_id": 0,
+      "point_id": "RJP_0094",
+      "sha256": "d8b1f6b1d8ca5b32534cea7eebe060f1ea2d4b880ae77d96b91c33e2049e84e0",
+      "size_bytes": 809318,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0094_2024.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0094_2024.json",
+      "cluster_id": 0,
+      "point_id": "RJP_0094",
+      "sha256": "415e959f2a979f59e646d6ac2df679d267fce4b23053d08990e75fc6a6b10df6",
+      "size_bytes": 811580,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0094_2025.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0094_2025.json",
+      "cluster_id": 0,
+      "point_id": "RJP_0094",
+      "sha256": "bb481188db48861ac468334f5fd4e6b21f5e2824b59c87e2989f5ef4a9da2d90",
+      "size_bytes": 809085,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0192_2016.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0192_2016.json",
+      "cluster_id": 1,
+      "point_id": "RJP_0192",
+      "sha256": "491159472db87e4773c1eb724f0780d08e2b8c4f4cb736de0e23abaa153fc3a2",
+      "size_bytes": 811637,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0192_2017.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0192_2017.json",
+      "cluster_id": 1,
+      "point_id": "RJP_0192",
+      "sha256": "ce695264493ad33ec5d511cc060ce8c1b029c47458c3d592d92ed8cc2ba49ad0",
+      "size_bytes": 809281,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0192_2018.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0192_2018.json",
+      "cluster_id": 1,
+      "point_id": "RJP_0192",
+      "sha256": "af9c257e435a6d4b3bae3303968665968a219c7e14d0dcd47c54e50cf46d8ee4",
+      "size_bytes": 809177,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0192_2019.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0192_2019.json",
+      "cluster_id": 1,
+      "point_id": "RJP_0192",
+      "sha256": "802aca964162925869aace0117782acba23151f994a586bce9990554fca8bc4b",
+      "size_bytes": 809174,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0192_2020.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0192_2020.json",
+      "cluster_id": 1,
+      "point_id": "RJP_0192",
+      "sha256": "f2422a243cc363394ec3281845c9ab9c13fbfef64cb0c747e11bb87fc0bd3de1",
+      "size_bytes": 811472,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0192_2021.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0192_2021.json",
+      "cluster_id": 1,
+      "point_id": "RJP_0192",
+      "sha256": "417a8b2f82773f36222a7ae21202f3c1450ae91e36c2453c7d252b3c9cfdde53",
+      "size_bytes": 809219,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0192_2022.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0192_2022.json",
+      "cluster_id": 1,
+      "point_id": "RJP_0192",
+      "sha256": "4b728aa18b75a099793093a914b881d5d8112098ea2a4663fb11970a72cc8c23",
+      "size_bytes": 809234,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0192_2023.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0192_2023.json",
+      "cluster_id": 1,
+      "point_id": "RJP_0192",
+      "sha256": "71d66b56ed778617656c3f76fd24ec0b642a4056d4d85a9378635f30de20a3f6",
+      "size_bytes": 809197,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0192_2024.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0192_2024.json",
+      "cluster_id": 1,
+      "point_id": "RJP_0192",
+      "sha256": "3605eb1524869730344e465692283a85af96d8bd67f0f0696a88d506e74809e6",
+      "size_bytes": 811278,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0192_2025.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0192_2025.json",
+      "cluster_id": 1,
+      "point_id": "RJP_0192",
+      "sha256": "0444d87f922f432b03f8bebed615944d8b98c20c760085b822cacc66d26d6e45",
+      "size_bytes": 809190,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0083_2016.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0083_2016.json",
+      "cluster_id": 2,
+      "point_id": "RJP_0083",
+      "sha256": "3265bc1c3abbe0ec6a62678c38c6066c24113b04dd522bec4688ea01ceed0939",
+      "size_bytes": 811491,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0083_2017.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0083_2017.json",
+      "cluster_id": 2,
+      "point_id": "RJP_0083",
+      "sha256": "2b415a19defbf560c53c34a948078b436bd672135867d01cd00170abced5d288",
+      "size_bytes": 808960,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0083_2018.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0083_2018.json",
+      "cluster_id": 2,
+      "point_id": "RJP_0083",
+      "sha256": "3715e5b59a6174875a45a0dbdce2bc46f1468b3ad382f6eb38ff0acce444ccc1",
+      "size_bytes": 808916,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0083_2019.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0083_2019.json",
+      "cluster_id": 2,
+      "point_id": "RJP_0083",
+      "sha256": "15e0f79264f704272e8ef54633c0f68b278d171f71b100898667b1231c682e0a",
+      "size_bytes": 808952,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0083_2020.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0083_2020.json",
+      "cluster_id": 2,
+      "point_id": "RJP_0083",
+      "sha256": "0c42cdf1f62dac2c14f04a3a2e469ece297903781ea0a67ea246119c6a9ffe8e",
+      "size_bytes": 811351,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0083_2021.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0083_2021.json",
+      "cluster_id": 2,
+      "point_id": "RJP_0083",
+      "sha256": "4d17cf9b9ca52d128fe926d5fd5457480701b13d4ff41241f38458bdcd54d760",
+      "size_bytes": 808954,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0083_2022.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0083_2022.json",
+      "cluster_id": 2,
+      "point_id": "RJP_0083",
+      "sha256": "3e2ce590194699f2e335335edc23f0f81127e11fecdea53a74ea94547bc78ddd",
+      "size_bytes": 808931,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0083_2023.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0083_2023.json",
+      "cluster_id": 2,
+      "point_id": "RJP_0083",
+      "sha256": "b3e8c28c55d4b091920afc00b91feb41fd68ac043e22c88416fab846e72522ce",
+      "size_bytes": 809265,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0083_2024.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0083_2024.json",
+      "cluster_id": 2,
+      "point_id": "RJP_0083",
+      "sha256": "03d015ea5e9440447c4f670c3a4ac8f54a74e6c90148c0a4c1f261988164288e",
+      "size_bytes": 811217,
+      "status": "copied"
+    },
+    {
+      "source": "D:\\Final Year Project\\PCM-Selection-ML-model\\era5-rajasthan\\data\\raw\\nasapower\\power_RJP_0083_2025.json",
+      "dest": "D:\\Final Year Project\\OBJECTIVE2\\Objective---2\\data\\objective1\\rajasthan\\raw_weather\\power_RJP_0083_2025.json",
+      "cluster_id": 2,
+      "point_id": "RJP_0083",
+      "sha256": "c389d4c9ab9d7c0b3263d9424099761afa6202728b5afbe00989e8edcdc19527",
+      "size_bytes": 808994,
+      "status": "copied"
+    }
+  ]
+}
