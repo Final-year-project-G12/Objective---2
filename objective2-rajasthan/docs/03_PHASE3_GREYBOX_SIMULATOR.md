@@ -127,8 +127,7 @@ the shortfall electrically).
 ## Phase 3 smoke run — Rajasthan Cluster 0 (RJP_0132)
 
 ```
-python pipeline.py --state rajasthan --stage simulate --cluster 0 \
-    --pcm "RT50" --diameter 0.08 --count 24 --flow 0.025
+python pipeline.py --state rajasthan --stage simulate --cluster 0 --pcm "RT50" --diameter 0.08 --count 24 --flow 0.025
 ```
 
 | metric | value | note |
@@ -152,8 +151,7 @@ cleanly with residuals ~3e-4 %.
 ## How to run one case
 
 ```
-python pipeline.py --state rajasthan --stage simulate --cluster 0 \
-    --pcm "RT50" --diameter 0.08 --count 24 --flow 0.025
+python pipeline.py --state rajasthan --stage simulate --cluster 0 --pcm "RT50" --diameter 0.08 --count 24 --flow 0.025
 python pipeline.py --state rajasthan --stage simulate --cluster 1 --no-pcm
 ```
 Prints the full metrics dict (useful energy, solar fraction,

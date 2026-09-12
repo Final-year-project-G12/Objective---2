@@ -1,4 +1,8 @@
-# 02 — Phase 2 Audit: Geometry & Constraint Engine (Rajasthan)
+# 02 — Phase 2 Audit: Geometry & Constraint Engine (Assam)
+
+> State name corrected from a leftover Rajasthan copy; the engine below
+> is genuinely state-agnostic (byte-identical across all states), so no
+> numeric content changed — only the state name and run command.
 
 Files: `src/design/schema.py`, `src/design/geometry.py`, `src/design/constraints.py`.
 
@@ -43,7 +47,7 @@ valid/invalid flag with one reason code. Universal across all four states.
 
 ## Exit check — boundary cases + determinism
 
-`run_boundary_self_test()` (`python pipeline.py --state rajasthan --stage geometry`)
+`run_boundary_self_test()` (`python pipeline.py --state assam --stage geometry`)
 runs 8 cases (min/max diameter × min/max count, flow above/below limits, an
 oversized capsule) **twice each** and checks the valid/reason output is
 byte-identical both times. Result: **all 8 cases deterministic, no
@@ -108,7 +112,7 @@ open/scalable tank size."
 ## How to re-run
 
 ```
-python pipeline.py --state rajasthan --stage geometry
+python pipeline.py --state assam --stage geometry
 ```
 (state-agnostic — geometry has no state-specific inputs, the flag is
 accepted for CLI-contract consistency with the other stages.)

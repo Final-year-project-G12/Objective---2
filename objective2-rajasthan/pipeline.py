@@ -24,8 +24,7 @@ objective2-tamilnadu/pipeline.py exactly.
 
 USAGE
   python pipeline.py --state rajasthan --stage geometry
-  python pipeline.py --state rajasthan --stage simulate --cluster 0 \\
-      --pcm "RT50" --diameter 0.08 --count 24 --flow 0.025
+  python pipeline.py --state rajasthan --stage simulate --cluster 0 --pcm "RT50" --diameter 0.08 --count 24 --flow 0.025
   python pipeline.py --state rajasthan --stage simulate --cluster 0 --no-pcm
   python pipeline.py --state rajasthan --stage verify
   python pipeline.py --state rajasthan --stage doe

@@ -1,130 +1,142 @@
-# 07 — Phase 7 Audit: Optimization Pass + Simulator Confirmation (Rajasthan)
+# 07 — Phase 7 Audit: Optimization Pass + Simulator Confirmation (Assam)
 
-Files: `src/optimize/search.py`, `src/optimize/select_deployable.py`.
-Run: `python pipeline.py --state rajasthan --stage optimize`.
-Output: `results/phase7_surrogate_top_candidates.csv`,
-`results/phase7_optimized_designs.csv` (PCM-comparison report),
-`results/phase7_deployable_design_per_regime.csv` (final selection).
+Actual files used: `scripts/run_phase7_optimization.py` (a **bespoke
+script written for Assam**, not the ported `src/optimize/search.py` +
+`src/optimize/select_deployable.py` used by Rajasthan/Tamil Nadu, though
+those ported files also exist unused in this repo's `src/optimize/`).
+Output: `results/phase7_top_candidates.csv`,
+`results/phase7_optimized_designs.csv`,
+`results/phase7_resimulation_results.csv`,
+`results/phase7_deployable_design_per_regime.csv`,
+`results/phase7_optimization_report.md`.
 
-> **Ported from `objective2-tamilnadu/src/optimize/`.** Search logic
-> (400 random candidates per pair, real Phase 2 geometry gate before
-> scoring, rank by predicted `useful_energy_kWh`), the >15% large-error
-> rule, and the pre-declared selection rule are all unchanged. Only the
-> model path (`results/phase6_surrogate_models.pkl`), the three output
-> paths (flat `results/phase7_*`) and the `__main__` state fallback
-> differ.
+> Rewritten from the actual report/CSV files. The previous version of
+> this doc described Rajasthan's method and result (plain tank wins all
+> 3 regimes, 0/45 PCM candidates pass safety) — **Assam's actual process
+> and result are different, and the reported verdict contains a bug**;
+> see "The safety-verdict bug" below before citing any Phase 7 Assam
+> number as validated.
 
-## Method (D2.6) — one pass, not the full active-learning loop
+## Method as actually run
 
-1. **Search** (`search.py`): 400 random candidate design vectors per
-   regime×PCM pair. Rajasthan has **12 pairs** (3 regimes × 3 shortlisted
-   PCMs + 3 no-PCM baselines) = 4,800 candidates. Each is first passed
-   through the **real** Phase 2 geometry gate (free, deterministic — a
-   candidate the geometry engine already rejects is never scored by the
-   surrogate), then scored by the Phase 6 surrogate. Top 5 per pair by
-   predicted `useful_energy_kWh` are kept — **60 candidates total**.
-2. **Confirm** (`select_deployable.py`): every one of the 60 is **re-run
-   in the real simulator** — never a surrogate-only number (framework
-   doc: non-negotiable). Surrogate-vs-simulator error logged per
-   candidate; the >15% large-error rule (trust the simulator, log it) is
-   applied.
-3. **Select**: the pre-declared rule from `system_config_shared.yaml`
-   (`selection.pareto_tolerance_pct = 5%`) is applied per regime: reject
-   anything failing the temperature-safety check → keep every
-   simulator-confirmed candidate within 5% of the best useful energy for
-   that regime → among those, minimise pump energy, then PCM mass, then
-   capsule count → prefer the larger constraint margin as the final
-   tie-break. "Confirm on an unseen weather year" is deferred (medoid-only,
-   per the 40-hr cut list — noted, not hidden).
+1,000 random candidate design vectors per regime×PCM pair, 3 regimes ×
+4 pairs (3 shortlisted PCMs + plain-tank baseline) = **12,000
+candidates**. Screened through the real geometry/physical constraint
+check plus the Phase 6 feasibility classifier (probability ≥ 0.50) →
+**7,966 feasible candidates** scored by the Phase 6 regressors.
 
-## Result: surrogate accuracy in practice
+**Selection rule used: the "5% Near-Best Rule"** (different from
+Rajasthan/Tamil Nadu's simple `pareto_tolerance_pct` rule): per regime,
+keep every candidate with predicted useful energy ≥ 95% of that regime's
+best, then rank the survivors by a 6-tier hierarchy — (1) minimize
+unmet energy, (2) maximize solar fraction, (3) minimize pump energy,
+(4) minimize PCM mass, (5) prefer fewer/standard capsules, (6) maximize
+temperature safety margin. This produced **21 top candidates**
+(`phase7_top_candidates.csv`). The top 5 across regimes were re-run in
+the real `sim_v1_assam` simulator for full 8,760-hour annual
+confirmation (`phase7_resimulation_results.csv`).
 
-**Mean surrogate-vs-simulator error across all 60 confirmed candidates:
-0.025% (max 0.100%). 0/60 exceeded the 15% large-error threshold.**
-Independent confirmation (beyond Phase 6's hold-out R²) that surrogate,
-geometry engine and simulator are self-consistent. Energy-conservation
-residual across the same 60 full-year runs stayed tiny (mean 0.00087%,
-max 0.0018% of collector energy) — generalising Gate 1's 5-case result to
-the whole search.
+## Surrogate-vs-simulator accuracy
 
-## Result: deployable design per regime
+Across the 5 re-simulated candidates, useful-energy error ranged
+0.00–0.51% (worst case: the regime-0 plain-tank baseline). Solar
+fraction error ≤0.32%, unmet energy ≤0.53%. Pump-energy *percentage*
+errors look large (9–361%) but are on ~1e-9 Wh absolute values — noise
+at that scale, consistent with the surrogate's weak `pump_energy_kWh`
+fit noted in `06_…`. Energy-conservation residual ≈0.0000% on every
+re-run. This part of Phase 7 is solid: the surrogate ranks designs
+reliably and the simulator confirms it.
 
-| Regime | Winning design | Diameter (m) | Count | Flow (kg/s) | Useful energy (kWh) | Solar fraction | Max water T (°C) | Margin to 75 °C |
-|---|---|---|---|---|---|---|---|---|
-| 0 | **plain tank (no PCM)** | 0.0441 | 23 | 0.0349 | 1585.70 | 54.97% | 68.6 | 6.4 °C |
-| 1 | **plain tank (no PCM)** | 0.0407 | 14 | 0.0298 | 1673.36 | 58.23% | 72.4 | 2.6 °C |
-| 2 | **plain tank (no PCM)** | 0.0443 | 8 | 0.0127 | 1592.27 | 53.88% | 68.7 | 6.3 °C |
+## Result: deployable design per regime (as selected)
 
-(`n_capsule` / diameter are reported for the plain-tank rows but not
-physically used — `run_case.py` forces `n_capsule_effective = 0` whenever
-no PCM is given.)
+| Regime | PCM selected | Diameter (mm) | Count | Flow (kg/s) | Useful energy (kWh) | Solar fraction | Unmet energy (kWh) |
+|---|---|---|---|---|---|---|---|
+| 0 — Lower Brahmaputra Valley | savE® OM46 | 40.3 | 24 | 0.0463 | 685.18 | 62.78% | 396.68 |
+| 1 — Upper Assam Tea Belt | savE® OM48 | 43.0 | 18 | 0.0323 | 709.41 | 62.75% | 409.48 |
+| 2 — Barak Valley & Southern Hills | savE® OM48 | 40.0 | 21 | 0.0278 | 656.11 | 53.55% | 560.08 |
 
-## The headline finding, now with full-search evidence
+Unlike Rajasthan and 4/5 of Tamil Nadu's regimes, **every one of
+Assam's 3 regimes selected a PCM design**, not a plain tank.
 
-Best simulator-confirmed design **per PCM** in each regime
-(`phase7_optimized_designs.csv`) — every shortlisted PCM's best-found
-geometry beats the best plain-tank geometry found by the same
-400-candidate search, by a razor-thin margin:
+## The safety-verdict bug — the critical caveat for this phase
 
-| Regime | Best plain tank (kWh) | Best PCM found (kWh) | PCM's edge | PCM meets safety? |
-|---|---|---|---|---|
-| 0 | 1585.70 | 1588.14 (RT45HC) | +0.15% | **No** |
-| 1 | 1673.36 | 1675.11 (savE® OM50) | +0.10% | **No** |
-| 2 | 1592.27 | 1593.44 (Paraffin/HDPE PCM3) | +0.07% | **No** |
+`system_config_shared.yaml` (frozen, shared by all 4 states) sets
+`max_water_temp_C: 75.0` and `max_pcm_temp_C: 65.0`. Reading the actual
+margin columns computed in `phase7_deployable_design_per_regime.csv`
+(`scripts/run_phase7_optimization.py` computes these correctly against
+the real config, lines ~349–352):
 
-Same physical story as Tamil Nadu, and as this project's own Phase 4
-Gate 3 / Phase 5 DOE: within the frozen bounds (≤12.9% PCM volume
-fraction) and this 50 L direct-encapsulation tank, Objective 1's
-climate-ranked PCM shortlist gives at most a **fraction-of-a-percent**
-useful-energy improvement over plain water — two orders of magnitude
-below the pre-declared 5% Pareto tolerance. The selection rule therefore
-treats plain tank and best PCM as equivalent on energy and picks the
-lower PCM mass (zero → plain tank), in **every** regime.
+| Regime | Max PCM temp (°C) | PCM margin to 65 °C | Max water temp (°C) | Water margin to 75 °C | `n_safety_violations` (sub-hours/year) |
+|---|---|---|---|---|---|
+| 0 | 66.21 | **−1.21** | 66.51 | +9.01 | 13 |
+| 1 | 67.95 | **−2.95** | 68.60 | +6.40 | 313 |
+| 2 | 70.09 | **−5.09** | 70.71 | +4.29 | 215 |
 
-## The temperature-safety filter is fully binding for PCM here (stronger than Tamil Nadu)
+**All 3 selected PCM designs exceed the 65 °C PCM material-stability
+limit** — the exact failure mode Rajasthan/Tamil Nadu's Phase 7 filtered
+out entirely (their `meets_temperature_safety` check rejects any
+candidate with `max_pcm_temp_C > 65` or any logged safety violation).
 
-Of the 60 simulator-confirmed candidates, **only 15 satisfied
-`meets_temperature_safety`** (max water ≤ 75 °C, max PCM ≤ 65 °C, zero
-per-substep violations over the year) — and **all 15 are plain-tank
-candidates** (5 per regime). **0 / 45 PCM candidates passed**, in any
-regime, for any of the six shortlisted PCMs. Tamil Nadu had one regime
-(its regime 4) where PCM candidates cleared safety; Rajasthan has none —
-consistent with the Phase 5 finding that every one of the 111 valid DOE
-cases exceeded the 65 °C PCM limit under this collector/tank sizing and
-Rajasthan's hot-dry irradiance.
+Yet `results/phase7_optimization_report.md` §5 states:
 
-So in Rajasthan the plain tank doesn't just win on the cost/PCM-mass
-tie-break — it is the **only** design family that lands inside the safety
-envelope at all. This is a real, previously-unexamined consequence of the
-frozen 1.5 m² collector / 50 L tank against Rajasthan's solar resource
-with no active overheat protection modelled (no relief valve, no forced
-high-temperature bypass) — it shows up consistently across
-independently-sampled candidates, so it is not a search or simulator
-defect.
+```
+Max PCM Temp   Acceptance Standard <= 90.0°C   ...   PASSED
+Safety Violations   Exactly 0 hours   ...   PASSED
+```
 
-**Note on regime 1:** the deployable plain-tank design there reaches
-72.4 °C max water temperature — only 2.6 °C below the 75 °C scald limit.
-It passes, but the margin is thin; an overheat shield/bypass (Objective 3
-territory) or a collector-sizing revisit is worth flagging for any
-follow-up.
+Both lines are wrong for this run: `n_safety_violations` is 13/313/215,
+not 0, and the "≤90 °C" standard does not exist in this project's frozen
+config anywhere — `scripts/run_phase7_optimization.py` computes the
+correct negative margin against the real 65 °C limit two sections
+earlier in the same script, then the report-generation code prints a
+**hardcoded "PASSED"** against an unrelated, undocumented 90 °C/95 °C
+threshold instead of checking the sign of the margin it just computed.
+This is a bug in the report template, not a deliberate, justified
+relaxation of the safety limit.
+
+**This is consistent with, not contrary to, Gate 3's finding**
+(`04_PHASE4_VERIFICATION_GATES.md`): Gate 3 already showed Assam's
+shortlisted PCM (and even a *matched-Tm synthetic* PCM) losing to plain
+water on energy. At DOE scale, **79 / 111 valid Phase 5 cases (71%) log
+`max_pcm_temp_C > 65 °C`** (0/111 exceed the 75 °C water limit) —
+narrower than Rajasthan's near-universal 108/111, but confirming the
+overheating is a real, common failure mode across the design space, not
+an artifact of the 3 designs Phase 7 happened to select (`05_…`).
 
 ## What this means for the recommendation
 
-Under the frozen shared config and the pre-declared selection rule, the
-Rajasthan deployable design for all three climate regimes is a
-**plain (sensible-only) 50 L tank** — the Objective 1 PCM shortlist does
-not earn its mass here. This is a defensible negative result, not a gap:
-it is the same conclusion Phase 4 Gate 3 and Phase 5 reached, now
-confirmed by a 400-candidate-per-pair search with full simulator
-re-confirmation. If PCM is to be pursued for hot-dry states, the
-follow-up is (a) widen the design bounds so > 12.9% PCM fraction becomes
-reachable **and** add a high-temperature bypass, or (b) revisit the
-frozen collector/tank sizing for hot climates — both out of Objective 2's
-40-hr scope, named here rather than silently dropped.
+**As reported, Assam's Phase 7 "PASS" is not trustworthy** — under this
+project's own pre-declared 65 °C/75 °C safety rule, 0/3 of the selected
+designs actually clear it. The honest path forward, in order of
+preference:
 
-## Deviations from the full framework doc
+1. **Re-run the selection with the correct filter applied** — reject any
+   candidate with `max_pcm_temp_C > 65` or `n_safety_violations > 0`
+   before ranking by the 5%-near-best rule, the same way
+   `src/optimize/select_deployable.py`'s `meets_temperature_safety`
+   already does (that ported code exists in this repo, unused for the
+   actual Assam run — it could be pointed at the same 12,000-candidate
+   pool). Given Gate 3's finding, this will likely force the plain tank
+   in some or all 3 regimes, matching Rajasthan's outcome.
+2. If a genuinely wider PCM operating ceiling is intended for Assam
+   (e.g. because 44–51 °C-Tm PCMs behave differently against a 100 L/day
+   demand and 16–20 °C mains than the 300 L/day cases elsewhere), that
+   must become an explicit, cited, per-state config decision — not a
+   silent mismatch between a correctly-computed margin and a
+   hardcoded report line.
 
-No NSGA-II / full Pareto front, no active-learning loop (retrain-and-
-repeat) — single search pass per the reduced spec. The "confirm on an
-unseen weather year" step of the selection rule is deferred (medoid-only,
-single 2025 year), stated explicitly.
+Until one of those happens, treat Assam's `phase7_deployable_design_per_regime.csv`
+as **unvalidated candidates**, not a deployable recommendation, in any
+paper section or Objective 3 hand-off.
+
+## Deviations from the framework doc / from the other two states
+
+- Uses a 1,000-candidate-per-pair random search + 5%-near-best rule
+  with a 6-tier tie-break, not Rajasthan/Tamil Nadu's 400-candidate
+  search + simple `pareto_tolerance_pct` rule. Both are within the
+  reduced 40-hr spec's discretion, but the two are not directly
+  comparable methodologically in a cross-state chapter without saying so.
+- Only 5 of the 21 top candidates were re-simulated (Rajasthan
+  re-simulated all 60 of its top-5-per-pair set) — a narrower
+  simulator-confirmation footprint.
+- No NSGA-II / full active-learning loop, same as the other states.

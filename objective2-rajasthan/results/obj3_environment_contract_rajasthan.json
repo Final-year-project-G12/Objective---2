@@ -171,16 +171,16 @@
         "geometry": {
           "capsule_shape": "sphere",
           "capsule_arrangement": "staggered",
-          "capsule_diameter_m": 0.04408,
+          "capsule_diameter_m": 0.04878,
           "n_capsule": 23,
-          "pcm_thickness_m": 0.02204,
-          "pcm_volume_fraction": 0.02063,
-          "void_fraction": 0.97937,
+          "pcm_thickness_m": 0.02439,
+          "pcm_volume_fraction": 0.02796,
+          "void_fraction": 0.97204,
           "tank_volume_L": 50.0,
           "collector_area_m2": 1.5
         },
         "flow_envelope_kg_s": {
-          "nominal": 0.03491,
+          "nominal": 0.03154,
           "min": 0.01,
           "max": 0.05
         }
@@ -191,7 +191,7 @@
         "unmet_energy_kWh": 1141.52,
         "max_water_temp_C": 68.59,
         "constraint_margin_C": 6.41,
-        "surrogate_vs_sim_error_pct": 0.098
+        "surrogate_vs_sim_error_pct": 0.1024
       },
       "robustness": {
         "n_draws": 120,
@@ -219,16 +219,16 @@
         "geometry": {
           "capsule_shape": "sphere",
           "capsule_arrangement": "staggered",
-          "capsule_diameter_m": 0.04068,
-          "n_capsule": 14,
-          "pcm_thickness_m": 0.02034,
-          "pcm_volume_fraction": 0.00987,
-          "void_fraction": 0.99013,
+          "capsule_diameter_m": 0.04004,
+          "n_capsule": 8,
+          "pcm_thickness_m": 0.02002,
+          "pcm_volume_fraction": 0.00538,
+          "void_fraction": 0.99462,
           "tank_volume_L": 50.0,
           "collector_area_m2": 1.5
         },
         "flow_envelope_kg_s": {
-          "nominal": 0.02976,
+          "nominal": 0.01828,
           "min": 0.01,
           "max": 0.05
         }
@@ -239,7 +239,7 @@
         "unmet_energy_kWh": 1022.08,
         "max_water_temp_C": 72.38,
         "constraint_margin_C": 2.62,
-        "surrogate_vs_sim_error_pct": 0.0869
+        "surrogate_vs_sim_error_pct": 0.0802
       },
       "robustness": {
         "n_draws": 120,
@@ -267,16 +267,16 @@
         "geometry": {
           "capsule_shape": "sphere",
           "capsule_arrangement": "staggered",
-          "capsule_diameter_m": 0.04434,
-          "n_capsule": 8,
-          "pcm_thickness_m": 0.02217,
-          "pcm_volume_fraction": 0.0073,
-          "void_fraction": 0.9927,
+          "capsule_diameter_m": 0.04128,
+          "n_capsule": 14,
+          "pcm_thickness_m": 0.02064,
+          "pcm_volume_fraction": 0.01031,
+          "void_fraction": 0.98969,
           "tank_volume_L": 50.0,
           "collector_area_m2": 1.5
         },
         "flow_envelope_kg_s": {
-          "nominal": 0.01267,
+          "nominal": 0.03102,
           "min": 0.01,
           "max": 0.05
         }
@@ -287,7 +287,7 @@
         "unmet_energy_kWh": 1202.33,
         "max_water_temp_C": 68.72,
         "constraint_margin_C": 6.28,
-        "surrogate_vs_sim_error_pct": 0.0647
+        "surrogate_vs_sim_error_pct": 0.0693
       },
       "robustness": {
         "n_draws": 120,

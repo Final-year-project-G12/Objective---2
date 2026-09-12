@@ -74,7 +74,7 @@ classifier learn this exact boundary.
 | ≥1 case per shortlisted PCM per regime | ✔ 12 valid rows per (regime, PCM) pair |
 | one no-PCM baseline per regime | ✔ `c{0,1,2}_baseline_noPCM` |
 | keep failed/infeasible cases + reason codes | ✔ 54 rows with `valid=False`, `reason=bounds_violation` |
-| 10 / 15 / 20% PCM-volume baselines | **not enumerable** — reachable PCM volume fraction here spans 0.0074–0.108; 15% and 20% are outside the frozen sphere-only/24-capsule bounds (`02_PHASE2_GEOMETRY_CONSTRAINTS.md`). Stated, not silently skipped. |
+| 10 / 15 / 20% PCM-volume baselines | **not enumerable** — reachable PCM volume fraction here spans 0.0064–0.1138; 15% and 20% are outside the frozen sphere-only/24-capsule bounds (`02_PHASE2_GEOMETRY_CONSTRAINTS.md`). Stated, not silently skipped. |
 
 ## Case-level train/hold-out split
 
