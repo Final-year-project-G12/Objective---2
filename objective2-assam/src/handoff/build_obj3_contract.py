@@ -87,11 +87,28 @@ def _reset_scenarios(system_config):
     ]
 
 
+def _get_margin(dep):
+    if "constraint_margin_C" in dep and pd.notna(dep["constraint_margin_C"]):
+        return float(dep["constraint_margin_C"])
+    if "pcm_temp_safety_margin_C" in dep and pd.notna(dep["pcm_temp_safety_margin_C"]):
+        return float(dep["pcm_temp_safety_margin_C"])
+    return float(dep.get("water_temp_safety_margin_C", 0.0))
+
+
+def _get_err(dep):
+    if "surrogate_vs_sim_error_pct" in dep and pd.notna(dep["surrogate_vs_sim_error_pct"]):
+        return float(dep["surrogate_vs_sim_error_pct"])
+    return float(dep.get("err_useful_energy_pct", 0.0))
+
+
 def write_contract(state: str):
     cfg = load_state_config(state)
     sc = load_system_config()
     db = load_design_bounds()
-    deployable = pd.read_csv(DEPLOYABLE_PATH).set_index("regime_id")
+    deployable = pd.read_csv(DEPLOYABLE_PATH)
+    if "selection_role" in deployable.columns:
+        deployable = deployable[deployable["selection_role"].str.contains("Optimal", na=False)]
+    deployable = deployable.set_index("regime_id")
     robustness = pd.read_csv(ROBUSTNESS_PATH).set_index("regime_id")
 
     flow_min = db["flow_rate_kg_s"]["min"]
@@ -140,19 +157,21 @@ def write_contract(state: str):
                 "solar_fraction": round(float(dep["sim_solar_fraction"]), 4),
                 "unmet_energy_kWh": round(float(dep["sim_unmet_energy_kWh"]), 2),
                 "max_water_temp_C": round(float(dep["sim_max_water_temp_C"]), 2),
-                "constraint_margin_C": round(float(dep["constraint_margin_C"]), 2),
-                "surrogate_vs_sim_error_pct": round(float(dep["surrogate_vs_sim_error_pct"]), 4),
+                "constraint_margin_C": round(_get_margin(dep), 2),
+                "surrogate_vs_sim_error_pct": round(_get_err(dep), 4),
             },
             "robustness": {
                 "n_draws": int(rob["n_draws"]),
                 "p_meets_delivery_temp": float(rob["p_meets_delivery_temp"]),
                 "p_meets_annual_demand": float(rob["p_meets_annual_demand"]),
-                "p_temperature_violation": float(rob["p_temperature_violation"]),
-                "p_exceeds_max_safe_temp": float(rob["p_exceeds_max_safe_temp"]),
+                "p_temperature_violation": float(rob["p_temperature_violation"]) if "p_temperature_violation" in rob else float(rob.get("p_exceeds_max_safe_temp", 0.0)),
+                "p_exceeds_max_safe_temp": float(rob["p_exceeds_max_safe_temp"]) if "p_exceeds_max_safe_temp" in rob else float(rob.get("p_temperature_violation", 0.0)),
+                "p_temp_safe": float(rob["p_temp_safe"]) if "p_temp_safe" in rob else (1.0 - float(rob.get("p_exceeds_max_safe_temp", 0.0))),
                 "useful_energy_p05_kWh": float(rob["useful_energy_p05_kWh"]),
                 "useful_energy_p95_kWh": float(rob["useful_energy_p95_kWh"]),
                 "max_water_temp_p95_C": float(rob["max_water_temp_p95_C"]),
                 "robust_per_framework_rule": bool(rob["robust_per_framework_rule"]),
+                "robustness_status": str(rob.get("robustness_status", "UNKNOWN")),
             },
         })
 

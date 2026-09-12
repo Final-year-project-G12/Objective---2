@@ -1,79 +1,40 @@
 """
 src/robustness/monte_carlo.py
 ================================
-Phase 8 / D2.7 — light robustness pass (framework doc §11.1, Bug-Fix 6,
-reduced 40-hr spec: "100-200 Monte Carlo draws per final design with
-concrete distributions ... never fewer than 50 draws").
+Phase 8 / D2.7 — light robustness pass for Objective 2 (Assam).
+Applies 100–200 Monte Carlo draws per final deployable regime design.
 
-This is Objective 2's own reference implementation of this methodology —
-Tamil Nadu's Phase 8 pass (`objective2-tamilnadu/src/robustness/monte_carlo.py`)
-was later aligned to match it exactly, for cross-state comparability
-(`O2_Unified_PerState_Execution_Framework.md` §0.1) — see
-`docs/08_PHASE8_ROBUSTNESS_HANDOFF.md`, "Alignment with Tamil Nadu".
-Function/column naming below matches Tamil Nadu's aligned version
-one-for-one so the two states' `phase8_robustness*.csv` files are
-directly comparable column-by-column.
+Uncertainty distributions:
+  1. PCM latent heat        : +/-10% uniform (0.90 to 1.10 x nominal)
+  2. Weather — GHI / Tamb   : medoid + noise (annual scale ~ U(0.93, 1.07),
+                               hourly GHI ~ N(1, 0.04) clipped [0.5, 1.5];
+                               Tamb annual offset ~ U(-1.5, 1.5) C + hourly noise N(0, 0.4) C)
+  3. Demand                 : +/-20% volume (uniform), +/-30 min timing shift (uniform)
+  4. Inlet/mains temperature: +/-2 C (uniform)
 
-For each of Phase 7's deployable designs (`phase7_deployable_design_per_regime.csv`),
-draws N=120 independent scenarios from:
+Decision rule:
+  Robust if P(meets annual demand) >= 0.75 and P(temp-safe) >= 0.95.
+  Otherwise CAVEAT / NOT ROBUST (reported explicitly, never hidden).
 
-  - PCM latent heat        : +/-10% uniform (skipped for the plain-tank baseline — no PCM to perturb)
-  - Weather — GHI          : annual scale ~ U(0.93, 1.07) x per-hour iid noise ~ N(1, 0.04),
-                              clipped [0.5, 1.5] — "medoid + noise" proxy for an unseen
-                              weather year, since no member-point weather file exists for
-                              Rajasthan (Objective 1 shipped medoid-only, see docs/00)
-  - Weather — ambient temp : annual offset ~ U(-1.5, +1.5) C + per-hour iid noise ~ N(0, 0.4) C
-  - Demand                 : +/-20% volume (uniform), +/-30 min timing shift (uniform)
-  - Inlet/mains temperature: +/-2 C (uniform)
-
-and re-runs the FULL YEAR simulator for every draw (never the surrogate —
-robustness is a simulator-only analysis, via `run_case`'s
-`weather_perturbation` keyword, the same override seam Phase 4's
-`gates.py` uses for its own limiting-case tests, so `run_case` itself
-needs no Phase-8-specific code path). Reports, per design:
-
-  - P(meets delivery temperature) — solar_fraction >= 0.45 (fixed, state-independent)
-  - P(meets annual demand)        — solar_fraction >= 0.50 (fixed, state-independent)
-  - useful-energy / solar-fraction / pump-energy / PCM-mass 5th-95th percentile intervals
-  - max water temperature 95th percentile
-  - P(any safety-temperature violation)  — n_safety_violations > 0
-  - P(exceeds max safe temperature)      — max_water_temp_C > limit, or (has PCM
-                                            only) max_pcm_temp_C > limit — kept
-                                            separate from the line above because they
-                                            are genuinely different questions (any
-                                            flagged sub-hour, vs. the reported annual
-                                            max actually clearing the hard limit)
-
-Both "meets ..." thresholds are FIXED and state-independent, not relative
-to each design's own nominal value — a self-referential threshold would
-let a weak nominal design look "just as robust" as a strong one purely by
-having an easy bar to clear, which defeats the point of a cross-state
-comparison (this is exactly the failure mode Tamil Nadu's first Phase 8
-pass had, and fixed by aligning to this implementation — see docs/08).
-
-"Robust" per the framework doc's rule of thumb: P(meets demand) >= ~75%
-and P(temperature-safe) >= ~95%; otherwise reported as an explicit
-caveat, never hidden.
+Outputs:
+  results/phase8_robustness.csv
+  results/phase8_robustness_draws.csv
 """
 
 import sys
-
 import numpy as np
 import pandas as pd
+from joblib import Parallel, delayed
 
 from config import RESULTS_DIR
 from src.design.schema import DesignVector
 from src.io_utils import get_pcm_properties, get_regime, load_system_config, load_hourly_weather
 from src.simulation.run_case import run_case
 
-N_DRAWS = 120
-MC_SEED = 20260905
+N_DRAWS = 100
+MC_SEED = 20260912
+N_JOBS = 6
 
-# Fixed, state-independent thresholds on solar_fraction (Phase 3 doc
-# definition: fraction of the ideal 300 L/day @ delivery-target demand
-# actually delivered at/above that target) — deliberately NOT relative to
-# each design's own nominal value, so P(meets demand) means the same
-# thing for every regime and every state.
 SOLAR_FRACTION_DELIVERY_THRESHOLD = 0.45
 SOLAR_FRACTION_DEMAND_THRESHOLD = 0.50
 
@@ -103,57 +64,73 @@ def _sample_scenario(rng, has_pcm: bool, n_hours: int) -> dict:
     }
 
 
+def _run_single_draw_job(args):
+    (i, s, state, cid, pcm_id, pcm_name, design_dict, base_mains, base_latent, record_hourly) = args
+
+    design = DesignVector(
+        design_dict["capsule_diameter_m"],
+        design_dict["n_capsule"],
+        design_dict["flow_rate_kg_s"]
+    )
+
+    pcm_overrides = ({"latent_heat_kJ_kg": base_latent * s["latent_heat_mult"]}
+                      if pcm_id is not None else None)
+    out = run_case(
+        state, cid, pcm_id, design, record_hourly=record_hourly,
+        volume_multiplier=s["demand_multiplier"], timing_shift_hours=s["timing_shift_hours"],
+        mains_temp_override_C=base_mains + s["mains_delta_C"],
+        pcm_record_overrides=pcm_overrides,
+        weather_perturbation={"ghi_multiplier": s["ghi_multiplier_array"],
+                               "tamb_delta_C": s["tamb_delta_array"]},
+    )
+    rec = {
+        "draw": i, "regime_id": cid, "pcm_id": pcm_name, "valid": out["valid"],
+        "latent_heat_mult": s["latent_heat_mult"], "annual_ghi_scale": s["annual_ghi_scale"],
+        "annual_tamb_offset_C": s["annual_tamb_offset_C"], "demand_multiplier": s["demand_multiplier"],
+        "timing_shift_hours": s["timing_shift_hours"], "mains_delta_C": s["mains_delta_C"],
+    }
+    if out["valid"]:
+        rec.update(out["metrics"])
+    return rec
+
+
 def run_monte_carlo_for_design(state: str, row: pd.Series, n_draws: int = N_DRAWS,
-                                seed: int = MC_SEED) -> pd.DataFrame:
+                                seed: int = MC_SEED, n_jobs: int = N_JOBS) -> pd.DataFrame:
     cid = int(row["regime_id"])
     pcm_id = None if row["pcm_id"] == "NONE_plain_tank" else row["pcm_id"]
-    design = DesignVector(float(row["capsule_diameter_m"]), int(row["n_capsule"]),
-                          float(row["flow_rate_kg_s"]))
+    design_dict = {
+        "capsule_diameter_m": float(row["capsule_diameter_m"]),
+        "n_capsule": int(row["n_capsule"]),
+        "flow_rate_kg_s": float(row["flow_rate_kg_s"]),
+    }
     base_mains = get_regime(state, cid)["T_mains_est_C"]
     base_latent = get_pcm_properties(state, pcm_id)["latent_heat_kJ_kg"] if pcm_id else None
     n_hours = len(load_hourly_weather(state, cid))
     rng = np.random.default_rng(seed + cid * 131)
 
-    draws = []
+    tasks = []
     for i in range(n_draws):
         s = _sample_scenario(rng, pcm_id is not None, n_hours)
-        pcm_overrides = ({"latent_heat_kJ_kg": base_latent * s["latent_heat_mult"]}
-                          if pcm_id is not None else None)
-        out = run_case(
-            state, cid, pcm_id, design, record_hourly=True,
-            volume_multiplier=s["demand_multiplier"], timing_shift_hours=s["timing_shift_hours"],
-            mains_temp_override_C=base_mains + s["mains_delta_C"],
-            pcm_record_overrides=pcm_overrides,
-            weather_perturbation={"ghi_multiplier": s["ghi_multiplier_array"],
-                                   "tamb_delta_C": s["tamb_delta_array"]},
-        )
-        rec = {
-            "draw": i, "regime_id": cid, "pcm_id": row["pcm_id"], "valid": out["valid"],
-            "latent_heat_mult": s["latent_heat_mult"], "annual_ghi_scale": s["annual_ghi_scale"],
-            "annual_tamb_offset_C": s["annual_tamb_offset_C"], "demand_multiplier": s["demand_multiplier"],
-            "timing_shift_hours": s["timing_shift_hours"], "mains_delta_C": s["mains_delta_C"],
-        }
-        if out["valid"]:
-            rec.update(out["metrics"])
-        draws.append(rec)
+        tasks.append((i, s, state, cid, pcm_id, row["pcm_id"], design_dict, base_mains, base_latent, False))
 
+    draws = Parallel(n_jobs=n_jobs)(delayed(_run_single_draw_job)(task) for task in tasks)
     return pd.DataFrame(draws)
 
 
-def summarize_design(row: pd.Series, draws: pd.DataFrame, system_config: dict) -> dict:
+def summarize_design(state: str, row: pd.Series, draws: pd.DataFrame, system_config: dict) -> dict:
     max_water_limit = system_config["safety"]["max_water_temp_C"]
     max_pcm_limit = system_config["safety"]["max_pcm_temp_C"]
+    delivery_target_C = system_config["delivery"]["target_temp_C"]
     has_pcm = row["pcm_id"] != "NONE_plain_tank"
+
+    pcm_record = get_pcm_properties(state, row["pcm_id"]) if has_pcm else None
+    nominal_latent = pcm_record["latent_heat_kJ_kg"] if pcm_record is not None else 0.0
 
     p_meets_delivery = float((draws["solar_fraction"] >= SOLAR_FRACTION_DELIVERY_THRESHOLD).mean())
     p_meets_demand = float((draws["solar_fraction"] >= SOLAR_FRACTION_DEMAND_THRESHOLD).mean())
     p_temp_violation = float((draws["n_safety_violations"] > 0).mean())
-    # For a plain-tank design (no PCM), tank_model.py sets T_pcm = T_w exactly
-    # (there is no PCM to have its own temperature) — so checking max_pcm_temp_C
-    # against the PCM-specific 65 C limit for those rows would wrongly flag
-    # ordinary hot water (which only needs to respect the 75 C water limit) as
-    # a "PCM over-temperature". Only apply the PCM check when the design
-    # actually has PCM in it.
+    p_temp_safe = 1.0 - p_temp_violation
+
     if has_pcm:
         p_exceeds_max_safe = float(
             ((draws["max_water_temp_C"] > max_water_limit) | (draws["max_pcm_temp_C"] > max_pcm_limit)).mean()
@@ -167,24 +144,62 @@ def summarize_design(row: pd.Series, draws: pd.DataFrame, system_config: dict) -
     mass_lo, mass_hi = draws["pcm_mass_kg"].quantile([0.05, 0.95])
     max_water_p95 = draws["max_water_temp_C"].quantile(0.95)
 
-    robust = (p_meets_demand >= 0.75) and ((1 - p_temp_violation) >= 0.95)
+    demand_pass = p_meets_demand >= 0.75
+    safety_pass = p_temp_safe >= 0.95
+    robust = demand_pass and safety_pass
+
+    if robust:
+        status = "ROBUST"
+        caveat = "None — meets demand and temperature-safety thresholds"
+    else:
+        status = "CAVEAT / NOT ROBUST"
+        fails = []
+        if not demand_pass:
+            fails.append(f"P(demand)={p_meets_demand:.2f} < 0.75")
+        if not safety_pass:
+            fails.append(f"P(temp-safe)={p_temp_safe:.2f} < 0.95")
+        caveat = "Failed thresholds: " + "; ".join(fails)
 
     return {
-        "regime_id": row["regime_id"], "pcm_id": row["pcm_id"], "n_draws": len(draws),
-        "p_meets_delivery_temp": p_meets_delivery, "p_meets_annual_demand": p_meets_demand,
-        "p_temperature_violation": p_temp_violation, "p_exceeds_max_safe_temp": p_exceeds_max_safe,
-        "useful_energy_p05_kWh": ue_lo, "useful_energy_p50_kWh": ue_mid, "useful_energy_p95_kWh": ue_hi,
-        "solar_fraction_p05": sf_lo, "solar_fraction_p95": sf_hi,
-        "pump_energy_p05_kWh": pump_lo, "pump_energy_p95_kWh": pump_hi,
-        "pcm_mass_p05_kg": mass_lo, "pcm_mass_p95_kg": mass_hi,
+        "state": state,
+        "regime_id": int(row["regime_id"]),
+        "pcm_id": row["pcm_id"],
+        "n_draws": len(draws),
+        "weather_source": "medoid + noise",
+        "nominal_latent_heat_kJ_kg": nominal_latent,
+        "demand_nominal_L_day": 100.0,
+        "delivery_target_temp_C": delivery_target_C,
+        "max_water_temp_limit_C": max_water_limit,
+        "max_pcm_temp_limit_C": max_pcm_limit,
+        "p_meets_delivery_temp": p_meets_delivery,
+        "p_meets_annual_demand": p_meets_demand,
+        "p_temperature_violation": p_temp_violation,
+        "p_temp_safe": p_temp_safe,
+        "p_exceeds_max_safe_temp": p_exceeds_max_safe,
+        "useful_energy_p05_kWh": ue_lo,
+        "useful_energy_p50_kWh": ue_mid,
+        "useful_energy_p95_kWh": ue_hi,
+        "solar_fraction_p05": sf_lo,
+        "solar_fraction_p95": sf_hi,
+        "pump_energy_p05_kWh": pump_lo,
+        "pump_energy_p95_kWh": pump_hi,
+        "pcm_mass_p05_kg": mass_lo,
+        "pcm_mass_p95_kg": mass_hi,
         "max_water_temp_p95_C": max_water_p95,
         "robust_per_framework_rule": robust,
+        "robustness_status": status,
+        "caveat_reason": caveat,
     }
 
 
-def run_all(state: str, n_draws: int = N_DRAWS):
+def run_all(state: str, n_draws: int = N_DRAWS, n_jobs: int = N_JOBS):
     n_draws = max(int(n_draws), 50)   # framework doc: never fewer than 50
     deployable = pd.read_csv(DEPLOYABLE_PATH)
+    if "selection_role" in deployable.columns:
+        optimal_mask = deployable["selection_role"].str.contains("Optimal", na=False)
+        if optimal_mask.any():
+            deployable = deployable[optimal_mask]
+    deployable = deployable.drop_duplicates(subset=["regime_id"], keep="first")
     system_config = load_system_config()
 
     print(f"Phase 8 robustness: {n_draws} Monte Carlo draws x {len(deployable)} regimes "
@@ -193,15 +208,15 @@ def run_all(state: str, n_draws: int = N_DRAWS):
 
     all_draws, summaries = [], []
     for _, row in deployable.iterrows():
-        print(f"  regime {row['regime_id']} ({row['pcm_id']}), {n_draws} draws ...")
-        draws = run_monte_carlo_for_design(state, row, n_draws=n_draws)
+        print(f"  regime {row['regime_id']} ({row['pcm_id']}), {n_draws} draws (parallel jobs={n_jobs}) ...")
+        draws = run_monte_carlo_for_design(state, row, n_draws=n_draws, n_jobs=n_jobs)
         all_draws.append(draws)
-        summary = summarize_design(row, draws[draws["valid"]], system_config)
+        summary = summarize_design(state, row, draws[draws["valid"]], system_config)
         summaries.append(summary)
         print(f"    P(meets delivery)={summary['p_meets_delivery_temp']:.2f}  "
               f"P(meets demand)={summary['p_meets_annual_demand']:.2f}  "
-              f"P(temp-safe)={1 - summary['p_temperature_violation']:.2f}  "
-              f"robust={summary['robust_per_framework_rule']}")
+              f"P(temp-safe)={summary['p_temp_safe']:.2f}  "
+              f"status={summary['robustness_status']}")
 
     draws_df = pd.concat(all_draws, ignore_index=True)
     summary_df = pd.DataFrame(summaries)
@@ -214,6 +229,6 @@ def run_all(state: str, n_draws: int = N_DRAWS):
 
 
 if __name__ == "__main__":
-    state = sys.argv[1] if len(sys.argv) > 1 else "rajasthan"
+    state = sys.argv[1] if len(sys.argv) > 1 else "assam"
     n = int(sys.argv[2]) if len(sys.argv) > 2 else N_DRAWS
     run_all(state, n)

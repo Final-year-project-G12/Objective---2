@@ -1,0 +1,357 @@
+{
+  "schema": "obj3_environment_contract/v1",
+  "state": "assam",
+  "simulator_version": "sim_v1_assam",
+  "generated_from": {
+    "deployable": "phase7_deployable_design_per_regime.csv",
+    "robustness": "phase8_robustness.csv",
+    "system_config": "configs/system_config_shared.yaml",
+    "design_bounds": "configs/design_bounds_shared.yaml",
+    "state_config": "configs/states/assam.yaml"
+  },
+  "global_limits": {
+    "delivery_temp_target_C": 45.0,
+    "max_water_temp_C": 75.0,
+    "max_pcm_temp_C": 65.0,
+    "max_pressure_bar": 3.5,
+    "min_irradiance_cutoff_Wm2": 10.0,
+    "pump_flow_min_kg_s": 0.01,
+    "pump_flow_max_kg_s": 0.05
+  },
+  "control_skeleton": {
+    "actions": [
+      "charge",
+      "discharge",
+      "bypass"
+    ],
+    "action_notes": {
+      "charge": "circulate collector loop through the store (pump on, flow in [pump_flow_min, pump_flow_max])",
+      "discharge": "draw store -> load at delivery temp; collector loop off or idle",
+      "bypass": "collector loop bypasses the store (pump off / diverter) \u2014 the overheat-protection action"
+    },
+    "recommended_action_space": "continuous-flow hybrid (mode in {charge, discharge, bypass} + continuous flow_rate_kg_s within flow_envelope_kg_s) \u2014 the pump range (0.010-0.050 kg/s) is continuous, so a discrete-only action space would discard usable control resolution",
+    "hard_rule": "the controller must never command a flow or temperature outside this regime's flow_envelope_kg_s / max_water_temp_C / max_pcm_temp_C \u2014 the safety shield below overrides the policy if it tries",
+    "state_vector": [
+      "T_water_C",
+      "T_pcm_C",
+      "f_melt",
+      "GHI_Wm2",
+      "T_amb_C",
+      "hour_of_day",
+      "draw_mass_kg_now",
+      "T_mains_C",
+      "store_energy_above_mains_kWh",
+      "minutes_since_last_draw"
+    ],
+    "observation_notes": "T_pcm_C and f_melt are degenerate for the plain-tank regimes (no PCM); keep them in the vector for a state-invariant contract across future PCM-bearing states.",
+    "safety_shield": {
+      "force_bypass_if": "T_water_C >= 72.0 (3.0 C guard band below the 75.0 C hard limit \u2014 tripping exactly at the hard limit risks overshoot from sensor/control lag, per Phase 8's own P(temp-safe) results below)",
+      "force_bypass_if_pcm": "T_pcm_C >= 62.0 (PCM-bearing designs only)",
+      "clamp_flow_to": "[0.01, 0.05] kg/s",
+      "pump_off_below_irradiance_Wm2": 10.0,
+      "dry_run": "pump commanded on, flow sensor reads ~0 -> stop pump, raise fault",
+      "sensor_failure": "missing reading for a required field -> fall back to bypass (safe default), raise fault",
+      "rationale": "Phase 8 robustness found P(temp-safe) well below 0.95 for every Assam regime even with the plain tank \u2014 an active bypass shield is a hard requirement here, not an optimisation nicety."
+    }
+  },
+  "dynamic_state_schema": {
+    "description": "One observation per control timestep. Fields marked measurable=false need an estimator (energy-balance + calibrated melt-fraction observer), not a raw sensor. T_pcm_C and f_melt are degenerate for the plain-tank regimes (no PCM) but kept in the vector for a state-invariant contract across future PCM-bearing states.",
+    "fields": [
+      {
+        "name": "GHI_Wm2",
+        "unit": "W/m2",
+        "measurable": true,
+        "source": "pyranometer or weather feed"
+      },
+      {
+        "name": "T_amb_C",
+        "unit": "C",
+        "measurable": true,
+        "source": "ambient sensor"
+      },
+      {
+        "name": "T_water_C",
+        "unit": "C",
+        "measurable": true,
+        "source": "tank thermocouple"
+      },
+      {
+        "name": "T_pcm_C",
+        "unit": "C",
+        "measurable": false,
+        "source": "estimator (no direct PCM sensor assumed)"
+      },
+      {
+        "name": "f_melt",
+        "unit": "fraction [0,1]",
+        "measurable": false,
+        "source": "estimator, derived from T_pcm_C via the frozen enthalpy model"
+      },
+      {
+        "name": "T_mains_C",
+        "unit": "C",
+        "measurable": true,
+        "source": "mains/inlet sensor"
+      },
+      {
+        "name": "draw_mass_kg_now",
+        "unit": "kg",
+        "measurable": true,
+        "source": "flow meter at the draw-off point"
+      },
+      {
+        "name": "hour_of_day",
+        "unit": "hour [0,24)",
+        "measurable": true,
+        "source": "clock"
+      },
+      {
+        "name": "minutes_since_last_draw",
+        "unit": "minutes",
+        "measurable": true,
+        "source": "derived from draw sensor history"
+      },
+      {
+        "name": "store_energy_above_mains_kWh",
+        "unit": "kWh (cumulative)",
+        "measurable": false,
+        "source": "estimator, from T_water_C/T_pcm_C vs T_mains_C"
+      }
+    ]
+  },
+  "reset_scenarios": [
+    {
+      "name": "fully_solid",
+      "initial_pcm_state": "solid",
+      "initial_water_temp_C": 30.0,
+      "note": "matches src/simulation/tank_model.py's default cold-start condition"
+    },
+    {
+      "name": "partially_charged",
+      "initial_pcm_state": "mid",
+      "initial_water_temp_C": 30.0,
+      "note": "PCM initialized at Tm_C (roughly 50% notional charge state)"
+    },
+    {
+      "name": "fully_liquid",
+      "initial_pcm_state": "liquid",
+      "initial_water_temp_C": 30.0,
+      "note": "stresses discharge-heavy policies from a fully-charged start"
+    }
+  ],
+  "weather_sequences": {
+    "training_validation_test": "NOT YET SPLIT \u2014 only one medoid weather year per regime exists (data/weather/weather_regime_assam_cluster<k>_hourly.csv); Objective 3 must not assume separate train/val/test weather years are already prepared (40-hr cut list)."
+  },
+  "demand_profile_file": "data/demand/demand_profile_assam.csv",
+  "time_step_s": 300,
+  "reward_components_suggested": {
+    "formula": "r_t = w1*Q_delivered_t - w2*E_unmet_t - w3*E_pump_t - w4*Penalty_safety_t - w5*Penalty_bypass_t",
+    "weights": "NOT YET CHOSEN \u2014 must be frozen by Objective 3 before training, per framework doc Sec 13.3"
+  },
+  "acceptance_test_before_drl_training": [
+    "every action stays within flow_envelope_kg_s / temperature limits above",
+    "charge/discharge/bypass transitions are physically valid",
+    "the environment conserves energy (reuse Phase 4 Gate 1's <0.1% residual check)",
+    "the safety shield cannot be bypassed by the policy",
+    "the same seed reproduces the same trajectory",
+    "simulator output matches this Objective 2 re-evaluation for identical actions"
+  ],
+  "regimes": [
+    {
+      "regime_id": 0,
+      "label": "Lower Brahmaputra Valley, moist valley regime, medoid ASP_0012 (33 pts)",
+      "regime_membership_rule": "GMM cluster 0 of K=3 (Objective 1, cluster_assignments_levelA_assam.csv); a new site is assigned to this regime by its max_membership_prob column",
+      "medoid_weather_hourly": "data/weather/weather_regime_assam_cluster0_hourly.csv",
+      "T_mains_est_C": 19.89,
+      "Tm_target_C": 44.0,
+      "selected_design": {
+        "pcm_id": "savE\u00ae OM46",
+        "is_plain_tank": false,
+        "pcm_properties": {
+          "name": "savE\u00ae OM46",
+          "Tm_C": 47.0,
+          "Tm_freezing_C": 45.0,
+          "latent_heat_kJ_kg": 177.0,
+          "density_liquid_kg_m3": 880.0,
+          "density_solid_kg_m3": 917.0,
+          "Cp_liquid_kJ_kgK": 2.7,
+          "Cp_solid_kJ_kgK": 2.5,
+          "TC_W_mK": 0.15,
+          "supercooling_K": 2.0,
+          "cycles_tested": 2000.0,
+          "any_property_imputed": "True"
+        },
+        "geometry": {
+          "capsule_shape": "sphere",
+          "capsule_arrangement": "staggered",
+          "capsule_diameter_m": 0.04031,
+          "n_capsule": 24,
+          "pcm_thickness_m": 0.02015,
+          "pcm_volume_fraction": 0.01646,
+          "void_fraction": 0.98354,
+          "tank_volume_L": 50.0,
+          "collector_area_m2": 1.5
+        },
+        "flow_envelope_kg_s": {
+          "nominal": 0.04625,
+          "min": 0.01,
+          "max": 0.05
+        }
+      },
+      "sim_confirmed_performance": {
+        "useful_energy_kWh": 685.18,
+        "solar_fraction": 0.6278,
+        "unmet_energy_kWh": 396.68,
+        "max_water_temp_C": 66.51,
+        "constraint_margin_C": -1.21,
+        "surrogate_vs_sim_error_pct": 0.0427
+      },
+      "robustness": {
+        "n_draws": 100,
+        "p_meets_delivery_temp": 1.0,
+        "p_meets_annual_demand": 1.0,
+        "p_temperature_violation": 0.87,
+        "p_exceeds_max_safe_temp": 0.87,
+        "p_temp_safe": 0.13,
+        "useful_energy_p05_kWh": 602.0825862119319,
+        "useful_energy_p95_kWh": 753.3924912470599,
+        "max_water_temp_p95_C": 75.35716545015167,
+        "robust_per_framework_rule": false,
+        "robustness_status": "CAVEAT / NOT ROBUST"
+      }
+    },
+    {
+      "regime_id": 1,
+      "label": "Upper Assam Tea Belt, warm valley regime, medoid ASP_0092 (61 pts)",
+      "regime_membership_rule": "GMM cluster 1 of K=3 (Objective 1, cluster_assignments_levelA_assam.csv); a new site is assigned to this regime by its max_membership_prob column",
+      "medoid_weather_hourly": "data/weather/weather_regime_assam_cluster1_hourly.csv",
+      "T_mains_est_C": 19.1,
+      "Tm_target_C": 44.0,
+      "selected_design": {
+        "pcm_id": "savE\u00ae OM48",
+        "is_plain_tank": false,
+        "pcm_properties": {
+          "name": "savE\u00ae OM48",
+          "Tm_C": 51.0,
+          "Tm_freezing_C": 48.0,
+          "latent_heat_kJ_kg": 165.0,
+          "density_liquid_kg_m3": 875.0,
+          "density_solid_kg_m3": 960.0,
+          "Cp_liquid_kJ_kgK": 2.35,
+          "Cp_solid_kJ_kgK": 2.02,
+          "TC_W_mK": 0.15,
+          "supercooling_K": 3.0,
+          "cycles_tested": 2000.0,
+          "any_property_imputed": "True"
+        },
+        "geometry": {
+          "capsule_shape": "sphere",
+          "capsule_arrangement": "staggered",
+          "capsule_diameter_m": 0.04299,
+          "n_capsule": 18,
+          "pcm_thickness_m": 0.0215,
+          "pcm_volume_fraction": 0.01498,
+          "void_fraction": 0.98502,
+          "tank_volume_L": 50.0,
+          "collector_area_m2": 1.5
+        },
+        "flow_envelope_kg_s": {
+          "nominal": 0.03232,
+          "min": 0.01,
+          "max": 0.05
+        }
+      },
+      "sim_confirmed_performance": {
+        "useful_energy_kWh": 709.41,
+        "solar_fraction": 0.6275,
+        "unmet_energy_kWh": 409.48,
+        "max_water_temp_C": 68.6,
+        "constraint_margin_C": -2.95,
+        "surrogate_vs_sim_error_pct": 0.0226
+      },
+      "robustness": {
+        "n_draws": 100,
+        "p_meets_delivery_temp": 1.0,
+        "p_meets_annual_demand": 1.0,
+        "p_temperature_violation": 0.99,
+        "p_exceeds_max_safe_temp": 0.99,
+        "p_temp_safe": 0.01,
+        "useful_energy_p05_kWh": 621.1690463021667,
+        "useful_energy_p95_kWh": 765.1907596979327,
+        "max_water_temp_p95_C": 76.98822806839773,
+        "robust_per_framework_rule": false,
+        "robustness_status": "CAVEAT / NOT ROBUST"
+      }
+    },
+    {
+      "regime_id": 2,
+      "label": "Barak Valley & Southern Hills, elevated cooler hill regime, medoid ASP_0028 (35 pts)",
+      "regime_membership_rule": "GMM cluster 2 of K=3 (Objective 1, cluster_assignments_levelA_assam.csv); a new site is assigned to this regime by its max_membership_prob column",
+      "medoid_weather_hourly": "data/weather/weather_regime_assam_cluster2_hourly.csv",
+      "T_mains_est_C": 16.59,
+      "Tm_target_C": 44.0,
+      "selected_design": {
+        "pcm_id": "savE\u00ae OM48",
+        "is_plain_tank": false,
+        "pcm_properties": {
+          "name": "savE\u00ae OM48",
+          "Tm_C": 51.0,
+          "Tm_freezing_C": 48.0,
+          "latent_heat_kJ_kg": 165.0,
+          "density_liquid_kg_m3": 875.0,
+          "density_solid_kg_m3": 960.0,
+          "Cp_liquid_kJ_kgK": 2.35,
+          "Cp_solid_kJ_kgK": 2.02,
+          "TC_W_mK": 0.15,
+          "supercooling_K": 3.0,
+          "cycles_tested": 2000.0,
+          "any_property_imputed": "True"
+        },
+        "geometry": {
+          "capsule_shape": "sphere",
+          "capsule_arrangement": "staggered",
+          "capsule_diameter_m": 0.04005,
+          "n_capsule": 21,
+          "pcm_thickness_m": 0.02002,
+          "pcm_volume_fraction": 0.01412,
+          "void_fraction": 0.98588,
+          "tank_volume_L": 50.0,
+          "collector_area_m2": 1.5
+        },
+        "flow_envelope_kg_s": {
+          "nominal": 0.02779,
+          "min": 0.01,
+          "max": 0.05
+        }
+      },
+      "sim_confirmed_performance": {
+        "useful_energy_kWh": 656.11,
+        "solar_fraction": 0.5355,
+        "unmet_energy_kWh": 560.08,
+        "max_water_temp_C": 70.71,
+        "constraint_margin_C": -5.09,
+        "surrogate_vs_sim_error_pct": 0.0019
+      },
+      "robustness": {
+        "n_draws": 100,
+        "p_meets_delivery_temp": 0.96,
+        "p_meets_annual_demand": 0.74,
+        "p_temperature_violation": 0.99,
+        "p_exceeds_max_safe_temp": 0.99,
+        "p_temp_safe": 0.01,
+        "useful_energy_p05_kWh": 583.936707373203,
+        "useful_energy_p95_kWh": 715.4861933615241,
+        "max_water_temp_p95_C": 77.01365907483968,
+        "robust_per_framework_rule": false,
+        "robustness_status": "CAVEAT / NOT ROBUST"
+      }
+    }
+  ],
+  "deferred_future_work": [
+    "multi-state comparison (Assam / Uttarakhand / Tamil Nadu under identical methodology)",
+    "active-learning optimization loop (retrain-and-repeat) and full NSGA-II Pareto front",
+    "full-draw robustness with real alternate member-point weather series",
+    "widened design bounds to reach 15-20% PCM volume fraction (Phase-0-gate decision)",
+    "experimental (hardware) validation of the simulator against a physical lab rig (Objective 4 scope)"
+  ]
+}

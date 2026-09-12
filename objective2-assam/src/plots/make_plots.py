@@ -414,6 +414,7 @@ def phase7_safety_compliance(state, out_dir, optimized):
 
 def phase8_robustness_probabilities(state, out_dir, robustness_summary):
     labels = [f"Regime {r} ({p})" for r, p in zip(robustness_summary["regime_id"], robustness_summary["pcm_id"])]
+    n_draws = int(robustness_summary["n_draws"].iloc[0]) if "n_draws" in robustness_summary.columns else 100
     fig = go.Figure()
     fig.add_trace(go.Bar(x=labels, y=robustness_summary["p_meets_delivery_temp"] * 100,
                           name="P(meets delivery temp)", marker_color="#9467bd"))
@@ -424,15 +425,22 @@ def phase8_robustness_probabilities(state, out_dir, robustness_summary):
     fig.add_hline(y=75, line_dash="dash", line_color="#1f77b4", annotation_text="75% demand threshold")
     fig.add_hline(y=95, line_dash="dash", line_color="#2ca02c", annotation_text="95% temp-safety threshold")
     fig.update_layout(barmode="group",
-                       title=f"Phase 8 — robustness probabilities (120 Monte Carlo draws/design) — {state}",
+                       title=f"Phase 8 — robustness probabilities ({n_draws} Monte Carlo draws/design) — {state}",
                        yaxis_title="probability (%)")
     _save(fig, "phase8_robustness_probabilities", out_dir, width=1150)
 
 
 def phase8_useful_energy_intervals(state, out_dir, robustness_summary, deployable):
+    if "selection_role" in deployable.columns:
+        optimal_mask = deployable["selection_role"].str.contains("Optimal", na=False)
+        if optimal_mask.any():
+            deployable = deployable[optimal_mask]
+    deployable = deployable.drop_duplicates(subset=["regime_id"], keep="first")
+    n_draws = int(robustness_summary["n_draws"].iloc[0]) if "n_draws" in robustness_summary.columns else 100
+
     fig = go.Figure()
     for _, row in robustness_summary.iterrows():
-        cid = row["regime_id"]
+        cid = int(row["regime_id"])
         label = f"Regime {cid} ({row['pcm_id']})"
         fig.add_trace(go.Scatter(
             x=[row["useful_energy_p05_kWh"], row["useful_energy_p95_kWh"]], y=[label, label],
@@ -442,7 +450,7 @@ def phase8_useful_energy_intervals(state, out_dir, robustness_summary, deployabl
         fig.add_trace(go.Scatter(
             x=[row["useful_energy_p50_kWh"]], y=[label], mode="markers",
             marker=dict(color="#1f77b4", size=10, symbol="circle"),
-            name="P50 (median)", showlegend=bool(row["regime_id"] == robustness_summary["regime_id"].iloc[0]),
+            name="P50 (median)", showlegend=bool(cid == int(robustness_summary["regime_id"].iloc[0])),
             hovertemplate="P50: %{x:.0f} kWh<extra></extra>",
         ))
         nominal_row = deployable[deployable["regime_id"] == cid]
@@ -450,11 +458,11 @@ def phase8_useful_energy_intervals(state, out_dir, robustness_summary, deployabl
             fig.add_trace(go.Scatter(
                 x=[float(nominal_row.iloc[0]["sim_useful_energy_kWh"])], y=[label], mode="markers",
                 marker=dict(color="black", size=13, symbol="diamond"),
-                name="nominal (Phase 7)", showlegend=bool(cid == robustness_summary["regime_id"].iloc[0]),
+                name="nominal (Phase 7)", showlegend=bool(cid == int(robustness_summary["regime_id"].iloc[0])),
                 hovertemplate="nominal: %{x:.0f} kWh<extra></extra>",
             ))
     fig.update_layout(title=f"Phase 8 — useful-energy 5th-50th-95th percentile interval per regime "
-                             f"(120 Monte Carlo draws) — {state}",
+                             f"({n_draws} Monte Carlo draws) — {state}",
                        xaxis_title="useful_energy_kWh")
     _save(fig, "phase8_useful_energy_intervals", out_dir)
 
