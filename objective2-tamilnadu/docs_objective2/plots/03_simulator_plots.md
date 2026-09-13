@@ -1,5 +1,18 @@
 # Phase 3 Plots — Grey-Box Enthalpy Simulator
 
+> **Note (2026-09-13):** these three plots use the illustrative
+> pre-retargeting example case (`n-Octacosane (C28)`, `Tm=61.6°C`,
+> cluster 0) to demonstrate the simulator's melting-band and
+> energy-accounting mechanics — they were generated once as Phase 3
+> exit-check evidence and were not regenerated after the Tm-retargeting
+> (doc 12) revision. The mechanics they illustrate (melting plateau,
+> `f_melt` clipping, energy ledger) are unaffected by that revision; the
+> specific ~2% mean liquid-fraction reading is what directly motivated
+> retargeting `Tm_target_C` in the first place (see `12_TM_TARGET_
+> RETARGETING.md`) — cluster 0's current shortlist PCM cycles far more
+> after that fix. Current Phase 7 plots (`07_optimization_plots.md`)
+> reflect the corrected, currently-selected PCMs.
+
 Files: `phase3_temperature_timeseries.*`, `phase3_melt_fraction_year.*`,
 `phase3_energy_breakdown.*`. Sample case for all three: state=tamilnadu,
 cluster 0, PCM = n-Octacosane (C28), design = 0.08 m diameter / 19

@@ -1,5 +1,13 @@
 # Phase 5 Plots — Design-of-Experiments Dataset
 
+> **Note (2026-09-13):** the "145 valid / 70 rejected" counts below are
+> pre-retargeting/pre-widening. Current (retargeted PCMs + widened
+> bounds): **144 valid / 71 rejected**, same rejection mechanism
+> (`bounds_violation`, diameter < 0.04 m thickness floor) — see
+> `06_PHASE5_DOE.md`. The coverage/distribution shape these plots
+> illustrate is unaffected; only the exact valid/rejected split moved by
+> one case.
+
 Files: `phase5_doe_coverage.*`, `phase5_outcome_distribution.*`. Data
 source: `results/tamilnadu/design_cases.parquet` (all 215 cases, read
 directly — nothing recomputed).

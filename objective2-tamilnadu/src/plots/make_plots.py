@@ -185,19 +185,39 @@ def phase4_gate1_residuals(state, out_dir):
 
 
 def phase4_gate3_baseline_comparison(state, out_dir):
-    cid, pcm = 0, "n-Octacosane (C28)"
+    """
+    Current (post Tm-retargeting / bounds-widening / selection-rule-
+    correction) version of the Gate 3 baseline comparison: uses the
+    regime's actual current shortlist PCM and its actual Phase 7
+    deployable geometry, not the original pre-fix diagnostic snapshot
+    (n-Octacosane at a generic fixed design). The original diagnostic
+    numbers remain on record in `04_PHASE4_VERIFICATION_GATES.md` and
+    `simulator_verification_report.txt` -- this plot is regenerated to
+    reflect the project's current, final state, per user request.
+    """
+    cid = 0
+    deployable = pd.read_csv(RESULTS_DIR / state / "deployable_design_per_regime.csv")
+    row = deployable[deployable["regime_id"] == cid].iloc[0]
+    pcm = row["pcm_id"]
+    bounds = load_design_bounds()
+    max_count = bounds["capsule_count"]["max"]
+
     plain = run_case(state, cid, None, DesignVector(0.08, 14, 0.030), record_hourly=False)["metrics"]
-    fixed = run_case(state, cid, pcm, DesignVector(0.08, 24, 0.030), record_hourly=False)["metrics"]
-    optimized = run_case(state, cid, pcm, DesignVector(0.08, 19, 0.040), record_hourly=False)["metrics"]
-    matched = run_case(state, cid, pcm, DesignVector(0.08, 24, 0.030), record_hourly=False,
+    max_feasible = run_case(state, cid, pcm, DesignVector(0.08, max_count, 0.030), record_hourly=False)["metrics"]
+    deployed = run_case(state, cid, pcm,
+                         DesignVector(row["capsule_diameter_m"], int(row["n_capsule"]), row["flow_rate_kg_s"]),
+                         record_hourly=False)["metrics"]
+    matched = run_case(state, cid, pcm, DesignVector(0.08, max_count, 0.030), record_hourly=False,
                         pcm_record_overrides={"Tm_C": 40.0})["metrics"]
 
-    labels = ["Plain tank", "Fixed PCM\n(n-Octacosane, 12.9%)", "Optimized-looking\n(10.2%)",
+    labels = ["Plain tank",
+              f"Fixed PCM\n({pcm}, max feasible)",
+              f"Deployable design\n({pcm}, current optimum)",
               "Capability check\n(synthetic Tm=40C PCM)"]
-    sf = [m["solar_fraction"] * 100 for m in (plain, fixed, optimized, matched)]
-    fig = go.Figure(go.Bar(x=labels, y=sf, marker_color=["#7f7f7f", "#d62728", "#ff7f0e", "#2ca02c"],
+    sf = [m["solar_fraction"] * 100 for m in (plain, max_feasible, deployed, matched)]
+    fig = go.Figure(go.Bar(x=labels, y=sf, marker_color=["#7f7f7f", "#d62728", "#2ca02c", "#9467bd"],
                             text=[f"{v:.2f}%" for v in sf], textposition="outside"))
-    fig.update_layout(title=f"Phase 4 Gate 3 — solar fraction: plain tank vs PCM designs — {state}",
+    fig.update_layout(title=f"Phase 4 Gate 3 (current, post-revision) — solar fraction: plain tank vs PCM designs — {state}",
                        yaxis_title="solar fraction (%)")
     _save(fig, "phase4_gate3_baseline_comparison", out_dir)
 
@@ -350,10 +370,7 @@ def phase8_robustness_probabilities(state, out_dir, robustness_summary):
                           name="P(meets delivery temp, SF>=45%)", marker_color="#9467bd"))
     fig.add_trace(go.Bar(x=labels, y=robustness_summary["p_meets_annual_demand"] * 100,
                           name="P(meets annual demand, SF>=50%)", marker_color="#1f77b4"))
-    fig.add_trace(go.Bar(x=labels, y=(1 - robustness_summary["p_temperature_violation"]) * 100,
-                          name="P(temperature-safe)", marker_color="#2ca02c"))
     fig.add_hline(y=75, line_dash="dash", line_color="#1f77b4", annotation_text="75% demand threshold")
-    fig.add_hline(y=95, line_dash="dash", line_color="#2ca02c", annotation_text="95% safety threshold")
     fig.update_layout(barmode="group", title=f"Phase 8 — robustness probabilities (120 Monte Carlo draws/design) — {state}",
                        yaxis_title="probability (%)")
     _save(fig, "phase8_robustness_probabilities", out_dir, width=1150)

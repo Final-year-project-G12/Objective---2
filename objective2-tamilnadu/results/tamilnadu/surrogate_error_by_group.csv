@@ -1,46 +1,66 @@
 target,group_type,group,MAE,n
-useful_energy_kWh,regime,0,0.6733894870816736,6
-useful_energy_kWh,regime,1,0.26479593302360627,6
-useful_energy_kWh,regime,2,0.6805394744524923,6
-useful_energy_kWh,regime,3,0.8254081541743972,6
-useful_energy_kWh,regime,4,0.21959610440217148,6
-useful_energy_kWh,pcm,PureTemp 58,0.7895050665658422,6
-useful_energy_kWh,pcm,RT64HC,0.398904881637975,4
-useful_energy_kWh,pcm,n-Hexacosane (C26),0.3385365558524427,10
-useful_energy_kWh,pcm,n-Octacosane (C28),0.6264359434334665,10
-solar_fraction,regime,0,0.00022172638939292147,6
-solar_fraction,regime,1,0.00022266711071794454,6
-solar_fraction,regime,2,0.00034572272270109544,6
-solar_fraction,regime,3,0.00027567539973103833,6
-solar_fraction,regime,4,0.00022706799813219472,6
-solar_fraction,pcm,PureTemp 58,0.00014511316228836094,6
-solar_fraction,pcm,RT64HC,0.000263954732064392,4
-solar_fraction,pcm,n-Hexacosane (C26),0.0003142574913249763,10
-solar_fraction,pcm,n-Octacosane (C28),0.00026880849088136707,10
-unmet_energy_kWh,regime,0,0.5930268326925064,6
-unmet_energy_kWh,regime,1,0.9340464943683552,6
-unmet_energy_kWh,regime,2,1.1909080679400479,6
-unmet_energy_kWh,regime,3,1.0001095324989062,6
-unmet_energy_kWh,regime,4,0.4998718932823749,6
-unmet_energy_kWh,pcm,PureTemp 58,0.35587982703483095,6
-unmet_energy_kWh,pcm,RT64HC,1.127347891924785,4
-unmet_energy_kWh,pcm,n-Hexacosane (C26),0.41488177810408616,10
-unmet_energy_kWh,pcm,n-Octacosane (C28),1.4514288613744157,10
-pump_energy_kWh,regime,0,1.4862664519589852e-09,6
-pump_energy_kWh,regime,1,2.0268126485905413e-09,6
-pump_energy_kWh,regime,2,1.906036213427499e-09,6
-pump_energy_kWh,regime,3,2.851997619305451e-09,6
-pump_energy_kWh,regime,4,1.744706528065838e-09,6
-pump_energy_kWh,pcm,PureTemp 58,2.319423826092217e-09,6
-pump_energy_kWh,pcm,RT64HC,2.247083713462576e-09,4
-pump_energy_kWh,pcm,n-Hexacosane (C26),1.6514987247959506e-09,10
-pump_energy_kWh,pcm,n-Octacosane (C28),2.0675051709726774e-09,10
-pcm_mass_kg,regime,0,0.06894639549111155,6
-pcm_mass_kg,regime,1,0.02009436045476598,6
-pcm_mass_kg,regime,2,0.043780214592255305,6
-pcm_mass_kg,regime,3,0.04036127321321815,6
-pcm_mass_kg,regime,4,0.02730656645089589,6
-pcm_mass_kg,pcm,PureTemp 58,0.026132945844412503,6
-pcm_mass_kg,pcm,RT64HC,0.015770256079781386,4
-pcm_mass_kg,pcm,n-Hexacosane (C26),0.03961640421957631,10
-pcm_mass_kg,pcm,n-Octacosane (C28),0.05868901196321176,10
+useful_energy_kWh,regime,0,0.4360235936191354,6
+useful_energy_kWh,regime,1,0.5493779848240289,6
+useful_energy_kWh,regime,2,0.1982512415392724,6
+useful_energy_kWh,regime,3,0.7652822421047176,6
+useful_energy_kWh,regime,4,0.4687728621431309,6
+useful_energy_kWh,pcm,PlusICE A52,0.5288097084979313,4
+useful_energy_kWh,pcm,PureTemp 53,0.7147170826707452,2
+useful_energy_kWh,pcm,RT45HC,0.7630183092383049,2
+useful_energy_kWh,pcm,n-Docosane (C22),0.3500804034125622,2
+useful_energy_kWh,pcm,n-Pentacosane (C25),0.5726545156520615,2
+useful_energy_kWh,pcm,n-Tetracosane (C24),0.4480849385960539,8
+useful_energy_kWh,pcm,n-Tricosane (C23),0.4839137735141321,6
+useful_energy_kWh,pcm,savE® OM49,0.27547648489735366,4
+solar_fraction,regime,0,0.000524327107163732,6
+solar_fraction,regime,1,0.0006281029426554915,6
+solar_fraction,regime,2,0.0007292767873063691,6
+solar_fraction,regime,3,0.0011600033571707025,6
+solar_fraction,regime,4,0.0024719437131265156,6
+solar_fraction,pcm,PlusICE A52,0.0008726809520429313,4
+solar_fraction,pcm,PureTemp 53,7.171952438522755e-05,2
+solar_fraction,pcm,RT45HC,0.003246343891378789,2
+solar_fraction,pcm,n-Docosane (C22),0.0027794339798623557,2
+solar_fraction,pcm,n-Pentacosane (C25),0.00011514926548955584,2
+solar_fraction,pcm,n-Tetracosane (C24),0.0010552757350063974,8
+solar_fraction,pcm,n-Tricosane (C23),0.0011453850353087731,6
+solar_fraction,pcm,savE® OM49,0.00046284755555736634,4
+unmet_energy_kWh,regime,0,1.9808915770507838,6
+unmet_energy_kWh,regime,1,1.9714864196453163,6
+unmet_energy_kWh,regime,2,1.6529883906582274,6
+unmet_energy_kWh,regime,3,2.8232797475798557,6
+unmet_energy_kWh,regime,4,6.508378372118045,6
+unmet_energy_kWh,pcm,PlusICE A52,2.5648345068808567,4
+unmet_energy_kWh,pcm,PureTemp 53,0.17519630726519608,2
+unmet_energy_kWh,pcm,RT45HC,8.526774667026189,2
+unmet_energy_kWh,pcm,n-Docosane (C22),7.39414321843924,2
+unmet_energy_kWh,pcm,n-Pentacosane (C25),0.2281829398567652,2
+unmet_energy_kWh,pcm,n-Tetracosane (C24),2.8989965154438266,8
+unmet_energy_kWh,pcm,n-Tricosane (C23),3.463565372144368,6
+unmet_energy_kWh,pcm,savE® OM49,0.6852125982995858,4
+pump_energy_kWh,regime,0,3.127107346613007e-09,6
+pump_energy_kWh,regime,1,2.535855751131001e-09,6
+pump_energy_kWh,regime,2,2.5910019241983652e-09,6
+pump_energy_kWh,regime,3,1.7633550523385123e-09,6
+pump_energy_kWh,regime,4,2.9620377186154936e-09,6
+pump_energy_kWh,pcm,PlusICE A52,2.1640687923508508e-09,4
+pump_energy_kWh,pcm,PureTemp 53,1.4042114320960207e-09,2
+pump_energy_kWh,pcm,RT45HC,3.315468454510982e-09,2
+pump_energy_kWh,pcm,n-Docosane (C22),1.5799448637971986e-09,2
+pump_energy_kWh,pcm,n-Pentacosane (C25),2.752398055432205e-09,2
+pump_energy_kWh,pcm,n-Tetracosane (C24),2.6442051272292497e-09,8
+pump_energy_kWh,pcm,n-Tricosane (C23),3.267723493036798e-09,6
+pump_energy_kWh,pcm,savE® OM49,2.588961000061819e-09,4
+pcm_mass_kg,regime,0,0.05340530817153286,6
+pcm_mass_kg,regime,1,0.032461709408535704,6
+pcm_mass_kg,regime,2,0.01060142031653453,6
+pcm_mass_kg,regime,3,0.08854128441559365,6
+pcm_mass_kg,regime,4,0.22844831718155548,6
+pcm_mass_kg,pcm,PlusICE A52,0.011904160878302317,4
+pcm_mass_kg,pcm,PureTemp 53,0.20216527371436255,2
+pcm_mass_kg,pcm,RT45HC,0.5007193084917807,2
+pcm_mass_kg,pcm,n-Docosane (C22),0.12787729681579574,2
+pcm_mass_kg,pcm,n-Pentacosane (C25),0.06651894173582404,2
+pcm_mass_kg,pcm,n-Tetracosane (C24),0.025875764069194188,8
+pcm_mass_kg,pcm,n-Tricosane (C23),0.06144810114417384,6
+pcm_mass_kg,pcm,savE® OM49,0.015718808128795392,4

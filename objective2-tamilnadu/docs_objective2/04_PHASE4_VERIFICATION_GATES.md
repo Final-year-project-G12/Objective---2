@@ -1,5 +1,20 @@
 # 04 — Phase 4 Audit: Simulator Verification Gates
 
+> **Note (2026-09-13):** Gates 3/4's tables below use the
+> **pre-retargeting** shortlist PCM (n-Octacosane, Tm=61.6°C) at the
+> **pre-widening** bounds (max 12.9% PCM volume fraction) — this is a
+> one-time simulator-engine verification snapshot, not re-run when Tm
+> targets/bounds changed (Phase 4 verifies the physics engine itself, not
+> a specific PCM selection, so it is not on the Phase 0 gate's
+> re-run-required list for those two revisions). The synthetic-PCM
+> "capability check" finding (Tm=40°C beats plain tank decisively) is what
+> directly motivated the Tm-retargeting revision (doc 12) — this doc is
+> the origin of that diagnosis, kept exactly as first observed. Current
+> Objective 2 numbers are in `RESULTS.md`. The Gate 3 **plot** (not this
+> text/the verification report) was separately regenerated to show the
+> current shortlist PCM and design — see
+> `docs_objective2/plots/04_verification_plots.md`.
+
 File: `src/verify/gates.py`. Output: `results/tamilnadu/simulator_verification_report.txt`.
 
 No Phase 5 DOE row may be generated until this passes (framework doc §5).
@@ -119,3 +134,15 @@ PASS-WITH-CAVEAT by design, not a failure) → **GO**.
 so Phase 5's DOE cases can record which simulator version produced them
 (framework doc: "never mix outputs from two simulator versions in one
 training dataset without a version feature").
+
+## Literature
+
+- **[Singh2025]** is the direct source of Gate 4's 54–84% solar-fraction
+  benchmark band.
+- **[Rathore2024]** corroborates the general finding underlying Gate 3's
+  capability check — PCM benefit in a solar-thermal tank is
+  melting-point-and-operating-range dependent, not automatic — which is
+  exactly what motivated the Tm-retargeting revision (doc 12).
+- **[AlMamun2023]** grounds the general "storage-to-demand ratio drives
+  solar fraction" pattern behind Gate 4's honest below-band caveat (no
+  auxiliary heater, smaller ratio than the cited benchmark rig).

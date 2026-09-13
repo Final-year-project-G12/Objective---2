@@ -1,5 +1,12 @@
 # 06 — Phase 5 Audit: Design-of-Experiments Dataset
 
+> **Note (2026-09-13):** the specific PCM shortlist and any "145 valid/70
+> rejected" style counts below are pre-retargeting. Current: retargeted
+> PCMs + widened bounds give 144 valid/71 rejected (same rejection
+> mechanism — diameter < 0.04 m thickness floor). See `12_TM_TARGET_
+> RETARGETING.md` and `13_DESIGN_BOUNDS_WIDENING.md`. Sampling methodology
+> below is unaffected.
+
 Files: `src/doe/generate_cases.py`, `src/doe/run_batch.py`, `src/doe/split_cases.py`.
 Run: `python pipeline.py --state tamilnadu --stage doe`.
 Output: `results/tamilnadu/design_cases.parquet` (+ `.csv`).
@@ -68,3 +75,12 @@ between train and holdout.
   only 17 allowed values (8–24) this still gives reasonable coverage
   while keeping every LHS point jointly space-filling across all three
   variables at once.
+
+## Literature
+
+- **[Assareh2023]** and **[BarghiJahromi2026]** both use an
+  LHS-then-surrogate DOE structure for PCM-augmented solar-thermal
+  design, the same pattern this phase implements before Phase 6/7.
+- **[Barqawi2025]** grounds pairing a dynamic physics simulation with a
+  subsequently-trained ML model, the reason invalid/boundary cases are
+  kept (not discarded) for the feasibility classifier to learn from.

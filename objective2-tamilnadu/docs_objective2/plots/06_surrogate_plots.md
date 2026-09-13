@@ -2,7 +2,10 @@
 
 Files: `phase6_parity_plots.*`, `phase6_feature_importance.*`. Data
 source: the trained models in `results/tamilnadu/surrogate/models.pkl`,
-evaluated on the 30-row hold-out set (never seen during training).
+evaluated on the 30-row hold-out set (never seen during training; the
+30-row figure is unchanged by the Tm-retargeting/bounds-widening
+revisions — it's still 30 valid-only hold-out rows out of 144 valid
+cases, per current `surrogate_metrics.csv`).
 
 ---
 
@@ -16,8 +19,11 @@ held-out* case; dashed line = perfect agreement (y=x). One panel each for
 **What we infer**: every point sits almost exactly on the dashed line
 across the full range of both targets (useful energy ranges ~1620–1820
 kWh across the 5 regimes; solar fraction ~0.505–0.545) — visually
-confirming the R² values reported in `07_PHASE6_SURROGATE.md` (0.9999 and
-0.9990) rather than asking the reader to trust a table. There's no
+confirming the R² values reported in `07_PHASE6_SURROGATE.md` and current
+`surrogate_metrics.csv` (0.9999 for useful energy, 0.9717 for solar
+fraction — the solar-fraction figure moved down slightly from an earlier
+0.9990 pre-widening snapshot, still comfortably >0.97) rather than asking
+the reader to trust a table. There's no
 fan-out or curvature at the extremes (which would indicate the surrogate
 struggles outside the bulk of its training data) — points near both ends
 of the range track the line just as tightly as points in the middle.
@@ -69,3 +75,10 @@ all agree that within this design space, climate variation dominates
 outcome variation far more than PCM/geometry choice does. That kind of
 agreement across independent methods is much stronger evidence than any
 one of them alone."*
+
+## Literature
+
+**[Liu2025]**, **[Assareh2023]**, **[BarghiJahromi2026]** — see
+`07_PHASE6_SURROGATE.md`'s "Literature" section for the full mapping;
+these ground the tree-ensemble surrogate choice and the
+prediction-then-optimization framing these two plots visualize.

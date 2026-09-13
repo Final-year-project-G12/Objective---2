@@ -134,3 +134,25 @@ survivors.
   general result rather than a single-state demonstration.
 
 Plots: `phase6b_multifidelity`. Details: `docs_objective2/plots/06b_multifidelity_plots.md`.
+
+> **Note (2026-09-13):** this experiment ran once, against the original
+> pre-retargeting/pre-widening 215-case Phase 5 dataset (hence the
+> "n-Octacosane, low conductivity" reference above) — it has not been
+> repeated against the corrected dataset (docs 12–13). The
+> speedup/sample-efficiency *methodology* and conclusions about where
+> multi-fidelity helps are not expected to change qualitatively, but the
+> specific numbers here are a snapshot, not current Phase 6 numbers (see
+> `07_PHASE6_SURROGATE.md` / `RESULTS.md` for those).
+
+## Literature
+
+- Lee et al., "Efficient design optimization using multi-fidelity
+  surrogate modeling for a thermal battery" (arXiv, 2026) and the
+  DHW-ANN surrogate paper cited in the opening paragraph are external
+  audit-located sources (not part of `vertopal.com_references.txt`) —
+  see `O2_Framework_Audit_Report_TamilNadu.md` Part 1.1 for full
+  citation detail.
+- **[Eldokaishi2022]** (`REFERENCES.md`) is the project's own frozen-base
+  precedent for a cheap learned proxy standing in for a more expensive
+  water-PCM physics model, the same low/high-fidelity split this phase
+  implements directly in code rather than only citing.

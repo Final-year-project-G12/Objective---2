@@ -1,5 +1,13 @@
 # 07 — Phase 6 Audit: AI Surrogate Model
 
+> **Note (2026-09-13):** retrained against the retargeted-PCM,
+> widened-bounds DOE set. Current headline: R²>0.97 on every target
+> (previously >0.98); three of five targets (`solar_fraction`,
+> `pump_energy_kWh`, `pcm_mass_kg`) now show the linear baseline tying or
+> slightly beating the tree model, not just pump energy — see
+> `RESULTS.md`'s Phase 6 section for the current table. Feature/model
+> methodology below is unaffected.
+
 Files: `src/surrogate/features.py`, `src/surrogate/train.py`, `src/surrogate/evaluate.py`.
 Run: `python pipeline.py --state tamilnadu --stage surrogate`.
 Output: `results/tamilnadu/surrogate_metrics.csv`,
@@ -98,3 +106,20 @@ GP uncertainty quantification remains open (a genuine methodological
 alternative, not attempted here); multi-fidelity modeling — a related but
 distinct gap flagged in the same review — is now addressed separately in
 Phase 6b, see `11_MULTIFIDELITY_SURROGATE.md`.
+
+## Literature
+
+- **[Liu2025]** grounds the "prediction then optimization" framing this
+  phase's surrogate-then-search structure (feeding Phase 7) follows.
+- **[Assareh2023]** and **[BarghiJahromi2026]** are direct precedent for
+  ML-driven (including tree/ensemble) surrogates for PCM-augmented
+  solar-thermal design targets, supporting the choice of Extra Trees
+  over a from-scratch neural architecture at this dataset size (215
+  cases).
+- **[Yan2025]** independently confirms PCM melt/liquid-fraction dynamics
+  are a legitimate ML prediction target, relevant to why `Tm_C` and
+  melt-related features are included in the 36-feature table even though
+  they do not dominate feature importance for `useful_energy_kWh`.
+- **[Mohammed2025]**, **[Nemes2025]**, **[OdoiYorke2025]** — general
+  AI-for-thermal-systems review background for this phase's methodology
+  framing (not a specific numeric precedent).

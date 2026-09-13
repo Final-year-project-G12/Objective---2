@@ -41,11 +41,17 @@ def main():
                      choices=["geometry", "simulate", "verify", "doe", "surrogate", "multifidelity",
                               "optimize", "plots", "robustness", "handoff"])
     ap.add_argument("--cluster", type=int, default=0, help="climate regime cluster_id (simulate stage)")
-    ap.add_argument("--pcm", default="n-Octacosane (C28)", help="PCM name from mcdm_topk_by_cluster.csv")
+    ap.add_argument("--pcm", default="n-Tetracosane (C24)",
+                     help="PCM name from configs/states/<state>.yaml's pcm_shortlist "
+                          "(default is cluster 0's current deployable PCM, doc 14 -- was "
+                          "'n-Octacosane (C28)' before the 2026-09-13 Tm-retargeting revision, doc 12)")
     ap.add_argument("--diameter", type=float, default=0.08, help="capsule diameter, m")
     ap.add_argument("--count", type=int, default=19, help="capsule count")
     ap.add_argument("--flow", type=float, default=0.030, help="flow rate, kg/s")
     ap.add_argument("--no-pcm", action="store_true", help="run the plain-tank baseline (ignores --pcm)")
+    ap.add_argument("--top-n-per-pair", type=int, default=20,
+                     help="optimize stage: real-simulator-confirmed candidates per regime x PCM pair "
+                          "(default 20, broadened from 5 -- see docs_objective2/08_PHASE7_OPTIMIZATION.md)")
     args = ap.parse_args()
 
     if args.stage == "geometry":
@@ -85,7 +91,7 @@ def main():
 
     elif args.stage == "optimize":
         print(f"Phase 7 — optimization pass + simulator confirmation for state={args.state}")
-        run_phase7(args.state)
+        run_phase7(args.state, top_n_per_pair=args.top_n_per_pair)
 
     elif args.stage == "plots":
         print(f"Generating Phase 2-7 justification plots for state={args.state}")

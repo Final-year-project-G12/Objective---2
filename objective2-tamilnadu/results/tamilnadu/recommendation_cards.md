@@ -10,46 +10,49 @@ Simulator version: `sim_v1_tamilnadu`. Generated from Phases 1-8 results; nothin
 - Member-point robustness: NOT run (medoid-only for sub-daily/hourly shape; the annual weather magnitude below is now a real 10-year historical ensemble, not a noise proxy — see Caveats)
 
 ### Climate
-- Tm_target_C (Objective 1, climate/delivery-anchored): 57.0
+- Tm_target_C (Objective 1, climate/delivery-anchored): 48.9
 - Mains/inlet water temperature (population-weighted regime mean): 26.00 C
 - L_required (Objective 1 sizing target): 301.4 kJ/kg
 - Demand scenario: 300 L/day canonical dual-peak draw (`data/demand/demand_profile_tamilnadu.csv`)
 
 ### PCM shortlist (Objective 1, this regime)
-  1. n-Octacosane (C28)
-  2. n-Hexacosane (C26)
-  3. PureTemp 58
-  -> Plain tank (no PCM) selected instead of all 3 shortlisted candidates (see Decision below)
+  1. savE® OM49
+  2. n-Tricosane (C23)
+  3. n-Tetracosane (C24) <- SELECTED
 
 ### Selected design
-- **Plain sensible-water tank — no PCM capsules.**
-- Flow rate: 0.0159 kg/s (permitted range 0.010-0.050 kg/s)
+- PCM: **n-Tetracosane (C24)** (Tm=52.0 C, latent heat=255.0 kJ/kg, conductivity=0.2395 W/mK)
+- Capsule shape/arrangement: sphere, staggered (frozen for all states)
+- Capsule diameter: 0.0433 m (max PCM conduction distance = 0.0216 m)
+- Capsule count: 11
+- PCM mass: 0.373 kg
+- Flow rate: 0.0235 kg/s (permitted range 0.010-0.050 kg/s)
 
 ### Performance (simulator-confirmed, sim_v1_tamilnadu)
-- Useful annual energy: 1673.3 kWh/year
-- Solar fraction: 52.26%
-- Delivery-temperature hours (>= 45 C): 3821
-- Unmet energy: 1158.1 kWh/year
+- Useful annual energy: 1675.1 kWh/year
+- Solar fraction: 52.32%
+- Delivery-temperature hours (>= 45 C): 3823
+- Unmet energy: 1156.7 kWh/year
 - Pump energy: 0.0000 Wh/year
-- Constraint margin (temperature): 4.72 C below the tightest safety limit
+- Constraint margin (temperature): -5.25 C below the tightest safety limit
 
 ### Robustness (120 Monte Carlo draws — PCM latent heat, two-level weather noise [annual scale/offset + per-hour jitter], demand volume/timing, mains temperature)
-- P(meets annual demand, solar_fraction>=50%): 89.2%
+- P(meets annual demand, solar_fraction>=50%): 80.8%
 - P(meets delivery temperature, solar_fraction>=45%): 100.0%
-- P(any safety-temperature violation): 7.5%
-- P(exceeds max safe temperature limit): 7.5%
-- Useful energy 5th-50th-95th percentile: [1567.8, 1667.8, 1763.0] kWh
-- Solar fraction 5th-95th percentile: [47.9%, 61.1%]
-- Max water temperature 95th percentile: 75.1 C
+- P(any safety-temperature violation): 100.0%
+- P(exceeds max safe temperature limit): 100.0%
+- Useful energy 5th-50th-95th percentile: [1592.0, 1681.7, 1782.6] kWh
+- Solar fraction 5th-95th percentile: [47.7%, 61.7%]
+- Max water temperature 95th percentile: 75.0 C
 - **Framework rule (P(demand)>=75% and P(temp-safe)>=95%): NOT ROBUST BY THE FRAMEWORK RULE (report as caveat, not hidden)**
 
 ### Surrogate QA
-- Hold-out RMSE (useful_energy_kWh, ExtraTrees, all regimes pooled): 0.708 kWh
-- Surrogate-vs-simulator error for this selected design: 0.049%
+- Hold-out RMSE (useful_energy_kWh, ExtraTrees, all regimes pooled): 0.565 kWh
+- Surrogate-vs-simulator error for this selected design: 0.023%
 
 ### Decision
-- Best PCM found in this regime's search reached 1673.3 kWh vs plain tank's 1673.3 kWh — within the pre-declared 5% Pareto tolerance, so the selection rule's next tie-breaker (minimize PCM mass, then pump energy, then capsule count) picked the zero-mass plain tank. See `docs_objective2/08_PHASE7_OPTIMIZATION.md` for the full comparison.
-- Selection-rule pool size (candidates within 5% of best): 5
+- This PCM's best found design reached the regime's own best useful-energy value (1678.6 kWh), winning outright before any tolerance tie-break was needed.
+- Selection-rule pool size (candidates within 5% of best): 60
 
 ### Caveats
 - The robustness section's annual GHI/temperature variability is drawn from Objective 1's real 10-year (2016-2025) daily weather archive for this regime (src/robustness/weather_ensemble.py) -- a genuine historical-year ensemble, not an assumed range. The within-year HOURLY shape still comes from a single medoid year plus synthetic per-hour jitter (no member-point/multi-year hourly data was pulled for this project, 40-hr cut list).
@@ -57,6 +60,7 @@ Simulator version: `sim_v1_tamilnadu`. Generated from Phases 1-8 results; nothin
 - Liquid natural convection inside the capsule is not resolved -- a fixed x2 effective-conductivity enhancement factor is assumed once liquid fraction >=50%.
 - No auxiliary/backup heater modeled -- solar fraction here is the fraction of ideal 45 C demand met by solar+PCM alone, stricter than a real installed system with backup heating.
 - No active high-temperature safety shield/bypass modeled -- see the robustness section's temperature-violation probability above.
+- n-Tetracosane (C24) property provenance: check `any_property_imputed` in `data/objective1/pcm_database_tamilnadu.csv` for which fields are manufacturer-measured vs MICE/RF-imputed.
 
 
 ---
@@ -70,46 +74,49 @@ Simulator version: `sim_v1_tamilnadu`. Generated from Phases 1-8 results; nothin
 - Member-point robustness: NOT run (medoid-only for sub-daily/hourly shape; the annual weather magnitude below is now a real 10-year historical ensemble, not a noise proxy — see Caveats)
 
 ### Climate
-- Tm_target_C (Objective 1, climate/delivery-anchored): 57.0
+- Tm_target_C (Objective 1, climate/delivery-anchored): 49.5
 - Mains/inlet water temperature (population-weighted regime mean): 24.39 C
 - L_required (Objective 1 sizing target): 321.6 kJ/kg
 - Demand scenario: 300 L/day canonical dual-peak draw (`data/demand/demand_profile_tamilnadu.csv`)
 
 ### PCM shortlist (Objective 1, this regime)
-  1. n-Octacosane (C28)
-  2. RT64HC
-  3. n-Hexacosane (C26)
-  -> Plain tank (no PCM) selected instead of all 3 shortlisted candidates (see Decision below)
+  1. n-Tricosane (C23)
+  2. n-Tetracosane (C24) <- SELECTED
+  3. n-Pentacosane (C25)
 
 ### Selected design
-- **Plain sensible-water tank — no PCM capsules.**
-- Flow rate: 0.0124 kg/s (permitted range 0.010-0.050 kg/s)
+- PCM: **n-Tetracosane (C24)** (Tm=52.0 C, latent heat=255.0 kJ/kg, conductivity=0.2395 W/mK)
+- Capsule shape/arrangement: sphere, staggered (frozen for all states)
+- Capsule diameter: 0.0495 m (max PCM conduction distance = 0.0248 m)
+- Capsule count: 9
+- PCM mass: 0.457 kg
+- Flow rate: 0.0160 kg/s (permitted range 0.010-0.050 kg/s)
 
 ### Performance (simulator-confirmed, sim_v1_tamilnadu)
-- Useful annual energy: 1809.9 kWh/year
-- Solar fraction: 53.11%
-- Delivery-temperature hours (>= 45 C): 3935
-- Unmet energy: 1233.7 kWh/year
+- Useful annual energy: 1811.3 kWh/year
+- Solar fraction: 53.18%
+- Delivery-temperature hours (>= 45 C): 3949
+- Unmet energy: 1232.0 kWh/year
 - Pump energy: 0.0000 Wh/year
-- Constraint margin (temperature): 4.56 C below the tightest safety limit
+- Constraint margin (temperature): -5.36 C below the tightest safety limit
 
 ### Robustness (120 Monte Carlo draws — PCM latent heat, two-level weather noise [annual scale/offset + per-hour jitter], demand volume/timing, mains temperature)
-- P(meets annual demand, solar_fraction>=50%): 90.0%
+- P(meets annual demand, solar_fraction>=50%): 91.7%
 - P(meets delivery temperature, solar_fraction>=45%): 100.0%
-- P(any safety-temperature violation): 20.0%
-- P(exceeds max safe temperature limit): 20.0%
-- Useful energy 5th-50th-95th percentile: [1699.9, 1800.2, 1930.6] kWh
-- Solar fraction 5th-95th percentile: [49.0%, 61.8%]
-- Max water temperature 95th percentile: 77.3 C
+- P(any safety-temperature violation): 100.0%
+- P(exceeds max safe temperature limit): 100.0%
+- Useful energy 5th-50th-95th percentile: [1705.9, 1825.2, 1939.4] kWh
+- Solar fraction 5th-95th percentile: [49.3%, 63.4%]
+- Max water temperature 95th percentile: 78.4 C
 - **Framework rule (P(demand)>=75% and P(temp-safe)>=95%): NOT ROBUST BY THE FRAMEWORK RULE (report as caveat, not hidden)**
 
 ### Surrogate QA
-- Hold-out RMSE (useful_energy_kWh, ExtraTrees, all regimes pooled): 0.708 kWh
-- Surrogate-vs-simulator error for this selected design: 0.048%
+- Hold-out RMSE (useful_energy_kWh, ExtraTrees, all regimes pooled): 0.565 kWh
+- Surrogate-vs-simulator error for this selected design: 0.007%
 
 ### Decision
-- Best PCM found in this regime's search reached 1809.9 kWh vs plain tank's 1809.9 kWh — within the pre-declared 5% Pareto tolerance, so the selection rule's next tie-breaker (minimize PCM mass, then pump energy, then capsule count) picked the zero-mass plain tank. See `docs_objective2/08_PHASE7_OPTIMIZATION.md` for the full comparison.
-- Selection-rule pool size (candidates within 5% of best): 5
+- This PCM's best found design reached the regime's own best useful-energy value (1815.0 kWh), winning outright before any tolerance tie-break was needed.
+- Selection-rule pool size (candidates within 5% of best): 60
 
 ### Caveats
 - The robustness section's annual GHI/temperature variability is drawn from Objective 1's real 10-year (2016-2025) daily weather archive for this regime (src/robustness/weather_ensemble.py) -- a genuine historical-year ensemble, not an assumed range. The within-year HOURLY shape still comes from a single medoid year plus synthetic per-hour jitter (no member-point/multi-year hourly data was pulled for this project, 40-hr cut list).
@@ -117,6 +124,7 @@ Simulator version: `sim_v1_tamilnadu`. Generated from Phases 1-8 results; nothin
 - Liquid natural convection inside the capsule is not resolved -- a fixed x2 effective-conductivity enhancement factor is assumed once liquid fraction >=50%.
 - No auxiliary/backup heater modeled -- solar fraction here is the fraction of ideal 45 C demand met by solar+PCM alone, stricter than a real installed system with backup heating.
 - No active high-temperature safety shield/bypass modeled -- see the robustness section's temperature-violation probability above.
+- n-Tetracosane (C24) property provenance: check `any_property_imputed` in `data/objective1/pcm_database_tamilnadu.csv` for which fields are manufacturer-measured vs MICE/RF-imputed.
 
 
 ---
@@ -130,46 +138,49 @@ Simulator version: `sim_v1_tamilnadu`. Generated from Phases 1-8 results; nothin
 - Member-point robustness: NOT run (medoid-only for sub-daily/hourly shape; the annual weather magnitude below is now a real 10-year historical ensemble, not a noise proxy — see Caveats)
 
 ### Climate
-- Tm_target_C (Objective 1, climate/delivery-anchored): 57.0
+- Tm_target_C (Objective 1, climate/delivery-anchored): 50.4
 - Mains/inlet water temperature (population-weighted regime mean): 25.93 C
 - L_required (Objective 1 sizing target): 302.2 kJ/kg
 - Demand scenario: 300 L/day canonical dual-peak draw (`data/demand/demand_profile_tamilnadu.csv`)
 
 ### PCM shortlist (Objective 1, this regime)
-  1. n-Octacosane (C28)
-  2. PureTemp 58
-  3. n-Hexacosane (C26)
-  -> Plain tank (no PCM) selected instead of all 3 shortlisted candidates (see Decision below)
+  1. savE® OM49
+  2. PlusICE A52 <- SELECTED
+  3. n-Tetracosane (C24)
 
 ### Selected design
-- **Plain sensible-water tank — no PCM capsules.**
-- Flow rate: 0.0127 kg/s (permitted range 0.010-0.050 kg/s)
+- PCM: **PlusICE A52** (Tm=52.0 C, latent heat=220.0 kJ/kg, conductivity=0.18 W/mK)
+- Capsule shape/arrangement: sphere, staggered (frozen for all states)
+- Capsule diameter: 0.0496 m (max PCM conduction distance = 0.0248 m)
+- Capsule count: 8
+- PCM mass: 0.414 kg
+- Flow rate: 0.0227 kg/s (permitted range 0.010-0.050 kg/s)
 
 ### Performance (simulator-confirmed, sim_v1_tamilnadu)
-- Useful annual energy: 1749.8 kWh/year
-- Solar fraction: 53.30%
-- Delivery-temperature hours (>= 45 C): 4021
-- Unmet energy: 1136.6 kWh/year
+- Useful annual energy: 1751.3 kWh/year
+- Solar fraction: 53.36%
+- Delivery-temperature hours (>= 45 C): 4031
+- Unmet energy: 1135.3 kWh/year
 - Pump energy: 0.0000 Wh/year
-- Constraint margin (temperature): 2.91 C below the tightest safety limit
+- Constraint margin (temperature): -7.07 C below the tightest safety limit
 
 ### Robustness (120 Monte Carlo draws — PCM latent heat, two-level weather noise [annual scale/offset + per-hour jitter], demand volume/timing, mains temperature)
-- P(meets annual demand, solar_fraction>=50%): 94.2%
+- P(meets annual demand, solar_fraction>=50%): 95.0%
 - P(meets delivery temperature, solar_fraction>=45%): 100.0%
-- P(any safety-temperature violation): 28.3%
-- P(exceeds max safe temperature limit): 28.3%
-- Useful energy 5th-50th-95th percentile: [1658.9, 1743.8, 1867.0] kWh
-- Solar fraction 5th-95th percentile: [49.3%, 62.6%]
-- Max water temperature 95th percentile: 77.6 C
+- P(any safety-temperature violation): 100.0%
+- P(exceeds max safe temperature limit): 100.0%
+- Useful energy 5th-50th-95th percentile: [1631.9, 1742.7, 1844.1] kWh
+- Solar fraction 5th-95th percentile: [50.0%, 62.9%]
+- Max water temperature 95th percentile: 78.1 C
 - **Framework rule (P(demand)>=75% and P(temp-safe)>=95%): NOT ROBUST BY THE FRAMEWORK RULE (report as caveat, not hidden)**
 
 ### Surrogate QA
-- Hold-out RMSE (useful_energy_kWh, ExtraTrees, all regimes pooled): 0.708 kWh
-- Surrogate-vs-simulator error for this selected design: 0.056%
+- Hold-out RMSE (useful_energy_kWh, ExtraTrees, all regimes pooled): 0.565 kWh
+- Surrogate-vs-simulator error for this selected design: 0.000%
 
 ### Decision
-- Best PCM found in this regime's search reached 1749.8 kWh vs plain tank's 1749.8 kWh — within the pre-declared 5% Pareto tolerance, so the selection rule's next tie-breaker (minimize PCM mass, then pump energy, then capsule count) picked the zero-mass plain tank. See `docs_objective2/08_PHASE7_OPTIMIZATION.md` for the full comparison.
-- Selection-rule pool size (candidates within 5% of best): 5
+- This PCM's best found design reached the regime's own best useful-energy value (1755.6 kWh), winning outright before any tolerance tie-break was needed.
+- Selection-rule pool size (candidates within 5% of best): 60
 
 ### Caveats
 - The robustness section's annual GHI/temperature variability is drawn from Objective 1's real 10-year (2016-2025) daily weather archive for this regime (src/robustness/weather_ensemble.py) -- a genuine historical-year ensemble, not an assumed range. The within-year HOURLY shape still comes from a single medoid year plus synthetic per-hour jitter (no member-point/multi-year hourly data was pulled for this project, 40-hr cut list).
@@ -177,6 +188,7 @@ Simulator version: `sim_v1_tamilnadu`. Generated from Phases 1-8 results; nothin
 - Liquid natural convection inside the capsule is not resolved -- a fixed x2 effective-conductivity enhancement factor is assumed once liquid fraction >=50%.
 - No auxiliary/backup heater modeled -- solar fraction here is the fraction of ideal 45 C demand met by solar+PCM alone, stricter than a real installed system with backup heating.
 - No active high-temperature safety shield/bypass modeled -- see the robustness section's temperature-violation probability above.
+- PlusICE A52 property provenance: check `any_property_imputed` in `data/objective1/pcm_database_tamilnadu.csv` for which fields are manufacturer-measured vs MICE/RF-imputed.
 
 
 ---
@@ -190,46 +202,49 @@ Simulator version: `sim_v1_tamilnadu`. Generated from Phases 1-8 results; nothin
 - Member-point robustness: NOT run (medoid-only for sub-daily/hourly shape; the annual weather magnitude below is now a real 10-year historical ensemble, not a noise proxy — see Caveats)
 
 ### Climate
-- Tm_target_C (Objective 1, climate/delivery-anchored): 57.0
+- Tm_target_C (Objective 1, climate/delivery-anchored): 51.5
 - Mains/inlet water temperature (population-weighted regime mean): 25.79 C
 - L_required (Objective 1 sizing target): 304.1 kJ/kg
 - Demand scenario: 300 L/day canonical dual-peak draw (`data/demand/demand_profile_tamilnadu.csv`)
 
 ### PCM shortlist (Objective 1, this regime)
-  1. n-Octacosane (C28)
-  2. PureTemp 58
-  3. n-Hexacosane (C26)
-  -> Plain tank (no PCM) selected instead of all 3 shortlisted candidates (see Decision below)
+  1. n-Tetracosane (C24)
+  2. PlusICE A52
+  3. PureTemp 53 <- SELECTED
 
 ### Selected design
-- **Plain sensible-water tank — no PCM capsules.**
-- Flow rate: 0.0185 kg/s (permitted range 0.010-0.050 kg/s)
+- PCM: **PureTemp 53** (Tm=53.0 C, latent heat=225.0 kJ/kg, conductivity=0.2 W/mK)
+- Capsule shape/arrangement: sphere, staggered (frozen for all states)
+- Capsule diameter: 0.0430 m (max PCM conduction distance = 0.0215 m)
+- Capsule count: 36
+- PCM mass: 1.375 kg
+- Flow rate: 0.0109 kg/s (permitted range 0.010-0.050 kg/s)
 
 ### Performance (simulator-confirmed, sim_v1_tamilnadu)
-- Useful annual energy: 1816.5 kWh/year
-- Solar fraction: 54.42%
-- Delivery-temperature hours (>= 45 C): 4250
-- Unmet energy: 1118.0 kWh/year
+- Useful annual energy: 1818.7 kWh/year
+- Solar fraction: 54.75%
+- Delivery-temperature hours (>= 45 C): 4292
+- Unmet energy: 1109.9 kWh/year
 - Pump energy: 0.0000 Wh/year
-- Constraint margin (temperature): 4.63 C below the tightest safety limit
+- Constraint margin (temperature): -4.91 C below the tightest safety limit
 
 ### Robustness (120 Monte Carlo draws — PCM latent heat, two-level weather noise [annual scale/offset + per-hour jitter], demand volume/timing, mains temperature)
-- P(meets annual demand, solar_fraction>=50%): 95.0%
+- P(meets annual demand, solar_fraction>=50%): 98.3%
 - P(meets delivery temperature, solar_fraction>=45%): 100.0%
-- P(any safety-temperature violation): 20.8%
-- P(exceeds max safe temperature limit): 20.8%
-- Useful energy 5th-50th-95th percentile: [1715.6, 1809.6, 1919.6] kWh
-- Solar fraction 5th-95th percentile: [50.2%, 63.3%]
-- Max water temperature 95th percentile: 77.1 C
+- P(any safety-temperature violation): 100.0%
+- P(exceeds max safe temperature limit): 100.0%
+- Useful energy 5th-50th-95th percentile: [1711.7, 1807.0, 1900.3] kWh
+- Solar fraction 5th-95th percentile: [50.9%, 64.0%]
+- Max water temperature 95th percentile: 78.0 C
 - **Framework rule (P(demand)>=75% and P(temp-safe)>=95%): NOT ROBUST BY THE FRAMEWORK RULE (report as caveat, not hidden)**
 
 ### Surrogate QA
-- Hold-out RMSE (useful_energy_kWh, ExtraTrees, all regimes pooled): 0.708 kWh
-- Surrogate-vs-simulator error for this selected design: 0.043%
+- Hold-out RMSE (useful_energy_kWh, ExtraTrees, all regimes pooled): 0.565 kWh
+- Surrogate-vs-simulator error for this selected design: 0.001%
 
 ### Decision
-- Best PCM found in this regime's search reached 1816.5 kWh vs plain tank's 1816.5 kWh — within the pre-declared 5% Pareto tolerance, so the selection rule's next tie-breaker (minimize PCM mass, then pump energy, then capsule count) picked the zero-mass plain tank. See `docs_objective2/08_PHASE7_OPTIMIZATION.md` for the full comparison.
-- Selection-rule pool size (candidates within 5% of best): 5
+- This PCM's best found design reached the regime's own best useful-energy value (1819.0 kWh), winning outright before any tolerance tie-break was needed.
+- Selection-rule pool size (candidates within 5% of best): 60
 
 ### Caveats
 - The robustness section's annual GHI/temperature variability is drawn from Objective 1's real 10-year (2016-2025) daily weather archive for this regime (src/robustness/weather_ensemble.py) -- a genuine historical-year ensemble, not an assumed range. The within-year HOURLY shape still comes from a single medoid year plus synthetic per-hour jitter (no member-point/multi-year hourly data was pulled for this project, 40-hr cut list).
@@ -237,6 +252,7 @@ Simulator version: `sim_v1_tamilnadu`. Generated from Phases 1-8 results; nothin
 - Liquid natural convection inside the capsule is not resolved -- a fixed x2 effective-conductivity enhancement factor is assumed once liquid fraction >=50%.
 - No auxiliary/backup heater modeled -- solar fraction here is the fraction of ideal 45 C demand met by solar+PCM alone, stricter than a real installed system with backup heating.
 - No active high-temperature safety shield/bypass modeled -- see the robustness section's temperature-violation probability above.
+- PureTemp 53 property provenance: check `any_property_imputed` in `data/objective1/pcm_database_tamilnadu.csv` for which fields are manufacturer-measured vs MICE/RF-imputed.
 
 
 ---
@@ -250,49 +266,49 @@ Simulator version: `sim_v1_tamilnadu`. Generated from Phases 1-8 results; nothin
 - Member-point robustness: NOT run (medoid-only for sub-daily/hourly shape; the annual weather magnitude below is now a real 10-year historical ensemble, not a noise proxy — see Caveats)
 
 ### Climate
-- Tm_target_C (Objective 1, climate/delivery-anchored): 57.0
+- Tm_target_C (Objective 1, climate/delivery-anchored): 46.5
 - Mains/inlet water temperature (population-weighted regime mean): 24.04 C
 - L_required (Objective 1 sizing target): 326.0 kJ/kg
 - Demand scenario: 300 L/day canonical dual-peak draw (`data/demand/demand_profile_tamilnadu.csv`)
 
 ### PCM shortlist (Objective 1, this regime)
-  1. n-Octacosane (C28) <- SELECTED
-  2. RT64HC
-  3. n-Hexacosane (C26)
+  1. n-Tricosane (C23) <- SELECTED
+  2. RT45HC
+  3. n-Docosane (C22)
 
 ### Selected design
-- PCM: **n-Octacosane (C28)** (Tm=61.6 C, latent heat=253.0 kJ/kg, conductivity=0.2665 W/mK)
+- PCM: **n-Tricosane (C23)** (Tm=47.5 C, latent heat=232.0 kJ/kg, conductivity=0.239 W/mK)
 - Capsule shape/arrangement: sphere, staggered (frozen for all states)
-- Capsule diameter: 0.0406 m (max PCM conduction distance = 0.0203 m)
-- Capsule count: 17
-- PCM mass: 0.544 kg
-- Flow rate: 0.0105 kg/s (permitted range 0.010-0.050 kg/s)
+- Capsule diameter: 0.0454 m (max PCM conduction distance = 0.0227 m)
+- Capsule count: 36
+- PCM mass: 1.404 kg
+- Flow rate: 0.0223 kg/s (permitted range 0.010-0.050 kg/s)
 
 ### Performance (simulator-confirmed, sim_v1_tamilnadu)
-- Useful annual energy: 1622.9 kWh/year
-- Solar fraction: 50.96%
-- Delivery-temperature hours (>= 45 C): 3403
-- Unmet energy: 1312.4 kWh/year
+- Useful annual energy: 1624.3 kWh/year
+- Solar fraction: 51.45%
+- Delivery-temperature hours (>= 45 C): 3471
+- Unmet energy: 1299.3 kWh/year
 - Pump energy: 0.0000 Wh/year
-- Constraint margin (temperature): 3.25 C below the tightest safety limit
+- Constraint margin (temperature): 0.01 C below the tightest safety limit
 
 ### Robustness (120 Monte Carlo draws — PCM latent heat, two-level weather noise [annual scale/offset + per-hour jitter], demand volume/timing, mains temperature)
-- P(meets annual demand, solar_fraction>=50%): 69.2%
+- P(meets annual demand, solar_fraction>=50%): 73.3%
 - P(meets delivery temperature, solar_fraction>=45%): 100.0%
-- P(any safety-temperature violation): 59.2%
-- P(exceeds max safe temperature limit): 59.2%
-- Useful energy 5th-50th-95th percentile: [1530.9, 1615.6, 1702.6] kWh
-- Solar fraction 5th-95th percentile: [46.7%, 58.9%]
-- Max water temperature 95th percentile: 73.8 C
+- P(any safety-temperature violation): 75.0%
+- P(exceeds max safe temperature limit): 75.0%
+- Useful energy 5th-50th-95th percentile: [1532.7, 1617.4, 1703.2] kWh
+- Solar fraction 5th-95th percentile: [47.1%, 59.7%]
+- Max water temperature 95th percentile: 74.3 C
 - **Framework rule (P(demand)>=75% and P(temp-safe)>=95%): NOT ROBUST BY THE FRAMEWORK RULE (report as caveat, not hidden)**
 
 ### Surrogate QA
-- Hold-out RMSE (useful_energy_kWh, ExtraTrees, all regimes pooled): 0.708 kWh
-- Surrogate-vs-simulator error for this selected design: 0.001%
+- Hold-out RMSE (useful_energy_kWh, ExtraTrees, all regimes pooled): 0.565 kWh
+- Surrogate-vs-simulator error for this selected design: 0.000%
 
 ### Decision
-- This PCM's best found design reached the regime's own best useful-energy value (1623.5 kWh), winning outright before any tolerance tie-break was needed.
-- Selection-rule pool size (candidates within 5% of best): 15
+- This PCM's best found design reached the regime's own best useful-energy value (1630.4 kWh), winning outright before any tolerance tie-break was needed.
+- Selection-rule pool size (candidates within 5% of best): 60
 
 ### Caveats
 - The robustness section's annual GHI/temperature variability is drawn from Objective 1's real 10-year (2016-2025) daily weather archive for this regime (src/robustness/weather_ensemble.py) -- a genuine historical-year ensemble, not an assumed range. The within-year HOURLY shape still comes from a single medoid year plus synthetic per-hour jitter (no member-point/multi-year hourly data was pulled for this project, 40-hr cut list).
@@ -300,4 +316,4 @@ Simulator version: `sim_v1_tamilnadu`. Generated from Phases 1-8 results; nothin
 - Liquid natural convection inside the capsule is not resolved -- a fixed x2 effective-conductivity enhancement factor is assumed once liquid fraction >=50%.
 - No auxiliary/backup heater modeled -- solar fraction here is the fraction of ideal 45 C demand met by solar+PCM alone, stricter than a real installed system with backup heating.
 - No active high-temperature safety shield/bypass modeled -- see the robustness section's temperature-violation probability above.
-- n-Octacosane (C28) property provenance: check `any_property_imputed` in `data/objective1/pcm_database_tamilnadu.csv` for which fields are manufacturer-measured vs MICE/RF-imputed.
+- n-Tricosane (C23) property provenance: check `any_property_imputed` in `data/objective1/pcm_database_tamilnadu.csv` for which fields are manufacturer-measured vs MICE/RF-imputed.

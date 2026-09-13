@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-09-04T22:22:05.257298+00:00",
+  "generated_at_utc": "2026-09-12T11:04:13.403164+00:00",
   "objective1_root": "C:\\Users\\jaswi\\OneDrive\\Desktop\\ALL\\SEM_7\\project\\jammalamadugu\\new_obj\\tamilnadu_pipeline",
   "small_structural_files": [
     {
@@ -61,8 +61,8 @@
     {
       "source": "C:\\Users\\jaswi\\OneDrive\\Desktop\\ALL\\SEM_7\\project\\jammalamadugu\\new_obj\\tamilnadu_pipeline\\data\\processed\\clustering\\cluster_profiles_tamilnadu.csv",
       "dest": "C:\\Users\\jaswi\\OneDrive\\Desktop\\ALL\\SEM_7\\project\\jammalamadugu\\new_obj\\objective2_design_optimization\\data\\objective1\\cluster_profiles_tamilnadu.csv",
-      "sha256": "3e3d358f459368ddb6ac74819a0eabc1e494f2b34ad809e650485b4b16b65490",
-      "size_bytes": 6655,
+      "sha256": "27b3c5e818e7ff38a845e84cfb8ef8b937b2f82edde156cf5e9a79e15007f6c1",
+      "size_bytes": 6768,
       "status": "copied"
     },
     {

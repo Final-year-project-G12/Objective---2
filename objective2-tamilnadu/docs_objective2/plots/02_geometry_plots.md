@@ -8,10 +8,16 @@ Files: `results/tamilnadu/plots/{static,interactive}/phase2_validity_map.*`,
 
 ## Plot 1 — Design-space validity map
 
+> **Note (2026-09-13):** regenerated against the widened bound
+> (`capsule_count.max` 24→37, doc 13) — current figure covers
+> `n_capsule` 8–37 (1,830 points), not the original 8–24 (1,037 points).
+> The boundary rule described below is unaffected; only the grid extent
+> changed.
+
 **What it is**: every combination of `capsule_diameter_m` (0.02–0.08 m, 61
-steps) and `n_capsule` (8–24) at a fixed mid-range flow rate (0.030 kg/s),
+steps) and `n_capsule` (8–37) at a fixed mid-range flow rate (0.030 kg/s),
 each colored by what `check_design()` returned for it: green = valid, red
-= `bounds_violation`. 1,037 points, computed directly — no simulation
+= `bounds_violation`. 1,830 points, computed directly — no simulation
 involved, just the deterministic Phase 2 geometry gate.
 
 **What we infer**: the boundary between red and green is a **perfectly
@@ -32,8 +38,19 @@ deterministic and that this specific rejection reason
 (`bounds_violation`, from the derived thickness bound) is a real,
 consistent geometric fact about spheres — not a bug that only triggers
 for some designs."* This is also the plot that explains why Phase 5's DOE
-rejected exactly 70/215 cases (≈32.6%, matching the ≈33% of the diameter
-range below 0.04 m) — point to this figure when that number comes up.
+rejects 71/215 cases (≈33.0%, matching the ≈33% of the diameter
+range below 0.04 m — count range doesn't affect this ratio at all, since
+the rejection is purely a diameter-vs-thickness fact) — point to this
+figure when that number comes up.
+
+## Literature
+
+- **[Chen2025]** and **[Kou2025]** — see this doc's opening context in
+  `02_PHASE2_GEOMETRY_CONSTRAINTS.md`'s "Literature" section; the same
+  citations ground the PCM-volume-fraction reachability story this
+  validity map makes visual.
+- **Ergun (1952)** — grounds Plot 2's pressure-drop model directly (cited
+  in-text below).
 
 ---
 

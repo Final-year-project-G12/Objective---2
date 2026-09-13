@@ -31,6 +31,7 @@ every figure from the current results.
 | `06b_multifidelity_plots.md` | Phase 6b — multi-fidelity speedup + sample-efficiency |
 | `07_optimization_plots.md` | Phase 7 — Pareto view, surrogate-vs-simulator, safety compliance |
 | `08_robustness_plots.md` | Phase 8 — robustness probabilities (real 10-yr historical weather ensemble), useful-energy percentile intervals |
+| `../REFERENCES.md` | Literature base — every phase-doc citation used above, mapped to what it grounds |
 
 ## One-line justification per phase (for a viva or report caption)
 
@@ -38,23 +39,30 @@ every figure from the current results.
   math predicts it (diameter=0.04 m), not an arbitrary cutoff."
 - **Phase 3**: "the simulator produces physically plausible daily heating/
   cooling cycles and a visible PCM melting plateau, not noise."
-- **Phase 4**: "energy is conserved to ~10⁻⁵%, and every sensitivity check
-  moves in the physically correct direction."
+- **Phase 4**: "energy is conserved to ~10⁻⁵%, every sensitivity check
+  moves in the physically correct direction, and the Gate 3 comparison
+  (regenerated with the current shortlist PCM and current deployable
+  design) now shows PCM beating plain tank at every design point tested,
+  not just the synthetic capability check."
 - **Phase 5**: "the DOE covers the full design space and produces a
   smooth, sensible spread of outcomes, not clustered/degenerate results."
 - **Phase 6**: "the surrogate's predictions sit almost exactly on the
   parity line — R²>0.98 is visually obvious, not just a number in a table."
-- **Phase 7**: "the surrogate and the real simulator agree to 0.02% even
-  on 100 designs it wasn't directly trained on, and the Pareto view shows
-  *why* the optimizer picked the plain tank in 4/5 regimes — it's sitting
-  almost on top of the PCM cluster, at zero mass."
+- **Phase 7**: "the surrogate and the real simulator agree to 0.04% even
+  on 400 designs it wasn't directly trained on, and the Pareto view shows
+  *why* the optimizer now picks a genuine PCM design in every regime — the
+  PCM cluster sits just above and to the right of the plain-tank point,
+  a small but real, simulator-confirmed edge, not a statistical tie."
 - **Phase 6b**: "a cheap low-fidelity simulator pass, used as an extra
   surrogate feature, recovers most of Phase 6's accuracy even when the
   expensive high-fidelity training set is cut sharply — the practical
-  case for multi-fidelity modeling, demonstrated rather than only cited."
+  case for multi-fidelity modeling, demonstrated rather than only cited.
+  (Note: this plot still reflects the original pre-retargeting DOE.)"
 - **Phase 8**: "delivery temperature is met 100% of the time everywhere,
-  but under a fixed, cross-state-comparable demand threshold and a real
-  10-year historical weather ensemble, the one regime that actually uses
-  PCM fails both the 75% demand bar (69.2%) and the 95% temperature-safety
-  bar (40.8%) — the only regime to fail both at once, and the worst on
-  every robustness axis in the state."
+  and every regime now runs a genuine PCM design; demand reliability is
+  solid except in regime 4. The robustness *chart* now shows delivery/
+  demand only — temperature-safety (0% in regimes 0-3, never safe in 120
+  draws; 25% in regime 4, whose nominal margin was 0.009°C) is reported in
+  `robustness_summary.csv` / `10_PHASE8_ROBUSTNESS_HANDOFF.md` /
+  `RESULTS.md` rather than plotted, and remains the clearest demonstration
+  of why Objective 3's active bypass is not optional for any regime."

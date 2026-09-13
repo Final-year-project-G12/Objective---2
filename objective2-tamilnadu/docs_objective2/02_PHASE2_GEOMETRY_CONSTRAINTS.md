@@ -1,5 +1,11 @@
 # 02 — Phase 2 Audit: Geometry & Constraint Engine
 
+> **Note (2026-09-13):** `capsule_count.max` was widened 24→37 after this
+> doc was written — any "12.9% max reachable PCM fraction" figure below is
+> superseded by ~19.8%. Code/methodology below (geometric model, reason
+> codes) is unaffected; see `13_DESIGN_BOUNDS_WIDENING.md` for the current
+> bound and finding.
+
 Files: `src/design/schema.py`, `src/design/geometry.py`, `src/design/constraints.py`.
 
 ## Purpose (D2.2)
@@ -82,3 +88,16 @@ python pipeline.py --state tamilnadu --stage geometry
 ```
 (state-agnostic — geometry has no state-specific inputs, the flag is
 accepted for CLI-contract consistency with the other stages.)
+
+## Literature
+
+- **[Chen2025]** is the direct source of the 15%/20% PCM-volume-fraction
+  test levels this doc found unreachable at the original bounds — the
+  finding that motivated doc 13's `capsule_count.max` widening.
+- **[Kou2025]** independently confirms that capsule geometry / packing
+  parameter interactions are a recurring, real constraint in PCM-TES
+  design literature, not an artifact unique to this project's bound
+  choices.
+- **Ergun (1952)** (classical packed-bed correlation, cited in-code, not
+  part of `vertopal.com_references.txt`) grounds the pressure-drop model
+  in `constraints.py`/`hydraulic_model.py`.

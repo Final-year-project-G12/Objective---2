@@ -1,5 +1,13 @@
 # 03 — Phase 3 Audit: Grey-Box Enthalpy Simulator
 
+> **Note (2026-09-13):** the example command below still names
+> `n-Octacosane (C28)`, the pre-retargeting shortlist PCM for cluster 0.
+> After the Tm-retargeting revision (doc 12), cluster 0's shortlist is
+> `savE® OM49 / n-Tricosane (C23) / n-Tetracosane (C24)` — see
+> `configs/states/tamilnadu.yaml`. The simulator engine, submodels, and
+> both bug-fixes described below are unaffected by that revision (Phase 3
+> was not re-run; only its inputs changed downstream in Phase 5+).
+
 Files: `src/simulation/capsule_enthalpy.py`, `collector_model.py`,
 `heat_transfer.py`, `hydraulic_model.py`, `demand_profile.py`,
 `energy_balance.py`, `tank_model.py`, `run_case.py`.
@@ -116,9 +124,31 @@ the shortfall electrically).
 
 ```
 python pipeline.py --state tamilnadu --stage simulate --cluster 0 \
-    --pcm "n-Octacosane (C28)" --diameter 0.08 --count 19 --flow 0.030
+    --pcm "n-Tetracosane (C24)" --diameter 0.043 --count 11 --flow 0.0235
 ```
-Prints the full metrics dict (useful energy, solar fraction,
+(the current regime-0 deployable design per doc 14; the illustrative
+`n-Octacosane (C28)` design used when this doc was first written is still
+a valid example call, just no longer the shortlisted/selected PCM for
+cluster 0.) Prints the full metrics dict (useful energy, solar fraction,
 delivery-temperature hours, unmet energy, pump energy, PCM mass, max
 water/PCM temperature, safety-violation count, melt-fraction stats,
 complete melt cycles, energy-balance residual %). One call ≈ 1–4 seconds.
+
+## Literature
+
+- **[Abdellatif2025]** grounds the enthalpy-method (`h(T)`, clipped
+  liquid fraction) PCM modeling approach `capsule_enthalpy.py`
+  implements, and the practice of explicitly stating every
+  measured/correlated/assumed term (the "Documented simplifications"
+  list above).
+- **[Eldokaishi2022]** is a direct precedent for a water-PCM DHW tank
+  model paired with a learned proxy — the same physics-simulator /
+  ML-surrogate split this project's Phase 3→6→7 boundary enforces.
+- **[Barqawi2025]** grounds the backward-Euler solver family used in
+  `tank_model.py`.
+- **Wakao & Kaguei (1982)** (packed-bed heat-transfer correlation, cited
+  directly in-code — not in `vertopal.com_references.txt`, this is a
+  classical correlation reference, not part of this project's frozen
+  paper base) grounds `h_w` in `heat_transfer.py`.
+- **Ergun (1952)** (packed-bed pressure drop, likewise a classical
+  correlation, cited in-code) grounds `hydraulic_model.py`.

@@ -1,5 +1,14 @@
 # 01 — Phase 1 Audit: Frozen Configuration & State Setup
 
+> **Note (2026-09-13):** `Tm_target_C` (all 5 clusters), the PCM
+> shortlist per cluster, and `capsule_count.max` described below are the
+> **original Phase 1 output**, since superseded by the Tm-retargeting
+> (doc 12) and bounds-widening (doc 13) revisions. Current values: see
+> `configs/states/tamilnadu.yaml` and `RESULTS.md`. The loading mechanism
+> and frozen-config methodology described here are unaffected — Phase 1
+> itself was not re-run; only its *output file* was later edited in
+> place per those two docs.
+
 Files: `configs/system_config_shared.yaml`, `configs/design_bounds_shared.yaml`,
 `configs/states/tamilnadu.yaml`. Loader: `src/io_utils.py`.
 
@@ -72,6 +81,18 @@ sitting in `data/objective1/` (produced by the pre-existing
   consistent with a coastal-humid signature, not e.g. Rajasthan's
   hot-dry/low-humidity one. This confirms the weather being consumed is
   genuinely Tamil Nadu's, not a mis-copied file.
+
+## Literature
+
+- **[Singh2025]** and **[Chen2025]** (see `REFERENCES.md`) ground the
+  frozen collector/tank baseline table above (FPC efficiency parameters,
+  50 L/2:1 tank sizing).
+- **[Barqawi2025]** grounds the backward-Euler/adaptive-substepping
+  solver choice frozen here and implemented in Phase 3.
+- **[Rubitherm2024]** and **[PLUSS2024]** are the manufacturer data-sheet
+  sources behind the frozen `max_pcm_temp_C=65.0°C` safety limit and
+  several PCM property records in `pcm_database_tamilnadu.csv` — see
+  `REFERENCES.md` for the full mapping.
 
 ## Known, documented Objective 1 limitation carried forward unchanged
 

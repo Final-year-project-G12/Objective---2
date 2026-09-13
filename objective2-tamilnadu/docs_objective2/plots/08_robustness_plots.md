@@ -6,50 +6,42 @@ regime, each aggregating 120 real Monte Carlo simulator re-runs) and
 `deployable_design_per_regime.csv` for the nominal reference point.
 
 *(Methodology note: thresholds and weather-noise model were revised to
-align with the parallel Rajasthan implementation of this framework, and
-the annual weather-noise component was further upgraded to draw from a
-real 10-year (2016-2025) historical weather ensemble instead of an
-assumed range — see `docs_objective2/10_PHASE8_ROBUSTNESS_HANDOFF.md`,
-"Alignment with the Rajasthan implementation" and "Second upgrade: a real
-historical-year weather ensemble." Both plots below reflect the current,
-final methodology.)*
+align with the parallel Rajasthan implementation of this framework, the
+annual weather-noise component draws from a real 10-year (2016-2025)
+historical weather ensemble, and — most consequentially for what these
+plots now show — all 5 designs evaluated below are genuine PCM designs,
+not four plain-tank plus one PCM. See `docs_objective2/
+10_PHASE8_ROBUSTNESS_HANDOFF.md` and `14_SELECTION_RULE_SCOPE_
+CORRECTION.md`.)*
 
 ---
 
 ## Plot 1 — Robustness probabilities per regime
 
-**What it is**: three bars per regime — P(meets delivery temperature,
-`solar_fraction≥0.45`), P(meets annual demand, `solar_fraction≥0.50`,
-both fixed thresholds), and P(temperature-safe) — with the framework's
-75% demand and 95% temperature-safety thresholds marked as reference
-lines.
+> **Note (2026-09-13):** the P(temperature-safe) bar has been removed
+> from this chart at the user's request. Temperature-safety numbers are
+> not dropped from the project — they are still fully computed and
+> reported in `robustness_summary.csv`, `10_PHASE8_ROBUSTNESS_HANDOFF.md`,
+> `RESULTS.md`, and the Objective 3 hand-off contract (0% for regimes
+> 0–3, 25% for regime 4) — only removed from *this specific figure*,
+> which now shows delivery/demand reliability only.
+
+**What it is**: two bars per regime — P(meets delivery temperature,
+`solar_fraction≥0.45`) and P(meets annual demand, `solar_fraction≥0.50`,
+both fixed thresholds) — with the framework's 75% demand threshold marked
+as a reference line.
 
 **What we infer**: the purple bars (delivery temperature) sit at 100% for
 every regime — that was never at risk anywhere. The blue bars (demand)
-show real variation, because the threshold is fixed rather than
-self-referential: 89.2–95.0% for the four plain-tank regimes, but only
-**69.2%** for regime 4 — the one PCM regime, and the only one that dips
-below the 75% demand line. The green bars (temperature-safety) tell a
-starker story: 71.7–92.5% for the plain-tank regimes, down to **40.8%**
-for regime 4 — every single regime below the 95% line, and regime 4 the
-furthest below both of its thresholds simultaneously. Regime 4's bars
-being the shortest on *both* the blue and green metrics, at the same
-time, is the single most visually obvious feature of the chart.
+show real variation: 80.8–98.3% for regimes 0–3, 73.3% for regime 4 (the
+only one below the 75% line).
 
-**How to justify it**: *"Before this chart existed, using a
-self-referential threshold, every regime scored a trivial 100% on
-demand — that hid a real difference between regimes. Switching to a
-fixed, state-independent threshold is what makes this comparable to the
-parallel Rajasthan analysis, and it's what reveals that regime 4 isn't
-just 'the PCM regime with a safety problem' — it's the worst-performing
-regime in the state on reliability of any kind, PCM or not. That's a
-sharper, more defensible claim than the temperature-only story alone,
-and you can see both bars failing together in the same regime, not just
-read it off two separate numbers. This chart also survived a second
-methodology change intact: replacing the assumed weather-noise range with
-Objective 1's real 10-year observed weather archive moved every bar by
-only a few points and flipped no conclusion — the finding isn't an
-artifact of one particular noise assumption."*
+**How to justify it**: *"This chart isolates delivery and demand
+reliability, which is where the real inter-regime variation is once
+temperature safety is reported separately (see `robustness_summary.csv` /
+`10_PHASE8_ROBUSTNESS_HANDOFF.md` for that number). Regime 4 is the only
+one to miss the 75% demand bar; every other regime clears both bars shown
+here comfortably."*
 
 ---
 
@@ -61,22 +53,28 @@ the median (P50) and a black diamond marking that regime's single
 nominal (unperturbed) Phase 7 value.
 
 **What we infer**: every nominal diamond falls inside its own regime's
-interval, close to (though not always exactly on top of) the median
-circle — confirming the nominal design point Phase 7 selected is
-representative of its own uncertainty distribution, not a lucky-draw
-outlier. Regime 4 (the PCM regime) has both the lowest interval and the
-narrowest one of all five regimes — consistent with it also being the
-lowest-nominal-energy regime in Phase 7's own table, and with it being
-the design most exposed to the demand/safety shortfalls in Plot 1.
+interval, close to the median circle — confirming each PCM design's
+nominal Phase 7 value is representative of its own uncertainty
+distribution, not a lucky-draw outlier. Regime 4 has both the lowest and
+narrowest interval of the five — consistent with it also being the
+lowest-nominal-energy regime and the design operating closest to its own
+safety limit (a margin of just 0.009°C nominally).
 
 **How to justify it**: *"This is a sanity check on the nominal number
-itself: if the diamond sat at the extreme edge of its own interval, or
-outside it, that would suggest Phase 7's single-weather-year result was
-an outlier rather than a representative performance estimate. It
-doesn't — every diamond sits inside its interval, close to the median —
-so quoting the Phase 7 nominal number as 'the' expected performance for
-that regime is defensible, not cherry-picked. The median marker also lets
-you check whether the distribution is skewed — most regimes show the
-median close to, but not exactly on, the nominal value, which is
-expected: the nominal case IS the median scenario approximately, not by
-construction."*
+itself, independent of the safety story in Plot 1: every diamond sits
+inside its own interval, close to the median, so quoting each regime's
+Phase 7 nominal energy value as 'the' expected performance is defensible
+— the useful-energy side of these designs is stable under uncertainty
+even though the temperature-safety side (Plot 1) is not. That distinction
+matters: this isn't a design that performs unpredictably; it's a design
+that performs predictably well on energy and predictably poorly on
+safety, which is a more precise, more actionable finding for Objective 3
+than 'this design is unreliable' would be."*
+
+## Literature
+
+See `10_PHASE8_ROBUSTNESS_HANDOFF.md`'s "Literature" section. Most
+directly relevant here: **[Chopra2023]** grounds the Monte Carlo
+methodology producing these probability/interval plots; **[Rubitherm2024]**
+is again the datasheet source of the 65°C limit driving the
+temperature-safety collapse shown in Plot 1.

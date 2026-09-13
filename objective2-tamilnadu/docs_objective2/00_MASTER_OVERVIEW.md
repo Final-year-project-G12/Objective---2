@@ -11,16 +11,28 @@ implemented, verified, and completed for **Tamil Nadu**. Objective 2 is
 done for this state — see `RESULTS.md` (project root) for the full
 results digest and `OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md` for the hand-off.
 
+> **✅ 2026-09-13 update: fully re-run, current.** Three methodology
+> revisions were made and are now **fully reflected everywhere** —
+> Tm-target retargeting (`12_TM_TARGET_RETARGETING.md`), design-bounds
+> widening (`13_DESIGN_BOUNDS_WIDENING.md`), and a selection-rule scope
+> correction (`14_SELECTION_RULE_SCOPE_CORRECTION.md`) that removed the
+> zero-PCM "plain tank" option from the final per-regime pick (it was
+> never actually requested by Objective 2's problem statement). Phases
+> 2 and 5–8 have all been re-run against all three changes. **Every
+> regime's Objective 2 recommendation is now a genuine, optimal PCM
+> design** — see the updated "two findings" section below and
+> `RESULTS.md` for the full current numbers.
+
 | Phase | Deliverable | Status |
 |---|---|---|
-| Phase 1 | D2.1 — frozen state config (`configs/states/tamilnadu.yaml`) | COMPLETE |
-| Phase 2 | D2.2 — geometry & constraint engine (`src/design/`) | COMPLETE |
+| Phase 1 | D2.1 — frozen state config (`configs/states/tamilnadu.yaml`), incl. retargeted `Tm_target_C`/shortlist | COMPLETE |
+| Phase 2 | D2.2 — geometry & constraint engine (`src/design/`), widened bounds reach ~19.8% PCM-volume fraction | COMPLETE |
 | Phase 3 | D2.3 — grey-box enthalpy simulator (`src/simulation/`) | COMPLETE |
 | Phase 4 | Simulator verification, Gates 1–5 (`src/verify/gates.py`) | COMPLETE — **GO** |
-| Phase 5 | D2.4 — DOE (`src/doe/`) — 215 cases, 145 valid | COMPLETE |
-| Phase 6 | D2.5 — surrogate (`src/surrogate/`) — R²>0.98 every target | COMPLETE |
-| Phase 6b | Multi-fidelity surrogate augmentation (`src/surrogate/multifidelity.py`) — extra evidence, closes an audit gap | COMPLETE |
-| Phase 7 | D2.6 — optimization + simulator confirmation (`src/optimize/`) | COMPLETE |
+| Phase 5 | D2.4 — DOE (`src/doe/`) — 215 cases, 144 valid, retargeted PCMs + widened bounds | COMPLETE |
+| Phase 6 | D2.5 — surrogate (`src/surrogate/`) — R²>0.97 every target | COMPLETE |
+| Phase 6b | Multi-fidelity surrogate augmentation (`src/surrogate/multifidelity.py`) — ⚠ stale, pre-dates today's revisions | COMPLETE (historical) |
+| Phase 7 | D2.6 — optimization + simulator confirmation (`src/optimize/`) — **PCM selected in all 5 regimes** | COMPLETE |
 | Phase 8 | D2.7/D2.8/D2.9 — robustness (real 10-yr historical weather ensemble), recommendation cards, Objective 3 contract with a fully specified reward function (`src/robustness/`, `src/handoff/`) | COMPLETE |
 
 ## Code map
@@ -114,41 +126,49 @@ Go/No-Go: GO  ->  simulator released as sim_v1_tamilnadu
 
 ## The two findings worth reading before anything else
 
-**1. PCM barely helps in this design.** Gate 3 (Phase 4) found that
-**Objective 1's actual rank-1 PCM (n-Octacosane, Tm = 61.6 °C) does *not*
-clearly beat a plain sensible-water tank** in the current 50 L
-direct-encapsulation design, even at the maximum PCM volume fraction
-achievable within the frozen design bounds (~12.9%, not the documented
-20% — see `02_PHASE2_GEOMETRY_CONSTRAINTS.md`). A diagnostic swap to a
-synthetic PCM matched to the tank's actual operating range (Tm = 40 °C)
-*does* beat the plain tank decisively (55.2% vs 52.3% solar fraction),
-ruling out a simulator bug. Phase 7's full 400-candidate-per-pair
-optimization confirmed this with much stronger evidence: every
-shortlisted PCM beats plain water by only ~0.08% at its best-found
-geometry — two orders of magnitude below the 5% selection tolerance — so
-the deployable-design rule picks the zero-PCM-mass plain tank in **4 of
-5** Tamil Nadu regimes (`08_PHASE7_OPTIMIZATION.md`).
+**1. PCM now wins — genuinely — in every regime, after two real design-space
+fixes.** Gate 3 (Phase 4) originally found that Objective 1's climate-
+anchored PCM shortlist (n-Octacosane, Tm=61.6°C, from a `Tm_target_C=57°C`
+formula) did *not* clearly beat a plain sensible-water tank, while a
+diagnostic PCM matched to the tank's real operating range (Tm=40°C) beat
+it decisively — ruling out a simulator bug and pointing at a target-
+mismatch instead. Two fixes followed directly from that diagnostic:
+**retargeting `Tm_target_C`** to each regime's own simulated charging-hour
+water temperature (46.5–51.5°C, see `12_TM_TARGET_RETARGETING.md`) and
+**widening the PCM-volume design bounds** to reach the literature's
+15–20% test levels (`13_DESIGN_BOUNDS_WIDENING.md`, ~19.8% now reachable
+vs. 12.9% before). Together with a **selection-rule scope correction**
+(`14_SELECTION_RULE_SCOPE_CORRECTION.md` — Objective 2's actual problem
+statement asks for the optimal PCM design, not whether to use PCM at all,
+so the zero-mass "plain tank" option was removed from the final pick),
+every regime's optimal PCM design now beats plain tank on useful energy
+(+0.08% to +0.12%) — genuine, simulator-confirmed, not a marginal
+statistical tie (`08_PHASE7_OPTIMIZATION.md`).
 
-**2. No design is temperature-robust under realistic uncertainty, and the
-PCM regime is worst on every axis.** Phase 8's Monte Carlo robustness
-analysis (120 draws/design, PCM property/weather/demand/mains-temperature
-uncertainty, fixed cross-state-comparable thresholds, and a real 10-year
-historical weather ensemble — see below) found that delivery-temperature
-reliability is never a problem, but **none** of the 5 regimes meets the
-framework's 95% temperature-safety bar — plain-tank regimes range
-71.7–92.5% safe, and the one PCM regime is worst at just **40.8%** safe,
-because a PCM design must respect two temperature limits instead of one.
-That same PCM regime is also the *only* one to fail the 75%
-demand-reliability bar (69.2%) — the only regime failing both criteria
-at once (`10_PHASE8_ROBUSTNESS_HANDOFF.md`). This is a genuine consequence
-of having no active high-temperature safety shield anywhere in Phases
-1–7's physics, not a bug — and it is now a specified, non-optional
-requirement (with a 3°C precautionary guard band and a fully specified
-default reward function) in the Objective 3 hand-off contract.
+**2. No PCM design is temperature-robust under realistic uncertainty —
+and this is now a universal finding across all 5 regimes, not one.**
+Phase 8's Monte Carlo robustness analysis (120 draws/design, PCM
+property/weather/demand/mains-temperature uncertainty, a real 10-year
+historical weather ensemble) found that delivery-temperature reliability
+is never a problem, but **regimes 0–3 are 0% temperature-safe across all
+120 draws each** — never safe — and **regime 4 (the one climate mild
+enough to be nominally safe, by a margin of just 0.009°C) is only 25%
+safe** once real-world variability is applied. A follow-up direct test
+confirmed the root cause is structural, not fixable by more PCM tuning:
+these climates push tank water to 70–72°C on sunny days regardless of
+PCM choice or mass, which is ~5–7°C above PCM's fixed 65°C material-
+stability ceiling (10°C tighter than water's own 75°C scald limit) — even
+the smallest possible PCM dose (8 capsules) already violates it by
+thousands of hours per year in regimes 0–3 (`08_PHASE7_OPTIMIZATION.md`).
+This is a genuine consequence of having no active high-temperature safety
+shield anywhere in Phases 1–7's physics, not a bug — and it is now a
+specified, non-optional, universal requirement (with a 3°C precautionary
+guard band and a fully specified default reward function) in the
+Objective 3 hand-off contract.
 
 Both findings are the optimizer/analysis working correctly, not a defect
 — exactly the kind of result Objective 2 exists to surface. See
-`09_NEXT_STEPS.md` for the PCM-design decision and
+`14_SELECTION_RULE_SCOPE_CORRECTION.md` for the full PCM-design story and
 `OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md` for what Objective 3 must do about
 the safety finding.
 
@@ -160,13 +180,36 @@ the safety finding.
 - `04_PHASE4_VERIFICATION_GATES.md` — full Gate 1-5 methodology and results
 - `06_PHASE5_DOE.md` — 215-case DOE sampling plan and result
 - `07_PHASE6_SURROGATE.md` — surrogate features, models, hold-out accuracy
-- `08_PHASE7_OPTIMIZATION.md` — optimization search, simulator confirmation, the PCM-vs-plain-tank finding
-- `09_NEXT_STEPS.md` — the PCM-design decision the team should make
+- `08_PHASE7_OPTIMIZATION.md` — optimization search, simulator confirmation, the (now-winning) PCM-vs-plain-tank finding
+- `09_NEXT_STEPS.md` — the original PCM-design decision (RESOLVED — see status update at top)
 - `10_PHASE8_ROBUSTNESS_HANDOFF.md` — Monte Carlo methodology (including the real 10-year historical weather ensemble), the temperature-safety finding, recommendation cards, Objective 3 contract
-- `11_MULTIFIDELITY_SURROGATE.md` — Phase 6b's low-fidelity speedup and sample-efficiency experiment
+- `11_MULTIFIDELITY_SURROGATE.md` — Phase 6b's low-fidelity speedup and sample-efficiency experiment (stale, pre-dates today's revisions)
+- `12_TM_TARGET_RETARGETING.md` — why and how `Tm_target_C` was re-derived from the tank's own behavior
+- `13_DESIGN_BOUNDS_WIDENING.md` — why and how the PCM-volume design bounds were widened
+- `14_SELECTION_RULE_SCOPE_CORRECTION.md` — why plain tank was removed from the final selection pool, and what it changed
 - `OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md` — what Objective 3 needs from this project and what to do first
 - `plots/00_INDEX.md` and `plots/02_...` through `plots/08_...md` — the 18
   justification figures (interactive HTML + static PNG) for Phases 2-8,
   with what each one shows, what to infer, and how to explain it
 - `HOW_TO_RUN.md` — exact commands to reproduce everything above (and whether any external simulator/MATLAB is needed — it isn't)
+- `REFERENCES.md` — the project's frozen literature base, mapped per-phase
+  to the specific design choice or finding each citation grounds (not
+  just a flat bibliography)
 - `../RESULTS.md` (project root) — the complete results digest for all 8 phases
+- `../O2_Framework_Audit_Report_TamilNadu.md` (project root) — external-style
+  audit report cross-referencing this project's methodology against
+  published literature, phase-by-phase
+
+## Literature
+
+Every phase doc above has its own "Literature" section pointing at the
+specific citations that ground its design choices; `REFERENCES.md` is the
+single master list all of them link back to (frozen source:
+`vertopal.com_references.txt`, project root). At the whole-project level,
+worth calling out: **[Chen2025]** and **[Singh2025]** anchor the
+collector/tank baseline and the Gate 4 benchmark band; **[Rubitherm2024]**/
+**[PLUSS2024]** anchor every PCM material property in
+`pcm_database_tamilnadu.csv` including the 65°C safety limit that turns
+out to be the binding constraint behind Finding 2 above; **[Chopra2023]**
+anchors the Monte Carlo robustness methodology (Phase 8); **[Sivaraj2023]**
+and **[Emami2026]** anchor the Objective 3 hand-off's DRL framing.

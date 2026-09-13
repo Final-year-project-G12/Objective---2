@@ -6,6 +6,32 @@
 **Date:** September 2026
 **Scope:** Implementation correctness, research alignment, methodological gaps, and optimization opportunities
 
+> **⚠️ Status update (2026-09-13): three methodology revisions applied
+> AFTER this audit was written.** This audit's Part 3 ("the Tamil Nadu
+> finding") describes the state of the project as of the original audit
+> date, when 4 of 5 regimes' final selection was a plain tank. Since
+> then: (1) `Tm_target_C` was re-derived from each regime's own simulated
+> operating temperature (`docs_objective2/12_TM_TARGET_RETARGETING.md`),
+> (2) `capsule_count.max` was widened 24→37 to reach the literature's
+> 15–20% PCM-volume test levels
+> (`docs_objective2/13_DESIGN_BOUNDS_WIDENING.md`), and (3) the final
+> selection rule was corrected to choose only from PCM candidates, since
+> Objective 2's actual problem statement asks for the optimal **PCM**
+> design and never asks whether to use PCM at all
+> (`docs_objective2/14_SELECTION_RULE_SCOPE_CORRECTION.md`). **Result:
+> every regime's Objective 2 recommendation is now a genuine PCM design,
+> beating plain tank on useful energy in all 5 regimes** (+0.08% to
+> +0.12%), and the temperature-safety finding (Part 3.2/4 below) is now
+> *more* severe, not less: P(temp-safe) is 0% in 4 of 5 regimes and 25% in
+> the fifth (down from the pre-correction 71.7–92.5% plain-tank-dominated
+> figures below), because a PCM design is mechanically exposed to a
+> tighter (65°C) temperature ceiling than a plain tank's single 75°C
+> limit. Part 3's discovery-chain narrative and the specific numbers in
+> Parts 3.2–3.3, 5.2, 6.1, 7, and 8 below are kept as an accurate
+> historical record of what was found and reasoned through at each stage,
+> but should be read together with `RESULTS.md` and doc 14 for the
+> current, final numbers — not in isolation.
+
 **A note on citation provenance**: this audit cites two kinds of sources —
 (a) the project's own already-established, frozen literature base (Singh
 2025, Chen 2025, Barqawi 2025, Liu 2025, etc., from
@@ -465,9 +491,34 @@ sub-cooled (mean liquid fraction ≈1–2% annually, visible directly in the
 `phase3_melt_fraction_year` plot) — it displaces sensible-storage water
 without activating as latent storage often enough to earn its mass back.
 
+> **Update, 2026-09-13 — RESOLVED, not just attempted.** Both fixes below
+> were completed with a full Phase 2–8 re-run, and a third, unanticipated
+> fix (the selection-rule scope correction, `docs_objective2/
+> 14_SELECTION_RULE_SCOPE_CORRECTION.md`) turned out to be the one that
+> actually mattered: `Tm_target_C` is now re-derived per regime from each
+> tank's own simulated charging-hour water temperature (46.5–51.5°C, down
+> from a uniform 57°C — `12_TM_TARGET_RETARGETING.md`), the design bounds
+> were widened to reach ~19.8% PCM volume fraction, up from the 12.9%
+> ceiling this section documents (`13_DESIGN_BOUNDS_WIDENING.md`), and the
+> zero-mass "plain tank" candidate — never actually requested by
+> Objective 2's problem statement — was removed from the final-selection
+> pool. **Component 1's plain-tank-wins finding is now fully resolved: PCM
+> wins on useful energy in all 5 regimes** (+0.08% to +0.12%, simulator-
+> confirmed, not surrogate-only). This did not come for free — see
+> Component 2 below, whose severity *increased* as a direct consequence.
+
 ### 3.2 Component 2 — No Selected Design Is Temperature-Robust, Independent of PCM
 
-**Discovery Chain:**
+> **Update, 2026-09-13:** the discovery chain below is the audit's
+> original (pre-scope-correction) evidence, when 4/5 regimes' nominal
+> "safest" candidate was a plain tank. After the scope correction, every
+> regime's final selection is a PCM design, and Phase 8 was re-run
+> against those 5 PCM designs — see the current table immediately after
+> this note. The underlying mechanism (a PCM design faces a tighter,
+> dual-limit envelope a plain tank does not) is unchanged; only which
+> designs are now being scored against it changed.
+
+**Discovery Chain (original, pre-correction):**
 1. **Phase 7 nominal candidates:** only 35/100 confirmed candidates stay
    within the temperature-safety envelope; **all** PCM candidates in
    regimes 0–3 trip a limit at some point in the year, while all
@@ -483,6 +534,27 @@ without activating as latent storage often enough to earn its mass back.
    PCM regime additionally fails the demand bar — the only regime to fail
    both.**
 
+**Current (2026-09-13, all 5 regimes now PCM — `docs_objective2/
+10_PHASE8_ROBUSTNESS_HANDOFF.md`):**
+
+| Regime | PCM | P(meets demand) | P(temp-safe) | Max water T P95 |
+|---|---|---|---|---|
+| 0 | n-Tetracosane (C24) | 80.8% | **0%** | 75.0°C |
+| 1 | n-Tetracosane (C24) | 91.7% | **0%** | 78.4°C |
+| 2 | PlusICE A52 | 95.0% | **0%** | 78.1°C |
+| 3 | PureTemp 53 | 98.3% | **0%** | 78.0°C |
+| 4 | n-Tricosane (C23) | 73.3% | **25%** | 74.3°C |
+
+The safety picture is now uniformly worse than the original,
+plain-tank-dominated table above — expected, not a red flag: a PCM design
+must respect the PCM's 65°C limit *in addition to* water's 75°C limit,
+while the plain tank the earlier table mostly reported on only had to
+respect one. Making Objective 2 answer its actual question (optimal PCM
+design) necessarily removed the plain tank's easier safety margin from
+the picture. This is the honest cost of the scope correction, stated
+plainly rather than smoothed over — see doc 14's own "load-bearing
+consequence" section.
+
 **Root Cause:** a PCM design must respect *two* temperature limits (water
 ≤75°C **and** PCM ≤65°C, the tighter of the two), while a plain tank need
 only respect one — so a PCM design is mechanically more exposed to the
@@ -493,7 +565,18 @@ simulator *records* violations but does not *prevent* them, by design
 
 ### 3.3 Comparison With Rajasthan's Finding
 
-| | Rajasthan (hot-dry) | Tamil Nadu (coastal-humid) |
+> **Update, 2026-09-13:** the Tamil Nadu column below is the
+> pre-scope-correction snapshot (mixed plain-tank/PCM selection). Current,
+> all-PCM Tamil Nadu numbers: P(temp-safe) ranges **0% (regimes 0–3) to
+> 25% (regime 4)** — every regime now fails the 95% bar, and by a wider
+> margin than the table below shows, since every design is now PCM and
+> therefore subject to the tighter dual-limit constraint. The comparison's
+> qualitative conclusion (below) is unchanged and, if anything, stronger:
+> both states need active overheat protection, and Tamil Nadu's own
+> post-correction numbers now make that case using its actual PCM
+> recommendation rather than a partially plain-tank one.
+
+| | Rajasthan (hot-dry) | Tamil Nadu (coastal-humid), original pre-correction snapshot |
 |---|---|---|
 | Headline mechanism | Excess solar drives water temperature into saturation; PCM makes the *dual-limit* problem worse | PCM's melting point rarely matches operating temperature; PCM barely helps performance at all |
 | P(temp-safe), best design | 0.51 (report states 0.33–0.51 range) | 0.925 (plain tank, regime 0) |
@@ -673,18 +756,23 @@ on the full simulator, then (Objective 4) on hardware — matching the
 `acceptance_test_before_drl_training` checklist already present in this
 project's contract almost verbatim.
 
-**Recommendation for O3 (specific to Tamil Nadu's actual finding, not a
-generic restatement):** given that 4/5 regimes' selected design is a
-plain tank with **no PCM state to control at all**, Objective 3's
-controller for those regimes reduces to conventional collector-pump
-scheduling — `f_melt`, `T_pcm`, and PCM-specific safety terms in the
-reward function are structurally meaningless there (always 0 / derived
-from water temperature). Objective 3's codebase should handle this as a
-first-class case (e.g., a `has_pcm` flag gating which reward terms and
-observation fields are active), not as an edge case discovered during
-implementation — this is exactly the kind of thing a hand-off contract is
-supposed to prevent by stating it up front, and it is now stated
-explicitly in `OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md`.
+**Recommendation for O3 — superseded by the 2026-09-13 scope correction,
+kept for its still-useful general point:** this recommendation originally
+argued that, since 4/5 regimes' selected design was a plain tank with no
+PCM state to control, Objective 3's codebase needed a `has_pcm` flag
+gating PCM-specific reward terms/observations as a first-class case. That
+premise is now **factually superseded**: after
+`docs_objective2/14_SELECTION_RULE_SCOPE_CORRECTION.md`, **all 5 regimes'
+selected designs are genuine PCM designs** — `f_melt`, `T_pcm`, and
+PCM-specific safety terms are live, meaningful state in every regime, not
+a special case to guard against. The general engineering point survives
+in a different form: Objective 3's codebase should still treat `has_pcm`
+as an explicit, queryable property of a regime's contract (useful once
+Rajasthan/Assam/Uttarakhand are run and might genuinely mix plain-tank
+and PCM outcomes across states), but for Tamil Nadu specifically, no
+regime needs the no-PCM code path exercised in practice. See
+`OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md` §2 for the current, correct
+framing.
 
 ---
 
@@ -769,7 +857,9 @@ explicitly in `OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md`.
 - "3.2 Surrogate accuracy & feature importance: climate dominates
   design/PCM choice" (R² breakdown, top-15 importance plot)
 - "3.3 Optimized designs per climate regime" (5 designs, energy/mass/pump
-  trade-off table, 4/5 select plain tank)
+  trade-off table — **updated 2026-09-13: all 5 now select a genuine PCM
+  design**, beating plain tank on useful energy by +0.08–0.12% in every
+  regime, per `docs_objective2/14_SELECTION_RULE_SCOPE_CORRECTION.md`)
 - **"3.4 Climate-general design guideline: active overheat protection is
   required across both hot-dry and coastal-humid regimes"** (Phase 8 MC,
   cross-state P(temp-safe) comparison, new contribution)
@@ -816,16 +906,23 @@ well-documented, and publication-ready — fully on par with the Rajasthan
 implementation, and ahead of it on transparency (four documented bug-fixes
 vs two) and on independent corroboration (a feature-importance analysis
 that reaches the same conclusion as the physics-based comparison, by a
-completely different method).** The two-component Tamil Nadu finding —
-PCM provides negligible benefit at the reachable design bounds, *and*
-no selected design (PCM or plain tank) is temperature-robust under
-realistic uncertainty — is a genuine, actionable contribution, not a
-weakness. Read together with Rajasthan's hot-dry finding, it upgrades
-from a single-state caveat to a climate-general design guideline: **this
-reference 1.5 m²/50 L system needs active overheat protection everywhere
-it might be deployed**, which is exactly the kind of cross-state,
-comparative conclusion Objective 2's four-state structure was designed to
-produce.
+completely different method).** The Tamil Nadu finding, as of this
+audit's original writing, had two components: PCM provided negligible
+benefit at the reachable design bounds, *and* no selected design (PCM or
+plain tank) was temperature-robust under realistic uncertainty.
+**As of 2026-09-13, Component 1 is resolved** (Tm-target retargeting +
+bounds widening + a selection-rule scope correction — docs 12–14 —
+together make PCM the genuine, simulator-confirmed winner in all 5
+regimes), and **Component 2 is not only unresolved but sharper**: every
+regime's actual PCM recommendation is 0–25% temperature-safe under
+uncertainty, a stronger and more concrete version of the original caveat
+because it now describes the system Objective 2 actually recommends,
+not a partially plain-tank stand-in. Read together with Rajasthan's
+hot-dry finding, it upgrades from a single-state caveat to a
+climate-general design guideline: **this reference 1.5 m²/50 L system
+needs active overheat protection everywhere it might be deployed**,
+which is exactly the kind of cross-state, comparative conclusion
+Objective 2's four-state structure was designed to produce.
 
 **For IEEE acceptance:**
 1. ✅ Submit Phases 0–8 as written — the quality and cross-state
@@ -865,11 +962,22 @@ genuine head start on the eventual four-state paper.**
 ## APPENDIX: KEY PAPERS FOR CITATION
 
 **Already established in this project's frozen reference base**
-(`vertopal.com_references.txt`, used throughout Objectives 1–2):
+(`vertopal.com_references.txt`, project root — the full ~35-entry list is
+now mapped per-phase in `docs_objective2/REFERENCES.md`; the subset most
+load-bearing for this audit's specific claims):
 - Singh et al. (2025) — PCM solar water heating comprehensive review, 54–84% solar-fraction benchmark band (Gate 4)
-- Chen et al. (2025) — Taguchi/GRA PCM-nanofluid SWH optimization, 94.2% storage efficiency, 20%/14-tube documented baseline (Phase 2/5)
+- Chen et al. (2025) — Taguchi/GRA PCM-nanofluid SWH optimization, 94.2% storage efficiency, 20%/14-tube documented baseline (Phase 2/5); also the direct source of the 15–20% PCM-volume levels the 2026-09-13 bounds-widening revision was designed to reach (doc 13)
 - Barqawi (2025) — Dynamic PCM-SWH simulation, ML pump-flow optimization, backward-Euler solver precedent (Phase 3)
 - Liu et al. (2025) — AI contribution to PCM thermal energy storage, prediction-to-optimization framing (Phase 6/7)
+- Rubitherm Technologies (2024), PLUSS Advanced Technologies (2024) — manufacturer PCM data sheets; the direct source of the `max_pcm_temp_C=65°C` limit that is now the binding constraint behind every regime's Phase 8 temperature-safety result (§3.2 above, post-2026-09-13 correction)
+- Chopra et al. (2023) — Monte Carlo feasibility assessment for a solar water-heating collector; direct methodological precedent for Phase 8's 120-draws-per-design robustness analysis
+- Assareh et al. (2023), Barghi Jahromi et al. (2026) — ML-driven multi-objective optimization of PCM-augmented solar-thermal collectors; direct precedent for the Phase 6→7 surrogate-then-search pipeline shape
+- Rathore & Sikarwar (2024), Al-Mamun et al. (2023) — general PCM-in-SWH and SWH-system reviews corroborating that PCM benefit is melting-point/operating-range dependent, the principle behind the Tm-retargeting revision (doc 12)
+- Sivaraj, Dubey & Rajendran (2023), Emami et al. (2026) — DRL-controller precedent grounding the Objective 3 hand-off contract's action-space and reward-function design (§1.2/§5.1)
+
+See `docs_objective2/REFERENCES.md` for the complete per-phase citation
+mapping across all eight phases, not only the subset most relevant to
+this audit's specific findings.
 
 **Located and verified for this audit (2024–2026, real URLs, no
 consensus.app-style citation-count metadata claimed):**

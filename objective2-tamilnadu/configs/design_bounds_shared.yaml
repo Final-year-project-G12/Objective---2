@@ -16,13 +16,26 @@
 # pcm_thickness_m bounds below. Both bounds are kept so a design that
 # passes the diameter bound but produces a thickness out of range is still
 # caught explicitly (reason code in src/design/constraints.py).
+#
+# capsule_count.max WIDENED 24 -> 37 (deliberate methodology revision, not a
+# silent edit -- see docs_objective2/13_DESIGN_BOUNDS_WIDENING.md): with
+# capsule_diameter_m capped at 0.08 m, count=24 was the actual binding
+# constraint keeping max reachable pcm_volume_fraction at ~12.9% -- well
+# short of this file's OWN 0.20 ceiling below and the documented 15-20%
+# Chen et al. (2025) test levels. count=37 reaches pcm_volume_fraction=
+# 0.198 (verified geometrically valid: passes overlap/passage/pressure
+# checks), landing right at the existing 0.20 ceiling without needing to
+# raise it. Every design at count<=24 remains exactly as valid as before;
+# this only ADDS previously-unreachable higher-fraction designs to the
+# space Phase 5-7 search over. Affects all 4 states (shared config) --
+# re-run Phases 2-8 for every state after this change.
 # ============================================================================
 
-version: "config_v1.0_2026-09-05"
+version: "config_v1.1_2026-09-12"
 
 pcm_thickness_m:        {min: 0.02, max: 0.10}     # derived = diameter/2, checked independently
 capsule_diameter_m:     {min: 0.02, max: 0.08}
-capsule_count:           {min: 8, max: 24, step: 1}   # integer
+capsule_count:           {min: 8, max: 37, step: 1}   # integer (widened from 24, see note above)
 capsule_shape:           [sphere]                       # 40-hr: sphere only
 capsule_arrangement:     [staggered]                    # 40-hr: staggered only
 pcm_volume_fraction:     {min: 0.10, max: 0.20}      # derived from N_capsule*V_capsule / V_tank

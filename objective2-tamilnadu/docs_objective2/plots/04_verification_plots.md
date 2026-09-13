@@ -1,5 +1,17 @@
 # Phase 4 Plots — Simulator Verification Gates
 
+> **Note (2026-09-13):** Plot 2 was regenerated at the user's request to
+> reflect the current, post-revision state (Tm-retargeting + bounds
+> widening + selection-rule correction, docs 12–14) instead of the
+> original n-Octacosane/Tm=61.6°C pre-fix diagnostic. **The original
+> Gate 3 verification run itself is unchanged** — the pass/fail verdict,
+> `simulator_verification_report.txt`, and `04_PHASE4_VERIFICATION_GATES.md`
+> still describe the original diagnostic (that is what proved the
+> simulator wasn't broken and motivated the fixes); this plot is now a
+> separate, current-state comparison layered on top, not a re-run of
+> Gate 3's actual pass/fail logic. The engine-verification plots (Gate 1,
+> Gate 5) are unaffected by any revision.
+
 Files: `phase4_gate1_residuals.*`, `phase4_gate3_baseline_comparison.*`,
 `phase4_gate5_sensitivity.*`.
 
@@ -30,32 +42,37 @@ after the fix, every case dropped to noise level."*
 
 ---
 
-## Plot 2 — Gate 3: solar fraction, plain tank vs PCM designs
+## Plot 2 — Gate 3 (current): solar fraction, plain tank vs PCM designs
 
-**What it is**: four bars — plain tank, the maximum-feasible-PCM-fraction
-design (n-Octacosane, 12.9%), an "optimized-looking" PCM design (10.2%),
-and the Gate-3 capability check (a synthetic PCM with melting point
-matched to this tank's real operating range, Tm=40°C instead of
-n-Octacosane's 61.6°C) — all at the same weather/demand/geometry
-otherwise.
+**What it is**: four bars, all for regime 0, all computed fresh from the
+current config (post Tm-retargeting + bounds-widening) — plain tank, the
+current shortlist PCM (n-Tetracosane, C24) at the widened max-feasible
+fraction (`capsule_count.max=37`), that same PCM at its actual Phase 7
+deployable geometry (the current optimum: 0.0433 m diameter, 11 capsules,
+0.0235 kg/s), and the same synthetic-Tm=40°C capability check as before —
+all at the same weather/demand otherwise.
 
-**What we infer**: the two real-PCM bars (51.16%, 51.39%) sit *slightly
-below* the plain tank (52.26%) — the headline "PCM doesn't clearly help
-here" finding, visible directly rather than only as numbers in a table.
-The capability-check bar (55.19%) sits clearly above all three, proving
-the simulator rewards a well-matched PCM decisively when given one — which
-is what rules out "the simulator can't model PCM benefit" as an
-explanation for the other three bars looking so similar.
+**What we infer**: every PCM bar now sits *above* plain tank (52.26%):
+max-feasible fraction reaches 53.46%, the actual deployable/optimum design
+reaches 52.32% (a modest but real +0.06 pp — matching the +0.11%
+useful-energy margin reported in `08_PHASE7_OPTIMIZATION.md`, since these
+are two different normalizations of nearly the same gap), and the
+capability check reaches 56.00%, still comfortably the highest bar. This
+is the direct visual consequence of the two design-space fixes (doc
+12/13) plus using the actual current shortlist PCM instead of the
+original n-Octacosane: what used to be the "PCM barely helps" diagnostic
+picture is now a "PCM wins, and the simulator was always capable of
+showing an even bigger win with a better-matched melting point" picture.
 
-**How to justify it**: *"Read this chart left to right: if PCM were
-useless in this simulator, the green bar (capability check) would look
-like the other three. It doesn't — it's 3 percentage points higher. That
-contrast is the whole argument in one picture: n-Octacosane at this tank
-size isn't winning because its melting point (61.6°C) is higher than
-where this tank spends most of its time, not because PCM physics is
-broken in the model."* Note the y-axis intentionally starts at 0 (not
-zoomed into 50–56%) so the ~1–3 point differences are shown at true
-scale, not visually exaggerated.
+**How to justify it**: *"This is the same Gate-3-style comparison, now
+run with the current, corrected PCM/design instead of the original
+diagnostic snapshot. Every real-PCM bar clears plain tank, and the
+capability-check bar (still the highest) shows there's more headroom left
+if an even better-matched PCM existed — consistent with, not
+contradicting, the original Gate 3 diagnosis that started this whole
+correction chain."* Note the original Gate 3 pass/fail verdict itself is
+unchanged (see the note above this plot) — only this comparison chart was
+regenerated.
 
 ---
 
