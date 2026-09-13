@@ -21,11 +21,11 @@ GATE 2 — Limiting cases
   [PASS] zero_flow -> simulator completes without crashing          residual=0.0003%, E_pump=0.000000000 kWh
   [PASS] no_PCM -> zero charge/discharge energy                     E_charge=0.000000000, E_discharge=0.000000000
   [PASS] zero_latent_heat -> completes, f_melt degenerate (informational) f_melt range=1.0000 (L=0 makes f a step function, expected)
-  [PASS] very_high_conductivity -> smaller mean |Tw-Tpcm| gap than nominal gap_high_k=0.108 C, gap_nominal=0.577 C
+  [PASS] very_high_conductivity -> smaller mean |Tw-Tpcm| gap than nominal gap_high_k=0.174 C, gap_nominal=0.639 C
   [PASS] perfectly_insulated_tank -> zero E_loss                    E_loss=0.000000 kWh
   [PASS] empty_demand -> zero load and zero unmet energy            E_load=0.000000, E_unmet=0.000000
   [PASS] solid/liquid initial PCM -> starts at 0/1 and moves correctly solid: f0=0.000->f24=0.000; liquid: f0=1.000->f24=0.000
-  [PASS] flow below/above limits -> completes, higher flow narrows Tw-Tpcm gap gap@0.002kg/s=0.771 C, gap@0.20kg/s=0.502 C
+  [PASS] flow below/above limits -> completes, higher flow narrows Tw-Tpcm gap gap@0.002kg/s=0.832 C, gap@0.20kg/s=0.565 C
   [PASS] capsules_removed (N=0) -> zero PCM charge energy           E_charge=0.000000000 kWh
   [PASS] rajasthan_cluster0_plain_tank_overheat (informational, non-gating) plain-tank max T_w=68.6 C vs 65 C PCM limit -> EXCEEDS on solar input alone
 
@@ -36,8 +36,8 @@ GATE 2 — Limiting cases
 GATE 3 — Baseline comparison (plain tank vs fixed PCM vs optimized-looking)
 ========================================================================
   plain_tank             useful=  1585.7 kWh  SF=54.97%  unmet=  1141.5 kWh  loss=  77.8 kWh  pump=0.0000 Wh  mean_f_melt=None
-  fixed_PCM_max_feasible useful=  1580.6 kWh  SF=55.08%  unmet=  1138.6 kWh  loss=  77.4 kWh  pump=0.0000 Wh  mean_f_melt=None
-  optimized_looking      useful=  1581.9 kWh  SF=55.07%  unmet=  1139.0 kWh  loss=  77.5 kWh  pump=0.0000 Wh  mean_f_melt=None
+  fixed_PCM_max_feasible useful=  1580.6 kWh  SF=55.08%  unmet=  1138.6 kWh  loss=  77.5 kWh  pump=0.0000 Wh  mean_f_melt=None
+  optimized_looking      useful=  1581.8 kWh  SF=55.06%  unmet=  1139.0 kWh  loss=  77.5 kWh  pump=0.0000 Wh  mean_f_melt=None
 
   Capability check (synthetic PCM, Tm=40C matched to this tank's operating range):
     plain_tank          SF=54.97%
@@ -55,17 +55,17 @@ GATE 4 — Light calibration against published benchmark
 ========================================================================
   Benchmark band (Singh et al. 2025, cited): 54.0-84.0% solar fraction
   Chen et al. 2025 also report 94.2% storage efficiency / 31.7 h retention on a comparable configuration; both benchmarks are calibration references, not universal constants (framework doc Bug-Fix 3 / Gate 4).
-  This simulator's optimized-looking design: 55.07% solar fraction
+  This simulator's optimized-looking design: 55.06% solar fraction
   Inside cited band: True
   Gate 4 verdict: PASS (calibration target, not a hard release gate)
 
 ========================================================================
 GATE 5 — Sensitivity & physical-monotonicity spot checks
 ========================================================================
-  Baseline: useful=1586.5 kWh  SF=55.04%  pump=0.0000 Wh  charge=14.86 kWh
-  [PASS] latent_heat +10% vs -10% -> more PCM energy stored/cycled with more latent heat +10%: charge=15.659 kWh   -10%: charge=14.068 kWh
+  Baseline: useful=1586.5 kWh  SF=55.04%  pump=0.0000 Wh  charge=14.78 kWh
+  [PASS] latent_heat +10% vs -10% -> more PCM energy stored/cycled with more latent heat +10%: charge=15.573 kWh   -10%: charge=13.981 kWh
   [PASS] flow +50% vs -50% -> higher flow means more pump energy            +50%: pump=0.0000 Wh   -50%: pump=0.0000 Wh
-  [PASS] reduced effective tank-loss coefficient (ambient-warming proxy) -> lower E_loss base loss=77.64 kWh, proxy loss=70.17 kWh
+  [PASS] reduced effective tank-loss coefficient (ambient-warming proxy) -> lower E_loss base loss=77.65 kWh, proxy loss=70.18 kWh
 
   Gate 5: 3/3 sensitivity checks in the expected direction.
   Gate 5 verdict: PASS

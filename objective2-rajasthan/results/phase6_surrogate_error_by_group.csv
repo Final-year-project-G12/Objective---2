@@ -1,46 +1,46 @@
 target,group_type,group,MAE,n
-useful_energy_kWh,regime,0,0.5310129038135377,6
-useful_energy_kWh,regime,1,0.3197254122027668,6
-useful_energy_kWh,regime,2,0.30628353421271487,6
-useful_energy_kWh,pcm,Lauric acid (C12),0.08384767385007308,2
-useful_energy_kWh,pcm,Paraffin/HDPE PCM3,0.18505802678987493,4
-useful_energy_kWh,pcm,Paraffin/HDPE PCM6,0.22454878745833184,4
-useful_energy_kWh,pcm,RT45HC,0.8345209696891516,2
-useful_energy_kWh,pcm,RT50,0.6746700679013884,2
-useful_energy_kWh,pcm,savE® OM50,0.5294066053750157,4
-solar_fraction,regime,0,0.0006308557649003695,6
-solar_fraction,regime,1,0.00018950609949008879,6
-solar_fraction,regime,2,0.00015385361372653264,6
-solar_fraction,pcm,Lauric acid (C12),0.00027718925278291673,2
-solar_fraction,pcm,Paraffin/HDPE PCM3,8.873735592995757e-05,4
-solar_fraction,pcm,Paraffin/HDPE PCM6,0.0001134437911809727,4
-solar_fraction,pcm,RT45HC,0.0015642561146330114,2
-solar_fraction,pcm,RT50,5.112192728518039e-05,2
-solar_fraction,pcm,savE® OM50,0.0003128584227140019,4
-unmet_energy_kWh,regime,0,1.6178367562856313,6
-unmet_energy_kWh,regime,1,0.4063356567802998,6
-unmet_energy_kWh,regime,2,0.40731776166686967,6
-unmet_energy_kWh,pcm,Lauric acid (C12),0.6431434992362028,2
-unmet_energy_kWh,pcm,Paraffin/HDPE PCM3,0.20836331085359916,4
-unmet_energy_kWh,pcm,Paraffin/HDPE PCM6,0.20069341042321298,4
-unmet_energy_kWh,pcm,RT45HC,4.051941074145589,2
-unmet_energy_kWh,pcm,RT50,0.15842569547510266,2
-unmet_energy_kWh,pcm,savE® OM50,0.8114234063939421,4
-pump_energy_kWh,regime,0,1.4684323736665813e-09,6
-pump_energy_kWh,regime,1,2.0555675035847603e-09,6
-pump_energy_kWh,regime,2,3.141449562811286e-09,6
-pump_energy_kWh,pcm,Lauric acid (C12),9.861218168767556e-10,2
-pump_energy_kWh,pcm,Paraffin/HDPE PCM3,1.7134684605770615e-09,4
-pump_energy_kWh,pcm,Paraffin/HDPE PCM6,3.2607571808571478e-09,4
-pump_energy_kWh,pcm,RT45HC,1.1728005512203725e-09,2
-pump_energy_kWh,pcm,RT50,2.246374752902616e-09,2
-pump_energy_kWh,pcm,savE® OM50,2.8212999581598606e-09,4
-pcm_mass_kg,regime,0,0.09254841838792123,6
-pcm_mass_kg,regime,1,0.025730705443636304,6
-pcm_mass_kg,regime,2,0.016459650877072834,6
-pcm_mass_kg,pcm,Lauric acid (C12),0.06727533498765803,2
-pcm_mass_kg,pcm,Paraffin/HDPE PCM3,0.012147598626163311,4
-pcm_mass_kg,pcm,Paraffin/HDPE PCM6,0.029959883380739516,4
-pcm_mass_kg,pcm,RT45HC,0.10598330982874993,2
-pcm_mass_kg,pcm,RT50,0.10438661034735575,2
-pcm_mass_kg,pcm,savE® OM50,0.02117805247416088,4
+useful_energy_kWh,regime,0,0.4022139557561104,6
+useful_energy_kWh,regime,1,0.33734248466392575,6
+useful_energy_kWh,regime,2,0.4737266385021712,6
+useful_energy_kWh,pcm,Lauric acid (C12),0.2641552170294972,2
+useful_energy_kWh,pcm,Paraffin/HDPE PCM3,0.3713052738351621,4
+useful_energy_kWh,pcm,Paraffin/HDPE PCM6,0.10058369105956899,4
+useful_energy_kWh,pcm,RT45HC,0.34234995754411557,2
+useful_energy_kWh,pcm,RT50,0.6001366926947185,2
+useful_energy_kWh,pcm,savE® OM50,0.7447147198544144,4
+solar_fraction,regime,0,0.0005284948810970191,6
+solar_fraction,regime,1,9.275068190902254e-05,6
+solar_fraction,regime,2,0.00023170340262555303,6
+solar_fraction,pcm,Lauric acid (C12),0.0009348684996311474,2
+solar_fraction,pcm,Paraffin/HDPE PCM3,7.90750324317635e-05,4
+solar_fraction,pcm,Paraffin/HDPE PCM6,0.00010856039027734576,4
+solar_fraction,pcm,RT45HC,0.0005791068568727353,2
+solar_fraction,pcm,RT50,7.150928678717472e-05,2
+solar_fraction,pcm,savE® OM50,0.0002990457040927541,4
+unmet_energy_kWh,regime,0,1.4813569703228875,6
+unmet_energy_kWh,regime,1,0.22737135059952607,6
+unmet_energy_kWh,regime,2,0.5995704766382914,6
+unmet_energy_kWh,pcm,Lauric acid (C12),2.4220993728624762,2
+unmet_energy_kWh,pcm,Paraffin/HDPE PCM3,0.18677436599492125,4
+unmet_energy_kWh,pcm,Paraffin/HDPE PCM6,0.28073570368187006,4
+unmet_energy_kWh,pcm,RT45HC,1.8503844967810892,2
+unmet_energy_kWh,pcm,RT50,0.17158704132509683,2
+unmet_energy_kWh,pcm,savE® OM50,0.7729026711799349,4
+pump_energy_kWh,regime,0,3.3457254650134687e-09,6
+pump_energy_kWh,regime,1,2.3354374295280722e-09,6
+pump_energy_kWh,regime,2,2.2203359035865486e-09,6
+pump_energy_kWh,pcm,Lauric acid (C12),5.048744827394338e-09,2
+pump_energy_kWh,pcm,Paraffin/HDPE PCM3,1.6104614877949558e-09,4
+pump_energy_kWh,pcm,Paraffin/HDPE PCM6,3.526029831994151e-09,4
+pump_energy_kWh,pcm,RT45HC,2.6131125866989906e-09,2
+pump_energy_kWh,pcm,RT50,2.375318980947077e-09,2
+pump_energy_kWh,pcm,savE® OM50,1.697168679882825e-09,4
+pcm_mass_kg,regime,0,0.06850363446203372,6
+pcm_mass_kg,regime,1,0.02896813705615083,6
+pcm_mass_kg,regime,2,0.025571542454620993,6
+pcm_mass_kg,pcm,Lauric acid (C12),0.1450357163479382,2
+pcm_mass_kg,pcm,Paraffin/HDPE PCM3,0.028843249560181528,4
+pcm_mass_kg,pcm,Paraffin/HDPE PCM6,0.024184181960330148,4
+pcm_mass_kg,pcm,RT45HC,0.0072600746495107005,2
+pcm_mass_kg,pcm,RT50,0.053215112388652286,2
+pcm_mass_kg,pcm,savE® OM50,0.028782087745646057,4
