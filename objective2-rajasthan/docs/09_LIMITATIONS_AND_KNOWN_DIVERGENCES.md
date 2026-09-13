@@ -484,3 +484,60 @@ across all 4 states is undertaken — Tamil Nadu's own frozen ratio should
 be checked against the same standard before assuming it needs the same
 fix (its baseline collector/tank citations differ from Rajasthan's and
 were not re-checked here).
+
+## 8. §6's decision was reversed the same day; then Tamil Nadu's selection-rule fix was ported on top (2026-09-13 / 2026-09-14)
+
+Two further changes landed after §6/§7 above were written, both now the
+actual pipeline behaviour, and both make this section's own remaining
+caveats slightly out of date if read in isolation:
+
+**(a) §6's "keep the shield as Objective 3's territory, do not adopt as
+a Phase 5-7 default" decision was reversed later the same day
+(2026-09-13).** `configs/system_config_shared.yaml`'s `safety_shield`
+block now carries its own dated comment recording this: *"ADOPTED AS THE
+PIPELINE DEFAULT 2026-09-13 (was: disabled by default, only turned on ad
+hoc at Phase 8's Monte Carlo call site) ... the shield is now the SINGLE
+official method for Rajasthan — Phases 5-8 all read this default."*
+`safety_shield.enabled` is `true`, unconditionally, for every phase. §6's
+three bullet-point reasoning for keeping the shield out of O2's own
+reported design ("scope leakage," "three-act thesis structure," "kept,
+not discarded") should be read as the reasoning that held for
+approximately one day, not the standing decision — the standing decision
+is now the opposite: the shield **is** O2's own reported design's
+overheat-protection mechanism, cited directly to IS 12976:2023 §8.2 (see
+§7 above). Left in place, not deleted, per this doc's own dated-addenda
+convention.
+
+**(b) `select_deployable.py`'s `apply_selection_rule()` was re-ported
+from `objective2-tamilnadu` on 2026-09-14**, excluding the plain-tank row
+from the pool the winner is chosen from (Tamil Nadu's own 2026-09-13
+"scope correction," see that file's docstring). Before this change, even
+with the shield active by default, the plain tank still won 2 of 3
+regimes on the pump-energy/PCM-mass tie-break, because the shielded
+PCM-vs-water energy gap is razor-thin (well inside the 5% Pareto
+tolerance) and the old rule tie-broke toward the lowest PCM mass — zero.
+After this change, the plain tank cannot win at all; the winner is the
+best-tie-broken **PCM** candidate in every regime.
+
+**Combined effect, verified against `phase7_deployable_design_per_regime.csv`
+and `phase8_robustness.csv` as they stand today:** all three Rajasthan
+regimes now deploy a PCM design (RT45HC / Paraffin-HDPE PCM6 /
+Paraffin-HDPE PCM3), each ~0.07–0.14% higher useful energy than the best
+plain-tank geometry the same search found, each clearing both the 75 °C
+water and 65 °C PCM limits with a ~2.8–2.9 °C margin under the shield, and
+each **robust** at Monte Carlo scale (P(temp-safe) = 1.00, up from
+0.45–0.57 for the unshielded plain-tank baseline). See
+`docs/07_PHASE7_OPTIMIZATION.md` and `docs/08_PHASE8_ROBUSTNESS_HANDOFF.md`
+for the full current numbers, and `results/phase8_recommendation_cards.md`
+for the per-regime write-up that already reflects this. §0's root-cause
+claim (collector:tank sizing drives the overheat failure mode, regardless
+of material) is unchanged by either (a) or (b) — what changed is that O2's
+own reported design now includes the mitigation (the shield) rather than
+deferring it entirely to Objective 3, and the selection rule now lets
+PCM's small energy edge actually win once that mitigation is in place.
+Objective 3's justification is correspondingly narrower than §0/§6
+originally framed it (not "make PCM survive at all," which O2 now does
+itself) but not eliminated — weather/demand stochasticity under Monte
+Carlo perturbation (§D2.7/Phase 8) still argues for a learned controller
+that can do better than a fixed 72 °C/62 °C threshold, e.g. by not
+bypassing collector energy it didn't strictly need to reject.

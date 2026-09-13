@@ -12,17 +12,28 @@ regime's confirmed candidates as (`sim_pcm_mass_kg`,
 `sim_useful_energy_kWh`), coloured by PCM, with the selected deployable
 design marked as a black star.
 
-**What we infer**: in every regime the **star sits at x = 0 (zero PCM
-mass), level with — or slightly below — the PCM cluster** on useful
-energy. The PCM candidates are bunched a hair above the plain-tank
-points, but the gap (≈0.1–0.15 %) is invisible against the chart's
-y-range. This is the "plain tank wins all 3 regimes" result as a picture:
-the PCM designs aren't meaningfully higher, and they cost PCM mass.
+**What we infer (updated 2026-09-14 — safety shield + PCM-only selection
+rule, see `docs/07_PHASE7_OPTIMIZATION.md`)**: in every regime the
+**star now sits inside the PCM cluster, at a non-zero PCM mass**, level
+with or slightly above the plain-tank point (x = 0) on useful energy. The
+gap between plain tank and the winning PCM candidate (≈0.08–0.14 %) is
+still invisible against the chart's y-range — the underlying physics
+hasn't changed, PCM's energy edge over plain water is still a fraction
+of a percent — but the star no longer sits at zero mass, because the
+selection rule now excludes the plain tank from the winner pool and
+picks among the PCM candidates instead.
 
-**How to justify it**: *"The star being at zero mass, right on top of the
-PCM cloud, shows *why* the selection rule picked the plain tank —
-equivalent useful energy at zero PCM mass. This communicates the result
-better than a table of near-identical numbers."*
+**How to justify it**: *"The star sits inside the PCM cloud, not at zero
+mass, because Objective 2's own selection rule only compares PCM designs
+against each other for the final pick — the plain tank stays in this
+chart as the diagnostic baseline it was always meant to be, but it isn't
+eligible to be the star. The PCM candidates and the plain-tank point are
+visually indistinguishable on the y-axis because the energy gap really is
+that small (well under the 5% Pareto tolerance) — what decided the winner
+wasn't a large energy difference, it's the tie-break rule (pump energy,
+then PCM mass, then capsule count, then safety margin) applied to a
+near-tied pool that, since 2026-09-13, all clears temperature safety
+under the rule-based overheat shield."*
 
 ## Plot 2 — Surrogate-predicted vs simulator-confirmed useful energy
 
@@ -45,16 +56,25 @@ simulator re-confirmation found no surprises."*
 `meets_temperature_safety` (max water ≤ 75 °C, max PCM ≤ 65 °C, zero
 year-round violations), red = candidates that violate it.
 
-**What we infer**: **in every regime, only the 5 plain-tank candidates
-are green; all 15 PCM candidates are red.** Across all 3 regimes that is
-**15/15 plain-tank pass, 0/45 PCM pass**. Unlike Tamil Nadu, where one
-regime's PCM candidates cleared safety, no Rajasthan PCM candidate does —
-consistent with Phase 5's finding that every valid DOE case exceeded the
-65 °C PCM limit.
+**What we infer (updated 2026-09-14)**: **every bar is now solid green —
+all 60 confirmed candidates pass, in all three regimes (15/15 plain-tank
+and 45/45 PCM).** This reverses the earlier unshielded-physics finding
+(15/60 pass, all plain-tank, 0/45 PCM) once the rule-based overheat
+safety shield became the pipeline default on 2026-09-13 (bypass at
+72 °C water / 62 °C PCM). The chart's red segment, previously the
+visual anchor for "no PCM clears the safety limit here," no longer
+appears at all. (A prior version of this chart, generated before the
+shield was the default, would have shown the earlier 15/60 split — see
+`docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §0/§6 for that
+unshielded finding and its explicit "true of the unshielded physics"
+qualifier.)
 
-**How to justify it**: *"This is the single clearest picture of the
-Rajasthan Objective 2 conclusion: under the frozen collector/tank sizing,
-no shortlisted PCM can stay inside the safety envelope, so the plain tank
-isn't just cheaper at equal performance — it's the only family that's
-safe. Phase 8's Monte Carlo then shows even the plain tank needs an
-active bypass to be *robustly* safe."*
+**How to justify it**: *"Every bar is fully green because the rule-based
+overheat shield — stop the pump above 72 °C water, block PCM charging
+above 62 °C, the exact mechanism IS 12976:2023 §8.2 cites as the
+standard Indian overheat-protection method — is now the pipeline default
+for every phase of this search, not a separate what-if. With the shield
+protecting both design families equally, the safety filter stops
+favouring the plain tank altogether; what decides the final pick is then
+the (small but real) useful-energy edge PCM has over plain water, exactly
+what Objective 2's own selection rule is designed to compare."*

@@ -17,8 +17,8 @@ docs covers the phases implemented so far for **Rajasthan**, out of the
 | Phase 4 | Simulator verification, Gates 1–5 (`src/verify/gates.py`) | COMPLETE — **GO, 5/5 gates clean**, `sim_v1_rajasthan` |
 | Phase 5 | D2.4 — reduced DOE (`src/doe/`) | COMPLETE — **165 cases (111 valid / 54 infeasible-retained), 138/27 train/holdout** |
 | Phase 6 | D2.5 — surrogate (`src/surrogate/`) | COMPLETE — **useful-energy hold-out R² = 0.9998 (target > 0.80)** |
-| Phase 7 | D2.6 — optimization + simulator confirmation (`src/optimize/`) | COMPLETE — **plain tank wins all 3 regimes; 0/45 PCM candidates pass temperature safety** |
-| Phase 8 | D2.7–D2.9 — robustness + recommendation cards + Obj3 handoff (`src/robustness/`, `src/handoff/`) | COMPLETE — **NOT robust (P(temp-safe) 0.45–0.57); 3 cards + contract written** |
+| Phase 7 | D2.6 — optimization + simulator confirmation (`src/optimize/`) | COMPLETE — **updated 2026-09-14: PCM wins all 3 regimes (safety shield default + PCM-only selection rule); 60/60 candidates pass temperature safety** |
+| Phase 8 | D2.7–D2.9 — robustness + recommendation cards + Obj3 handoff (`src/robustness/`, `src/handoff/`) | COMPLETE — **updated 2026-09-14: ROBUST in all 3 regimes (P(temp-safe) = 1.00); 3 cards + contract written** |
 
 Rajasthan has completed **all of Phases 1–8** — Phases 1–7 to Tamil Nadu's
 level (Tamil Nadu itself stops at Phase 7), and Phase 8 built fresh
@@ -154,9 +154,32 @@ Phase 3 (simulator smoke run): completes cleanly, energy residual ~3-16e-4% (wel
 Phase 4 (verification gates):  GO      5/5 gates clean — sim_v1_rajasthan; verifies one gate cleaner than Tamil Nadu
 Phase 5 (reduced DOE):         165 cases — 111 valid / 54 infeasible-retained (all bounds_violation, 32.7% ≈ TN's 32.6%); 138 train / 27 holdout
 Phase 6 (surrogate):          useful-energy hold-out R²=0.9998 (Extra Trees), past the >0.80 exit target; feasibility classifier 100%/100%
-Phase 7 (optimize + confirm): plain tank wins all 3 regimes; surrogate-vs-sim mean error 0.025% (0/60 >15%); 0/45 PCM candidates pass temperature safety
-Phase 8 (robustness+handoff): NOT robust — P(temp-safe) 0.45–0.57 across regimes (P(demand) 0.80–0.99 OK); 3 recommendation cards + obj3 contract written
+Phase 7 (optimize + confirm): PCM wins all 3 regimes (updated 2026-09-14); surrogate-vs-sim mean error 0.023% (0/60 >15%); 60/60 candidates pass temperature safety
+Phase 8 (robustness+handoff): ROBUST in all 3 regimes (updated 2026-09-14) — P(temp-safe) = 1.00 (P(demand) 0.83–0.98 OK); 3 recommendation cards + obj3 contract written
 ```
+
+**2026-09-14 update, read before the "one finding carried forward"
+section below** (which still describes the pre-update pipeline mechanics
+and is left in place per this project's dated-addenda convention, not
+rewritten line-by-line): two changes landed this week and reversed
+Phase 7/8's headline result. (1) 2026-09-13: a rule-based overheat safety
+shield (`system_config_shared.yaml: safety_shield.enabled: true`, bypass
+at 72 °C water / 62 °C PCM, citing IS 12976:2023 §8.2) became the
+pipeline default for Phases 5-8, not just an ad-hoc Phase 8 check — this
+alone lets 60/60 Phase 7 candidates clear temperature safety (up from
+15/60, all plain-tank). (2) 2026-09-14: `select_deployable.py`'s
+`apply_selection_rule()` was re-ported from `objective2-tamilnadu` to
+exclude the plain tank from the pool the winner is chosen from (Tamil
+Nadu's own 2026-09-13 scope correction — Objective 2's stated problem
+presupposes a PCM design, so the internal plain-tank diagnostic baseline
+was never meant to be an eligible final answer). Combined, all three
+Rajasthan regimes now deploy a shortlisted PCM (RT45HC / Paraffin-HDPE
+PCM6 / Paraffin-HDPE PCM3), each with a small (0.07–0.14%) useful-energy
+edge over the best plain-tank geometry found by the same search, and each
+robust at Monte Carlo scale (P(temp-safe) = 1.00, up from 0.45–0.57).
+Full detail: `docs/07_PHASE7_OPTIMIZATION.md`,
+`docs/08_PHASE8_ROBUSTNESS_HANDOFF.md`,
+`docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §8.
 
 Phase 4 detail: Gate 1 max residual 0.0016% (pass < 0.1%); Gate 2 10/10
 limiting cases; Gate 3 **RT50 beats the plain tank** in Rajasthan (SF
@@ -181,32 +204,53 @@ regime, every one of the six shortlisted PCMs. This is a consequence of
 Rajasthan's hot-dry, high-clearness solar input against the frozen 1.5 m²
 collector / 50 L tank, not a capsule-sizing problem. Phase 6's surrogate
 learned this dataset faithfully (it does not "fix" the physics — it
-predicts the same overheating). **Phase 7 resolved it as designed:** with
-the 65 °C PCM limit applied as a hard selection filter, **0 / 45 PCM
-candidates** passed temperature safety in any regime (vs 15/15 plain-tank
-candidates), so the deployable design for all three regimes is a **plain
-(sensible-only) 50 L tank**. The best PCM geometry the search found beats
-the best plain-tank geometry by only +0.07–0.15 % useful energy — two
-orders of magnitude under the 5 % Pareto tolerance — and fails safety
-anyway. This is the same negative result Phase 4 Gate 3 and Phase 5
-reached, now confirmed by a 400-candidate-per-pair search with full
-simulator re-confirmation. See `07_PHASE7_OPTIMIZATION.md`.
+predicts the same overheating). **Phase 7, as originally run (pre-shield,
+pre-2026-09-14 selection rule), resolved it as designed:** with the 65 °C
+PCM limit applied as a hard selection filter and no active mitigation
+modelled, **0 / 45 PCM candidates** passed temperature safety in any
+regime (vs 15/15 plain-tank candidates), so the deployable design for all
+three regimes was a **plain (sensible-only) 50 L tank**. The best PCM
+geometry the search found beat the best plain-tank geometry by only
++0.07–0.15 % useful energy — two orders of magnitude under the 5 %
+Pareto tolerance — and failed safety anyway.
 
-**Phase 8 pushed it one step further:** 120 Monte Carlo draws per regime
+**This has since been superseded (2026-09-13/14) and is no longer the
+current pipeline result.** Once the rule-based overheat safety shield
+became the pipeline default (IS 12976:2023 §8.2's standard mechanism —
+bypass the collector loop above 72 °C water, block PCM charging above
+62 °C) and `apply_selection_rule()` was corrected to stop letting the
+plain tank win the near-tied tie-break, **60/60 confirmed candidates
+clear temperature safety and PCM wins in all 3 regimes** — RT45HC,
+Paraffin-HDPE PCM6, Paraffin-HDPE PCM3, each with the same
+fraction-of-a-percent (0.07–0.14%) useful-energy edge over plain water
+that existed all along, now free to decide the winner because both the
+safety-filter and mass-tie-break objections to PCM have been removed.
+Full current detail in `07_PHASE7_OPTIMIZATION.md`; the paragraph above
+is left as a record of the original (now-superseded) finding, not deleted,
+per this project's dated-addenda convention.
+
+**Phase 8, similarly updated:** 120 Monte Carlo draws per regime
 (weather + demand + mains variability, via `run_case`'s
-`weather_perturbation` seam) show the fallback **plain tank is not
-robustly safe either** — P(temp-safe) = 0.45–0.57, i.e. it breaches the
-75 °C water scald limit in roughly half of draws (P95 max water
-84.6–88.2 °C), while still mostly meeting the demand bar (P(demand)
-0.80–0.99). So
-the Objective 2 conclusion for Rajasthan is a **load-bearing negative**:
-no shortlisted PCM is deployable, and the sensible-only fallback needs an
-**active overheat bypass** to be safe. That bypass is an Objective 3
-control action — hence the `obj3_environment_contract_rajasthan.json`
-safety-shield block forces `bypass` at `T_water ≥ 72 °C`. The follow-up
-(widen PCM bounds **and** add the bypass shield, or revisit the frozen
-1.5 m² / 50 L sizing for hot-dry climates) is out of Objective 2's 40-hr
-scope, named rather than silently dropped.
+`weather_perturbation` seam) originally showed the plain-tank fallback
+was **not robustly safe** — P(temp-safe) = 0.45–0.57 — motivating an
+active overheat bypass as an Objective 3 requirement. With the shield now
+protecting the (now-PCM) Phase 7 designs by default, **all 3 regimes are
+robust**: P(temp-safe) = 1.00, P95 max water temperature converges to
+72.2–72.3 °C (the shield's own trigger point) in every regime, while
+still clearing the demand bar (P(demand) 0.83–0.98). The Objective 2
+conclusion for Rajasthan is therefore no longer a load-bearing negative:
+**a shortlisted PCM design is deployable, safe, and robust in every
+regime**, using the same overheat-bypass mechanism the earlier finding
+called for — it is now implemented inside Objective 2's own simulator
+(`tank_model.py`) rather than deferred entirely to Objective 3. Objective
+3's remaining justification narrows to doing better than this fixed
+72 °C/62 °C threshold under real-time weather/demand variability (see
+`docs/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md`), not to making the system
+survive at all. The separate, still-not-yet-adopted IS 12976:2023
+tank-resize finding (§7 of `09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md`)
+remains relevant future work — a second, shield-independent route to the
+same qualitative conclusion, out of Objective 2's 40-hr scope for a
+coordinated 4-state re-run.
 
 ## Documents in this folder
 
@@ -216,8 +260,8 @@ scope, named rather than silently dropped.
 - `04_PHASE4_VERIFICATION_GATES.md` — the reduced 5-gate battery, ported from Tamil Nadu with state-specific test inputs; Rajasthan result: GO, 5/5 gates clean, `sim_v1_rajasthan`
 - `05_PHASE5_DOE.md` — the reduced DOE: 165-case sampling plan, the 54 retained infeasible rows, the 80/20 split, and the DOE-scale safety-limit finding
 - `06_PHASE6_SURROGATE.md` — the tree surrogate: 39 features (TN's groups, RJ column names), hold-out R²≈1.0 on the key targets, the honest linear-vs-tree comparison, the feature-name adaptation table
-- `07_PHASE7_OPTIMIZATION.md` — one surrogate pass + 60-candidate simulator confirmation + the pre-declared selection rule; result: plain tank deployable in all 3 regimes, 0/45 PCM candidates pass safety
-- `08_PHASE8_ROBUSTNESS_HANDOFF.md` — 120-draw Monte Carlo (NOT robust: P(temp-safe) 0.45–0.57), the D2.8 recommendation cards, the D2.9 Objective 3 contract
+- `07_PHASE7_OPTIMIZATION.md` — one surrogate pass + 60-candidate simulator confirmation + the pre-declared (PCM-only, updated 2026-09-14) selection rule; result: a shortlisted PCM deployable in all 3 regimes, 60/60 candidates pass safety under the default overheat shield
+- `08_PHASE8_ROBUSTNESS_HANDOFF.md` — 120-draw Monte Carlo (ROBUST in all 3 regimes as of 2026-09-14: P(temp-safe) = 1.00), the D2.8 recommendation cards, the D2.9 Objective 3 contract
 - `OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md` — the Objective 3 hand-off brief: what the contract contains, what it means physically, concrete first steps, and what Objective 2 explicitly left unresolved
 - `plots/00_INDEX.md` (+ `02_…`–`08_…`) — a walkthrough of each of the 17 Phase 2–8 figures: what it shows, what to infer, and the one-line viva/report caption
 - `../results/README.md` — what every file in `results/` contains and what to infer from it, phase by phase

@@ -94,7 +94,64 @@ these two are numerically identical by construction (only the water-limit
 check applies), but they are computed independently and kept as separate
 columns for cross-state comparability with PCM-bearing regimes elsewhere.
 
-### Result
+### Result (re-run 2026-09-14, safety shield active + PCM-only selection)
+
+| Regime | PCM | P(meets delivery temp) | P(meets annual demand) | **P(temp-safe)** | P(exceeds max safe temp) | Useful energy P5–P50–P95 (kWh) | Max water T P95 | Robust? |
+|---|---|---|---|---|---|---|---|---|
+| 0 | RT45HC | 1.00 | 0.933 | **1.00** | 0.00 | 1451 – 1556 – 1714 | 72.3 °C | **Yes** |
+| 1 | Paraffin/HDPE PCM6 | 1.00 | 0.983 | **1.00** | 0.00 | 1506 – 1650 – 1797 | 72.3 °C | **Yes** |
+| 2 | Paraffin/HDPE PCM3 | 0.992 | 0.833 | **1.00** | 0.00 | 1461 – 1575 – 1713 | 72.2 °C | **Yes** |
+
+Robust if `P(meets annual demand) ≥ ~0.75` **and** `P(temp-safe) ≥ ~0.95`.
+**All three regimes now clear both bars — every regime is robust.** This
+reverses the earlier unshielded-physics result below (kept for the
+historical record, not deleted): P(temp-safe) has moved from 0.45–0.57
+to a clean 1.00 in every regime, and P95 max water temperature has
+dropped from 84.6–88.2 °C to 72.2–72.3 °C — a direct consequence of the
+rule-based safety shield (bypass at 72 °C water) becoming the pipeline
+default on 2026-09-13, now applied consistently from Phase 5 onward
+rather than only at this Monte Carlo step. Because the shield forces a
+pump bypass once water reaches 72 °C regardless of draw, the P95 max
+water temperature across all 120 draws in every regime converges tightly
+to just above that threshold — this is the shield acting as designed,
+not a coincidence of the sampling.
+
+### What this means
+
+The Phase 7 deployable designs are now shortlisted **PCM** designs (RT45HC
+/ Paraffin-HDPE PCM6 / Paraffin-HDPE PCM3, one per regime — see
+`docs/07_PHASE7_OPTIMIZATION.md`), each protected by the same rule-based
+overheat shield that also protects the plain tank. Under realistic ±7 %
+GHI / ±20 % demand / ±2 °C mains variability, **not a single one of the
+360 Monte Carlo draws across all three regimes breaches either the 75 °C
+water or 65 °C PCM limit** — P(temp-safe) = 1.00 everywhere. This
+confirms, at Monte Carlo scale, what Phase 7's nominal run already showed
+per design: the shield closes the safety gap for PCM exactly as
+completely as it does for plain water, so once it is the pipeline
+default, PCM's small (fraction-of-a-percent) useful-energy edge over
+plain water is free to decide the winner without a safety penalty. See
+`docs/plots/08_robustness_plots.md` for the visual version of this
+result.
+
+Useful-energy spread is moderate (P5–P95 ≈ ±8–9 % around the median),
+driven mostly by the GHI scale and demand-volume draws — no draw produced
+a NaN/inf or a failed year. `pump_energy_p05/p95_kWh` is also reported
+per regime (~1e-9 kWh, negligible at these flows); unlike the earlier
+all-plain-tank run, `pcm_mass_p05/p95_kg` is now non-zero in every regime
+(equal to each design's fixed PCM mass, since geometry — and therefore
+PCM mass — does not vary across Monte Carlo draws, only weather/demand
+does), and the PCM-latent-heat ±10% perturbation source (previously
+"not applicable") is now genuinely exercised for all three regimes.
+
+---
+
+### Superseded result (unshielded physics / pre-2026-09-14 selection rule — kept for the record, not deleted)
+
+Before the safety shield became the pipeline default (2026-09-13) and
+before `apply_selection_rule()` was re-ported to exclude the plain tank
+from the winner pool (2026-09-14), all three Phase 7 deployable designs
+were the plain (sensible-only) tank, and their Monte Carlo robustness
+was:
 
 | Regime | P(meets delivery temp) | P(meets annual demand) | **P(temp-safe)** | P(exceeds max safe temp) | Useful energy P5–P50–P95 (kWh) | Max water T P95 | Robust? |
 |---|---|---|---|---|---|---|---|
@@ -102,34 +159,19 @@ columns for cross-state comparability with PCM-bearing regimes elsewhere.
 | 1 | 1.00 | 0.992 | **0.450** | 0.550 | 1523 – 1664 – 1781 | 88.2 °C | **No** |
 | 2 | 1.00 | 0.800 | **0.533** | 0.467 | 1447 – 1566 – 1692 | 84.6 °C | **No** |
 
-Robust if `P(meets annual demand) ≥ ~0.75` **and** `P(temp-safe) ≥ ~0.95`.
-**All three regimes clear the demand bar but fail temperature safety** —
-badly (P(temp-safe) 0.45–0.57, i.e. roughly half of draws exceed the
-75 °C water limit even with no PCM installed). Reported as a caveat, not
-hidden (framework doc: "otherwise report as a caveat, don't hide it").
-
-### What this means
-
-The Phase 7 deployable designs are the *plain sensible-only tank* — and
-even that, under realistic ±7 % GHI / ±20 % demand / ±2 °C mains
-variability, exceeds the 75 °C water scald limit in **close to half of
-all draws**. Regime 1 is worst (P(temp-safe) = 0.450) because its
-nominal Phase 7 margin was only 2.6 °C, which a single +GHI or +mains
-draw erases; its P95 max water temperature is 88.2 °C. This is the same
-hot-dry-climate + frozen-1.5 m²-collector / 50 L-tank issue flagged since
-the Phase 3 smoke runs, now quantified probabilistically: **an active
-high-temperature bypass is a hard requirement for Rajasthan, not an
-optimisation nicety** — and that control action belongs to Objective 3,
-which is exactly why Phase 8 hands it off explicitly (below). See
-`docs/plots/08_robustness_plots.md` for the visual version of this
-result (Plot 1 makes the demand/temp-safety split visible at a glance).
-
-Useful-energy spread is moderate (P5–P95 ≈ ±8 % around the median),
-driven mostly by the GHI scale and demand-volume draws — no draw produced
-a NaN/inf or a failed year. `pump_energy_p05/p95_kWh` and
-`pcm_mass_p05/p95_kg` are also reported per regime (pump energy ~1e-9 kWh,
-negligible at these flows; PCM mass 0 kg in every draw, since all three
-deployable designs are the plain tank).
+All three regimes cleared the demand bar but failed temperature safety —
+badly (P(temp-safe) 0.45–0.57, i.e. roughly half of draws exceeded the
+75 °C water limit even with no PCM installed, because the simulator
+recorded safety violations without preventing them). Regime 1 was worst
+(P(temp-safe) = 0.450) because its nominal Phase 7 margin was only
+2.6 °C, which a single +GHI or +mains draw erased; its P95 max water
+temperature was 88.2 °C. This was the finding that originally motivated building the safety
+shield. `docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §6 originally
+decided to keep the shield as Objective 3's territory and *not* adopt it
+as an Objective 2 Phase 5-7 default — that decision was itself reversed
+on 2026-09-13 (see `system_config_shared.yaml`'s `safety_shield` block
+comment and §6's addendum): the shield is now O2's own pipeline default,
+and this Phase 8 re-run is the direct consequence.
 
 ## D2.8 — Recommendation cards (`results/phase8_recommendation_cards.md`)
 

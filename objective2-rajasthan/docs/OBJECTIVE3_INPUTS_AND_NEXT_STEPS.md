@@ -24,8 +24,13 @@ geometry, tank volume, safety limits, or the physics model released here.
 machine-readable package — read it programmatically, don't hand-copy
 numbers out of it. It contains, per climate regime:
 
-- the selected PCM (or "plain tank, no PCM" — **all 3 Rajasthan regimes
-  selected the plain tank**, see §2) with its complete property record
+- **Updated 2026-09-14**: the selected PCM (**all 3 Rajasthan regimes now
+  select a shortlisted PCM** — RT45HC / Paraffin-HDPE PCM6 / Paraffin-HDPE
+  PCM3, one per regime, see §2) with its complete property record. This
+  reverses an earlier all-plain-tank contract, superseded when the
+  rule-based safety shield became the pipeline default and the Phase 7
+  selection rule was corrected to no longer let the plain tank win by
+  tie-break (see `docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §8).
 - capsule geometry (diameter, count, PCM mass, conduction distance)
 - tank/collector configuration
 - the flow envelope (nominal + min/max), pressure limit, pump efficiency
@@ -56,72 +61,103 @@ numbers out of it. It contains, per climate regime:
 
 Read `docs/00_MASTER_OVERVIEW.md` and `docs/07_PHASE7_OPTIMIZATION.md`
 before writing a reward function — the physical story matters for reward
-shaping:
+shaping. **This section was rewritten 2026-09-14** to match the current
+pipeline default (rule-based safety shield active since 2026-09-13 +
+PCM-only Phase 7 selection rule since 2026-09-14); the prior all-plain-
+tank / no-shield version of this section is quoted at the end for the
+historical record.
 
-- **All 3 of Rajasthan's regimes selected a plain sensible-water tank,
-  not a PCM design.** None of the environment contracts carry a real
-  PCM. A controller for Rajasthan is controlling a conventional solar
-  water heater with no phase-change dynamics at all — `f_melt`,
-  `T_pcm_C`, and PCM-related safety limits are not meaningful state for
-  any Rajasthan regime's contract (they're present in the schema for
-  structural consistency with future PCM-bearing states, but always
-  0/derived-from-water here).
-- **No PCM candidate cleared the 65 °C safety limit anywhere in
-  Rajasthan** (0/45 across all regimes and all shortlisted PCMs, Phase 7)
-  — this is a stronger and more general finding than "the best PCM
-  wasn't worth its cost" (Tamil Nadu's finding in 4/5 regimes): in
-  Rajasthan's hot-dry climate, every shortlisted PCM's melting point sits
-  inside a temperature band the tank itself already reaches on an
-  ordinary sunny day, so PCM never survives long enough to matter.
+- **All 3 of Rajasthan's regimes now select a shortlisted PCM design**
+  (RT45HC / Paraffin-HDPE PCM6 / Paraffin-HDPE PCM3), each beating the
+  best plain-tank geometry the same search found by a fraction of a
+  percent in useful energy, and each clearing both the 75 °C water and
+  65 °C PCM limits with a ~2.8–2.9 °C margin. `f_melt`, `T_pcm_C`, and
+  the PCM-related safety limit are now live, meaningful state for every
+  Rajasthan regime's contract, not structural placeholders — a
+  controller for Rajasthan is controlling a real phase-change system in
+  all 3 regimes.
+- **A rule-based safety shield IS implemented in the physics model
+  itself, and is the pipeline default as of 2026-09-13**
+  (`system_config_shared.yaml: safety_shield.enabled: true`,
+  `src/simulation/tank_model.py`): the pump is forced to bypass the
+  collector loop once water reaches 72 °C, and PCM charging is blocked
+  once PCM temperature reaches 62 °C — a 3 °C precautionary guard band
+  below each hard limit (75 °C / 65 °C), citing IS 12976:2023 §8.2 as the
+  standard Indian method for this exact mechanism. This is no longer a
+  **specification** for Objective 3 to implement from scratch — Objective
+  2's own simulator already enforces it, for every phase (5 through 8),
+  not only at the Monte Carlo step. Objective 3 inherits a working
+  reference implementation to build on (or replace with something
+  smarter), not a blank page.
+- **Phase 8's Monte Carlo robustness analysis (120 draws/design,
+  weather/demand/mains uncertainty) now shows all 3 selected PCM designs
+  are robustly safe**: P(temp-safe) = 1.00 in every regime (up from
+  0.45–0.57 for the earlier, now-superseded plain-tank/no-shield
+  baseline), P95 max water temperature 72.2–72.3 °C in every regime — the
+  shield converges every regime's worst-case draws to just above its own
+  72 °C trigger point, exactly as designed. See
+  `docs/08_PHASE8_ROBUSTNESS_HANDOFF.md` for the full table (and its
+  "superseded result" subsection for the pre-shield numbers).
+- **This narrows, but does not eliminate, Objective 3's justification.**
+  The original brief for this section argued the controller's job was
+  "make the system survive at all" — that argument no longer holds,
+  since O2's own fixed-threshold shield already achieves 100%
+  temperature safety. What remains is the case Emami et al. (2025/2026)
+  and this project's own CLAUDE.md §3.4 make: real-time weather/demand
+  stochasticity is still better handled by a learned policy than a fixed
+  72 °C/62 °C threshold, which necessarily bypasses collector energy it
+  may not have strictly needed to reject — a DRL controller's job is to
+  beat this shield's energy efficiency while matching (or improving on)
+  its 100% safety record, not to invent safety where none existed.
 - **No auxiliary/backup heater exists in this system.** "Unmet energy"
   in every Objective 2 metric means genuinely undelivered heat, not a
   gap an electric backup fills. If Objective 3's reward function assumes
   a backup exists, that assumption must be stated as a NEW addition, not
-  inherited from Objective 2.
-- **A real safety shield is not yet implemented in the physics model
-  itself, and this is the single most important thing to fix before
-  deployment — more urgently than for any other state run under this
-  framework so far.** Objective 2's simulator records
-  temperature-safety violations but does not prevent them. Phase 8's
-  Monte Carlo robustness analysis (120 draws/design under
-  weather/demand/mains uncertainty, fixed cross-state-comparable
-  thresholds) found that **every one of the 3 selected (plain-tank)
-  designs fails the framework's 95% temperature-safety bar by a wide
-  margin** — P(temp-safe) ranges **45–57%**, i.e. roughly half of
-  realistic operating scenarios exceed the 75 °C water scald limit even
-  with no PCM in the tank at all. Regime 1 is the worst (P(temp-safe) =
-  45%; P95 max water temperature 88.2 °C) because its nominal Phase 7
-  safety margin was only 2.6 °C, which a single above-average-GHI or
-  above-average-mains draw erases. See
-  `docs/08_PHASE8_ROBUSTNESS_HANDOFF.md` for the full table. The
-  `safety_shield` block in the contract already trips on a 3 °C
-  precautionary margin below each hard limit (72 °C water / 62 °C PCM,
-  not 75 °C/65 °C), but it is still a **specification** for Objective 3 to
-  implement, not something already enforced upstream. Objective 3's
-  acceptance test (contract's `acceptance_test_before_drl_training`
-  list) exists specifically to verify this before training starts, and
-  should be treated as a hard blocker, not a formality — the robustness
-  numbers above are the quantitative reason why.
-- **All 3 regimes mostly clear the demand bar** (P(meets annual demand)
-  80.0–99.2%; the 75% threshold holds in all 3) even though every regime
-  fails temperature safety — so a
-  reward function should not conflate "delivers enough hot water" with
-  "does so safely." These are the two axes Phase 8 tracks separately for
-  exactly this reason.
+  inherited from Objective 2. (Unchanged by the shield/selection-rule
+  update.)
+- **All 3 regimes clear the demand bar** (P(meets annual demand)
+  83.3–98.3%; the 75% threshold holds in all 3) alongside the now-clean
+  temperature-safety record — a reward function still should not conflate
+  "delivers enough hot water" with "does so safely," since Phase 8 tracks
+  them as genuinely separate mechanisms (the shield trades a small amount
+  of collected energy for safety; it does not automatically guarantee
+  demand is met, and vice versa), even though both currently pass.
+
+### What this section said before the 2026-09-13/14 updates (superseded, kept for the record)
+
+> All 3 of Rajasthan's regimes selected a plain sensible-water tank, not
+> a PCM design. None of the environment contracts carried a real PCM.
+> No PCM candidate cleared the 65 °C safety limit anywhere in Rajasthan
+> (0/45 across all regimes and all shortlisted PCMs). A real safety
+> shield was not yet implemented in the physics model itself — Objective
+> 2's simulator recorded temperature-safety violations but did not
+> prevent them — and every one of the 3 selected (plain-tank) designs
+> failed the framework's 95% temperature-safety bar badly (P(temp-safe)
+> 45–57%). This was the finding that originally motivated treating an
+> active overheat bypass as an Objective 3 first-class requirement,
+> "more urgently than for any other state run under this framework so
+> far." That framing is now out of date in degree (the shield is real and
+> O2's own default) but not in spirit (see the narrowed justification
+> above).
 
 ## 3. Concrete first steps for Objective 3
 
 1. **Load the contract, don't re-derive it.** Parse
    `obj3_environment_contract_rajasthan.json` for each regime's static
    design inputs — do not re-run Objective 2's optimizer or re-pick a PCM.
-2. **Implement the safety shield first**, as a rule-based wrapper around
-   the Objective 2 simulator (`src/simulation/tank_model.run_year`, or a
-   step-by-step variant of it), before any RL code. Verify it
-   independently using the acceptance-test list in the contract. Given
-   the 33–51% P(temp-safe) numbers above, treat this step as the
-   project's actual bottleneck, not a checkbox — a policy trained without
-   a working shield will spend most of its operating time in an unsafe
-   regime by construction.
+2. **Reuse, don't reimplement, the safety shield.** Unlike the original
+   version of this brief, the shield is now already implemented inside
+   `src/simulation/tank_model.py` and active by default
+   (`system_config_shared.yaml: safety_shield.enabled: true`) — Objective
+   3's step-by-step environment (item 3 below) should call the same
+   shield logic rather than writing a new rule-based wrapper from
+   scratch. Still verify it independently using the acceptance-test list
+   in the contract before trusting it inside a training loop, and treat
+   "does my step-by-step refactor preserve the shield's 100% P(temp-safe)
+   record" as a hard regression check, not a checkbox — a step-by-step
+   refactor that silently drops or weakens the shield would reintroduce
+   exactly the failure mode the original (pre-2026-09-13) version of this
+   brief warned about.
 3. **Build a step-by-step (not annual-batch) version of the simulator.**
    Objective 2's `run_year()` runs a full year in one call, appropriate
    for design evaluation. Objective 3 needs a `step(action) -> (obs,
@@ -167,12 +203,15 @@ shaping:
   heat-transfer-coefficient and manufacturing-tolerance uncertainty (also
   listed in the full framework spec §11.1) were not sampled, per the
   40-hr cut list.
-- **Rajasthan-specific**: because 0/45 PCM candidates cleared the safety
-  limit, this project never validated the simulator's PCM-charging
-  dynamics against a *deployed* Rajasthan design — the PCM physics
-  (`capsule_enthalpy.py`, `heat_transfer.py`) is the same, verified engine
-  used for Tamil Nadu's one PCM regime, but no Rajasthan-specific PCM
-  run went through Phase 4's Gate 1–5 battery as a *selected* design.
-  If a future bounds-widening exercise makes a Rajasthan PCM design
-  deployable, re-run Phase 4 before trusting its numbers the way this
-  document trusts the plain-tank ones.
+- **Rajasthan-specific, updated 2026-09-14**: all 3 regimes now deploy a
+  real PCM design, and Phase 4's Gate 1–5 battery was run (GO, 5/5 gates
+  clean) — but that Gate battery predates both the safety-shield default
+  and the corrected Phase 7 selection rule, and was never re-run against
+  the shield-enabled physics or against the specific PCM designs now
+  selected (RT45HC / Paraffin-HDPE PCM6 / Paraffin-HDPE PCM3). The PCM
+  physics (`capsule_enthalpy.py`, `heat_transfer.py`) is the same,
+  verified engine used for Tamil Nadu's PCM regime and for Rajasthan's
+  own Phase 3 smoke runs, but a Gate 1–5 re-run specifically against the
+  shielded physics and today's three selected designs has not been done.
+  Treat that as open verification work before fully trusting these
+  numbers the way a from-scratch Gate re-run would justify.

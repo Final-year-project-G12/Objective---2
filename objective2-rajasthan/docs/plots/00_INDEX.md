@@ -56,12 +56,17 @@ title-string case counts differ.
   deterministic geometric rule, not scattered bad luck."
 - **Phase 6**: "the surrogate's predictions sit almost exactly on the
   parity line — R² ≈ 1.0 is visually obvious, not just a table number."
-- **Phase 7**: "the surrogate and the real simulator agree to 0.03 % on
-  60 designs it wasn't directly trained on; the safety-compliance bar
-  shows *why* the optimizer picked the plain tank in every regime —
-  0/45 PCM candidates clear the 65 °C limit, 15/15 plain-tank ones do."
-- **Phase 8**: "even the plain tank alone — no PCM anywhere in the
-  selected designs — fails the 95 % temperature-safety bar in every
-  regime (45–57 %), and the failure tracks the regime's own useful-energy
-  level, not PCM sizing; that's the quantitative case for making an active
-  overheat bypass a hard requirement for Objective 3."
+- **Phase 7** *(updated 2026-09-14)*: "the surrogate and the real
+  simulator agree to 0.02 % on 60 designs it wasn't directly trained on;
+  the safety-compliance bar shows *why* the optimizer now picks a PCM in
+  every regime — with the rule-based overheat shield as the pipeline
+  default, all 60/60 candidates clear the 65 °C PCM / 75 °C water limits,
+  so the small (0.07–0.14 %) energy edge PCM already had over plain water
+  is what actually decides the winner."
+- **Phase 8** *(updated 2026-09-14)*: "with the safety shield active by
+  default, every one of the now-PCM selected designs is robustly safe —
+  100 % temperature-safe across 360 Monte Carlo draws, up from 45–57 % for
+  the earlier unshielded, plain-tank-only baseline; that reversal is the
+  quantitative demonstration that a rule-based bypass genuinely closes the
+  gap, and it is the strong fixed-threshold baseline Objective 3's DRL
+  controller now has to beat, not invent from nothing."

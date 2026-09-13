@@ -10,15 +10,24 @@ phase status (**Phases 0–8 complete** — the full Objective 2 ~40-hour
 deliverable set: simulator verified **GO** as `sim_v1_rajasthan`, a
 165-case DOE, a tree surrogate at useful-energy hold-out R² = 0.9998, a
 simulator-confirmed optimization pass, and a 120-draw robustness pass +
-recommendation cards + Objective 3 contract). **Headline result:** under
-the frozen config the deployable design in all three regimes is a plain
-sensible tank (the Objective 1 PCM shortlist gains < 0.15 % useful energy
-and 0/45 PCM candidates clear the 65 °C limit) — and Phase 8 shows that
-plain tank is **not robustly safe** (P(temp-safe) 0.45–0.57), so an
-active overheat bypass is handed to Objective 3 as a requirement (see
-[`docs/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md`](docs/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md)).
+recommendation cards + Objective 3 contract). **Headline result (updated
+2026-09-14):** with the rule-based overheat safety shield as the pipeline
+default (since 2026-09-13, `system_config_shared.yaml:
+safety_shield.enabled`) and the Phase 7 selection rule corrected to no
+longer let the zero-mass "plain tank" win the final pick (re-ported from
+`objective2-tamilnadu`, 2026-09-13's own scope correction), **the
+deployable design in all three regimes is a shortlisted PCM** — RT45HC /
+Paraffin-HDPE PCM6 / Paraffin-HDPE PCM3 — each with a small (0.07–0.14 %)
+useful-energy edge over the best plain-tank geometry found by the same
+search, and each robustly safe: Phase 8 shows **P(temp-safe) = 1.00 in
+every regime** (up from an earlier unshielded 0.45–0.57 for the
+now-superseded all-plain-tank baseline). Objective 3's role narrows
+accordingly — see
+[`docs/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md`](docs/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md)
+for what it inherits and what's still open.
 [`results/README.md`](results/README.md) documents every output file
-phase-by-phase, with the inference drawn from it.
+phase-by-phase, with the inference drawn from it (including the
+superseded pre-shield numbers, kept for the record).
 
 ## Layout
 
@@ -225,18 +234,24 @@ Searches 400 random design vectors per regime×PCM pair (12 pairs),
 filters each through the real Phase 2 geometry gate, scores survivors
 with the Phase 6 surrogate, takes the top 5 per pair (**60 candidates**),
 **re-runs every one in the real simulator** (non-negotiable, Bug-Fix 5),
-then applies the pre-declared selection rule (`pareto_tolerance_pct = 5%`:
-reject temperature-unsafe → within 5 % of best useful energy → min pump
-energy → min PCM mass → min capsule count → max margin).
-`src/optimize/{search,select_deployable}.py` are ported from
-`objective2-tamilnadu/` unchanged except the flat `results/phase7_*`
-paths. Runtime ~6 min. Writes `results/phase7_surrogate_top_candidates.csv`,
+then applies the pre-declared selection rule (`pareto_tolerance_pct = 5%`,
+applied over the **PCM-only** candidate pool as of 2026-09-14: within 5 %
+of best PCM useful energy → min pump energy → min PCM mass → min capsule
+count → max margin; safety is reported via `meets_temperature_safety` /
+`deployment_note` rather than pre-filtered).
+`src/optimize/search.py` is ported from `objective2-tamilnadu/` unchanged
+except the flat `results/phase7_*` paths; `select_deployable.py`'s
+`confirm_candidates()` is likewise unchanged, but its
+`apply_selection_rule()` was re-ported from Tamil Nadu's own 2026-09-13
+scope correction on 2026-09-14 to exclude the plain tank from the winner
+pool. Runtime ~6 min. Writes `results/phase7_surrogate_top_candidates.csv`,
 `results/phase7_optimized_designs.csv`,
-`results/phase7_deployable_design_per_regime.csv`. **Result: plain
-(sensible-only) tank is the deployable design in all 3 regimes**;
-surrogate-vs-simulator mean error 0.025 % (0/60 > 15 %); only 15/60
-candidates pass temperature safety and **all 15 are plain-tank** (0/45 PCM
-candidates pass). See [`docs/07_PHASE7_OPTIMIZATION.md`](docs/07_PHASE7_OPTIMIZATION.md).
+`results/phase7_deployable_design_per_regime.csv`. **Result (updated
+2026-09-14): a shortlisted PCM is the deployable design in all 3
+regimes** (RT45HC / Paraffin-HDPE PCM6 / Paraffin-HDPE PCM3);
+surrogate-vs-simulator mean error 0.023 % (0/60 > 15 %); **all 60/60**
+candidates now pass temperature safety under the safety shield (pipeline
+default since 2026-09-13). See [`docs/07_PHASE7_OPTIMIZATION.md`](docs/07_PHASE7_OPTIMIZATION.md).
 
 ### Phase 8 — light robustness + recommendation cards + Objective 3 handoff
 
@@ -264,14 +279,19 @@ two-stage `robustness`/`handoff` split now match
 `robustness`, seconds for `handoff`. Writes
 `results/phase8_robustness.csv` (+ `_draws.csv`),
 `results/phase8_recommendation_cards.md`,
-`results/obj3_environment_contract_rajasthan.json`. **Result: NOT robust
-— P(temp-safe) = 0.45–0.57 across the three regimes** (P(meet annual
-demand) 0.80–0.99 clears its bar). Even the plain tank breaches the
-75 °C water scald limit in roughly half of draws under realistic
-variability, so the contract's `safety_shield` forces a `bypass` action
-at `T_water ≥ 72 °C` — an Objective 3 requirement, not an option. Exit
-check met: 3 cards + 3 regimes in the contract. Full Objective 3 hand-off
-brief: [`docs/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md`](docs/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md).
+`results/obj3_environment_contract_rajasthan.json`. **Result (updated
+2026-09-14): ROBUST — P(temp-safe) = 1.00 across all three regimes**
+(P(meet annual demand) 0.833–0.983 clears its bar too), up from an
+earlier unshielded 0.45–0.57 for the now-superseded all-plain-tank
+baseline. The contract's `safety_shield` (forces `bypass` at
+`T_water ≥ 72 °C`) is no longer just a *specification* for Objective 3 to
+implement — it is already active inside `tank_model.py` as the pipeline
+default, and is the mechanism that makes this robustness result hold;
+Objective 3 inherits a working reference implementation to build on, with
+its remaining job narrowed to out-performing this fixed threshold under
+real-time weather/demand variability, not to making the system survive at
+all. Exit check met: 3 cards + 3 regimes in the contract. Full Objective 3
+hand-off brief: [`docs/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md`](docs/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md).
 
 ### Plots — Phase 2–8 justification figures
 

@@ -1,42 +1,55 @@
 # Results — Rajasthan, Phases 0–8 (Objective 2 complete)
 
-> **⚠ Update 2026-09-13: the safety shield is now the PIPELINE DEFAULT — one
-> unified result, no separate shielded/unshielded pair.** Earlier the same
-> day, the PCM shortlist was refreshed to Objective 1's corrected 67°C basis,
-> and a rule-based overheat-protection shield (stop pump above 72°C water /
-> block PCM charging above 62°C — the mechanism IS 12976:2023 §8.2 cites as
-> the standard method for Indian SWH overheat protection) was implemented but
-> only run as a separate supplementary check
-> (`fix2_shielded_phase7_confirmation.csv`). **That supplementary framing is
-> now retired**: `configs/system_config_shared.yaml`'s `safety_shield.enabled`
-> is `true` by default, so Phases 5 (DOE) through 8 (robustness/handoff) all
-> ran WITH the shield active as the single source of truth —
-> `phase5_design_cases.csv` through `phase8_recommendation_cards.md` are the
-> shielded numbers, full stop.
+> **⚠ Update 2026-09-14: PCM now wins outright in ALL 3 regimes (not just
+> Regime 0) — `select_deployable.py`'s selection rule was corrected.**
+> Two changes now compound:
 >
-> **Result: the deployable design flips to a PCM in Regime 0 (RT50), stays
-> plain tank in Regimes 1/2**, and **all 3 regimes are now ROBUST**
-> (P(temp-safe) = 1.00 everywhere, up from the pre-shield 0.45–0.57) — see
+> 1. **2026-09-13 — safety shield as pipeline default.** A rule-based
+>    overheat-protection shield (stop pump above 72°C water / block PCM
+>    charging above 62°C — IS 12976:2023 §8.2's standard mechanism) is
+>    `configs/system_config_shared.yaml`'s `safety_shield.enabled: true`
+>    default, so Phases 5 (DOE) through 8 (robustness/handoff) all run WITH
+>    the shield active. This alone let 60/60 Phase 7 candidates clear
+>    temperature safety (up from 15/60, all plain-tank, unshielded).
+> 2. **2026-09-14 — `apply_selection_rule()` re-ported from
+>    `objective2-tamilnadu`.** The old rule still let the plain tank win
+>    Regimes 1/2 via the pump-energy/PCM-mass tie-break, because PCM's
+>    shielded energy edge over plain water is razor-thin (well inside the
+>    5% Pareto tolerance) and the old rule tie-broke toward the lowest PCM
+>    mass — zero. The corrected rule (Tamil Nadu's own 2026-09-13 scope
+>    correction: Objective 2's stated problem presupposes a PCM design, so
+>    the plain tank was always an internal diagnostic baseline, not an
+>    eligible final answer) excludes the plain tank from the winner pool
+>    entirely. Plain-tank rows still appear in `phase7_optimized_designs.csv`
+>    as the diagnostic comparison baseline; they just cannot win.
+>
+> **Result: the deployable design is now a PCM in all 3 regimes** — RT45HC
+> (regime 0), Paraffin/HDPE PCM6 (regime 1), Paraffin/HDPE PCM3 (regime 2) —
+> each ~0.07–0.14% higher useful energy than the best plain-tank geometry the
+> same search found, and **all 3 regimes are ROBUST** (P(temp-safe) = 1.00
+> everywhere, up from the pre-shield 0.45–0.57) — see
 > `phase7_deployable_design_per_regime.csv` and `phase8_robustness.csv`.
 > `phase8_recommendation_cards.md` and `obj3_environment_contract_rajasthan.json`
-> reflect this directly.
+> reflect this directly (both regenerated 2026-09-14, 00:25).
 >
-> A separate, not-yet-adopted finding also exists: the frozen 50 L tank /
-> 1.5 m² collector sizing (33.3 L/m²) is itself below IS 12976:2023's cited
+> A separate, still not-yet-adopted finding also exists: the frozen 50 L tank
+> / 1.5 m² collector sizing (33.3 L/m²) is itself below IS 12976:2023's cited
 > 37.5–100 L/m² range; resizing to the standard's 75 L/m² reference (112.5 L)
-> makes every shortlisted PCM pass safety AND raises solar fraction, with no
-> shield needed — see `fix6_standards_compliant_sizing_supplementary.csv/.md`
+> makes every shortlisted PCM pass safety AND raises solar fraction, **with no
+> shield needed at all** — see `fix6_standards_compliant_sizing_supplementary.csv/.md`
 > and `docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §7. Not folded into the
 > numbers above (a frozen-shared-config change needs a coordinated 4-state
-> re-run).
+> re-run) — it is a second, shield-independent route to the same qualitative
+> conclusion (PCM beats plain water once given a fair chance at safety), not
+> a competing finding.
 >
 > The Phase-by-Phase sections below were written before this update and
-> describe the pre-shield pipeline mechanics (still accurate for Phases 0–4)
-> — cross-check any Phase 5–8 headline number against the files above rather
-> than the prose below, which was not rewritten line-by-line (this project's
-> convention is dated addenda over historical rewrites, but the addenda
-> history itself was lost to an unrelated git-pull conflict this session —
-> see `docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` for what's recoverable).
+> describe the pre-shield/pre-selection-fix pipeline mechanics (still
+> accurate for Phases 0–4, and for Phase 5/6's own mechanics — DOE sampling
+> and surrogate training did not change). **Phase 7 and Phase 8's result
+> tables and inference prose below have been updated in place** to the
+> current 2026-09-14 numbers; where an earlier finding is kept for the
+> historical record it is explicitly labeled "superseded."
 
 What every file in this folder contains, how it was produced, and what to
 infer from it. Methodology and full background live in `../docs/`
@@ -461,52 +474,79 @@ min PCM mass → min capsule count → max constraint margin. Ported from
 `objective2-tamilnadu/src/optimize/` unchanged except the flat
 `results/phase7_*` paths.
 
-### Result
+### Result (current, 2026-09-14 — safety shield default + PCM-only selection)
+
+**Deployable design per regime — a shortlisted PCM in all three:**
+
+| Regime | Design | d (m) | n | flow (kg/s) | Useful energy (kWh) | Solar fraction | Max water T (°C) | Max PCM T (°C) | Margin to 65 °C PCM |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 | RT45HC | 0.0500 | 24 | 0.0175 | 1587.88 | 55.33% | 68.8 | 62.1 | 2.9 °C |
+| 1 | Paraffin/HDPE PCM6 | 0.0414 | 15 | 0.0302 | 1674.69 | 58.28% | 72.0 | 62.2 | **2.8 °C** |
+| 2 | Paraffin/HDPE PCM3 | 0.0416 | 8 | 0.0181 | 1593.46 | 53.90% | 68.8 | 62.1 | 2.9 °C |
+
+- **Surrogate accuracy in practice:** mean surrogate-vs-simulator error
+  0.023% across all 60 confirmed candidates (max 0.090%); **0/60**
+  exceeded the 15% large-error threshold. Energy-conservation residual
+  over the same 60 full-year runs: mean 0.00088%, max 0.0018% —
+  generalises Gate 1 from 5 cases to 60.
+- **Temperature safety is no longer binding against PCM:** **all 60/60**
+  candidates now pass `meets_temperature_safety` (max water ≤ 75 °C, max
+  PCM ≤ 65 °C, zero year-round violations) — 15 plain-tank and 45 PCM
+  alike, a direct consequence of the safety shield becoming the pipeline
+  default on 2026-09-13.
+- **Best PCM vs best plain tank** (per regime, from
+  `phase7_optimized_designs.csv`, all 60 candidates): PCM's best-found
+  geometry beats the best plain-tank geometry by +0.14% (regime 0,
+  RT45HC) / +0.08% (regime 1, Paraffin/HDPE PCM3) / +0.09% (regime 2,
+  savE® OM50) useful energy, and every one of those PCM designs now
+  **passes** temperature safety. (The single best-found PCM candidate per
+  regime is not always the same PCM as the deployable winner in the table
+  above — several PCMs land within the 5% Pareto tolerance, and the
+  winner is chosen by the tie-break, not simply the highest-energy row.)
+
+### Inference
+
+**Under the pipeline's current default configuration, the Rajasthan
+deployable design for every climate regime is a shortlisted PCM.** This
+reverses the original all-plain-tank finding (kept below as
+"superseded"), for two compounding reasons:
+1. The safety shield (pipeline default since 2026-09-13) rescues PCM
+   candidates from the overheat failure mode exactly as it rescues plain
+   water — so the 65 °C PCM limit is no longer a filter that only the
+   plain tank clears.
+2. `apply_selection_rule()` (re-ported from Tamil Nadu, 2026-09-14)
+   excludes the plain tank from the winner pool, so the fraction-of-a-
+   percent useful-energy edge PCM already had over plain water — present
+   even in the original unshielded run, just previously discarded by the
+   safety filter or the mass tie-break — now decides the winner.
+
+This is the same magnitude of PCM-vs-water margin Phase 4 Gate 3 and
+Phase 5 always found (a fraction of a percent, nothing changed physically
+about how much better PCM is) — what changed is which design family gets
+to act on that margin. **Flag, unchanged:** regime 1's deployable design
+runs at 72.0 °C max water / 62.2 °C max PCM, the thinnest margin of the
+three regimes (2.8 °C to the PCM limit) — still passes cleanly, still
+worth watching if the collector/tank sizing is ever revisited.
+
+---
+
+### Superseded result (unshielded physics / pre-2026-09-14 selection rule — kept for the record)
 
 **Deployable design per regime — plain (sensible-only) tank in all three:**
 
 | Regime | Design | d (m) | n | flow (kg/s) | Useful energy (kWh) | Solar fraction | Max water T (°C) | Margin to 75 °C |
 |---|---|---|---|---|---|---|---|---|
 | 0 | plain tank | 0.0488 | 23 | 0.0315 | 1585.70 | 54.97% | 68.6 | 6.4 °C |
-| 1 | plain tank | 0.0400 | 8 | 0.0183 | 1673.36 | 58.23% | 72.4 | **2.6 °C** |
+| 1 | plain tank | 0.0400 | 8 | 0.0183 | 1673.36 | 58.23% | 72.4 | 2.6 °C |
 | 2 | plain tank | 0.0413 | 14 | 0.0310 | 1592.27 | 53.88% | 68.7 | 6.3 °C |
 
-- **Surrogate accuracy in practice:** mean surrogate-vs-simulator error
-  0.025% across all 60 confirmed candidates (max 0.100%); **0/60**
-  exceeded the 15% large-error threshold. Energy-conservation residual
-  over the same 60 full-year runs: mean 0.00087%, max 0.0018% —
-  generalises Gate 1 from 5 cases to 60.
-- **Temperature safety is fully binding for PCM:** only **15/60**
-  candidates passed `meets_temperature_safety` (max water ≤ 75 °C, max PCM
-  ≤ 65 °C, zero year-round violations) — **all 15 are plain-tank**
-  candidates (5 per regime). **0/45 PCM candidates passed**, any regime,
-  any of the six shortlisted PCMs.
-- **Best PCM vs best plain tank** (per regime, from
-  `phase7_optimized_designs.csv`): PCM's best-found geometry beats the
-  best plain-tank geometry by +0.15% (regime 0, RT45HC) / +0.10%
-  (regime 1, savE® OM50) / +0.07% (regime 2, Paraffin/HDPE PCM3) useful
-  energy — and every one of those PCM designs fails temperature safety.
-
-### Inference
-
-**Under the frozen shared config and the pre-declared selection rule, the
-Rajasthan deployable design for every climate regime is a plain 50 L
-sensible tank.** Two independent reasons, both real:
-1. The Objective 1 PCM shortlist gives at most a fraction-of-a-percent
-   useful-energy gain over plain water at the reachable ≤12.9% PCM
-   fraction — two orders of magnitude below the 5% Pareto tolerance, so
-   the rule picks the lower PCM mass (zero).
-2. Every PCM candidate trips the 65 °C PCM safety limit under Rajasthan's
-   irradiance with this collector/tank sizing and no active overheat
-   protection — so plain tank is also the *only* family inside the safety
-   envelope. This is stronger than Tamil Nadu, where one regime's PCM
-   candidates did clear safety.
-
-This is the same negative result Phase 4 Gate 3 and Phase 5 reached, now
-confirmed by a 400-candidate-per-pair search with full simulator
-re-confirmation — a defensible conclusion, not a gap. **Flag:** regime 1's
-deployable plain tank runs at 72.4 °C max water, only 2.6 °C under the
-scald limit — thin margin; Phase 8 turns this flag into a hard finding.
+Temperature safety was fully binding against PCM: only 15/60 candidates
+passed `meets_temperature_safety`, all 15 plain-tank (5/regime); 0/45 PCM
+candidates passed, any regime, any of the six shortlisted PCMs — because
+no active overheat protection was modelled at all in this earlier run.
+This was the same negative result Phase 4 Gate 3 and Phase 5 first
+reached, confirmed by a 400-candidate-per-pair search with full simulator
+re-confirmation. It motivated building the safety shield described above.
 
 ---
 
@@ -536,26 +576,24 @@ injected via `run_case`'s `weather_perturbation` keyword (per-hour arrays)
 so `run_case` needs no Phase-8-specific code path and every metric matches
 the Phase 7 `sim_*` definitions exactly.
 
-| Regime | P(meet delivery temp) | P(meet annual demand) | **P(temp-safe)** | P(exceeds max safe temp) | Useful energy P5–P50–P95 (kWh) | Max water P95 | Robust? |
-|---|---|---|---|---|---|---|---|
-| 0 | 1.00 | 0.875 | **0.567** | 0.433 | 1454 – 1572 – 1673 | 84.6 °C | **No** |
-| 1 | 1.00 | 0.992 | **0.450** | 0.550 | 1523 – 1664 – 1781 | 88.2 °C | **No** |
-| 2 | 1.00 | 0.800 | **0.533** | 0.467 | 1447 – 1566 – 1692 | 84.6 °C | **No** |
+**Current (2026-09-14, shielded PCM designs):**
+
+| Regime | PCM | P(meet delivery temp) | P(meet annual demand) | **P(temp-safe)** | P(exceeds max safe temp) | Useful energy P5–P50–P95 (kWh) | Max water P95 | Robust? |
+|---|---|---|---|---|---|---|---|---|
+| 0 | RT45HC | 1.00 | 0.933 | **1.00** | 0.00 | 1451 – 1556 – 1714 | 72.3 °C | **Yes** |
+| 1 | Paraffin/HDPE PCM6 | 1.00 | 0.983 | **1.00** | 0.00 | 1506 – 1650 – 1797 | 72.3 °C | **Yes** |
+| 2 | Paraffin/HDPE PCM3 | 0.992 | 0.833 | **1.00** | 0.00 | 1461 – 1575 – 1713 | 72.2 °C | **Yes** |
 
 Column names match `objective2-tamilnadu`'s aligned Phase 8 schema
 (`p_meets_delivery_temp`, `p_meets_annual_demand`,
 `p_temperature_violation`, `p_exceeds_max_safe_temp`,
 `useful_energy_p05/p50/p95_kWh`, `max_water_temp_p95_C`,
 `robust_per_framework_rule`) — see `../docs/08_…`, "Alignment with the
-Tamil Nadu implementation." Two temperature-safety columns are reported:
-`P(temp-safe)` = `1 - p_temperature_violation` (any flagged safety
-sub-hour over the year) and `P(exceeds max safe temp)` (the reported
-annual max actually clearing the hard limit) — numerically identical here
-by construction (every deployable design is the plain tank, so only the
-water-limit check applies), kept separate for cross-state comparability
-with PCM-bearing regimes elsewhere. `pump_energy_p05/p95_kWh` and
-`pcm_mass_p05/p95_kg` are also in the CSV (pump ~1e-9 kWh, PCM mass 0 kg
-in every draw — not shown above, not the interesting axis here).
+Tamil Nadu implementation." `pump_energy_p05/p95_kWh` is also in the CSV
+(~1e-9 kWh, negligible); unlike the earlier all-plain-tank run,
+`pcm_mass_p05/p95_kg` is now non-zero in every regime (fixed per design —
+geometry doesn't vary across MC draws — so p05 = p95 = the design's PCM
+mass).
 
 Thresholds (project assumptions, stated in `../docs/08_…`):
 `meet_delivery_temp` = `solar_fraction ≥ 0.45`, `meet_annual_demand` =
@@ -563,33 +601,51 @@ Thresholds (project assumptions, stated in `../docs/08_…`):
 weighted demand-met fraction — Phase 3 doc). Robust if
 `P(meet annual demand) ≥ ~0.75` **and** `P(temp-safe) ≥ ~0.95`.
 
-**Inference — NOT robust in any regime, on the safety axis.** The demand
-bar is cleared everywhere (0.80–0.99). The failure is temperature safety:
-even the plain (sensible-only) tank, under realistic ±7 % GHI / ±20 %
-demand / ±2 °C mains variability, breaches the 75 °C water scald limit in
-**roughly half of draws** (worst in regime 1, whose nominal Phase 7
-margin was only 2.6 °C; its P95 max water is 88.2 °C). Reported as a
-caveat, not hidden (framework doc). This makes an **active
-high-temperature bypass an Objective 3 requirement for Rajasthan, not an
-optimisation nicety** — the same hot-dry-climate + frozen-collector-sizing
-issue flagged since Phase 3, now quantified probabilistically. No draw
-produced a NaN/inf or failed year; useful-energy spread is ≈ ±8 % around
-the median. Regime 1's higher median useful energy (1664 kWh, the highest
-of the three) and its worst safety numbers are two symptoms of the same
-cause — a hotter, steadier-solar regime — not two independent findings
-(see `../docs/plots/08_robustness_plots.md`, Plot 2).
+**Inference — ROBUST in all 3 regimes, on both axes.** The demand bar is
+cleared everywhere (0.833–0.983) and, unlike the earlier unshielded
+result, temperature safety is now perfect: **not one of the 360 Monte
+Carlo draws across all three regimes breaches either the 75 °C water or
+65 °C PCM limit** — P(temp-safe) = 1.00 everywhere. The safety shield
+(pipeline default since 2026-09-13) converges every regime's P95 max
+water temperature to 72.2–72.3 °C, just above its own 72 °C trigger — the
+mechanism working exactly as designed, not a coincidence of sampling. No
+draw produced a NaN/inf or failed year; useful-energy spread is ≈ ±8–9 %
+around the median. Regime 1 still has the highest median useful energy
+(1650 kWh) of the three, but — unlike before — that no longer trades off
+against worse safety (see `../docs/plots/08_robustness_plots.md`, Plot 2).
+
+**Superseded (pre-shield / pre-2026-09-14 selection rule, plain-tank-only
+designs, kept for the record):**
+
+| Regime | P(meet delivery temp) | P(meet annual demand) | **P(temp-safe)** | P(exceeds max safe temp) | Useful energy P5–P50–P95 (kWh) | Max water P95 | Robust? |
+|---|---|---|---|---|---|---|---|
+| 0 | 1.00 | 0.875 | **0.567** | 0.433 | 1454 – 1572 – 1673 | 84.6 °C | **No** |
+| 1 | 1.00 | 0.992 | **0.450** | 0.550 | 1523 – 1664 – 1781 | 88.2 °C | **No** |
+| 2 | 1.00 | 0.800 | **0.533** | 0.467 | 1447 – 1566 – 1692 | 84.6 °C | **No** |
+
+Every design here was the plain (sensible-only) tank. The demand bar was
+still cleared everywhere, but temperature safety failed badly — roughly
+half of draws breached the 75 °C water scald limit, worst in regime 1
+(nominal Phase 7 margin only 2.6 °C; P95 max water 88.2 °C). This was the
+finding that motivated building the safety shield.
 
 ### D2.8 — Recommendation cards (`phase8_recommendation_cards.md`)
 
-One card per regime. Each carries: regime/climate summary
+One card per regime, regenerated 2026-09-14 against the current
+shielded/PCM-only pipeline. Each carries: regime/climate summary
 (`cluster_profiles_rajasthan.csv`), the Objective 1 PCM shortlist + MCDM
-rank + MC top-3 inclusion, the selected geometry + flow, the
+rank + MC top-3 inclusion, the selected PCM geometry + flow, the
 `sim_v1_rajasthan`-confirmed full-year performance, the Phase 8
-robustness probabilities, the surrogate-vs-simulator delta (0.06–0.10 %),
-the decision rationale (why the plain tank), and a caveats block (imputed
+robustness probabilities (now 100% temperature-safe in every regime), the
+surrogate-vs-simulator delta (~0.002 %), the decision rationale (why that
+PCM — safety shield active throughout search/confirmation/selection, 45/45
+PCM candidates now clear the 65 °C limit), and a caveats block (imputed
 PCM properties, single-pass optimization, reduced Monte Carlo, single-state
-scope, lumped-model ±15 %). The file recomputes nothing — every number is
-a lookup.
+scope, lumped-model ±15 %, plus two shield-specific caveats: every number
+is computed WITH the shield active as the pipeline default, and the
+IS 12976:2023 tank-resize finding is a further not-yet-adopted mitigation
+not folded into these numbers). The file recomputes nothing — every number
+is a lookup.
 
 ### D2.9 — Objective 3 environment contract (`obj3_environment_contract_rajasthan.json`)
 
@@ -647,12 +703,17 @@ regenerate locally).
 `src/plots/make_plots.py` re-derives nothing — each figure reads a
 Phase 5–8 output file or re-runs one already-verified case for a time
 series. See `../docs/plots/00_INDEX.md` for what each figure shows, what
-to infer, and its viva/report caption. Two standouts: `phase7_safety_compliance`
-— 15/15 plain-tank candidates pass temperature safety, 0/45 PCM
-candidates do, in one picture — and `phase8_robustness_probabilities` —
-every regime's green (temperature-safe) bar sits at roughly half the
-height of the 95 % reference line, for the plain tank alone, with no PCM
-in the picture at all.
+to infer, and its viva/report caption. **Regenerated 2026-09-14** against
+the current shielded/PCM-only-selection pipeline (the `phase7_safety_
+compliance` bar-chart crash from `counts.get(False, 0)` returning a
+scalar once every candidate passed safety was also fixed in the same
+pass, `src/plots/make_plots.py::phase7_safety_compliance`). Two
+standouts, both flipped from their earlier all-plain-tank/unshielded
+versions: `phase7_safety_compliance` — all 60/60 candidates (15
+plain-tank + 45 PCM) now pass temperature safety, in one picture — and
+`phase8_robustness_probabilities` — every regime's green
+(temperature-safe) bar now sits at a flat 100 %, at the 95 % reference
+line, for the now-PCM deployable designs.
 
 ---
 
