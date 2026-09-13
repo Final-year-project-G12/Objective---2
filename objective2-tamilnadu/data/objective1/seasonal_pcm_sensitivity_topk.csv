@@ -1,0 +1,13 @@
+cluster_id,season,Ta_mean_season,L_required_season,annual_top1,top1,top2,top3,flips_from_annual,upstream_cluster_profile_fingerprint
+0,Winter,27.768628110824018,304.297568184272,PureTemp 53,n-Tetracosane (C24),n-Pentacosane (C25),PureTemp 53,True,2505_3_1788874914.585
+0,Summer,32.29792807126886,247.4186192810056,PureTemp 53,n-Tetracosane (C24),n-Pentacosane (C25),PureTemp 53,True,2505_3_1788874914.585
+0,Monsoon,30.51053570880984,269.86469256876603,PureTemp 53,n-Tetracosane (C24),n-Pentacosane (C25),Myristic acid (C14),True,2505_3_1788874914.585
+0,Retreat,29.05901418180291,288.092899904919,PureTemp 53,n-Tetracosane (C24),n-Pentacosane (C25),PureTemp 53,True,2505_3_1788874914.585
+1,Winter,25.19031325405256,336.676046155608,n-Tetracosane (C24),n-Tetracosane (C24),n-Pentacosane (C25),n-Hexacosane (C26),False,2505_3_1788874914.585
+1,Summer,29.963480613099932,276.73461046069104,n-Tetracosane (C24),n-Tetracosane (C24),n-Pentacosane (C25),PureTemp 53,False,2505_3_1788874914.585
+1,Monsoon,27.472810868800057,308.01244110960886,n-Tetracosane (C24),n-Tetracosane (C24),n-Pentacosane (C25),PureTemp 53,False,2505_3_1788874914.585
+1,Retreat,26.483762921342578,320.4329052337799,n-Tetracosane (C24),n-Tetracosane (C24),n-Pentacosane (C25),PureTemp 53,False,2505_3_1788874914.585
+2,Winter,26.77821866325359,316.7351300268614,Palmitic-Stearic eutectic (64.2/35.8),n-Tetracosane (C24),n-Pentacosane (C25),PureTemp 53,True,2505_3_1788874914.585
+2,Summer,31.931849433051237,252.01583481974257,Palmitic-Stearic eutectic (64.2/35.8),n-Tetracosane (C24),n-Pentacosane (C25),PureTemp 53,True,2505_3_1788874914.585
+2,Monsoon,31.71384935032495,254.75347985861927,Palmitic-Stearic eutectic (64.2/35.8),n-Tetracosane (C24),n-Pentacosane (C25),PureTemp 53,True,2505_3_1788874914.585
+2,Retreat,29.06186320707783,288.0571218455166,Palmitic-Stearic eutectic (64.2/35.8),n-Tetracosane (C24),n-Pentacosane (C25),PureTemp 53,True,2505_3_1788874914.585

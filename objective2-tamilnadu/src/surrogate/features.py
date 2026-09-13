@@ -27,9 +27,16 @@ from config import BASE_DIR
 from src.io_utils import load_state_config
 
 CLIMATE_COLS = [
-    "GHI_daily_kWh_mean", "Ta_mean_true", "Ta_p95_true", "Ta_p05_true", "DTR_true_mean",
-    "RH_mean_true", "HSI", "wind_mean_true", "monsoon_index", "elev_proxy",
-    "Tm_target_C", "T_mains_est_C", "L_required_kJ_per_kg", "seasonality_proxy",
+    # Names updated 2026-09-13 to match cluster_profiles_tamilnadu.csv's
+    # current schema (unified with Rajasthan's Phase 3/4 column names on
+    # 2026-09-08 — the old _true/_proxy-suffixed names and elev_proxy no
+    # longer exist in that file; the previous list silently matched ZERO
+    # columns here via the `if c in cluster_profiles.columns` guard below,
+    # so every climate feature had been dropped without error).
+    "GHI_daily_kWh", "Ta_mean", "Ta_p95", "Ta_p05", "DTR_true",
+    "RH_sunrise_mean", "HSI_sunrise", "wind_noon_mean", "wind_sunset_mean",
+    "monsoon_index", "Tm_target_C", "Tm_target_capped_C",
+    "L_required_kJ_per_kg", "seasonality",
 ]
 PCM_COLS = [
     "Tm_C", "latent_heat_kJ_kg", "TC_W_mK", "density_liquid_kg_m3", "density_solid_kg_m3",
@@ -49,7 +56,17 @@ def build_feature_table(state: str, design_cases: pd.DataFrame) -> pd.DataFrame:
     cfg = load_state_config(state)
     cluster_profiles = pd.read_csv(BASE_DIR / "data" / "objective1" / f"cluster_profiles_{state}.csv")
     pcm_db = pd.read_csv(BASE_DIR / cfg["pcm_database_file"])
-    mc_stability_path = BASE_DIR / "data" / "objective1" / "monte_carlo_stability.csv"
+    # Confidence source switched 2026-09-13 from monte_carlo_stability.csv
+    # to mcdm_full_rankings.csv: Phase 6's rename (mcdm_full_scores_by_
+    # cluster.csv -> mcdm_full_rankings.csv, 2026-09-08 unification) left
+    # monte_carlo_stability.csv with pcm_id/mc_top3_inclusion_pct (0-100
+    # scale) instead of the name/top3_inclusion_probability (0-1 scale)
+    # columns this script reads — a hard KeyError, not a silent mismatch,
+    # since this merge key is selected by name rather than an `if c in
+    # columns` guard. mcdm_full_rankings.csv already carries both the old
+    # and new-named confidence columns with the same values (just scaled),
+    # so no computation changes, only the source file.
+    mc_stability_path = BASE_DIR / "data" / "objective1" / "mcdm_full_rankings.csv"
     mc_stability = pd.read_csv(mc_stability_path) if mc_stability_path.exists() else None
 
     df = design_cases.copy()

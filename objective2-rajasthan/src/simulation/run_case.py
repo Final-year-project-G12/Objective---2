@@ -128,6 +128,8 @@ def run_case(state: str, cluster_id: int, pcm_name: str, design: DesignVector,
         "final_f_melt": result.final_f_melt,
         "complete_melt_cycles": result.complete_melt_cycles,
         "n_hours_simulated": len(weather),
+        "n_shield_water_activations": result.n_shield_water_activations,
+        "n_shield_pcm_activations": result.n_shield_pcm_activations,
     }
     if record_hourly and len(result.hourly):
         metrics["mean_f_melt"] = float(result.hourly["f_melt"].mean())

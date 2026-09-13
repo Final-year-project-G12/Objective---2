@@ -49,6 +49,8 @@ def write_cards(state: str):
     delivery_C = system_config["delivery"]["target_temp_C"]
     max_water_C = system_config["safety"]["max_water_temp_C"]
     max_pcm_C = system_config["safety"]["max_pcm_temp_C"]
+    shield_cfg = system_config.get("safety_shield", {})
+    shield_on = bool(shield_cfg.get("enabled", False))
 
     lines = []
     lines.append(f"# Objective 2 — Recommendation Cards (Rajasthan)\n")
@@ -127,8 +129,13 @@ def write_cards(state: str):
                      f"Bug-Fix 5).")
 
         # --- robustness (Phase 8) ---------------------------------------
+        shield_note = (f" — rule-based safety shield ACTIVE (bypass at "
+                       f"{_fmt(shield_cfg.get('bypass_water_C', max_water_C-3.0),1)} °C water / "
+                       f"{_fmt(shield_cfg.get('bypass_pcm_C', max_pcm_C-3.0),1)} °C PCM), the pipeline "
+                       f"default since 2026-09-13 — see `src/simulation/tank_model.py`"
+                       if shield_on else " — safety shield DISABLED for this run")
         lines.append(f"\n### Robustness — {int(rob['n_draws'])} Monte Carlo draws "
-                     f"(weather+noise, demand volume ±20 %, demand timing ±30 min, mains ±2 °C)")
+                     f"(weather+noise, demand volume ±20 %, demand timing ±30 min, mains ±2 °C){shield_note}")
         lines.append(f"\n| P(meet delivery temp) | P(meet annual demand) | P(temp-safe) | "
                      f"P(exceeds max safe temp) | Useful energy P5–P95 | Max water T P95 |")
         lines.append(f"|---|---|---|---|---|---|")
@@ -153,29 +160,58 @@ def write_cards(state: str):
                          f"not an option** for Rajasthan.")
 
         # --- decision rationale ---------------------------------------
+        n_pcm_total = len(optimized[optimized["pcm_id"] != "NONE_plain_tank"])
+        n_pcm_clears_limit = int((optimized["sim_max_pcm_temp_C"] <= max_pcm_C).sum())
+        if is_plain:
+            selection_phrase = ("the plain tank, since no PCM candidate in this regime both met "
+                                "temperature safety and useful energy within tolerance")
+        else:
+            selection_phrase = (f"**{pcm_id}**, which meets temperature safety"
+                                f"{' under the shield' if shield_on else ''} and is within the Pareto "
+                                f"tolerance of (or beats) the best plain-tank useful energy")
+        shield_search_note = (", with the safety shield active throughout search, confirmation, "
+                              "and selection (pipeline default since 2026-09-13)" if shield_on else "")
         lines.append(f"\n### Decision rationale")
         lines.append(f"\nPhase 7 searched 400 candidates per regime×PCM pair and re-ran the top 5 per pair "
-                     f"in the real simulator. In this regime the best PCM geometry the search found beat the "
-                     f"best plain-tank geometry by only ~0.1 % useful energy — two orders of magnitude below "
-                     f"the pre-declared 5 % Pareto tolerance — and **no PCM candidate cleared the "
-                     f"{int(max_pcm_C)} °C PCM safety limit** (0/45 across all regimes). The selection rule "
-                     f"therefore keeps the design that (a) meets temperature safety and (b) has the lowest "
-                     f"PCM mass → the plain tank.")
+                     f"in the real simulator{shield_search_note}. "
+                     f"{n_pcm_clears_limit}/{n_pcm_total} PCM candidates (across all regimes) clear the "
+                     f"{int(max_pcm_C)} °C PCM safety limit. The pre-declared selection rule "
+                     f"(reject temperature-unsafe → within 5 % of best useful energy → min pump energy → "
+                     f"min PCM mass → min capsule count → max constraint margin) selects {selection_phrase}.")
 
         # --- caveats -------------------------------------------------
         lines.append(f"\n### Caveats")
+        pcm_imputed_note = ("not material here because no PCM was selected, but it would matter if "
+                            "the bounds are widened" if is_plain else
+                            "the selected PCM's own imputed-property flags should be checked before "
+                            "quoting its properties as measured")
         lines.append(f"\n- **Missing / imputed PCM properties:** the Objective 1 database has imputed "
-                     f"fields (`any_property_imputed`) for several shortlisted PCMs; not material here "
-                     f"because no PCM was selected, but it would matter if the bounds are widened.")
+                     f"fields (`any_property_imputed`) for several shortlisted PCMs; {pcm_imputed_note}.")
         lines.append(f"- **Single-pass optimization:** one surrogate search + confirmation, no "
                      f"active-learning loop, no NSGA-II Pareto front.")
+        mc_pcm_note = ("; PCM latent-heat ±10 % perturbation is inapplicable (plain tank selected)"
+                      if is_plain else " (PCM latent-heat ±10 % perturbation included)")
         lines.append(f"- **Reduced Monte Carlo:** {int(rob['n_draws'])} draws, medoid weather + noise "
-                     f"(no alternate member-point weather series exists for Rajasthan); PCM latent-heat "
-                     f"±10 % perturbation is inapplicable (plain tank selected).")
+                     f"(no alternate member-point weather series exists for Rajasthan){mc_pcm_note}.")
         lines.append(f"- **Single-state scope:** Rajasthan only. The multi-state comparison "
-                     f"(does plain-tank-wins hold for Assam / Uttarakhand / Tamil Nadu too?) is future work.")
+                     f"(does this same shielded-selection outcome hold for Assam / Uttarakhand / Tamil "
+                     f"Nadu too?) is future work.")
         lines.append(f"- **Lumped grey-box model:** single water node, single capsule group, "
                      f"correlation-based heat transfer — treat absolute numbers as ±15 %.")
+        if shield_on:
+            lines.append(f"- **Safety shield is the pipeline default (adopted 2026-09-13):** every number "
+                         f"on this card (Phase 5-8) is computed WITH the rule-based safety shield active "
+                         f"(`system_config_shared.yaml: safety_shield.enabled`), not as a separate what-if. "
+                         f"IS 12976:2023 §8.2 validates this exact mechanism as the standard overheat-"
+                         f"protection method for Indian SWH systems.")
+            lines.append(f"- **A further, not-yet-adopted mitigation exists:** the frozen 50 L tank / "
+                         f"1.5 m² collector sizing (33.3 L/m²) is itself below IS 12976:2023's cited "
+                         f"37.5-100 L/m² range; resizing the tank to the standard's 75 L/m² reference "
+                         f"(112.5 L) makes every shortlisted PCM candidate pass safety AND raises solar "
+                         f"fraction, with no shield needed — see "
+                         f"`results/fix6_standards_compliant_sizing_supplementary.md` and "
+                         f"`docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §7. Not folded into this card's "
+                         f"numbers (a frozen-shared-config change requires a coordinated 4-state re-run).")
 
     CARDS_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"Saved: {CARDS_PATH}  ({len(cfg['regimes'])} cards)")

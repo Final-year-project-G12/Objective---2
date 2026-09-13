@@ -81,17 +81,28 @@ SMALL_FILES = [
     ("clustering/bic_selection_tamilnadu.csv", "bic_selection_tamilnadu.csv"),
     ("clustering/kmeans_comparison_tamilnadu.csv", "kmeans_comparison_tamilnadu.csv"),
     # Phase 5-6 — PCM database, feasibility, MCDM ranking
+    # Filenames updated 2026-09-13 to match Objective 1's current output
+    # names (07/08 were renamed/extended during the Phase 5-6 kappa-
+    # calibration unification with Rajasthan). Prefer the kappa-calibrated
+    # survivor set — it's what 08/09/11 actually rank/report against; the
+    # fixed-kappa=0.7 baseline can be empty for a cluster.
     ("pcm/pcm_database_tamilnadu.csv", "pcm_database_tamilnadu.csv"),
+    ("pcm/feasibility_survivors_by_cluster_kappa_calibrated.csv",
+     "feasibility_survivors_by_cluster_kappa_calibrated.csv"),
     ("pcm/feasibility_survivors_by_cluster.csv", "feasibility_survivors_by_cluster.csv"),
     ("pcm/mcdm_topk_by_cluster.csv", "mcdm_topk_by_cluster.csv"),
-    ("pcm/mcdm_full_scores_by_cluster.csv", "mcdm_full_scores_by_cluster.csv"),
+    ("pcm/mcdm_full_rankings.csv", "mcdm_full_rankings.csv"),
     ("pcm/monte_carlo_stability.csv", "monte_carlo_stability.csv"),
     # Phase 7 — physics validation (optional: only exists if you ran 10_physics_validation.py)
     ("pcm/physics_validation_results.csv", "physics_validation_results.csv"),
     ("pcm/physics_validation_spearman.csv", "physics_validation_spearman.csv"),
-    # Phase 4 Level B — seasonal sensitivity (optional)
-    ("pcm/level_b_seasonal_topk.csv", "level_b_seasonal_topk.csv"),
-    ("pcm/level_b_seasonal_summary.md", "level_b_seasonal_summary.md"),
+    # Post-Phase-6 — seasonal PCM sensitivity (optional; renamed 2026-09-08
+    # from level_b_seasonal_topk.csv / level_b_seasonal_summary.md — see
+    # era5-tamilnadu/11_seasonal_pcm_sensitivity.py's docstring. It is NOT
+    # a Phase-4 clustering step; that's 05a_level_b_regime_shift_tamilnadu.py,
+    # whose own outputs aren't part of Objective 2's frozen input package.)
+    ("pcm/seasonal_pcm_sensitivity_topk.csv", "seasonal_pcm_sensitivity_topk.csv"),
+    ("pcm/seasonal_pcm_sensitivity_summary.md", "seasonal_pcm_sensitivity_summary.md"),
     # Phase 8 — recommendation cards (your Obj1 results section)
     ("pcm/recommendation_cards.md", "recommendation_cards.md"),
 ]
@@ -247,8 +258,8 @@ def main():
     print("=" * 68)
     if n_missing:
         print("\nMissing files (not necessarily a problem — some are optional, e.g. "
-              "physics_validation_* and level_b_seasonal_* only exist if you've run "
-              "10_physics_validation.py / 11_level_b_seasonal_analysis.py):")
+              "physics_validation_* and seasonal_pcm_sensitivity_* only exist if you've run "
+              "10_physics_validation.py / 11_seasonal_pcm_sensitivity.py):")
         for e in small_entries + large_entries:
             if e.get("status") == "missing":
                 print(f"    {e['source']}")

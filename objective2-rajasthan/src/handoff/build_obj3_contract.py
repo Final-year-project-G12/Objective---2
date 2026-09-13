@@ -214,9 +214,21 @@ def write_contract(state: str):
                 "pump_off_below_irradiance_Wm2": sc["collector"]["min_irradiance_cutoff_Wm2"],
                 "dry_run": "pump commanded on, flow sensor reads ~0 -> stop pump, raise fault",
                 "sensor_failure": "missing reading for a required field -> fall back to bypass (safe default), raise fault",
-                "rationale": "Phase 8 robustness found P(temp-safe) well below 0.95 for every "
-                             "Rajasthan regime even with the plain tank — an active bypass shield "
-                             "is a hard requirement here, not an optimisation nicety.",
+                "rationale": "An initial (pre-2026-09-13) Phase 8 robustness pass found P(temp-safe) "
+                             "well below 0.95 (0.45-0.57) for every Rajasthan regime WITHOUT this "
+                             "shield active — an active bypass shield is a hard requirement here, not "
+                             "an optimisation nicety. This rule is now implemented, validated, and "
+                             "adopted as the Objective 2 pipeline DEFAULT inside the simulator itself "
+                             "(system_config_shared.yaml: safety_shield.enabled; "
+                             "src/simulation/tank_model.py) — Phase 5-8 all run with it active, so "
+                             "phase7_deployable_design_per_regime.csv / phase8_robustness.csv this "
+                             "contract is built from already reflect it (P(temp-safe)=1.00 in all 3 "
+                             "regimes), not a separate what-if. IS 12976:2023 Sec 8.2 validates this "
+                             "exact mechanism as the standard overheat-protection method. Objective 3's "
+                             "DRL controller inherits this same hard shield as a policy override (see "
+                             "force_bypass_if above) and is expected to beat this fixed rule on "
+                             "useful-energy delivery and cross-regime generalization without a "
+                             "hand-tuned threshold, not on safety.",
             },
         },
         "dynamic_state_schema": _dynamic_state_schema(),

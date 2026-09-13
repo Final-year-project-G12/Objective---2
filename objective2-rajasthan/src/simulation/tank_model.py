@@ -30,6 +30,47 @@ SIGN CONVENTION (must never silently flip — framework doc Sec 4.4):
 AMBIENT TANK LOSS IS NON-NEGOTIABLE (Bug-Fix 1): Q_loss = U_tank*A_tank*
 (Tw-Tamb) is evaluated every single sub-step, with no code path that skips
 it. Do not add one.
+
+RULE-BASED SAFETY SHIELD (O2 Fix 2, 2026-09-13; RECONSTRUCTED 2026-09-13
+after an unrelated git pull discarded the uncommitted original — see
+docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md §6/§7 for the full history).
+Previously the simulator only *recorded* temperature violations
+(n_safety_violations) without ever preventing them, meaning the
+"deployable design" Objective 2 handed to Objective 3 was unsafe ~45-57%
+of the time at baseline (Phase 8 Monte Carlo). This implements, inside
+run_year() itself, the rule-based shield already specified for Objective 3
+in results/obj3_environment_contract_rajasthan.json ("safety_shield":
+bypass at 72 C water / 62 C PCM, 3 C guard band below the 75/65 C hard
+limits). Controlled by system_config["safety_shield"] (keys: enabled,
+bypass_water_C, bypass_pcm_C) -- ADOPTED AS THE PIPELINE DEFAULT
+(enabled: true) in system_config_shared.yaml as of 2026-09-13, so every
+Phase 5-8 result reflects it; system_config_overrides={"safety_shield":
+{"enabled": False}} remains available as a diagnostic-only escape hatch.
+
+Two-part mechanism, each substep:
+  1. WATER-SIDE (bypass): if T_water >= bypass_water_C, force
+     circulating=False before that substep's collector solve -- stops the
+     pump from pushing more collector-heated water into the tank. This is
+     exactly IS 12976:2023 Sec 8.2's stated method for overheat protection
+     ("stop circulation in the collector loop until the storage
+     temperature decreases") -- see docs/09 §7.
+  2. PCM-SIDE (charge-only block): if PCM is present and T_pcm >=
+     bypass_pcm_C, block CHARGING ONLY -- ua_eff is zeroed only while the
+     water-to-PCM heat flow direction would be charging (T_w > T_pcm,
+     i.e. Q_pcm > 0 per the sign convention above), never while it would
+     be discharging (T_pcm > T_w). Zeroing ua_eff unconditionally would
+     also block the safe, beneficial PCM-to-water discharge that cools an
+     over-temperature PCM back down -- only the charging direction is the
+     actually dangerous one this shield exists to stop. Uses T_w/T_pcm as
+     they stand at the START of the substep (pre-solve) to decide
+     direction, consistent with the rest of this substep's use of
+     start-of-substep state for the linear solve.
+
+MODELING SIMPLIFICATION (documented, not hidden — same convention as the
+other simplifications above): "bypass" here means the pump is commanded
+off (circulating=False), not a literal 3-way diverter valve routing flow
+away from the collector — a reasonable domestic-SWH proxy for the
+mechanism IS 12976 Sec 8.2 describes, not a component-level valve model.
 """
 
 from dataclasses import dataclass, field
@@ -75,6 +116,8 @@ class SimulationResult:
     complete_melt_cycles: int
     initial_f_melt: float = 0.0
     n_clipped_steps: int = 0
+    n_shield_water_activations: int = 0
+    n_shield_pcm_activations: int = 0
 
 
 def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: float,
@@ -99,6 +142,17 @@ def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: fl
     delivery_target_C = system_config["delivery"]["target_temp_C"]
     max_water_C = system_config["safety"]["max_water_temp_C"]
     max_pcm_C = system_config["safety"]["max_pcm_temp_C"]
+
+    # O2 Fix 2 — rule-based safety shield (see module docstring). Default
+    # thresholds derive from the frozen safety maxima above with the same
+    # 3.0 C guard band documented in obj3_environment_contract_rajasthan.json,
+    # so no edit to the frozen system_config_shared.yaml is needed to use it.
+    shield_cfg = system_config.get("safety_shield", {})
+    shield_enabled = bool(shield_cfg.get("enabled", False))
+    bypass_water_C = shield_cfg.get("bypass_water_C", max_water_C - 3.0)
+    bypass_pcm_C = shield_cfg.get("bypass_pcm_C", max_pcm_C - 3.0)
+    n_shield_water = 0
+    n_shield_pcm = 0
 
     has_pcm = design.n_capsule > 0
     m_pcm_total_kg = (design.n_capsule * design.capsule_volume_m3 * pcm_props.density_kg_m3
@@ -183,10 +237,27 @@ def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: fl
 
                 a_coll, b_coll, circulating = collector_linear_coeffs(I_t, T_amb, system_config)
 
+                # O2 Fix 2 — water-side shield: stop the pump (no further
+                # solar charging) once T_w reaches the bypass threshold.
+                # Uses T_w (start-of-substep, pre-solve) per the module
+                # docstring's "safety shield" note.
+                if shield_enabled and T_w >= bypass_water_C:
+                    circulating = False
+                    n_shield_water += 1
+
                 if has_pcm:
                     ua_eff = ua_eff_total_w_k(design.n_capsule, design.capsule_diameter_m,
                                                design.capsule_area_m2, superficial_velocity,
                                                pcm_props, f_melt, system_config)
+                    # O2 Fix 2 — PCM-side shield: charge-only. Block further
+                    # charging (T_w > T_pcm, i.e. Q_pcm > 0) once T_pcm hits
+                    # the bypass threshold, but keep ua_eff active when the
+                    # flow would be discharging (T_pcm > T_w) — that
+                    # direction cools the PCM and is safe. See module
+                    # docstring "PCM-SIDE (charge-only block)".
+                    if shield_enabled and T_pcm >= bypass_pcm_C and T_w > T_pcm:
+                        ua_eff = 0.0
+                        n_shield_pcm += 1
                 else:
                     ua_eff = 0.0
 
@@ -290,4 +361,5 @@ def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: fl
         n_safety_violations=n_safety, final_f_melt=f_melt,
         complete_melt_cycles=complete_cycles,
         initial_f_melt=initial_f_melt, n_clipped_steps=n_clipped_steps,
+        n_shield_water_activations=n_shield_water, n_shield_pcm_activations=n_shield_pcm,
     )

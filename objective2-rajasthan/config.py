@@ -23,7 +23,13 @@ BASE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = BASE_DIR.parent
 
 # ── Objective 1 pipeline (READ-ONLY — Objective 2 must never write here) ──
-OBJ1_ROOT = PROJECT_ROOT / "era5-rajasthan"          # <-- edit if your folder name differs
+# NOT a sibling of this folder — Objective 1 actually lives under
+# PCM-Selection-ML-model/, two levels up from OBJECTIVE2/Objective---2/.
+# Fixed 2026-09-13 (same fix applied to objective2-tamilnadu/config.py):
+# this used to point at a nonexistent PROJECT_ROOT/era5-rajasthan sibling,
+# which only went unnoticed because data/objective1/ was already frozen
+# from an earlier successful run.
+OBJ1_ROOT = PROJECT_ROOT.parent.parent / "PCM-Selection-ML-model" / "era5-rajasthan"
 OBJ1_DATA_DIR = OBJ1_ROOT / "data"
 OBJ1_PROCESSED_DIR = OBJ1_DATA_DIR / "processed"
 OBJ1_PREPROCESSED_DIR = OBJ1_DATA_DIR / "preprocessed"

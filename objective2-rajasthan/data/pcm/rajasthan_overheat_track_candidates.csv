@@ -1,0 +1,3 @@
+name,family,pcm_type,Tm_C,Tm_freezing_C,latent_heat_kJ_kg,density_liquid_kg_m3,density_solid_kg_m3,Cp_liquid_kJ_kgK,Cp_solid_kJ_kgK,TC_W_mK,flash_point_C,max_op_temp_C,volume_expansion_pct,source,source_url,source_version
+RT80HC,Rubitherm Technologies,Organic (RT-line),78.0,79.0,220.0,800.0,900.0,2.0,2.0,0.2,175.0,110.0,,manufacturer_datasheet_direct_pdf_verified,https://www.rubitherm.eu/media/products/datasheets/Techdata_-RT80HC_EN_21012026.PDF,Version 21.01.2026
+RT82,Rubitherm Technologies,Organic (RT-line),82.0,82.0,170.0,770.0,800.0,2.0,2.0,0.2,200.0,100.0,12.5,manufacturer_datasheet_direct_pdf_verified,https://www.rubitherm.eu/media/products/datasheets/Techdata_-RT82_EN_21012026.PDF,Version 21.01.2026

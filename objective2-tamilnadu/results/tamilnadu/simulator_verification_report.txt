@@ -6,12 +6,12 @@
 GATE 1 — Energy conservation (5 diverse cases)
 ========================================================================
   A: cluster0 / n-Octacosane / mid design              residual=0.000009 %
-  B: cluster1 / RT64HC / small-capsule design          residual=0.000000 %
+  B: cluster1 / RT64HC / small-capsule design          residual=0.000001 %
   C: cluster4 / n-Hexacosane / large-capsule design    residual=0.000000 %
-  D: cluster2 / no-PCM plain-tank baseline             residual=0.000081 %
+  D: cluster2 / no-PCM plain-tank baseline             residual=0.000007 %
   E: cluster3 / n-Octacosane / bounds-extreme design   residual=0.000002 %
 
-  mean residual = 0.000018 %   max residual = 0.000081 %
+  mean residual = 0.000004 %   max residual = 0.000009 %
   Gate 1 verdict: PASS  (pass<0.1%, warn<0.5%)
 
 ========================================================================

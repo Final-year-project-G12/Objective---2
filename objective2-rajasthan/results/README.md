@@ -1,5 +1,43 @@
 # Results — Rajasthan, Phases 0–8 (Objective 2 complete)
 
+> **⚠ Update 2026-09-13: the safety shield is now the PIPELINE DEFAULT — one
+> unified result, no separate shielded/unshielded pair.** Earlier the same
+> day, the PCM shortlist was refreshed to Objective 1's corrected 67°C basis,
+> and a rule-based overheat-protection shield (stop pump above 72°C water /
+> block PCM charging above 62°C — the mechanism IS 12976:2023 §8.2 cites as
+> the standard method for Indian SWH overheat protection) was implemented but
+> only run as a separate supplementary check
+> (`fix2_shielded_phase7_confirmation.csv`). **That supplementary framing is
+> now retired**: `configs/system_config_shared.yaml`'s `safety_shield.enabled`
+> is `true` by default, so Phases 5 (DOE) through 8 (robustness/handoff) all
+> ran WITH the shield active as the single source of truth —
+> `phase5_design_cases.csv` through `phase8_recommendation_cards.md` are the
+> shielded numbers, full stop.
+>
+> **Result: the deployable design flips to a PCM in Regime 0 (RT50), stays
+> plain tank in Regimes 1/2**, and **all 3 regimes are now ROBUST**
+> (P(temp-safe) = 1.00 everywhere, up from the pre-shield 0.45–0.57) — see
+> `phase7_deployable_design_per_regime.csv` and `phase8_robustness.csv`.
+> `phase8_recommendation_cards.md` and `obj3_environment_contract_rajasthan.json`
+> reflect this directly.
+>
+> A separate, not-yet-adopted finding also exists: the frozen 50 L tank /
+> 1.5 m² collector sizing (33.3 L/m²) is itself below IS 12976:2023's cited
+> 37.5–100 L/m² range; resizing to the standard's 75 L/m² reference (112.5 L)
+> makes every shortlisted PCM pass safety AND raises solar fraction, with no
+> shield needed — see `fix6_standards_compliant_sizing_supplementary.csv/.md`
+> and `docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §7. Not folded into the
+> numbers above (a frozen-shared-config change needs a coordinated 4-state
+> re-run).
+>
+> The Phase-by-Phase sections below were written before this update and
+> describe the pre-shield pipeline mechanics (still accurate for Phases 0–4)
+> — cross-check any Phase 5–8 headline number against the files above rather
+> than the prose below, which was not rewritten line-by-line (this project's
+> convention is dated addenda over historical rewrites, but the addenda
+> history itself was lost to an unrelated git-pull conflict this session —
+> see `docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` for what's recoverable).
+
 What every file in this folder contains, how it was produced, and what to
 infer from it. Methodology and full background live in `../docs/`
 (`00_MASTER_OVERVIEW.md` through `08_PHASE8_ROBUSTNESS_HANDOFF.md`); this
