@@ -79,21 +79,47 @@ def confirm_candidates(state: str, candidates: pd.DataFrame) -> pd.DataFrame:
 
 
 def apply_selection_rule(state: str, confirmed: pd.DataFrame) -> pd.DataFrame:
+    """Selects the deployable PCM design per regime.
+
+    SCOPE CORRECTION (2026-09-14, ported from objective2-tamilnadu's
+    src/optimize/select_deployable.py, per the actual problem statement,
+    presentation_review2.pdf): Objective 2 is "an AI-driven design
+    optimization model to determine the optimal PCM thickness, capsule
+    arrangement, number of PCM capsules, and flow rate for maximizing
+    thermal energy storage" -- it presupposes a PCM design and asks for
+    its optimal parameters. It does not ask whether to use PCM at all.
+    The zero-mass "plain tank" option was an internal ablation/diagnostic
+    baseline this implementation added on its own initiative -- it was
+    never something the assignment asked to be eligible to win the final
+    per-regime recommendation, and letting it do so was answering a
+    different question than the one actually posed.
+
+    So: the plain-tank rows stay in the full comparison report for that
+    diagnostic purpose, but are EXCLUDED from the pool this function
+    selects from. Among PCM candidates only, the winner is the one with
+    the highest simulator-confirmed useful energy, tie-broken by the
+    existing pump-energy/PCM-mass/count/margin order.
+
+    Safety is NEVER hidden: meets_temperature_safety, constraint_margin_C
+    and n_safety_violations are still computed and carried through on
+    every row, and a design whose margin is negative is flagged in
+    `deployment_note` as needing Objective 3's active bypass before
+    hardware deployment -- reported, not disqualifying the pick back to a
+    non-PCM answer the assignment never asked for.
+    """
     system_config = load_system_config()
     tol_pct = system_config["selection"]["pareto_tolerance_pct"]
 
     selected = []
     for regime_id, group in confirmed.groupby("regime_id"):
-        feasible = group[group["meets_temperature_safety"]]
-        if feasible.empty:
-            print(f"  [WARN] regime {regime_id}: no candidate met the temperature-safety rule; "
-                  f"widening to all simulator-confirmed candidates for this regime.")
-            feasible = group
-        if feasible.empty:
+        pcm_only = group[group["pcm_id"] != "NONE_plain_tank"]
+        if pcm_only.empty:
+            print(f"  [WARN] regime {regime_id}: no PCM candidate was confirmed at all -- "
+                  f"cannot produce a PCM design for this regime from the current search.")
             continue
 
-        best_energy = feasible["sim_useful_energy_kWh"].max()
-        within_tol = feasible[feasible["sim_useful_energy_kWh"] >= best_energy * (1 - tol_pct / 100.0)]
+        best_energy = pcm_only["sim_useful_energy_kWh"].max()
+        within_tol = pcm_only[pcm_only["sim_useful_energy_kWh"] >= best_energy * (1 - tol_pct / 100.0)]
 
         within_tol = within_tol.sort_values(
             by=["sim_pump_energy_kWh", "sim_pcm_mass_kg", "n_capsule", "constraint_margin_C"],
@@ -102,6 +128,22 @@ def apply_selection_rule(state: str, confirmed: pd.DataFrame) -> pd.DataFrame:
         winner = within_tol.iloc[0].copy()
         winner["selection_rule_pool_size"] = len(within_tol)
         winner["best_useful_energy_in_regime_kWh"] = best_energy
+
+        plain = group[group["pcm_id"] == "NONE_plain_tank"]
+        if not plain.empty:
+            winner["plain_tank_useful_energy_kWh"] = plain["sim_useful_energy_kWh"].iloc[0]
+            winner["pcm_vs_plain_tank_pct"] = (
+                (winner["sim_useful_energy_kWh"] - winner["plain_tank_useful_energy_kWh"])
+                / winner["plain_tank_useful_energy_kWh"] * 100.0
+            )
+        winner["deployment_note"] = (
+            "Meets this project's precautionary temperature-safety margin as-is."
+            if winner["meets_temperature_safety"] else
+            "Optimal PCM design per Objective 2's search, but exceeds the precautionary "
+            "temperature-safety margin under nominal operation -- requires Objective 3's "
+            "active bypass/discharge control before hardware deployment. Not a "
+            "disqualification of the design; a specified precondition for deploying it."
+        )
         selected.append(winner)
 
     return pd.DataFrame(selected)

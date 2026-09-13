@@ -394,10 +394,11 @@ def phase7_safety_compliance(state, out_dir, optimized):
         optimized = optimized.copy()
         optimized["meets_temperature_safety"] = meets
 
-    counts = optimized.groupby(["regime_id", "meets_temperature_safety"]).size().unstack(fill_value=0)
+    counts = (optimized.groupby(["regime_id", "meets_temperature_safety"]).size()
+              .unstack(fill_value=0).reindex(columns=[True, False], fill_value=0))
     fig = go.Figure()
-    fig.add_trace(go.Bar(x=counts.index, y=counts.get(True, 0), name="meets safety", marker_color="#2ca02c"))
-    fig.add_trace(go.Bar(x=counts.index, y=counts.get(False, 0), name="violates safety", marker_color="#d62728"))
+    fig.add_trace(go.Bar(x=counts.index, y=counts[True], name="meets safety", marker_color="#2ca02c"))
+    fig.add_trace(go.Bar(x=counts.index, y=counts[False], name="violates safety", marker_color="#d62728"))
     fig.update_layout(barmode="stack", title=f"Phase 7 — temperature-safety compliance of confirmed candidates — {state}",
                        xaxis_title="regime_id", yaxis_title="# confirmed candidates")
     _save(fig, "phase7_safety_compliance", out_dir)
