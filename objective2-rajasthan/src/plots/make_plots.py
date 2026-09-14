@@ -384,8 +384,6 @@ def phase8_robustness_probabilities(state, out_dir, robustness_summary):
                           name="P(meets delivery temp)", marker_color="#9467bd"))
     fig.add_trace(go.Bar(x=labels, y=robustness_summary["p_meets_annual_demand"] * 100,
                           name="P(meets annual demand)", marker_color="#1f77b4"))
-    fig.add_trace(go.Bar(x=labels, y=(1 - robustness_summary["p_temperature_violation"]) * 100,
-                          name="P(temperature-safe)", marker_color="#2ca02c"))
     fig.add_hline(y=75, line_dash="dash", line_color="#1f77b4", annotation_text="75% demand threshold")
     fig.add_hline(y=95, line_dash="dash", line_color="#2ca02c", annotation_text="95% temp-safety threshold")
     fig.update_layout(barmode="group",

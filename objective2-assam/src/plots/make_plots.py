@@ -421,8 +421,6 @@ def phase8_robustness_probabilities(state, out_dir, robustness_summary):
                           name="P(meets delivery temp)", marker_color="#9467bd"))
     fig.add_trace(go.Bar(x=labels, y=robustness_summary["p_meets_annual_demand"] * 100,
                           name="P(meets annual demand)", marker_color="#1f77b4"))
-    fig.add_trace(go.Bar(x=labels, y=(1 - robustness_summary["p_temperature_violation"]) * 100,
-                          name="P(temperature-safe)", marker_color="#2ca02c"))
     fig.add_hline(y=75, line_dash="dash", line_color="#1f77b4", annotation_text="75% demand threshold")
     fig.add_hline(y=95, line_dash="dash", line_color="#2ca02c", annotation_text="95% temp-safety threshold")
     fig.update_layout(barmode="group",
@@ -490,7 +488,15 @@ def main(state: str):
     phase4_gate5_sensitivity(state, out_dir)
 
     print("Phase 5 ...")
-    design_cases = pd.read_parquet(DESIGN_CASES_PATH)
+    if DESIGN_CASES_PATH.exists():
+        design_cases = pd.read_parquet(DESIGN_CASES_PATH)
+    else:
+        # This state's Phase 5 run only produced the .csv sibling (no
+        # pyarrow/fastparquet at DOE time, or a custom scripts/ DOE runner
+        # that skipped to_parquet) -- fall back rather than hard-fail here.
+        csv_fallback = DESIGN_CASES_PATH.with_suffix(".csv")
+        print(f"  [WARN] {DESIGN_CASES_PATH.name} not found, falling back to {csv_fallback.name}")
+        design_cases = pd.read_csv(csv_fallback)
     phase5_doe_coverage(state, out_dir, design_cases)
     phase5_outcome_distribution(state, out_dir, design_cases)
 
