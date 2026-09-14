@@ -110,9 +110,9 @@ modeled**, so this project's solar fraction is stricter than a real
 installed system's.
 
 **Important Uttarakhand context**: Uttarakhand's mains temperatures are
-markedly colder (7.4–21.8 °C across regimes, vs Tamil Nadu's 24.0–26.0 °C),
+markedly colder (7.45–21.82 °C across regimes, vs Tamil Nadu's 24.0–26.0 °C),
 raising `E_demand_ideal` substantially. At the same time, the collector sees
-similar GHI (4.57–4.93 kWh/m²/day). The combination is the physical reason
+similar GHI (4.57–4.90 kWh/m²/day). The combination is the physical reason
 why Uttarakhand's nominal solar fractions (28–41%) are structurally lower
 than Tamil Nadu's (51–54%) — it is a climate consequence, not a code
 difference.
@@ -121,7 +121,7 @@ difference.
 
 ```
 python pipeline.py --state uttarakhand --stage simulate --cluster 0 \
-    --pcm "PureTemp 58" --diameter 0.08 --count 19 --flow 0.030
+    --pcm "RT42" --diameter 0.08 --count 19 --flow 0.030
 ```
 Prints the full metrics dict (useful energy, solar fraction,
 delivery-temperature hours, unmet energy, pump energy, PCM mass, max

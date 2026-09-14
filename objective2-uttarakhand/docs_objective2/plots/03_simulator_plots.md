@@ -2,9 +2,12 @@
 
 Files: `phase3_temperature_timeseries.*`, `phase3_melt_fraction_year.*`,
 `phase3_energy_breakdown.*`. Sample case for all three: state=uttarakhand,
-cluster 0, PCM = PureTemp 58 ($T_m = 58.0^\circ\text{C}$), design = 0.08 m
+cluster 0, PCM = **RT42** ($T_m = 40.5^\circ\text{C}$, this regime's
+retargeted rank-1 PCM — see `12_TM_TARGET_RETARGETING.md`), design = 0.08 m
 diameter / 19 capsules / 0.030 kg/s flow (the reference case in
-`docs_objective2/HOW_TO_RUN.md`).
+`docs_objective2/HOW_TO_RUN.md`). The sample PCM is now selected
+dynamically from the current config (`get_regime(state, 0)["pcm_shortlist"][0]`),
+so this doc always describes whichever PCM cluster 0 currently recommends.
 
 ---
 
@@ -16,19 +19,21 @@ axis, solar irradiance ($I_t$) on the secondary axis.
 
 **What we infer**:
 - Clean, stable diurnal cycles without numerical oscillations or divergence.
-- Water temperature rises from mains temperature (~19.4 °C in cluster 0) up to
-  65–70 °C during peak daytime solar radiation, tracking irradiance closely.
+- Water temperature rises from mains temperature (~20.6 °C in cluster 0) up to
+  ~71.1 °C during peak daytime solar radiation, tracking irradiance closely.
 - Nighttime cooldown brings tank water back towards mains temperature as domestic
   hot water draws extract heat and ambient tank losses ($U_{\text{tank}} = 0.8\text{ W/m}^2\text{K}$,
   Bug-Fix 1) bleed thermal energy to ambient air.
-- PCM temperature rises sensibly and slows down near the 58 °C melting plateau,
-  confirming the enthalpy formulation in `capsule_enthalpy.py` transitions smoothly
-  between sensible and latent regimes.
+- PCM temperature now tracks water temperature closely and cycles actively
+  through RT42's 40.5 °C melting plateau on nearly every sunny day — a
+  qualitatively different picture from the pre-retargeting PCM, which
+  rarely reached its own (58 °C) melting point at all.
 
 **How to justify it**: *"This plot demonstrates the required Phase 3 stability
 and physics checks. Day and night cycles track climate irradiance without numerical
 instability, and the thermal response of the encapsulated PCM reflects the
-thermodynamics of the enthalpy formulation."*
+thermodynamics of the enthalpy formulation — now with a melting point genuinely
+matched to this tank's real operating range."*
 
 ---
 
@@ -38,20 +43,26 @@ thermodynamics of the enthalpy formulation."*
 of the simulated year for the sample case.
 
 **What we infer**:
-- For PureTemp 58 ($T_m = 58.0^\circ\text{C}$) in a 50 L tank with 300 L/day draw
-  and no auxiliary heater, $f_{\text{melt}}$ spends the vast majority of the year
-  near zero, spiking to partial or full melt only during high-irradiance summer periods.
-- This provides visual proof for the finding reported in Phase 4 Gate 3 and Phase 7:
-  at this collector area and tank volume, a 58 °C PCM is largely under-melted
-  because tank temperatures do not stay above 58 °C long enough to exploit the
-  full latent capacity.
+- For RT42 ($T_m = 40.5^\circ\text{C}$) in a 50 L tank with 300 L/day draw
+  and no auxiliary heater, $f_{\text{melt}}$ now cycles **actively** —
+  annual mean $\approx 31.7\%$, with **196 complete melt cycles** over the
+  year (up from ~5 for the pre-retargeting PCM). This is the direct visual
+  confirmation that the Tm-target retargeting (doc 12) fixed the
+  fundamental mismatch between PCM melting point and real tank behavior.
+- The same active cycling that makes RT42 a genuinely functioning latent
+  store is also *why* its temperature tracks water temperature closely
+  enough to exceed the 65 °C PCM safety limit on the sunniest days — this
+  case alone logs **369 hours/year** of safety violation
+  (`n_safety_violations=369`), visible here as $f_{\text{melt}}$ pinning
+  at 1.0 on hot days rather than staying in a moderate partial-melt band.
 - The invariant $0 \le f_{\text{melt}} \le 1$ holds continuously without clipping
   violations or numeric overflows.
 
-**How to justify it**: *"This directly visualizes why PureTemp 58 does not
-dramatically outperform a plain water tank across all regimes. The simulator
-faithfully captures that the PCM remains subcooled during most months, behaving
-primarily as sensible storage rather than an active latent buffer."*
+**How to justify it**: *"This directly visualizes both sides of the retargeting
+finding: RT42 now behaves as genuine latent thermal storage, cycling 196 times a
+year — but that same activity is exactly why its temperature follows the tank's
+into unsafe territory on peak-irradiance days, motivating Objective 3's active
+overheat protection."*
 
 ---
 
@@ -59,19 +70,24 @@ primarily as sensible storage rather than an active latent buffer."*
 
 **What it is**: A four-bar distribution of annual energy flows for the reference
 case in Uttarakhand:
-- Collector input energy ($E_{\text{collector}} \approx 1740\text{ kWh}$)
-- Useful energy delivered to load ($E_{\text{useful}} \approx 1675\text{ kWh}$)
-- Tank and pipe ambient losses ($E_{\text{loss}} \approx 53\text{ kWh}$)
-- Unmet thermal shortfall ($E_{\text{unmet}} \approx 2316\text{ kWh}$)
+- Collector input energy ($E_{\text{collector}} \approx 1623\text{ kWh}$)
+- Useful energy delivered to load ($E_{\text{useful}} \approx 1536\text{ kWh}$)
+- Tank and pipe ambient losses ($E_{\text{loss}} \approx 88\text{ kWh}$)
+- Unmet thermal shortfall ($E_{\text{unmet}} \approx 2280\text{ kWh}$)
 
 **What we infer**:
-- Heat losses to ambient account for ~3–4% of collector input, consistent with a
+- Heat losses to ambient account for ~5% of collector input, consistent with a
   well-insulated 50 L storage tank ($U = 0.8\text{ W/m}^2\text{K}$).
 - The existence of a nonzero, physically realistic loss bar verifies that the
   ambient thermal loss term is permanently active (Bug-Fix 1).
 - The unmet energy reflects the demand shortfall relative to a 300 L/day draw at
   60 °C without an auxiliary backup heater in Uttarakhand's colder climate.
+- PCM charge/discharge energy is now substantial (~75 kWh each, roughly
+  balanced) — another confirmation of active cycling, versus the
+  pre-retargeting PCM's much smaller charge/discharge flow.
 
 **How to justify it**: *"The energy breakdown illustrates the complete first-law
-thermal accounting verified by Gate 1 to an accuracy of 0.0017%. The nonzero loss
-bar confirms the bug fix requiring ambient losses to operate continuously."*
+thermal accounting verified by Gate 1 to an accuracy of 0.006% for this case. The
+nonzero loss bar confirms the bug fix requiring ambient losses to operate
+continuously, and the now-substantial PCM charge/discharge flow confirms genuine
+latent-storage activity."*

@@ -44,33 +44,40 @@ byte-identical both times. The geometry engine is state-agnostic — the
 `--state uttarakhand` flag is accepted for CLI-contract consistency with
 other stages but does not affect geometry calculations.
 
-## Finding worth documenting: the 15%/20% Chen-style PCM levels are not geometrically reachable
+## Finding worth documenting (RESOLVED 2026-09-14): the 15%/20% Chen-style PCM levels are now reachable after the bounds widening
 
 The framework doc asks Phase 5's DOE to include "the documented 10%, 15%,
 20% PCM-volume cases where geometrically applicable" (Chen et al. 2025
-baseline). Working through the frozen bounds:
+baseline). Working through the **original** frozen bounds:
 
 - Max capsule volume at the diameter ceiling (0.08 m) is ≈ 2.681×10⁻⁴ m³.
-- Max capsule count is 24.
+- Max capsule count was 24.
 - Max reachable PCM volume = 24 × 2.681×10⁻⁴ = 6.434×10⁻³ m³ = **6.43 L**
   out of the 50 L tank = **12.9%** of tank volume.
 
-So **15% and 20% are not achievable** with `capsule_diameter_m ≤ 0.08 m`
-and `capsule_count ≤ 24` — reaching 20% would require either ~37 capsules
-at the diameter ceiling (above the count bound) or capsules ~0.093 m in
-diameter (above the diameter bound). This is a genuine interaction between
-two independently-reasonable-looking bounds, discovered by actually
-running the geometry engine rather than assumed. It is **not a bug** — the
-framework doc's own phrasing ("where geometrically applicable") already
-anticipates that not every documented level will fit every bound set — but
-it must be stated plainly rather than silently testing only 10%/12% and
-calling it "the 10/15/20% sweep."
+So **15% and 20% were not achievable** with `capsule_diameter_m ≤ 0.08 m`
+and `capsule_count ≤ 24` — reaching 20% required either ~37 capsules
+at the diameter ceiling (above the old count bound) or capsules ~0.093 m
+in diameter (above the diameter bound). This was a genuine interaction
+between two independently-reasonable-looking bounds, discovered by
+actually running the geometry engine rather than assumed.
 
-**Consequence for Phase 4/5**: the "fixed PCM" and "optimized-looking"
-baseline designs used in Gate 3 use the actual maximum reachable fraction
-(`n_capsule=24, diameter=0.08` → 12.87%) rather than a nominal "20%" that
-the geometry engine would silently cap or reject. Phase 5's DOE accepts
-10–13% as the practically testable range given these bounds.
+**Fixed 2026-09-14** (`13_DESIGN_BOUNDS_WIDENING.md`, ported from Tamil
+Nadu): `capsule_count.max` widened 24 → 37, verified directly —
+`check_design(DesignVector(0.08, 37, 0.030))` → `valid=True,
+pcm_volume_fraction=0.19838`. **Max reachable PCM volume fraction is now
+19.84%**, landing right at `design_bounds_shared.yaml`'s own 20% ceiling
+without needing to raise that ceiling too. Every design at `count ≤ 24`
+remains exactly as valid as before — this only added previously
+unreachable higher-fraction designs to the space Phases 5–7 search over.
+
+**Consequence for Phase 4/5**: Gate 3's specific "fixed PCM"/"optimized-
+looking" test cases still use `n_capsule=24` (≈12.9%) as a fixed,
+unchanged reference point (`src/verify/gates.py` was not modified by the
+widening — only `design_bounds_shared.yaml` was), but Phase 5's DOE and
+Phase 7's search now sample the full widened range up to 19.84%, and
+Phase 7 regime 3's actual selected design uses `n_capsule=31` — a count
+only reachable after this widening (see `08_PHASE7_OPTIMIZATION.md`).
 
 ## How to re-run
 

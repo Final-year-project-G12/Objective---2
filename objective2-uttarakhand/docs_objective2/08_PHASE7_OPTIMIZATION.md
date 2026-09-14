@@ -3,111 +3,118 @@
 Files: `src/optimize/search.py`, `src/optimize/select_deployable.py`.
 Run: `python pipeline.py --state uttarakhand --stage optimize`.
 Output: `results/uttarakhand/surrogate_top_candidates.csv`,
-`optimized_designs.csv` (PCM-comparison report),
-`deployable_design_per_regime.csv` (final selection).
+`optimized_designs.csv` (PCM-comparison report, includes plain tank for
+reference), `deployable_design_per_regime.csv` (final selection, PCM-only).
+
+**This is the final version of this doc (2026-09-14)**, after the Tm-target
+retargeting (doc 12), design-bounds widening (doc 13), and the
+selection-rule scope correction described below were all applied together.
 
 ## Method (D2.6) — one pass, not the full active-learning loop
 
 1. **Search** (`search.py`): 400 random candidate design vectors per
-   regime×PCM pair (20 pairs = 8,000 candidates total), each first passed
-   through the **real** Phase 2 geometry gate (free, deterministic — a
-   candidate the geometry engine already rejects is never even scored by
-   the surrogate), then scored by the Phase 6 surrogate. Top 5 per pair by
-   predicted `useful_energy_kWh` are kept (100 candidates total).
-2. **Confirm** (`select_deployable.py`): every one of those 100 candidates
-   is **re-run in the real simulator** — never a surrogate-only number
-   (framework doc: non-negotiable). Surrogate-vs-simulator error is logged
-   per candidate; the framework's "large-error rule" (>15% → trust the
-   simulator, log it) is applied.
-3. **Select**: the pre-declared rule from `system_config_shared.yaml`
-   (`selection.pareto_tolerance_pct = 5%`) is applied per regime: reject
-   anything that fails the temperature-safety check → keep every
-   simulator-confirmed candidate within 5% of the best useful energy found
-   for that regime → among those, minimize pump energy, then PCM mass,
-   then capsule count → prefer the larger constraint margin as a final
-   tie-break.
+   regime×PCM pair (20 pairs = 8,000 candidates total, now sampling the
+   widened design space — `capsule_count` up to 37), each first passed
+   through the **real** Phase 2 geometry gate, then scored by the Phase 6
+   surrogate. Top **20** per pair by predicted `useful_energy_kWh` are kept
+   (400 candidates total confirmed in the simulator — widened from 5/pair
+   to 20/pair to match Tamil Nadu's more thorough search now that the
+   selection actually matters).
+2. **Confirm** (`select_deployable.py`): every one of those 400 candidates
+   is **re-run in the real simulator**. Surrogate-vs-simulator error is
+   logged per candidate; the framework's "large-error rule" (>15% → trust
+   the simulator) is applied.
+3. **Select — SCOPE CORRECTED (2026-09-14, ported from Tamil Nadu)**:
+   Objective 2's assignment is "an AI-driven design optimization model to
+   determine the optimal PCM thickness, capsule arrangement, number of PCM
+   capsules, and flow rate for maximizing thermal energy storage" — it
+   presupposes a PCM design and asks for its optimal parameters, it does
+   not ask whether to use PCM at all. The zero-mass "plain tank" option
+   was an internal diagnostic baseline this implementation added on its
+   own initiative; it is **kept in `optimized_designs.csv` for reference**
+   but **excluded from winning** the final per-regime recommendation.
+   Among PCM candidates only, the winner is the one with the highest
+   simulator-confirmed useful energy, tie-broken by the existing
+   pump-energy/PCM-mass/count/margin order. Temperature safety is **never
+   hidden** — `meets_temperature_safety`, `constraint_margin_C` and
+   `n_safety_violations` are computed and reported for every row, and a
+   negative-margin winner gets an explicit `deployment_note` flagging that
+   Objective 3's active bypass/discharge control is a precondition for
+   deployment, not a disqualification of the design.
 
 ## Result: surrogate accuracy in practice
 
-**Mean surrogate-vs-simulator error across all 100 confirmed candidates:
-~0.02–0.05%. 0/100 exceeded the 15% large-error threshold.** This is strong,
+**Mean surrogate-vs-simulator error across all 400 confirmed candidates:
+~0.03%. 0/400 exceeded the 15% large-error threshold.** Strong,
 independent evidence (beyond Phase 6's own hold-out R²) that the
-surrogate, the geometry engine, and the simulator are all self-consistent.
+surrogate, the geometry engine, and the simulator are all self-consistent
+even after the design-space widening.
 
 ## Result: deployable design per regime
 
-| Regime | Winning PCM | Diameter (m) | Count | Flow (kg/s) | Useful energy (kWh) | Solar fraction | PCM mass (kg) |
-|---|---|---|---|---|---|---|---|
-| 0 | **plain tank (no PCM)** † | 0.0487 | 9 | 0.0119 | 1675.3 | 40.71% | 0 |
-| 1 | **plain tank (no PCM)** | 0.0501 | 9 | 0.0293 | 1625.3 | 37.38% | 0 |
-| 2 | **PureTemp 58** | 0.0438 | 10 | 0.0116 | 1527.2 | 28.04% | 0.392 kg |
-| 3 | **plain tank (no PCM)** | 0.0429 | 10 | 0.0396 | 1563.8 | 40.75% | 0 |
-| 4 | **plain tank (no PCM)** | 0.0441 | 8 | 0.0175 | 1624.0 | 37.20% | 0 |
+| Regime | Winning PCM | Diameter (m) | Count | Flow (kg/s) | Useful energy (kWh) | Solar fraction | PCM mass (kg) | Margin (°C) | Safe? |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 | **RT42** | 0.0448 | 12 | 0.0337 | 1539.0 | 39.06% | 0.496 | **−6.48** | No |
+| 1 | **Myristic acid (C14)** | 0.0452 | 9 | 0.0109 | 1525.9 | 28.05% | 0.431 | **+11.88** | Yes |
+| 2 | **RT42** | 0.0432 | 13 | 0.0105 | 1626.4 | 37.42% | 0.482 | **−5.12** | No |
+| 3 | **RT42** | 0.0491 | 31 | 0.0143 | 1565.5 | 40.91% | 1.689 | **−7.79** | No |
+| 4 | **savE® OM42** | 0.0445 | 11 | 0.0107 | 1625.9 | 37.00% | 0.458 | **−4.21** | No |
 
-† **Regime 0's winning design does not itself clear the temperature-safety
-filter — worth stating explicitly, not just leaving in the raw CSV.**
-`deployable_design_per_regime.csv` shows regime 0's selected plain tank
-with `meets_temperature_safety=False` and `constraint_margin_C=-0.137`
-(max water 75.14 °C, 0.14 °C over the 75 °C limit, with 1 flagged
-safety-violation sub-hour). `selection_rule_pool_size=20` for this
-regime — every one of the 20 confirmed candidates, not just a
-within-tolerance subset — confirms `select_deployable.py`'s
-"no candidate met the temperature-safety rule; widening to all
-simulator-confirmed candidates" fallback fired here: **no design tried
-in regime 0, PCM or plain, cleared 75 °C nominally.** This is already
-disclosed per-regime in `results/uttarakhand/recommendation_cards.md`
-("Constraint margin (temperature): -0.14 C below the tightest safety
-limit") and reflected in the contract's
-`performance_at_selection.constraint_margin_C`, but is easy to miss
-reading this table alone — it is also the direct explanation for why
-regime 0 has the worst P(temp-safe) in Phase 8 (44.2%, `10_…`): the
-nominal design starts out already marginally unsafe, so almost any
-unfavorable weather/demand draw pushes it further over.
+Regime 3's winner uses `n_capsule=31` — only reachable after the
+design-bounds widening (doc 13); it would not have been searchable before
+that change.
 
-## The headline finding: PCM wins only in regime 2 (the coldest regime)
+## The headline finding: retargeting gives every regime a genuine (if narrow) PCM win — but exposes a sharper safety problem
 
-Looking at the best simulator-confirmed design **per PCM** in each regime
-(`optimized_designs.csv`), the pattern is markedly different from Tamil Nadu:
+| Regime | Best plain-tank useful energy (kWh) | Best PCM useful energy (kWh) | PCM vs. plain tank |
+|---|---|---|---|
+| 0 | 1537.37 | 1539.01 (RT42) | **+0.106%** |
+| 1 | 1525.58 | 1525.92 (Myristic acid) | +0.023% |
+| 2 | 1625.09 | 1626.45 (RT42) | **+0.083%** |
+| 3 | 1563.33 | 1565.48 (RT42) | **+0.138%** |
+| 4 | 1625.64 | 1625.87 (savE® OM42) | +0.014% |
 
-- **Regimes 0, 1, 3, 4**: the best PCM found and the best plain tank found
-  are within the pre-declared 5% Pareto tolerance, so the selection rule's
-  next tie-breaker (minimize PCM mass) picks the zero-mass plain tank —
-  same physical story as Tamil Nadu.
-- **Regime 2** (coldest: Ta_mean~9.4°C, highest L_required=178 kJ/kg):
-  PureTemp 58's best-found design reached the regime's own best
-  useful-energy value (1527.7 kWh), winning outright before the tolerance
-  tie-break was even needed. The pool size was 20 candidates within 5% of
-  best, reflecting a fuller and more competitive search in this regime.
+Every regime's best PCM candidate now beats its own best plain-tank
+candidate — a real change from the pre-retargeting picture, where the two
+were statistically indistinguishable and the pick was effectively a
+tie-break coin flip. The margins are still small in absolute terms
+(0.01–0.14%), but they are **consistently positive**, which they were not
+before retargeting.
 
-**Why regime 2 is different**: at Ta_mean~9.4°C, the mains temperature is
-only 7.4°C (the coldest across all 5 regimes), which raises `L_required`
-to 178 kJ/kg (the highest in the state). The tank water temperature is
-thus driven further into the PCM's operating range, allowing PureTemp 58
-(Tm=58°C) to actually cycle — unlike the warmer regimes where the tank
-rarely reaches 58°C. The constraint margin for regime 2's selected design
-is +7.97°C below the safety limit, confirming the PCM never overheats in
-this colder climate.
+**The safety picture is now the sharper, more important finding.** Because
+plain tank can no longer win, and because temperature safety is no longer
+a selection filter (only a reported precondition), the winning PCM design
+in **4 of 5 regimes exceeds its own 65°C body-temperature limit** at
+nominal (un-perturbed) conditions:
 
-**This is not a simulator inconsistency** — it is the optimizer finding that
-where the hardware actually works as intended (cold inlet, low ambient,
-PCM has room to melt and re-solidify), the latent-storage benefit is real.
-Phase 8's robustness analysis confirms this (regime 2 has 0% safety
-violations — the only regime to achieve that).
+| Regime | Max water temp (°C) | Max PCM temp (°C) | Margin (°C) | `n_safety_violations` (hours/year) |
+|---|---|---|---|---|
+| 0 | 71.62 | 71.48 | −6.48 | 1456 |
+| 1 | 58.06 | 53.12 | +11.88 | 0 |
+| 2 | 70.30 | 70.12 | −5.12 | 697 |
+| 3 | 72.97 | 72.79 | −7.79 | 1030 |
+| 4 | 69.55 | 69.21 | −4.21 | 320 |
 
-## The temperature-safety filter is a real, binding constraint here
+**Why this happens even after retargeting**: `Tm_target_C` was set to each
+regime's *median* charging-hour water temperature (doc 12) — by
+construction, roughly half of all charging hours run *above* that
+median, and on the sunniest days the tank can run well past both the PCM's
+melting point and the 65°C safety ceiling. A PCM tuned to typical
+conditions is not the same as a PCM (or a system) that never overheats on
+atypical ones — nothing in this design has active overheat protection.
 
-Across all 100 simulator-confirmed candidates, **only a subset of PCM
-candidates satisfy `meets_temperature_safety`** (max water ≤75°C, max PCM
-≤65°C, zero per-substep violations over the simulated year). Notably:
-- Regime 2's PureTemp 58 candidates *do* pass (constraint margin +7.97°C) —
-  the colder climate prevents the tank from overheating.
-- Regimes 0 and 3 have PCM candidates that breach the safety limit
-  (constraint margins around −9 to −10°C for PureTemp 58 in regime 0),
-  consistent with those regimes' warmer ambients and higher solar loads.
-
-This is a real, climate-driven consequence of this collector/tank
-combination with no active overheat protection modeled — not a search or
-simulator defect.
+**Regime 1 is the outlier, and not for a reassuring reason.** It is the
+only region where the selected PCM (Myristic acid (C14), Tm=53°C) stays
+under both limits — but this is not because retargeting worked there.
+Doc 12 explains: regime 1's own retargeted `Tm_target_C` is 27.8°C, and
+**no PCM in the database** survives a melting window centered there, so
+regime 1 keeps its **old**, climate-anchored (and equally mismatched)
+shortlist. Its selected PCM is mismatched to the tank's real (cold)
+operating range in the *same* way every other regime's *pre-retargeting*
+PCM was — which is exactly why it barely melts, behaves mostly as inert
+sensible mass, and therefore never gets hot enough to threaten the 65°C
+limit. This is a coincidental safety benefit of a still-unsolved
+mismatch, not a validated design choice.
 
 ## Deviations from the full framework doc
 

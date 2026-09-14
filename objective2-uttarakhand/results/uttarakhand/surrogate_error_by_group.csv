@@ -1,46 +1,56 @@
 target,group_type,group,MAE,n
-useful_energy_kWh,regime,0,0.26271412800842125,6
-useful_energy_kWh,regime,1,0.42988408951646306,6
-useful_energy_kWh,regime,2,0.25522563070660453,6
-useful_energy_kWh,regime,3,0.5139879124967214,6
-useful_energy_kWh,regime,4,0.5355861984081306,6
-useful_energy_kWh,pcm,Palmitic-stearic acid/Expanded graphite,0.9060399145617453,4
-useful_energy_kWh,pcm,PlusICE A58,0.4217647217716755,6
-useful_energy_kWh,pcm,PureTemp 58,0.38157862218606625,10
-useful_energy_kWh,pcm,n-Octacosane (C28),0.2013853544080348,10
-solar_fraction,regime,0,9.303900528269866e-05,6
-solar_fraction,regime,1,0.0003374631756928685,6
-solar_fraction,regime,2,4.3516747166137217e-05,6
-solar_fraction,regime,3,0.0002411492409879016,6
-solar_fraction,regime,4,8.68386277984486e-05,6
-solar_fraction,pcm,Palmitic-stearic acid/Expanded graphite,0.0004526952976815074,4
-solar_fraction,pcm,PlusICE A58,8.760296460913475e-05,6
-solar_fraction,pcm,PureTemp 58,0.00013324840654691528,10
-solar_fraction,pcm,n-Octacosane (C28),0.00011431577377183367,10
-unmet_energy_kWh,regime,0,0.36736977492235684,6
-unmet_energy_kWh,regime,1,1.4310311636528847,6
-unmet_energy_kWh,regime,2,0.21305918486897704,6
-unmet_energy_kWh,regime,3,0.4898506865355709,6
-unmet_energy_kWh,regime,4,0.47471194257809657,6
-unmet_energy_kWh,pcm,Palmitic-stearic acid/Expanded graphite,1.8962351680980873,4
-unmet_energy_kWh,pcm,PlusICE A58,0.43042808265909116,6
-unmet_energy_kWh,pcm,PureTemp 58,0.3521981246439282,10
-unmet_energy_kWh,pcm,n-Octacosane (C28),0.4166646100561138,10
-pump_energy_kWh,regime,0,6.261953486716751e-09,6
-pump_energy_kWh,regime,1,1.5091817928003191e-09,6
-pump_energy_kWh,regime,2,1.999582640523908e-09,6
-pump_energy_kWh,regime,3,1.5334620271942515e-09,6
-pump_energy_kWh,regime,4,2.229291148302995e-09,6
-pump_energy_kWh,pcm,Palmitic-stearic acid/Expanded graphite,1.972455265172915e-09,4
-pump_energy_kWh,pcm,PlusICE A58,1.869027820407651e-09,6
-pump_energy_kWh,pcm,PureTemp 58,3.143919543915624e-09,10
-pump_energy_kWh,pcm,n-Octacosane (C28),3.065764315093554e-09,10
-pcm_mass_kg,regime,0,0.03415448768732399,6
-pcm_mass_kg,regime,1,0.0054128933668409485,6
-pcm_mass_kg,regime,2,0.005308574653372589,6
-pcm_mass_kg,regime,3,0.011612916456403832,6
-pcm_mass_kg,regime,4,0.015396884599847449,6
-pcm_mass_kg,pcm,Palmitic-stearic acid/Expanded graphite,0.002810533657162828,4
-pcm_mass_kg,pcm,PlusICE A58,0.014047422092524945,6
-pcm_mass_kg,pcm,PureTemp 58,0.014768772336777614,10
-pcm_mass_kg,pcm,n-Octacosane (C28),0.01881001500311557,10
+useful_energy_kWh,regime,0,0.3200094291477929,6
+useful_energy_kWh,regime,1,0.898713958880497,6
+useful_energy_kWh,regime,2,0.5168323315660549,6
+useful_energy_kWh,regime,3,0.29096289769904615,6
+useful_energy_kWh,regime,4,0.3427710809246112,6
+useful_energy_kWh,pcm,Myristic acid (C14),0.9037117389897276,2
+useful_energy_kWh,pcm,PureTemp 53,0.35185148963444135,2
+useful_energy_kWh,pcm,RT42,0.557398418930461,8
+useful_energy_kWh,pcm,RT44HC,0.3461138574257916,8
+useful_energy_kWh,pcm,n-Hexacosane (C26),1.440578648017322,2
+useful_energy_kWh,pcm,savE® OM42,0.19941952814687625,8
+solar_fraction,regime,0,0.00039963418396161504,6
+solar_fraction,regime,1,0.00017440447841395498,6
+solar_fraction,regime,2,0.00020155289165848153,6
+solar_fraction,regime,3,0.00029556419620381064,6
+solar_fraction,regime,4,0.00011365913125954696,6
+solar_fraction,pcm,Myristic acid (C14),0.0001871246768438417,2
+solar_fraction,pcm,PureTemp 53,6.0000906948631805e-05,2
+solar_fraction,pcm,RT42,0.00029719081123377733,8
+solar_fraction,pcm,RT44HC,0.00020732649663755126,8
+solar_fraction,pcm,n-Hexacosane (C26),0.0002760878514493914,2
+solar_fraction,pcm,savE® OM42,0.000253290494441262,8
+unmet_energy_kWh,regime,0,1.5555198317548882,6
+unmet_energy_kWh,regime,1,1.087132231728371,6
+unmet_energy_kWh,regime,2,0.8314733575069416,6
+unmet_energy_kWh,regime,3,1.0988815727203018,6
+unmet_energy_kWh,regime,4,0.4852600900659733,6
+unmet_energy_kWh,pcm,Myristic acid (C14),1.02067001347109,2
+unmet_energy_kWh,pcm,PureTemp 53,0.4526591838650802,2
+unmet_energy_kWh,pcm,RT42,1.089305787909666,8
+unmet_energy_kWh,pcm,RT44HC,0.8281973176971746,8
+unmet_energy_kWh,pcm,n-Hexacosane (C26),1.7880674978489424,2
+unmet_energy_kWh,pcm,savE® OM42,1.060848033429238,8
+pump_energy_kWh,regime,0,6.224307107805046e-09,6
+pump_energy_kWh,regime,1,7.355836456524676e-09,6
+pump_energy_kWh,regime,2,4.405070516299607e-09,6
+pump_energy_kWh,regime,3,3.8622798585955365e-09,6
+pump_energy_kWh,regime,4,5.479114899794138e-09,6
+pump_energy_kWh,pcm,Myristic acid (C14),6.713845230792733e-09,2
+pump_energy_kWh,pcm,PureTemp 53,1.2064852095721617e-08,2
+pump_energy_kWh,pcm,RT42,4.989745242076028e-09,8
+pump_energy_kWh,pcm,RT44HC,3.0161569776862123e-09,8
+pump_energy_kWh,pcm,n-Hexacosane (C26),3.288812043059678e-09,2
+pump_energy_kWh,pcm,savE® OM42,6.972177067108504e-09,8
+pcm_mass_kg,regime,0,0.047948481793337216,6
+pcm_mass_kg,regime,1,0.2531448375858521,6
+pcm_mass_kg,regime,2,0.06918420912701188,6
+pcm_mass_kg,regime,3,0.03489661301494642,6
+pcm_mass_kg,regime,4,0.22697583728805748,6
+pcm_mass_kg,pcm,Myristic acid (C14),0.14441758346624378,2
+pcm_mass_kg,pcm,PureTemp 53,0.14570800237707626,2
+pcm_mass_kg,pcm,RT42,0.19784447032535574,8
+pcm_mass_kg,pcm,RT44HC,0.05270133500316676,8
+pcm_mass_kg,pcm,n-Hexacosane (C26),0.4693089269142363,2
+pcm_mass_kg,pcm,savE® OM42,0.03370805058899226,8

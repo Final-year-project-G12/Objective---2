@@ -24,14 +24,16 @@ cases, with infeasible cases kept rather than discarded (framework doc
 15 regime×PCM pairs (5 clusters × 3 shortlisted PCMs each) + 5 baselines.
 Simulator version tag: `sim_v1_uttarakhand` (released Phase 4).
 
-**Note on PCM shortlist per regime**: regimes 0, 2, 4 have [PureTemp 58,
-n-Octacosane (C28), PlusICE A58]; regimes 1 and 3 have [PureTemp 58,
-Palmitic-stearic acid/Expanded graphite, n-Octacosane (C28)] — see
-`configs/states/uttarakhand.yaml`.
+**Note on PCM shortlist per regime (post Tm-retargeting, doc 12)**:
+regimes 0, 2 and 4 have [RT42, RT44HC, savE® OM42]; regime 3 has
+[RT44HC, RT42, savE® OM42]; regime 1 (the coldest, smallest-sample
+regime) has **no** retargeted survivor and keeps its old, climate-anchored
+shortlist [PureTemp 53, n-Hexacosane (C26), Myristic acid (C14)] as a
+documented fallback — see `configs/states/uttarakhand.yaml` and doc 12.
 
 ## Result
 
-**145 valid / simulated, 70 rejected at the Phase 2 geometry gate — all 70
+**142 valid / simulated, 73 rejected at the Phase 2 geometry gate — all 73
 for the same reason, `bounds_violation`.**
 
 This is the Phase 2 finding (`02_PHASE2_GEOMETRY_CONSTRAINTS.md`) showing
@@ -39,11 +41,19 @@ up at DOE scale, not a new bug: any LHS draw with `capsule_diameter_m` in
 `[0.02, 0.04)` produces a derived `pcm_thickness_m = diameter/2 < 0.02`,
 which is below `design_bounds_shared.yaml`'s own thickness floor. Roughly
 `(0.04-0.02)/(0.08-0.02) ≈ 33%` of the diameter range is affected, and
-indeed 70/215 ≈ 32.6% of sampled cases were rejected for exactly this —
-matching the expected rate almost exactly. **All 70 rejected rows are kept
+indeed 73/215 ≈ 34.0% of sampled cases were rejected for exactly this —
+close to the expected rate (the exact count shifts between runs depending
+on the PCM shortlist used, since diameter draws are keyed per
+regime×PCM pair, and this run also samples the widened `capsule_count`
+range up to 37, doc 13). **All 73 rejected rows are kept
 in `design_cases.parquet` with `valid=False` and `reason=bounds_violation`**,
 per the framework doc's "keep failed and infeasible cases" requirement —
 they are what lets Phase 6's feasibility classifier learn this exact boundary.
+
+The valid rows' `geom_pcm_volume_fraction` now reaches up to **16.8%** in
+the actual 215-case LHS/boundary sample (the theoretical ceiling at
+`n_capsule=37, diameter=0.08` is 19.84%, see doc 13) — up from the
+pre-widening maximum of ~12.9%.
 
 ## Case-level train/hold-out split
 
@@ -65,6 +75,6 @@ construction.
   medoid-only, single representative year, per the 40-hr cut list.
 - LHS draws capsule count as a continuous variable then round to the
   nearest integer, rather than a strict enumerated integer grid — with
-  only 17 allowed values (8–24) this still gives reasonable coverage
-  while keeping every LHS point jointly space-filling across all three
-  variables at once.
+  30 allowed values (8–37, widened from 8–24, doc 13) this still gives
+  reasonable coverage while keeping every LHS point jointly space-filling
+  across all three variables at once.

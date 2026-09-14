@@ -188,20 +188,36 @@ def phase4_gate1_residuals(state, out_dir):
 
 
 def phase4_gate3_baseline_comparison(state, out_dir):
+    """
+    Current (post Tm-retargeting / bounds-widening / selection-rule-
+    correction) version of the Gate 3 baseline comparison: uses the
+    regime's actual current shortlist PCM and its actual Phase 7
+    deployable geometry, not a generic fixed design. Ported from
+    objective2-tamilnadu's src/plots/make_plots.py (2026-09-14).
+    """
     cid = 0
-    pcm = get_regime(state, cid)["pcm_shortlist"][0]
+    deployable = pd.read_csv(RESULTS_DIR / state / "deployable_design_per_regime.csv")
+    row = deployable[deployable["regime_id"] == cid].iloc[0]
+    pcm = row["pcm_id"]
+    bounds = load_design_bounds()
+    max_count = bounds["capsule_count"]["max"]
+
     plain = run_case(state, cid, None, DesignVector(0.08, 14, 0.030), record_hourly=False)["metrics"]
-    fixed = run_case(state, cid, pcm, DesignVector(0.08, 24, 0.030), record_hourly=False)["metrics"]
-    optimized = run_case(state, cid, pcm, DesignVector(0.08, 19, 0.040), record_hourly=False)["metrics"]
-    matched = run_case(state, cid, pcm, DesignVector(0.08, 24, 0.030), record_hourly=False,
+    max_feasible = run_case(state, cid, pcm, DesignVector(0.08, max_count, 0.030), record_hourly=False)["metrics"]
+    deployed = run_case(state, cid, pcm,
+                         DesignVector(row["capsule_diameter_m"], int(row["n_capsule"]), row["flow_rate_kg_s"]),
+                         record_hourly=False)["metrics"]
+    matched = run_case(state, cid, pcm, DesignVector(0.08, max_count, 0.030), record_hourly=False,
                         pcm_record_overrides={"Tm_C": 40.0})["metrics"]
 
-    labels = ["Plain tank", f"Fixed PCM\n({pcm}, 12.9%)", "Optimized-looking\n(10.2%)",
+    labels = ["Plain tank",
+              f"Fixed PCM\n({pcm}, max feasible)",
+              f"Deployable design\n({pcm}, current optimum)",
               "Capability check\n(synthetic Tm=40C PCM)"]
-    sf = [m["solar_fraction"] * 100 for m in (plain, fixed, optimized, matched)]
-    fig = go.Figure(go.Bar(x=labels, y=sf, marker_color=["#7f7f7f", "#d62728", "#ff7f0e", "#2ca02c"],
+    sf = [m["solar_fraction"] * 100 for m in (plain, max_feasible, deployed, matched)]
+    fig = go.Figure(go.Bar(x=labels, y=sf, marker_color=["#7f7f7f", "#d62728", "#2ca02c", "#9467bd"],
                             text=[f"{v:.2f}%" for v in sf], textposition="outside"))
-    fig.update_layout(title=f"Phase 4 Gate 3 — solar fraction: plain tank vs PCM designs — {state}",
+    fig.update_layout(title=f"Phase 4 Gate 3 (current, post-revision) — solar fraction: plain tank vs PCM designs — {state}",
                        yaxis_title="solar fraction (%)")
     _save(fig, "phase4_gate3_baseline_comparison", out_dir)
 

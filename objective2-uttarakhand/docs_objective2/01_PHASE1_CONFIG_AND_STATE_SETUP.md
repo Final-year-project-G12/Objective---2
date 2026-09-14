@@ -53,30 +53,65 @@ interaction between the two bounds).
 
 ## `configs/states/uttarakhand.yaml` — Phase 1's actual output
 
-Every field was read directly off Uttarakhand's Objective 1 console output
-(post-fix: `ASSUMED_PCM_MASS_KG=150`, `covariance_type="diag"`) from the
-`05_cluster_uttarakhand.py`, `07_feasibility_filter.py`, and
-`08_mcdm_ranking.py` runs. Nothing in this file is invented:
+**Regenerated 2026-09-13** directly from `data/objective1/cluster_profiles_uttarakhand.csv`
+and `data/objective1/mcdm_topk_by_cluster.csv`, after Objective 1's 2026-09-13
+bug-fix pass (MCDM ranking/feasibility/physics-validation fixes, corrected
+`run_all_uttarakhand.py` phase skip) changed the GMM's point assignments.
+
+**Bug found and fixed**: the *previous* version of this file was a
+hand-written snapshot from an earlier Objective 1 run and was never
+regenerated after that fix — it silently went stale against the freshly
+rebuilt `data/weather/` files (which always reflect the *current*
+clustering). Specifically, **cluster_id 1 and 2 were swapped**: the old
+config's `cluster_id: 1` entry (T_mains≈17.0°C, 9 points) actually described
+what is now `cluster_id: 2`, and its `cluster_id: 2` entry (T_mains≈7.4°C,
+3 points, small-sample) actually described what is now `cluster_id: 1`.
+Cluster 0 and 4's point counts also shifted (15→7 and 8→16 respectively) —
+not a pure relabeling, a genuine re-clustering. Since
+`src/simulation/run_case.py` reads `mains_temp_C` directly from this file's
+`regime["T_mains_est_C"]` (never recomputed from the weather data at
+runtime), every Phase 4–8 run against the stale config used the wrong mains
+temperature, wrong `L_required` target, and wrong PCM shortlist for 3 of the
+5 cluster IDs. All phases have been re-run against the corrected file.
+
+Every field is now read directly off the current CSVs, not a console
+transcript:
 
 - **5 Level-A GMM regimes** (`cluster_id` 0–4), each with its population
-  count, `Tm_target_C` (all 57.0 °C — climate/delivery-anchored, same
-  derivation as Tamil Nadu), `T_mains_est_C` (7.4–21.8 °C, DERIVED as
-  `Ta_mean − 2.0` — marked in the yaml for local cross-check), `L_required_kJ_per_kg`
-  (118–178 kJ/kg, highest in regime 2 due to coldest ambient), and paths to
-  that cluster's medoid hourly/daily weather files.
-- **PCM shortlist per regime** — the Top-3 names per cluster from
-  `mcdm_topk_by_cluster.csv`. **PureTemp 58 (Tm = 58.0 °C)** appears as
-  rank-1 in every regime (regimes 0, 2, 4) or rank-1 (regimes 1, 3). Key
-  regime-specific variations: regimes 1 and 3 shortlist "Palmitic-stearic
-  acid/Expanded graphite" as rank-2 instead of PlusICE A58.
+  count, `T_mains_est_C` (7.45–21.82 °C, copied from
+  `cluster_profiles_uttarakhand.csv`'s own `T_mains_est_C` column),
+  `L_required_kJ_per_kg` (118.0–178.1 kJ/kg, highest in **regime 1** — now
+  the coldest, smallest-sample regime — due to coldest ambient), and paths
+  to that cluster's medoid hourly/daily weather files.
+- **`Tm_target_C` and `pcm_shortlist` were subsequently retargeted
+  (2026-09-14, see `12_TM_TARGET_RETARGETING.md`)** — this section
+  describes the values as originally set from Objective 1's own MCDM
+  consensus (`Tm_target_C` a flat 57.0°C for every regime, from a
+  climate-blind delivery-anchored formula), which is what
+  `mcdm_topk_by_cluster.csv` still reports and what the table below
+  reflects. **The live `configs/states/uttarakhand.yaml` now has
+  different, per-regime retargeted values** (27.8–42.1°C, and a
+  different PCM shortlist in 4 of 5 regimes) — see doc 12 for the
+  current, actually-used values.
+- **PCM shortlist per regime (Objective 1's original MCDM consensus,
+  before retargeting)** — the Top-3 names per cluster from
+  `mcdm_topk_by_cluster.csv`. **PureTemp 58 (Tm = 58.0 °C)** is
+  rank-1 in regimes 0, 2, 3, 4. **Regime 1 is the outlier**: its rank-1 PCM
+  is **PureTemp 53** (Tm = 53.0 °C, a better match for this regime's colder
+  operating temperatures), with n-Hexacosane (C26) and Myristic acid (C14)
+  as rank-2/3 — none of which overlap with any other regime's shortlist.
+  Regimes 2 and 3 shortlist "savE® OM55" as rank-2. Regime 1 is also the
+  only regime where retargeting later found no better candidate, so this
+  original shortlist is what's actually still in use there (doc 12).
 - **Demand profile**: 300 L/day, `data/demand/demand_profile_uttarakhand.csv`
   — matches `04b_climate_signature.py`'s `L_required` assumption
   (Avargani et al. 2021), per `build_demand_profile.py`'s own docstring.
 - **Climate-signature sanity check**: Annual GHI_daily_kWh across the 5
-  clusters is 4.57–4.93 kWh/m²/day (inside the 4.5–5.0 expected band for
-  Uttarakhand). RH_mean was not captured in the console output at
-  config-write time — cross-check against `cluster_profiles_uttarakhand.csv`
-  once data is copied in locally.
+  clusters is 4.57–4.90 kWh/m²/day (inside the 4.5–5.0 expected band for
+  Uttarakhand) — essentially unchanged by the re-clustering, since GHI
+  varies little across regimes here. RH_mean was not captured in the console
+  output at config-write time — cross-check against
+  `cluster_profiles_uttarakhand.csv` directly if needed.
 
 ## Known, documented Objective 1 limitations carried forward unchanged
 

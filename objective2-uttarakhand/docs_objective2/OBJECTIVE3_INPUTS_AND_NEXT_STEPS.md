@@ -6,11 +6,25 @@ document is the hand-off: what Objective 3 receives, what it must NOT
 touch, and the concrete first steps for building the
 charge/discharge/bypass controller.
 
-**The formal boundary** (do not cross it in either direction): Objective 1
-selected the PCM. Objective 2 selected the physical hardware design and
-validated operating envelope, below. **Objective 3 selects the real-time
+**The formal boundary, updated (2026-09-14) to reflect the Tm-retargeting
+revision** (do not cross it in either direction from here on): Objective 1
+still owns PCM *database* curation and feasibility screening (latent heat,
+cycling, supercooling, corrosion checks — unchanged). **Objective 2 now
+also re-derives the target melting point and re-picks which specific PCM
+each regime uses**, when Objective 1's climate/delivery-anchored target
+doesn't match this tank's real simulated operating temperature (doc 12,
+`12_TM_TARGET_RETARGETING.md`) — this is a deliberate, documented
+exception to the original "Objective 1 picks the PCM" boundary, ported
+from Tamil Nadu's identical revision, not an accidental scope creep. As of
+this hand-off, 4 of 5 regimes' selected PCM (RT42/RT44HC/savE® OM42) is
+**different from** Objective 1's own MCDM rank-1 recommendation
+(PureTemp 58/53) for that regime — this is intentional and physically
+justified, not an error to reconcile. **Objective 3 selects the real-time
 action — nothing else.** It must not change PCM identity, capsule
-geometry, tank volume, safety limits, or the physics model released here.
+geometry, tank volume, safety limits, or the physics model released here;
+it consumes whatever the frozen contract specifies without needing to
+know whether that PCM traces back to Objective 1's original pick or
+Objective 2's retargeting.
 
 ---
 
@@ -22,8 +36,9 @@ frozen, machine-readable package — read it programmatically, don't
 hand-copy numbers out of it. It contains, per climate regime:
 
 - the selected PCM (or "plain tank, no PCM") with its complete property record
-- capsule geometry (diameter, count, PCM mass, conduction distance) — only
-  regime 2 has capsules; regimes 0, 1, 3, 4 are plain-tank designs
+- capsule geometry (diameter, count, PCM mass, conduction distance) — **all
+  5 regimes now have a real PCM capsule design** (scope correction,
+  `08_PHASE7_OPTIMIZATION.md`); none are plain-tank in the final contract
 - tank/collector configuration
 - the flow envelope (nominal + min/max), pressure limit, pump efficiency
 - delivery-temperature target (50°C, matching Objective 1's `T_DELIVERY_C`)
@@ -51,33 +66,45 @@ hand-copy numbers out of it. It contains, per climate regime:
 Read `00_MASTER_OVERVIEW.md` and `08_PHASE7_OPTIMIZATION.md` before writing
 a reward function — the physical story matters for reward shaping:
 
-- **4 of 5 regimes selected a plain sensible-water tank, not a PCM
-  design.** Only regime 2 has an actual PCM (PureTemp 58, Tm=58°C) in its
-  environment contract. A controller for regimes 0, 1, 3, 4 is controlling
-  a conventional solar water heater with no phase-change dynamics at all —
-  `f_melt`, `T_pcm_t`, and PCM-related safety limits are not meaningful
-  state for those regimes' contracts (they're present in the schema for
-  structural consistency, but always 0/derived-from-water for the no-PCM
-  regimes).
-- **Regime 2's PureTemp 58 does cycle meaningfully** (mean f_melt ≈ 34.4%
-  in the matched-Tm capability check; the selected design cycles at a lower
-  but non-negligible rate under real operating conditions). This is the
-  one Uttarakhand regime where phase-change control logic is physically
-  relevant. The cold climate (Ta_mean~9.4°C, T_mains=7.4°C) drives the
-  tank into the PCM's operating range more reliably than the warmer regimes.
-- **Uttarakhand's solar fractions are structurally low (28–41% nominal).**
+- **Every regime now has a genuine PCM design, retargeted to the tank's
+  own real operating temperature — but only regime 1 is temperature-safe
+  at nominal conditions.** After the Tm-target retargeting (doc 12), every
+  regime's selected PCM beats plain tank on useful energy (0.01–0.14%, a
+  real if narrow margin — see `08_PHASE7_OPTIMIZATION.md`). But regimes 0,
+  2, 3 and 4's selected designs **exceed their own 65°C PCM temperature
+  limit** at nominal conditions (margins −4.2°C to −7.8°C) — a well-matched
+  PCM still tracks water temperature past the safety limit on the sunniest
+  days, since nothing in this design actively caps peak temperature.
+  **This is now the central fact Objective 3's safety shield exists to
+  handle** — it is not an edge case, it is the expected nominal behavior
+  for 4 of 5 regimes.
+- **`f_melt` and PCM-related state ARE meaningful for regimes 0, 2, 3, 4
+  now** (they were near-degenerate under the old climate-anchored PCMs).
+  Regime 1 is the exception: its PCM (Myristic acid (C14), Tm=53°C) is
+  still climate-mismatched — no retargeted candidate exists in the
+  database for its cold ~28°C operating range (doc 12) — so it barely
+  cycles and behaves closer to inert sensible mass. A controller trained
+  across all 5 regimes should expect real phase-change dynamics in 4 of
+  them and near-degenerate ones in regime 1.
+- **Uttarakhand's solar fractions are structurally low (28–41% nominal) —
+  this is a genuine climate finding and will not resemble Tamil Nadu's or
+  Rajasthan's much warmer-climate results.** Uttarakhand's mains water
+  (7.45–21.82°C) is far colder than Tamil Nadu's/Rajasthan's (~24–26°C);
   Phase 8's Monte Carlo shows P(meets demand, SF≥50%) = 0.0% across all
-  5 regimes — this is a climate consequence, not a control failure to fix.
-  Objective 3's reward function should not penalize the controller for
-  failing to hit a 50% solar fraction that the hardware physically cannot
-  reach under Uttarakhand's conditions. Consider using the regime-specific
-  nominal solar fraction as the reference point rather than the fixed 50%
-  bar.
-- **Regime 2's PCM design is the safest under robustness analysis
-  (P(temp-safe)=100.0%)**. The cold climate prevents overheating naturally.
-  Regimes 0 and 3 (the warmest plain-tank designs) are the most
-  problematic for temperature safety. Objective 3's bypass logic matters
-  most for those regimes.
+  5 regimes under the identical fixed-threshold methodology those states
+  use. Objective 3's reward function should not penalize the controller
+  for failing to hit a 50% solar fraction the hardware physically cannot
+  reach here. Consider using the regime-specific nominal solar fraction as
+  the reference point rather than the fixed 50% bar.
+- **Temperature-safety robustness tracks the nominal margin's sign
+  exactly, and the safe regime is safe for the wrong reason.** Regime 1 is
+  the only robust-to-safety design (100.0% temp-safe across 120 Monte
+  Carlo draws) — but only because its PCM is too mismatched to its own
+  climate to ever get hot. Regimes 0, 2 and 3 (nominal margin ≤ −5°C) are
+  **0.0% temp-safe** — every single Monte Carlo draw breaches the limit.
+  Regime 4 (margin −4.2°C, the smallest deficit) manages 7.5%. **Objective
+  3's active bypass/discharge control is a hard deployment precondition
+  for regimes 0, 2, 3 and 4** — not a nice-to-have refinement.
 - **No auxiliary/backup heater exists in this system.** "Unmet energy" in
   every Objective 2 metric means genuinely undelivered heat. If Objective
   3's reward function assumes a backup exists, that assumption must be
@@ -133,10 +160,14 @@ a reward function — the physical story matters for reward shaping:
   designs' *hourly* shape exists yet (medoid-only, 40-hr cut list) —
   Objective 3's own weather train/val/test split is still genuinely
   unstarted work.
-- No widened PCM design bounds and no re-investigation of the `Tm_target_C`
-  derivation (see `09_NEXT_STEPS.md`) — if the project later decides to
-  revisit either, Objective 3's contract will need to be regenerated from
-  a new Phase 7 run, and any trained controller re-validated against it.
+- The `Tm_target_C` retargeting and design-bounds widening (docs 12–13)
+  are now applied, but did **not** resolve the overheat-safety finding —
+  they closed the useful-energy gap, not the temperature-safety one (see
+  `09_NEXT_STEPS.md`). If the PCM database is later expanded with
+  candidates suitable for regime 1's cold operating range, or if active
+  overheat mitigation changes what "optimal" means, Objective 3's contract
+  will need to be regenerated from a new Phase 7 run, and any trained
+  controller re-validated against it.
 - Phase 8's robustness analysis covers PCM-property, weather-noise, demand
   and mains-temperature uncertainty only — pump/heat-transfer-coefficient
   and manufacturing-tolerance uncertainty (also listed in the full framework

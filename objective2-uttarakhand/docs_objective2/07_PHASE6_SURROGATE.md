@@ -39,28 +39,31 @@ never substituted for an actual thermophysical property (framework doc §2.3).
 ## Models trained
 
 ExtraTreesRegressor (300 trees) per target, each compared against a plain
-LinearRegression baseline on the identical train/holdout split (115
+LinearRegression baseline on the identical train/holdout split (112
 train / 30 holdout valid rows), plus one ExtraTreesClassifier for
 feasibility (trained on all 215 rows, valid + invalid).
 
-## Hold-out results (actual run)
+## Hold-out results (final run: post Tm-retargeting + bounds widening)
 
 | Target | ExtraTrees RMSE | ExtraTrees R² | Linear RMSE | Linear R² | Tree beats linear? |
 |---|---|---|---|---|---|
-| useful_energy_kWh | 0.540 kWh | 0.99989 | 0.668 kWh | 0.99983 | Yes |
-| solar_fraction | 0.000250 | 0.99997 | 0.000370 | 0.99994 | Yes |
-| unmet_energy_kWh | 0.952 kWh | 0.999998 | 1.378 kWh | 0.999995 | Yes |
-| pump_energy_kWh | 4.38e-9 kWh | 0.9535 | 1.44e-10 kWh | 0.99995 | **No** |
-| pcm_mass_kg | 0.0258 kg | 0.99964 | 0.0431 kg | 0.99898 | Yes |
+| useful_energy_kWh | 0.6148 kWh | ~1.000 | 1.776 kWh | 0.998 | Yes |
+| solar_fraction | 0.0002913 | ~1.000 | 0.0009963 | ~1.000 | Yes |
+| unmet_energy_kWh | 1.197 kWh | ~1.000 | 4.477 kWh | ~1.000 | Yes |
+| pump_energy_kWh | 7.297e-9 kWh | 0.929 | 2.642e-10 kWh | ~1.000 | **No** |
+| pcm_mass_kg | 0.2711 kg | 0.977 | 0.1451 kg | 0.994 | **No** |
 | feasibility (accuracy / infeasible-recall) | 1.000 / 1.000 | — | — | — | — |
 
 **Honest finding: linear regression ties or beats the tree for
-`pump_energy_kWh`.** At the PCM volume fractions reachable within the
-frozen bounds (≤12.9%, see Phase 2 doc), the packed-capsule bed is sparse
-enough that the Ergun equation's *viscous* (linear-in-velocity) term
-dominates — so pump power really is close to linear in flow rate in this
-regime, and a linear model has no disadvantage. This is reported as-is
-rather than only showing the metric that flatters the tree-based model.
+`pump_energy_kWh` and `pcm_mass_kg`.** At the PCM volume fractions this
+training set spans (up to ~16.8%, doc 13), the packed-capsule bed is still
+sparse enough that the Ergun equation's *viscous* (linear-in-velocity)
+term dominates for pump power. `pcm_mass_kg` is fundamentally
+`density × volume_fraction × tank_volume` — an already-near-linear
+relationship in the design variables the tree has to work harder to beat,
+especially with the widened design space adding more PCM-mass range for a
+linear fit to already capture well. This is reported as-is rather than
+only showing the metric that flatters the tree-based model.
 
 **Feasibility classifier: 100% hold-out accuracy and 100% recall on the
 infeasible class (15 infeasible hold-out examples).** This is expected,
@@ -72,19 +75,21 @@ rows spanning it.
 ## Error breakdown by regime and by PCM (`surrogate_error_by_group.csv`)
 
 MAE for `useful_energy_kWh` by regime (30 holdout rows total, 6 per regime):
-- Regime 0: 0.263 kWh
-- Regime 1: 0.430 kWh
-- Regime 2: 0.255 kWh
-- Regime 3: 0.514 kWh
-- Regime 4: 0.536 kWh
+- Regime 0: 0.320 kWh
+- Regime 1: 0.899 kWh
+- Regime 2: 0.517 kWh
+- Regime 3: 0.291 kWh
+- Regime 4: 0.343 kWh
 
-MAE for `useful_energy_kWh` by PCM:
-- n-Octacosane (C28): 0.201 kWh
-- PureTemp 58: 0.382 kWh
-- PlusICE A58: 0.422 kWh
-- Palmitic-stearic acid/Expanded graphite: 0.906 kWh (highest — this PCM
-  appears only in regimes 1 and 3 and has fewer training rows; noted but
-  not a blocker at the overall R²>0.9998 level)
+MAE for `useful_energy_kWh` by PCM (post-retargeting shortlist — 6
+distinct PCMs, regime 1 still isolated on its own fallback shortlist):
+- savE® OM42: 0.199 kWh (n=8)
+- RT44HC: 0.346 kWh (n=8)
+- PureTemp 53: 0.352 kWh (n=2)
+- RT42: 0.557 kWh (n=8)
+- Myristic acid (C14): 0.904 kWh (n=2)
+- n-Hexacosane (C26): 1.441 kWh (highest, n=2 — smallest sample, only
+  appears in regime 1's fallback shortlist)
 
 No regime or PCM stands out as a systematic weak spot at a level that would
 invalidate the surrogate's use as a proposal ranker for Phase 7.

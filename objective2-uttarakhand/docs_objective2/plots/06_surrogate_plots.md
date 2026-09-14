@@ -17,8 +17,8 @@ dashed diagonal line = perfect agreement ($y = x$).
 **What we infer**:
 - Points align directly on the $y = x$ parity diagonal across the full operational
   range for both targets:
-  - $E_{\text{useful}}$: $R^2 = 0.99989$, $\text{MAE} = 0.40\text{ kWh}$ ($< 0.03\%$ error)
-  - $\text{SF}$: $R^2 = 0.99997$, $\text{MAE} = 0.00016$
+  - $E_{\text{useful}}$: $R^2 \approx 1.000$, $\text{RMSE} = 0.6148\text{ kWh}$ ($< 0.04\%$ error)
+  - $\text{SF}$: $R^2 \approx 1.000$, $\text{RMSE} = 0.0002913$
 - There is no fan-out, heteroscedasticity, or boundary curvature at either end of
   the performance spectrum.
 - The 30 hold-out cases span all 5 climate regimes and all shortlisted PCM types,
@@ -43,11 +43,11 @@ regressor for useful thermal energy.
   and PCM thermal properties (`latent_heat_kJ_kg`, `Tm_C`) register lower relative
   importance across the statewide dataset.
 - This is a direct physical consequence of Uttarakhand's geography:
-  - Annual useful energy varies by over $150\text{ kWh}$ across climate regimes
-    (from $1527\text{ kWh}$ in high-elevation Regime 2 to $1675\text{ kWh}$ in
-    lower-elevation Regime 0).
+  - Annual useful energy varies by nearly $100\text{ kWh}$ across climate regimes
+    (from $1526\text{ kWh}$ in Regime 1 — the coldest, smallest-sample regime —
+    to $1626\text{ kWh}$ in Regimes 2 and 4, essentially tied for highest).
   - Within any single regime, geometric and PCM optimization alters useful energy
-    by only $1–5\text{ kWh}$ ($< 0.3\%$).
+    by only $\sim 1\text{ kWh}$ ($< 0.1\%$ — see `08_PHASE7_OPTIMIZATION.md`).
 - An unbiased machine-learning model that accounts for variance naturally identifies
   macro-climate inputs as the primary drivers of total delivered energy.
 

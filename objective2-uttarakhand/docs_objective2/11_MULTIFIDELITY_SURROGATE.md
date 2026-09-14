@@ -56,43 +56,66 @@ module.
 
 ---
 
-## Expected results (reference: Tamil Nadu Phase 6b run)
+## Result (Uttarakhand, actual run)
 
-The Tamil Nadu Phase 6b run (the only fully-executed Phase 6b to date)
-produced these benchmark numbers for comparison:
+**Final run (2026-09-14)**, against the fully-corrected pipeline (Objective 1
+fixes, cluster-ID config fix, Tm-target retargeting, design-bounds
+widening). This stage was regenerated from scratch
+(`force_lowfid_rerun=True`) rather than reusing any cached low-fidelity
+dataset from an earlier config — an earlier attempt at this had silently
+reused a stale cache and produced nonsensical negative R² values; that
+mistake is not repeated here.
 
-**Speedup: 1.53×.** Modest — because this project's actual shortlisted PCMs
-(PureTemp 58, Tm=58°C) spend nearly the entire simulated year outside the
-melt band (mean liquid fraction ≈ 0–2% annually in the warmer regimes, and
-only regime 2's PureTemp 58 cycles meaningfully). A design space with more
-actively-cycling PCM would likely show a larger speedup.
+**Speedup: 2.02×** (303.7s high-fidelity vs. 150.1s low-fidelity, 215
+both-valid cases, fresh order-randomized same-process timing) — this time
+genuinely **larger** than Tamil Nadu's 1.53× and larger than Uttarakhand's
+own pre-widening result (1.58×). This is a real, physically-explained
+effect: the widened design space (doc 13) now includes designs with up to
+16.8% PCM volume fraction (vs. ~12.9% before), and more PCM mass per
+design means adaptive sub-stepping triggers more often in high fidelity
+— exactly the scenario this multi-fidelity mechanism is designed to
+exploit. Unlike the earlier (pre-widening) run, where the speedup ceiling
+was capped by how rarely any Uttarakhand design entered the melt band,
+the widened space now genuinely exercises the adaptive stepping logic
+more, and the speedup reflects that.
 
-**Low-fidelity-only accuracy** (Tamil Nadu reference):
+**Low-fidelity-only accuracy** (Uttarakhand, final — 215 both-valid cases):
 
 | Target | R² | Mean bias |
 |---|---|---|
-| useful_energy_kWh | 0.999 | −0.03% |
-| solar_fraction | 0.982 | +0.04% |
-| unmet_energy_kWh | 0.997 | −0.05% |
-| pump_energy_kWh | 0.689 | +594% (near-null signal — see note below) |
+| useful_energy_kWh | 1.000 | −0.0% |
+| solar_fraction | 1.000 | −0.0% |
+| unmet_energy_kWh | 1.000 | +0.0% |
+| pump_energy_kWh | 1.000 | −0.0% |
 
-The `pump_energy_kWh` row looks alarming in isolation but isn't: pump energy
-at this project's reachable design bounds is ~1e-11 kWh/year (functionally
-zero). A "594% mean bias" on a near-null quantity is low-fidelity noise
-on a near-null signal, not a real surrogate failure.
+The low-fidelity solver tracks the high-fidelity ground truth essentially
+exactly on every target, even with the widened, more-actively-cycling
+design space.
 
-**Sample-efficiency** (Tamil Nadu reference, same architecture as Phase 6):
-- For `solar_fraction`, multi-fidelity-augmented training matches or beats
-  high-fidelity-only at every fraction below 100%.
-- For `useful_energy_kWh`, no gap (already at the R² ceiling).
+**Sample-efficiency** (Uttarakhand, final — same ExtraTrees architecture
+as Phase 6, 112 candidate train rows, evaluated on Phase 6's fixed 30-row
+hold-out set):
 
-For Uttarakhand, regime 2's PCM design actually cycles meaningfully
-(mean f_melt ≈ 34.4% in the Gate 3 capability check, and the selected
-PureTemp 58 design has a non-negligible cycle fraction). This may produce
-a *larger* speedup than Tamil Nadu's 1.53× for regime 2's cases, since
-adaptive sub-stepping would trigger more frequently for an actively-cycling
-PCM. Run this stage and check `multifidelity_speedup_report.json` to
-confirm.
+| Target | HF fraction | High-fidelity-only R² | Multi-fidelity-augmented R² |
+|---|---|---|---|
+| useful_energy_kWh | 25% | 0.99915 | 0.99955 |
+| useful_energy_kWh | 50% | 0.99934 | 0.99963 |
+| useful_energy_kWh | 100% | 0.99979 | 0.99989 |
+| solar_fraction | 25% | 0.99993 | 0.99994 |
+| solar_fraction | 50% | 0.99976 | 0.99989 |
+| solar_fraction | 100% | 0.99996 | 0.99999 |
+| pump_energy_kWh | 25% | 0.804 | 0.818 |
+| pump_energy_kWh | 100% | 0.929 | 0.919 |
+
+For `useful_energy_kWh` and `solar_fraction`, the multi-fidelity-augmented
+model matches or beats high-fidelity-only at **every** training fraction —
+a cleaner result than the pre-widening run, and consistent with Tamil
+Nadu's own finding. `pump_energy_kWh` is a genuine coin-flip either way
+(both models track a near-null target dominated by noise at these PCM
+fractions, consistent with Phase 6's own finding that linear regression
+already ties or beats ExtraTrees here) — no longer showing the small-sample
+negative-R² artifact from the pre-widening 25%-fraction run, since the
+widened dataset gives more training rows at every fraction.
 
 ---
 

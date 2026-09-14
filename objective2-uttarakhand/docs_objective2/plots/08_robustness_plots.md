@@ -5,6 +5,9 @@ Data source: `results/uttarakhand/robustness_summary.csv` (5 rows, each aggregat
 120 full-year Monte Carlo simulator re-runs under a 10-year historical weather ensemble)
 and `deployable_design_per_regime.csv` for nominal unperturbed benchmarks.
 
+**This is the final version of this doc (2026-09-14)**, run against the
+Tm-retargeted, bounds-widened, scope-corrected (PCM-only) Phase 7 designs.
+
 ---
 
 ## Plot 1 — Robustness probabilities per regime
@@ -18,34 +21,39 @@ independent annual simulations:
 With reference lines at $75\%$ (demand threshold) and $95\%$ (temperature safety threshold).
 
 **What we infer**:
-- **Why demand reliability ($P \ge 50\%$) is 0.0% statewide**:
-  - Unlike self-referential metrics (which declare any nominal result "100% reliable"),
-    the unified framework applies fixed, cross-state standards ($\text{SF} \ge 0.50$).
-  - In Uttarakhand, cold mains feed water ($7.4^\circ\text{C}$ in high-elevation
-    Regime 2 to $21.8^\circ\text{C}$ in valley Regime 3) combined with a high thermal
-    draw (300 L/day at $60^\circ\text{C}$) in an unassisted 50 L tank caps annual
-    solar fractions nominally between $28.0\%$ and $40.7\%$.
-  - Consequently, no unassisted 50 L solar collector system can achieve $\text{SF} \ge 50\%$
-    under real historical weather, establishing the critical engineering requirement
-    for an auxiliary heating boost in Objective 3.
-- **Delivery temperature ($P \ge 45\%$)**:
-  - Regimes 0 and 3 reach $23.3\%$ and $22.5\%$ delivery probability, while colder
-    Regimes 1, 2, and 4 stay below $3\%$.
-- **Temperature safety ($P_{\text{safe}}$)**:
-  - **Regime 2 (PureTemp 58 design)** achieves an outstanding **100.0% temperature
-    safety** ($0.0\%$ violation probability across all 120 weather scenarios).
-    The PCM's latent buffer absorbs peak summer surges while cold mains water
-    prevents scalding.
-  - Plain water tank regimes suffer occasional heat build-up under peak solar
-    irradiance without auxiliary heat dumping ($P_{\text{violation}} = 55.8\%$ in
-    Regime 0, $35.8\%$ in Regime 3, $16.7\%$ in Regime 4, $8.3\%$ in Regime 1).
+- **Blue bars are invisible everywhere — $P(\text{meets demand}) = 0.0\%$ in
+  all 5 regimes.** Uttarakhand's cold mains water (7.45–21.82°C) combined
+  with a high thermal draw (300 L/day at 60°C) in an unassisted 50 L tank
+  caps nominal solar fractions at 28.1–40.9% — 10–22 points below the
+  fixed, cross-state 50% bar. This is a genuine climate finding: Tamil
+  Nadu's and Rajasthan's much warmer mains water (~24–26°C) lets their
+  designs clear this same bar nominally, so their own Phase 8 plots show
+  70–100% demand-reliability bars — Uttarakhand's plot is not supposed to
+  look like theirs.
+- **Purple bars are also low everywhere** (0.0–29.2%) — regime 3 (warmest
+  mains) reaches the highest delivery-reliability at 29.2%.
+- **Green bars now split sharply into "essentially zero" or "essentially
+  certain," directly reflecting each design's nominal safety margin
+  sign**: regimes 0, 2 and 3 (nominal margin ≤ −5°C) are **0.0%**
+  temperature-safe — every single one of 120 Monte Carlo draws breaches
+  the limit, because the nominal design is already several degrees over
+  before any uncertainty is even added. Regime 4 (nominal margin −4.2°C,
+  the smallest deficit among the unsafe regimes) manages **7.5%** — a
+  handful of favorable draws squeak under the limit. **Regime 1** is the
+  sole green bar at **100.0%** — not because its design is well-engineered
+  for safety, but because its PCM (Myristic acid (C14)) is too
+  climate-mismatched to its own ~28°C operating range to ever activate
+  enough to threaten the limit (see `12_TM_TARGET_RETARGETING.md`).
 
 **How to justify it**: *"Using fixed, state-independent thresholds and a real
-10-year historical weather ensemble reveals the true engineering reality of Uttarakhand:
-unassisted 50 L solar thermal systems cannot meet 50% solar fraction in cold climates,
-necessitating hybrid auxiliary heating in Objective 3. Crucially, Regime 2's PureTemp 58
-design proves 100% immune to overheating, validating the thermal safety benefit
-of phase-change storage."*
+10-year historical weather ensemble reveals two things at once: Uttarakhand's
+climate structurally cannot meet a 50% demand bar with this hardware sizing
+(genuinely different from Tamil Nadu's and Rajasthan's warmer-climate results,
+not a modelling error), and — more urgently — the scope-corrected optimizer's
+energy-optimal PCM choice is temperature-unsafe at nominal conditions in 4 of
+5 regimes, with Monte Carlo confirming this is not a rare edge case but the
+near-certain outcome. Objective 3's active bypass/discharge control is not
+optional for regimes 0, 2, 3 and 4."*
 
 ---
 
@@ -57,18 +65,20 @@ weather draws per regime, with a circle marking the distribution median ($P_{50}
 and a black diamond indicating the single nominal unperturbed design point from Phase 7.
 
 **What we infer**:
-- **Regime 0**: $[1576.5, 1755.4]\text{ kWh}$, Median $= 1678.5\text{ kWh}$, Nominal $= 1675.3\text{ kWh}$
-- **Regime 1**: $[1522.6, 1727.5]\text{ kWh}$, Median $= 1629.0\text{ kWh}$, Nominal $= 1625.3\text{ kWh}$
-- **Regime 2**: $[1435.4, 1650.1]\text{ kWh}$, Median $= 1514.6\text{ kWh}$, Nominal $= 1527.2\text{ kWh}$
-- **Regime 3**: $[1479.9, 1659.1]\text{ kWh}$, Median $= 1557.8\text{ kWh}$, Nominal $= 1563.8\text{ kWh}$
-- **Regime 4**: $[1541.9, 1718.5]\text{ kWh}$, Median $= 1630.7\text{ kWh}$, Nominal $= 1624.0\text{ kWh}$
+- **Regime 0** (RT42): $[1472.5, 1624.0]\text{ kWh}$, Median $= 1542.1\text{ kWh}$, Nominal $= 1539.0\text{ kWh}$
+- **Regime 1** (Myristic acid (C14)): $[1417.6, 1654.4]\text{ kWh}$, Median $= 1531.9\text{ kWh}$, Nominal $= 1525.9\text{ kWh}$
+- **Regime 2** (RT42): $[1514.0, 1716.7]\text{ kWh}$, Median $= 1617.9\text{ kWh}$, Nominal $= 1626.4\text{ kWh}$
+- **Regime 3** (RT42): $[1470.9, 1645.0]\text{ kWh}$, Median $= 1548.2\text{ kWh}$, Nominal $= 1565.5\text{ kWh}$
+- **Regime 4** (savE® OM42): $[1538.7, 1704.2]\text{ kWh}$, Median $= 1630.8\text{ kWh}$, Nominal $= 1625.9\text{ kWh}$
 
 - In every regime, the nominal diamond sits comfortably within the interval, closely
   aligned with the distribution median.
 - This demonstrates that Phase 7's single-year optimization did not select an
   unstable or fortunate outlier; rather, the nominal selections accurately reflect
-  expected multi-year operational performance.
+  expected multi-year operational performance — the useful-energy picture is
+  robust even though the temperature-safety picture, above, is not.
 
 **How to justify it**: *"The 120-draw historical weather ensemble confirms that
-our deployable design benchmarks are robust and centered within their multi-year
-probability distributions, providing dependable baseline targets for Objective 3."*
+our deployable design benchmarks are energy-robust and centered within their
+multi-year probability distributions — the fragility this project reports is
+specifically a temperature-safety one, not an energy-delivery one."*

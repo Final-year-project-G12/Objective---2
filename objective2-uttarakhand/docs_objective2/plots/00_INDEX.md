@@ -26,7 +26,7 @@ specific, deterministic cases through the real simulator. Re-running
 | `02_geometry_plots.md` | Phase 2 — design-space validity map, Ergun hydraulics curve |
 | `03_simulator_plots.md` | Phase 3 — temperature/melt-fraction time series, annual energy breakdown |
 | `04_verification_plots.md` | Phase 4 — Gate 1 residuals, Gate 3 baseline comparison, Gate 5 sensitivity |
-| `05_doe_plots.md` | Phase 5 — DOE sample coverage (215 cases), outcome distribution (145 valid) |
+| `05_doe_plots.md` | Phase 5 — DOE sample coverage (215 cases), outcome distribution (142 valid, 73 rejected) |
 | `06_surrogate_plots.md` | Phase 6 — parity plots (hold-out set), ExtraTrees feature importance |
 | `06b_multifidelity_plots.md` | Phase 6b — multi-fidelity speedup and sample-efficiency methodology |
 | `07_optimization_plots.md` | Phase 7 — Pareto view per regime, surrogate-vs-simulator agreement, safety compliance |
@@ -35,10 +35,10 @@ specific, deterministic cases through the real simulator. Re-running
 ## One-line justification per phase (for a viva or report caption)
 
 - **Phase 2**: "The geometry engine's validity boundary is a sharp, vertical line exactly where the physics and math dictate (capsule diameter = 0.04 m for conduction thickness ≥ 0.02 m), proving deterministic constraint enforcement without arbitrary cuts."
-- **Phase 3**: "The grey-box simulator produces physically plausible daily thermal cycles tracking Himalayan irradiance, with a distinct melting plateau at PureTemp 58's 58 °C transition point."
-- **Phase 4**: "Energy is conserved to within 0.0028% across 5 diverse operational cases (Gate 1 PASS), while Gate 3 proves the simulator rewards an operating-matched PCM (+0.56% SF) even when the candidate PCM's Tm is too high for this unassisted 50 L tank."
-- **Phase 5**: "The DOE covers the full permitted 3D design space smoothly across all 5 Himalayan climate regimes, rejecting exactly 70/215 cases (32.6%) strictly due to the geometric thickness limit."
-- **Phase 6**: "Surrogate predictions align with simulator ground truth on unseen holdout cases with R² = 0.9999 for useful energy and solar fraction, proving search-readiness."
-- **Phase 6b**: "Multi-fidelity modeling bypasses adaptive sub-stepping to deliver a fast low-fidelity proxy that recovers holdout accuracy under sharply constrained high-fidelity budgets."
-- **Phase 7**: "Surrogate and simulator agree to 0.02% mean error across 100 candidate designs, confirming plain tank as the optimal deployable design in 4/5 regimes, while Regime 2 uniquely deploys PureTemp 58 (0.39 kg) within safe temperature limits."
-- **Phase 8**: "Under a 10-year historical weather ensemble and fixed cross-state reliability thresholds, colder mains temperatures (7.4–21.8 °C) keep solar fractions structurally below 50%, while Regime 2's PCM design achieves 100% temperature safety (zero overheating violations across all 120 draws)."
+- **Phase 3**: "The grey-box simulator produces physically plausible daily thermal cycles tracking Himalayan irradiance, with a distinct melting plateau at RT42's retargeted 40.5 °C transition point."
+- **Phase 4**: "Energy is conserved to within 0.0047% across 5 diverse operational cases (Gate 1 PASS), while Gate 3 shows the retargeted PCM (RT42) now cleanly beats plain tank (39.24% vs 39.01% SF) — no capability-check workaround needed, unlike the pre-retargeting climate-anchored shortlist."
+- **Phase 5**: "The DOE covers the full, now-widened 3D design space smoothly across all 5 Himalayan climate regimes, rejecting exactly 73/215 cases (34.0%) strictly due to the geometric thickness limit, and reaching up to 16.8% PCM volume fraction (up from ~12.9% pre-widening)."
+- **Phase 6**: "Surrogate predictions align with simulator ground truth on unseen holdout cases with R² ≈ 1.000 for useful energy and solar fraction, proving search-readiness even after the design-space widening."
+- **Phase 6b**: "Multi-fidelity modeling bypasses adaptive sub-stepping for a 2.02x runtime speedup (up from 1.58x pre-widening, and genuinely larger than Tamil Nadu's 1.53x, since the widened space includes more actively-cycling PCM mass), and recovers holdout accuracy under sharply constrained high-fidelity budgets for both useful_energy_kWh and solar_fraction."
+- **Phase 7**: "Surrogate and simulator agree to 0.03% mean error across 400 candidate designs; after Tm-target retargeting, every regime's best PCM candidate now genuinely beats its best plain-tank candidate (0.01–0.14% useful energy) — but the scope-corrected selection rule excludes plain tank from winning at all, and 4 of 5 regimes' selected PCM designs exceed the 65°C safety limit at nominal conditions, with only Regime 1's climate-mismatched PCM staying safe."
+- **Phase 8**: "Under a 10-year historical weather ensemble and fixed cross-state reliability thresholds, colder mains temperatures (7.45–21.82 °C) keep solar fractions structurally below 50% for every regime — a genuine climate finding, not comparable to Tamil Nadu's or Rajasthan's much warmer-climate results — while temperature safety collapses to 0.0% in 3 of 5 regimes under Monte Carlo uncertainty, exactly tracking each design's already-negative nominal margin."

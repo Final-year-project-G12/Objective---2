@@ -37,12 +37,24 @@ then re-run Phase 2–4 too.
 See `NEEDS_LOCAL_DATA.md` for the full checklist of what must exist locally
 before running the pipeline stages below.
 
-## 1. Phase 1 — nothing to execute directly
+## 1. Phase 1 — nothing to execute directly (unless retargeting/widening, see below)
 
 `configs/system_config_shared.yaml`, `configs/design_bounds_shared.yaml`
-and `configs/states/uttarakhand.yaml` are static, already-frozen files —
-open and read them, don't run them. Every Phase 2/3/4 command below
-implicitly exercises the Phase 1 loader (`src/io_utils.py`).
+and `configs/states/uttarakhand.yaml` are static, frozen files — open and
+read them, don't run them under normal use. Every Phase 2/3/4 command
+below implicitly exercises the Phase 1 loader (`src/io_utils.py`).
+
+**Two methodology revisions were applied on top of the originally-frozen
+files (2026-09-14), ported from Tamil Nadu — see `12_TM_TARGET_RETARGETING.md`
+and `13_DESIGN_BOUNDS_WIDENING.md`:**
+```
+python -m src.design.retarget_tm uttarakhand   # rewrites configs/states/uttarakhand.yaml in place
+```
+plus a manual widening of `capsule_count.max` (24→37) in
+`configs/design_bounds_shared.yaml`. Both are already applied in this
+repo; re-run `retarget_tm` only if Objective 1's PCM database or climate
+signature changes again (it will re-derive targets from a fresh
+simulator run and overwrite the config).
 
 ## 2. Phase 2 — geometry & constraint boundary self-test
 
@@ -56,7 +68,7 @@ Runtime: <1 second.
 
 ```
 python pipeline.py --state uttarakhand --stage simulate \
-    --cluster 0 --pcm "PureTemp 58" \
+    --cluster 0 --pcm "RT42" \
     --diameter 0.08 --count 19 --flow 0.030
 ```
 Prints a JSON metrics dict (useful energy, solar fraction, unmet energy,
@@ -66,12 +78,15 @@ fraction stats, energy residual %). Runtime: ~1–4 seconds.
 Flags:
 - `--cluster {0,1,2,3,4}` — Uttarakhand's 5 GMM climate regimes.
 - `--pcm "<name>"` — any name from `data/objective1/pcm_database_uttarakhand.csv`
-  (or one of the per-cluster shortlist names in `configs/states/uttarakhand.yaml`).
-  Key PCMs: "PureTemp 58" (rank-1 in all regimes), "n-Octacosane (C28)",
-  "PlusICE A58" (regimes 0, 2, 4), "Palmitic-stearic acid/Expanded graphite"
-  (regimes 1, 3).
+  (or one of the per-cluster shortlist names in `configs/states/uttarakhand.yaml`,
+  post Tm-target retargeting, doc 12). Key PCMs: "RT42" (rank-1 in regimes
+  0, 2, 4), "RT44HC" (rank-1 in regime 3), "savE® OM42" (rank-2/3 in
+  regimes 0, 2, 3, 4). Regime 1 (coldest, smallest-sample) has no
+  retargeted survivor and keeps its old shortlist: "PureTemp 53"
+  (rank-1), "n-Hexacosane (C26)", "Myristic acid (C14)".
 - `--no-pcm` — run the plain-tank baseline instead (ignores `--pcm`).
-- `--diameter` (m, 0.02–0.08), `--count` (int, 8–24), `--flow` (kg/s, 0.010–0.050).
+- `--diameter` (m, 0.02–0.08), `--count` (int, 8–37, widened from 8–24 — doc 13),
+  `--flow` (kg/s, 0.010–0.050).
 
 To use this from Python directly instead of the CLI:
 ```python
@@ -79,7 +94,7 @@ from src.design.schema import DesignVector
 from src.simulation.run_case import run_case
 
 design = DesignVector(capsule_diameter_m=0.08, n_capsule=19, flow_rate_kg_s=0.030)
-out = run_case("uttarakhand", cluster_id=0, pcm_name="PureTemp 58", design=design)
+out = run_case("uttarakhand", cluster_id=0, pcm_name="RT42", design=design)
 print(out["metrics"])
 ```
 
@@ -105,7 +120,7 @@ this is the slowest stage; the others are fast. Writes:
 - `results/uttarakhand/design_cases.parquet` (+ `.csv`), with a `split`
   column (`train`/`holdout`) added at the end.
 
-Expected result: 145 valid, 70 rejected (all `bounds_violation` — see
+Expected result: 142 valid, 73 rejected (all `bounds_violation` — see
 `docs_objective2/06_PHASE5_DOE.md` for why that's expected).
 
 ## 6. Phase 6 — train and evaluate the surrogate
@@ -132,16 +147,23 @@ this clean).
 python pipeline.py --state uttarakhand --stage optimize
 ```
 Requires Phase 6's trained models. Searches 400 candidates per regime×PCM
-pair with the surrogate, re-runs the top 5 per pair (100 total) in the
-**real** simulator, and applies the pre-declared selection rule. Runtime:
-~3-5 minutes (dominated by the 100 real simulator re-runs). Writes:
+pair with the surrogate, re-runs the top **20** per pair (400 total) in the
+**real** simulator, and applies the scope-corrected, PCM-only selection
+rule (plain tank excluded from winning — doc in `08_PHASE7_OPTIMIZATION.md`).
+Runtime: ~15-20 minutes (dominated by the 400 real simulator re-runs —
+widened from 100 to match Tamil Nadu's more thorough search). Writes:
 - `results/uttarakhand/surrogate_top_candidates.csv` (surrogate-only, intermediate)
-- `results/uttarakhand/optimized_designs.csv` (every simulator-confirmed candidate)
-- `results/uttarakhand/deployable_design_per_regime.csv` (the final selection, one row per regime)
+- `results/uttarakhand/optimized_designs.csv` (every simulator-confirmed candidate, plain tank included for reference)
+- `results/uttarakhand/deployable_design_per_regime.csv` (the final PCM-only selection, one row per regime)
 
-Expected result: mean surrogate-vs-simulator error ~0.02–0.05% (0/100
-large errors); plain tank selected in 4/5 regimes, PureTemp 58 in
-regime 2 (the coldest climate) — see `docs_objective2/08_PHASE7_OPTIMIZATION.md`.
+Expected result: mean surrogate-vs-simulator error ~0.03% (0/400
+large errors); every regime selects a genuine PCM design (RT42 in regimes
+0/2/3, savE® OM42 in regime 4, Myristic acid (C14) in regime 1 — its old,
+climate-mismatched fallback), each beating its own regime's best plain-tank
+candidate by 0.01–0.14% useful energy. **4 of 5 regimes' selected designs
+exceed the 65°C PCM safety limit at nominal conditions** (only regime 1 is
+safe, and only because its PCM barely activates) — see
+`docs_objective2/08_PHASE7_OPTIMIZATION.md` for the full table.
 
 ## 7b. Phase 6b — multi-fidelity surrogate augmentation (optional, extra evidence)
 
@@ -153,15 +175,20 @@ Requires Phase 5's `design_cases.parquet` (does not require Phase 6/7 to
 have run). Re-runs the same 215 DOE case specs at a cheap LOW-fidelity
 simulator setting (fixed timestep, no adaptive sub-stepping —
 `src/simulation/tank_model.py`'s `fidelity="low"`), measures the speedup
-vs. the already-recorded high-fidelity runtime, then runs a
-sample-efficiency experiment. Runtime: a few minutes. Writes:
+vs. a fresh order-randomized same-process runtime benchmark, then runs a
+sample-efficiency experiment. Runtime: ~10 minutes (both fidelities re-run
+across 215 cases, plus the fair-timing benchmark). Writes:
 - `results/uttarakhand/design_cases_lowfid.parquet` (+ `.csv`)
+- `results/uttarakhand/multifidelity_runtime_benchmark.csv`
 - `results/uttarakhand/multifidelity_speedup_report.json`
 - `results/uttarakhand/multifidelity_sample_efficiency.csv`
 
 See `docs_objective2/11_MULTIFIDELITY_SURROGATE.md` for methodology and
-expected results (reference: Tamil Nadu's 1.53× speedup; Uttarakhand's
-regime 2 PCM design may show a larger speedup since it cycles more actively).
+results: **2.02× speedup** (up from 1.58× pre-widening) — this time
+genuinely larger than Tamil Nadu's 1.53×, because the widened design
+space (doc 13) now includes designs with more PCM mass (up to 16.8%
+volume fraction) that cycle more actively and trigger adaptive
+sub-stepping more often in high fidelity.
 
 ## 8. Phase 8 — robustness analysis
 
@@ -177,11 +204,16 @@ scale/offset from real 10-year ensemble + per-hour jitter], demand
 - `results/uttarakhand/robustness_results.csv` (600 rows, every draw)
 - `results/uttarakhand/robustness_summary.csv` (5 rows, per-regime probabilities/intervals)
 
-Expected result: P(meets delivery temperature, SF≥45%) ranges 0.0–23.3%;
+Expected result: P(meets delivery temperature, SF≥45%) ranges 0.0–29.2%;
 P(meets annual demand, SF≥50%) = **0.0% for all 5 regimes** (Uttarakhand's
-nominal solar fractions are structurally below the 50% bar);
-P(temperature-safe) ranges 44.2% (regime 0, plain tank) to **100.0%**
-(regime 2, PureTemp 58 PCM) — see `docs_objective2/10_PHASE8_ROBUSTNESS_HANDOFF.md`.
+nominal solar fractions, 28.1–40.9%, are structurally below the 50% bar —
+a genuine climate finding, not comparable to Tamil Nadu's/Rajasthan's
+much warmer-mains-water results, see doc 10); P(temperature-safe) is
+**0.0%** in regimes 0, 2 and 3 (nominal margin already ≤ −5°C — Monte
+Carlo uncertainty cannot rescue an already-unsafe nominal design), 7.5%
+in regime 4, and **100.0%** in regime 1 (Myristic acid (C14) — safe only
+because it's too climate-mismatched to activate) — see
+`docs_objective2/10_PHASE8_ROBUSTNESS_HANDOFF.md`.
 
 ## 9. Phase 8 — recommendation cards + Objective 3 hand-off contract
 

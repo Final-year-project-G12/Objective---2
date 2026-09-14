@@ -21,18 +21,20 @@ gains of multi-fidelity modeling (addressing audit recommendations citing Lee et
    augmented architecture that includes the cheap low-fidelity prediction as an
    additional feature.
 
-**What we infer**:
-- **Execution speedup**: The low-fidelity solver eliminates ODE sub-stepping
-  overhead, delivering faster batch simulation while preserving macroscopic energy
-  trends.
-- **Sample efficiency**: When the high-fidelity training budget is restricted
-  (e.g., down to 25% or 50% of cases), augmenting the surrogate with the free
-  low-fidelity output recovers a substantial portion of the accuracy gap. This is
-  especially pronounced for metrics sensitive to phase timing like `solar_fraction`.
-- For `useful_energy_kWh`, the baseline high-fidelity surrogate is already near the
-  $R^2 > 0.999$ ceiling with the full dataset, meaning the primary value of
-  multi-fidelity modeling is enabling rapid preliminary design sweeps with far
-  fewer expensive simulations.
+**What we infer** (Uttarakhand, final run post-widening — see `11_MULTIFIDELITY_SURROGATE.md`):
+- **Execution speedup**: $2.02\times$ ($303.7\text{s} \to 150.1\text{s}$ across
+  215 both-valid cases) — genuinely **larger** than Tamil Nadu's $1.53\times$
+  and larger than Uttarakhand's own pre-widening result ($1.58\times$). The
+  widened design space (doc 13) now includes designs with up to 16.8% PCM
+  volume fraction (vs. ~12.9% before), and more PCM mass per design triggers
+  adaptive sub-stepping more often in high fidelity — exactly the scenario
+  this speedup mechanism is designed to exploit.
+- **Sample efficiency**: For `solar_fraction` and `useful_energy_kWh`, the
+  multi-fidelity-augmented model matches or beats high-fidelity-only at
+  every training fraction (e.g. `useful_energy_kWh` at 25%: $0.99955$ vs.
+  $0.99915$; at 100%: $0.99989$ vs. $0.99979$) — a cleaner result than the
+  pre-widening run, with more training rows available at every fraction
+  thanks to the larger valid DOE set.
 
 **How to justify it (viva/report)**: *"Rather than simply citing multi-fidelity
 theory from the literature, our framework implements a concrete two-tier architecture:

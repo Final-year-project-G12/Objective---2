@@ -149,7 +149,7 @@ def apply_selection_rule(state: str, confirmed: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(selected)
 
 
-def run_phase7(state: str, top_n_per_pair: int = 5):
+def run_phase7(state: str, top_n_per_pair: int = 20):
     print(f"Phase 7 -- optimization pass + simulator confirmation, state={state}")
     print("Step 1/3: surrogate proposal search ...")
     candidates = search_all_pairs(state, top_n=top_n_per_pair)
