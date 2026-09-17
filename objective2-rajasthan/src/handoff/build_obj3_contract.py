@@ -35,7 +35,7 @@ DEPLOYABLE_PATH = RESULTS_DIR / "phase7_deployable_design_per_regime.csv"
 ROBUSTNESS_PATH = RESULTS_DIR / "phase8_robustness.csv"
 CONTRACT_PATH = RESULTS_DIR / "obj3_environment_contract_rajasthan.json"
 
-SIM_VERSION = "sim_v1_rajasthan"
+SIM_VERSION = "sim_v2_rajasthan"
 GUARD_BAND_C = 3.0   # precautionary margin below the hard safety limits
 
 
@@ -120,10 +120,11 @@ def write_contract(state: str):
             "selected_design": {
                 "pcm_id": None if is_plain else pcm_id,
                 "is_plain_tank": bool(is_plain),
+                "arrangement_rationale": dep["arrangement_rationale"],
                 "pcm_properties": _pcm_properties(state, pcm_id),
                 "geometry": {
                     "capsule_shape": "sphere",
-                    "capsule_arrangement": "staggered",
+                    "capsule_arrangement": dep["arrangement"],
                     "capsule_diameter_m": round(float(dep["capsule_diameter_m"]), 5),
                     "n_capsule": int(dep["n_capsule"]),
                     "pcm_thickness_m": round(float(dep["geom_pcm_thickness_m"]), 5),
@@ -261,6 +262,12 @@ def write_contract(state: str):
             "widened design bounds to reach 15-20% PCM volume fraction (Phase-0-gate decision)",
             "experimental (hardware) validation of the simulator against a physical lab rig (Objective 4 scope)",
         ],
+        "supersedes": "2026-09-17: capsule arrangement is now a searched variable "
+                      "(single-layer/staggered/radial), not frozen to staggered-only — this "
+                      "version of the contract SUPERSEDES any prior plain-tank / no-shield / "
+                      "staggered-only version (mirroring how the 2026-09-13/14 safety-shield "
+                      "and selection-rule updates were documented as supersessions). See "
+                      "docs/00_MASTER_CHANGE_PLAN.md and docs/08_PROMPT_PHASE8_HANDOFF.md.",
     }
 
     CONTRACT_PATH.write_text(json.dumps(contract, indent=2, default=str), encoding="utf-8")

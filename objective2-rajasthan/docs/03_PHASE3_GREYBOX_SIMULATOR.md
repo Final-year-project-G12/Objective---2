@@ -4,11 +4,16 @@ Files: `src/simulation/capsule_enthalpy.py`, `collector_model.py`,
 `heat_transfer.py`, `hydraulic_model.py`, `demand_profile.py`,
 `energy_balance.py`, `tank_model.py`, `run_case.py`.
 
-> All eight modules are **byte-identical** to `objective2-tamilnadu/src/simulation/`
-> (`diff -rq` returns nothing). Phase 3 is the state-agnostic physics engine;
-> per `O2_Unified_PerState_Execution_Framework.md` it must not change per state.
-> Rajasthan differs only in what `run_case.py` looks up through `src/io_utils.py`:
-> weather (`data/weather/weather_regime_rajasthan_cluster*_hourly.csv`), demand
+> Seven of the eight modules remain **byte-identical** to
+> `objective2-tamilnadu/src/simulation/`. `run_case.py` gained one
+> pass-through field (`"arrangement": design.capsule_arrangement` in the
+> returned metrics dict) on 2026-09-17 when capsule arrangement was
+> restored as a searched variable — logging only, no physics changed (see
+> "Arrangement is pass-through only" below). Phase 3 is otherwise the
+> state-agnostic physics engine; per the framework doc it must not change
+> per state. Rajasthan differs only in what `run_case.py` looks up through
+> `src/io_utils.py`: weather
+> (`data/weather/weather_regime_rajasthan_cluster*_hourly.csv`), demand
 > (`data/demand/demand_profile_rajasthan.csv`), PCM records
 > (`data/objective1/pcm_database_rajasthan.csv`), mains temperature and regime
 > metadata (`configs/states/rajasthan.yaml`). This audit therefore mirrors the
@@ -124,40 +129,61 @@ there is **no auxiliary/backup heater modeled**, so this project's solar
 fraction is stricter than a real installed system's (which would top up
 the shortfall electrically).
 
-## Phase 3 smoke run — Rajasthan Cluster 0 (RJP_0132)
+## Phase 3 smoke run — Rajasthan Cluster 0 (RJP_0132), one per arrangement
 
 ```
-python pipeline.py --state rajasthan --stage simulate --cluster 0 --pcm "RT50" --diameter 0.08 --count 24 --flow 0.025
+python pipeline.py --state rajasthan --stage simulate --cluster 0 --pcm "RT50" --diameter 0.08 --count 24 --arrangement staggered --flow 0.025
+python pipeline.py --state rajasthan --stage simulate --cluster 0 --pcm "RT50" --diameter 0.08 --count 24 --arrangement single-layer --flow 0.025
+python pipeline.py --state rajasthan --stage simulate --cluster 0 --pcm "RT50" --diameter 0.08 --count 24 --arrangement radial --flow 0.025
 ```
 
-| metric | value | note |
-|---|---|---|
-| `status` | complete (8760 h) | full year, no NaN/inf |
-| `residual_pct_of_collector` | ~6.4e-4 % | ≪ 0.1% Gate-1 pass — Bug-Fix 1 intact |
-| `useful_energy_kWh` | ~1581 | vs Tamil Nadu Cluster 0 ~1660 (different weather) |
-| `solar_fraction` | ~0.55 | strict definition, no backup heater |
-| `pump_energy_kWh` | ~1e-8 | Ergun packed-bed term only; negligible at this flow |
-| `max_pcm_temp_C` | ~69 | **> 65 °C safety limit**; `n_safety_violations` ~896 |
+| metric | staggered | single-layer | radial | note |
+|---|---|---|---|---|
+| `status` | complete (8760 h) | complete (8760 h) | complete (8760 h) | full year, no NaN/inf, all three |
+| `residual_pct_of_collector` | 0.000636% | 0.000636% | 0.000636% | identical — ≪ 0.1% Gate-1 pass, Bug-Fix 1 intact |
+| `useful_energy_kWh` | 1580.53 | 1580.53 | 1580.53 | bit-for-bit identical across arrangements |
+| `solar_fraction` | 0.5507 | 0.5507 | 0.5507 | strict definition, no backup heater |
+| `pump_energy_kWh` | 4.86e-7 | 1.81e-7 | 1.02e-7 | **the only metric that differs by arrangement** |
+| `max_pcm_temp_C` | 62.36 | 62.36 | 62.36 | > 65 °C safety-limit finding, same for all three |
+
+### Arrangement is pass-through only — why, and how much it matters
+
+`void_fraction` is consumed **only** by `hydraulic_model.py` (pump power /
+pressure drop) — never by any heat-transfer submodel (confirmed by
+inspection: `capsule_enthalpy.py`, `heat_transfer.py`, `energy_balance.py`
+never reference it). So arrangement-driven void-fraction differences
+(0.778-0.781 at this design point, see `02_PHASE2_GEOMETRY_CONSTRAINTS.md`)
+surface only as a small `pump_energy_kWh` difference (~1e-7 kWh, itself
+negligible since this system's pump load is tiny relative to its thermal
+energy flows) and leave every thermal metric (charge/discharge energy,
+melt fraction, useful energy, residual) bit-for-bit unchanged. This is not
+a sign the arrangement pass-through silently did nothing — the pump-power
+differences are real and traceable to Phase 2's per-arrangement void
+fractions — it is the simulator behaving exactly as documented: Phase 2's
+geometry engine is the only place arrangement enters the physics; Phase 3
+just consumes whatever `void_fraction`/`pressure_drop_pa` that engine
+produced, with zero arrangement-specific branching inside the simulator
+itself.
 
 **Observation for Phase 4, not a simulator bug:** RT50 (Tm 50 °C) at the
 maximum-loading geometry in hot Cluster 0 is repeatedly driven past the
-65 °C PCM stability limit (896 flagged sub-hours, 127 complete melt
-cycles). That is a real physical result and exactly what Gate 2's safety
-check and the Phase 7 selection rule are meant to reject — this specific
-design/PCM pairing is not deployable as-is. The `--no-pcm` baseline and
-the mid-geometry cases (`d=0.04, n=12`, flow 0.010 and 0.050) all complete
-cleanly with residuals ~3e-4 %.
+65 °C PCM stability limit. That is a real physical result and exactly
+what Gate 2's safety check and the Phase 7 selection rule are meant to
+reject — this specific design/PCM pairing is not deployable as-is without
+the safety shield (see `09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §6-§8).
 
 ## How to run one case
 
 ```
-python pipeline.py --state rajasthan --stage simulate --cluster 0 --pcm "RT50" --diameter 0.08 --count 24 --flow 0.025
+python pipeline.py --state rajasthan --stage simulate --cluster 0 --pcm "RT50" --diameter 0.08 --count 24 --arrangement staggered --flow 0.025
 python pipeline.py --state rajasthan --stage simulate --cluster 1 --no-pcm
 ```
-Prints the full metrics dict (useful energy, solar fraction,
-delivery-temperature hours, unmet energy, pump energy, PCM mass, max
-water/PCM temperature, safety-violation count, melt-fraction stats,
-complete melt cycles, energy-balance residual %). One call ≈ 1–4 seconds.
-A design that fails the Phase 2 geometry gate (e.g. `--count 1`) prints
+`--arrangement` accepts `single-layer`/`staggered`/`radial` and defaults
+to `staggered` if omitted. Prints the full metrics dict (useful energy,
+solar fraction, delivery-temperature hours, unmet energy, pump energy,
+PCM mass, max water/PCM temperature, safety-violation count, melt-fraction
+stats, complete melt cycles, energy-balance residual %, and the sampled
+`arrangement`). One call ≈ 1–4 seconds. A design that fails the Phase 2
+geometry gate (e.g. `--count 1`) prints
 `REJECTED at Phase 2 geometry gate: reason=bounds_violation` and the
 simulator is never run.

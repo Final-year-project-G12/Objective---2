@@ -4,10 +4,16 @@ Files: `configs/system_config_shared.yaml`, `configs/design_bounds_shared.yaml`,
 `configs/states/rajasthan.yaml`. Loader: `src/io_utils.py`. Phase 0 sanity
 check: `check_climate_signature.py`.
 
-> `system_config_shared.yaml`, `design_bounds_shared.yaml`, and `src/io_utils.py`
-> are **byte-identical** to `objective2-tamilnadu/`'s copies (verified). Only
-> `configs/states/rajasthan.yaml` is state-specific — this audit therefore mirrors
-> the Tamil Nadu reference audit's structure, with Rajasthan's own numbers.
+> `system_config_shared.yaml` and `src/io_utils.py` are **byte-identical**
+> to `objective2-tamilnadu/`'s copies (verified). `design_bounds_shared.yaml`
+> **diverges from Tamil Nadu/Assam/Uttarakhand's copies as of 2026-09-17**
+> (see below) — Rajasthan was run as the pilot state for
+> `Objective2 Consolidated plan.md`'s corrected 4-variable design vector
+> (arrangement restored); the other three states have not received the
+> identical edit yet, per the consolidated plan's shared-config rule (§5,
+> §7). `configs/states/rajasthan.yaml` is state-specific as always — this
+> audit otherwise mirrors the Tamil Nadu reference audit's structure, with
+> Rajasthan's own numbers.
 
 ## Purpose
 
@@ -45,11 +51,19 @@ fed Rajasthan's much hotter collector input (see Phase 0 section below).
 
 ## `design_bounds_shared.yaml` — what's frozen and why
 
-Sphere-only, staggered-only (the framework doc's documented 40-hr corner
-cut). Capsule diameter 0.02–0.08 m, capsule count 8–24 (integer), PCM
-volume fraction 0.10–0.20 of tank volume, flow 0.010–0.050 kg/s. Same
-diameter/thickness derivation and the same consequence (max reachable PCM
-fraction is 12.9%, not 20%) as Tamil Nadu — see `02_PHASE2_GEOMETRY_CONSTRAINTS.md`.
+Sphere shape stays frozen (`[sphere]`) — never named in the objective
+statement, so this remains a documented, undisputed scope cut. **Capsule
+arrangement is a searched categorical variable** (`[single-layer,
+staggered, radial]`) as of 2026-09-17, per the Objective 2 statement's own
+four named parameters (diameter, arrangement, count, flow) — previously
+frozen to `[staggered]` only, which was a real scope gap, not a
+justified simplification (see `09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md`
+§9). Capsule diameter 0.02–0.08 m, capsule count 8–37 (integer, widened
+from 8–24 to give the volume-fraction target more headroom — re-verified
+per arrangement in Phase 2, see `02_PHASE2_GEOMETRY_CONSTRAINTS.md`), PCM
+volume fraction 0.10–0.20 of tank volume, flow 0.010–0.050 kg/s.
+`src/design/schema.py`'s `DesignVector` requires `capsule_arrangement`
+explicitly (no default), so no call site can silently assume staggered.
 
 ## `configs/states/rajasthan.yaml` — Phase 1's actual output
 

@@ -60,6 +60,19 @@ def evaluate_by_group(state: str):
                 continue
             rows.append({"target": target, "group_type": "pcm", "group": pcm_id,
                          "MAE": mean_absolute_error(y_true.loc[idx], pred_s.loc[idx]), "n": len(idx)})
+        # (regime, pcm, arrangement) breakdown, added 2026-09-17 when
+        # arrangement was restored as a searched variable
+        # (docs/06_PROMPT_PHASE6_SURROGATE.md step 5) — ~3x more rows than
+        # the (regime, pcm) breakdown above; expected.
+        for (regime_id, pcm_id, arrangement), idx in hold_valid.groupby(
+                ["regime_id", "pcm_id", "arrangement"]).groups.items():
+            idx = [i for i in idx if i in y_true.index]
+            if not idx:
+                continue
+            rows.append({"target": target, "group_type": "regime_pcm_arrangement",
+                         "group": f"{regime_id}|{pcm_id}|{arrangement}",
+                         "regime_id": regime_id, "pcm_id": pcm_id, "arrangement": arrangement,
+                         "MAE": mean_absolute_error(y_true.loc[idx], pred_s.loc[idx]), "n": len(idx)})
 
     df = pd.DataFrame(rows)
     df.to_csv(ERROR_BY_GROUP_PATH, index=False)

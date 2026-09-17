@@ -1,6 +1,6 @@
 # Objective 2 — Recommendation Cards (Rajasthan)
 
-Simulator: `sim_v1_rajasthan` (Phase 4 GO). One card per Level-A climate regime. Every number here is traceable to a frozen Objective 1 table, the Phase 7 `deployable_design_per_regime` row, or the Phase 8 `robustness` summary — nothing is recomputed in this file.
+Simulator: `sim_v2_rajasthan` (Phase 4 GO). One card per Level-A climate regime. Every number here is traceable to a frozen Objective 1 table, the Phase 7 `deployable_design_per_regime` row, or the Phase 8 `robustness` summary — nothing is recomputed in this file.
 
 
 ---
@@ -27,34 +27,38 @@ Objective 1 design targets: `Tm_target_C` = 57.0 °C, `L_required` = 312.8 kJ/kg
 
 ### Selected deployable design (Phase 7)
 
-**PCM: RT45HC**
+**PCM: RT50**
 
 | Capsule diameter | Capsule count | Flow rate | PCM volume fraction | PCM mass |
 |---|---|---|---|---|
-| 0.0500 m | 24 | 0.0175 kg/s | 0.0315 | 1.384 kg |
+| 0.0409 m | 11 | 0.0267 kg/s | 0.0079 | 0.347 kg |
 
 
-### Simulator-confirmed performance (sim_v1_rajasthan, full year)
+**Selected arrangement:** staggered
+
+**Arrangement rationale:** only arrangement staggered was confirmed for this regime/PCM pool.
+
+### Simulator-confirmed performance (sim_v2_rajasthan, full year)
 
 | Useful energy | Solar fraction | Unmet energy | Pump energy | Max water T | Safety-margin to 75 °C | Energy residual |
 |---|---|---|---|---|---|---|
-| 1587.9 kWh | 55.33 % | 1132.2 kWh | 0.0000 Wh | 68.8 °C | 2.9 °C | 0.000414 % |
+| 1586.9 kWh | 54.99 % | 1140.8 kWh | 0.0000 Wh | 68.7 °C | 2.9 °C | 0.000363 % |
 
 ### Surrogate vs simulator
 
-Surrogate predicted useful energy 1587.8 kWh; simulator confirmed 1587.9 kWh — **delta 0.002 %** (well inside the 15 % large-error rule; the surrogate was a proposal ranker only, Bug-Fix 5).
+Surrogate predicted useful energy 1586.7 kWh; simulator confirmed 1586.9 kWh — **delta 0.010 %** (well inside the 15 % large-error rule; the surrogate was a proposal ranker only, Bug-Fix 5).
 
 ### Robustness — 120 Monte Carlo draws (weather+noise, demand volume ±20 %, demand timing ±30 min, mains ±2 °C) — rule-based safety shield ACTIVE (bypass at 72.0 °C water / 62.0 °C PCM), the pipeline default since 2026-09-13 — see `src/simulation/tank_model.py`
 
 | P(meet delivery temp) | P(meet annual demand) | P(temp-safe) | P(exceeds max safe temp) | Useful energy P5–P95 | Max water T P95 |
 |---|---|---|---|---|---|
-| 1.00 | 0.93 | 1.00 | 0.00 | 1451–1714 kWh | 72.3 °C |
+| 1.00 | 0.92 | 1.00 | 0.00 | 1450–1712 kWh | 72.2 °C |
 
 Threshold: robust if P(meet annual demand) ≥ ~0.75 **and** P(temp-safe) ≥ ~0.95. Result: **ROBUST**.
 
 ### Decision rationale
 
-Phase 7 searched 400 candidates per regime×PCM pair and re-ran the top 5 per pair in the real simulator, with the safety shield active throughout search, confirmation, and selection (pipeline default since 2026-09-13). 45/45 PCM candidates (across all regimes) clear the 65 °C PCM safety limit. The pre-declared selection rule (reject temperature-unsafe → within 5 % of best useful energy → min pump energy → min PCM mass → min capsule count → max constraint margin) selects **RT45HC**, which meets temperature safety under the shield and is within the Pareto tolerance of (or beats) the best plain-tank useful energy.
+Phase 7 searched 600 candidates per regime×PCM pair (arrangement sampled uniformly across single-layer/staggered/radial since 2026-09-17) and re-ran the top 5 per pair in the real simulator, with the safety shield active throughout search, confirmation, and selection (pipeline default since 2026-09-13). 45/45 PCM candidates (across all regimes) clear the 65 °C PCM safety limit. The pre-declared selection rule (reject temperature-unsafe → within 5 % of best useful energy → min pump energy → min PCM mass → min capsule count → max constraint margin) selects **RT50**, which meets temperature safety under the shield and is within the Pareto tolerance of (or beats) the best plain-tank useful energy.
 
 ### Caveats
 
@@ -90,22 +94,26 @@ Objective 1 design targets: `Tm_target_C` = 57.0 °C, `L_required` = 304.1 kJ/kg
 
 ### Selected deployable design (Phase 7)
 
-**PCM: Paraffin/HDPE PCM6**
+**PCM: Paraffin/HDPE PCM3**
 
 | Capsule diameter | Capsule count | Flow rate | PCM volume fraction | PCM mass |
 |---|---|---|---|---|
-| 0.0414 m | 15 | 0.0302 kg/s | 0.0111 | 0.531 kg |
+| 0.0413 m | 8 | 0.0359 kg/s | 0.0059 | 0.280 kg |
 
 
-### Simulator-confirmed performance (sim_v1_rajasthan, full year)
+**Selected arrangement:** staggered
+
+**Arrangement rationale:** arrangements tied within noise in this regime — arrangement not decisive here (margin=-0.00% <= noise band=0.03%; tied arrangements: ['radial', 'single-layer', 'staggered']).
+
+### Simulator-confirmed performance (sim_v2_rajasthan, full year)
 
 | Useful energy | Solar fraction | Unmet energy | Pump energy | Max water T | Safety-margin to 75 °C | Energy residual |
 |---|---|---|---|---|---|---|
-| 1674.7 kWh | 58.28 % | 1020.8 kWh | 0.0000 Wh | 72.0 °C | 2.8 °C | 0.000573 % |
+| 1674.7 kWh | 58.25 % | 1021.5 kWh | 0.0000 Wh | 72.1 °C | 2.8 °C | 0.000556 % |
 
 ### Surrogate vs simulator
 
-Surrogate predicted useful energy 1674.7 kWh; simulator confirmed 1674.7 kWh — **delta 0.002 %** (well inside the 15 % large-error rule; the surrogate was a proposal ranker only, Bug-Fix 5).
+Surrogate predicted useful energy 1674.7 kWh; simulator confirmed 1674.7 kWh — **delta 0.003 %** (well inside the 15 % large-error rule; the surrogate was a proposal ranker only, Bug-Fix 5).
 
 ### Robustness — 120 Monte Carlo draws (weather+noise, demand volume ±20 %, demand timing ±30 min, mains ±2 °C) — rule-based safety shield ACTIVE (bypass at 72.0 °C water / 62.0 °C PCM), the pipeline default since 2026-09-13 — see `src/simulation/tank_model.py`
 
@@ -117,7 +125,7 @@ Threshold: robust if P(meet annual demand) ≥ ~0.75 **and** P(temp-safe) ≥ ~0
 
 ### Decision rationale
 
-Phase 7 searched 400 candidates per regime×PCM pair and re-ran the top 5 per pair in the real simulator, with the safety shield active throughout search, confirmation, and selection (pipeline default since 2026-09-13). 45/45 PCM candidates (across all regimes) clear the 65 °C PCM safety limit. The pre-declared selection rule (reject temperature-unsafe → within 5 % of best useful energy → min pump energy → min PCM mass → min capsule count → max constraint margin) selects **Paraffin/HDPE PCM6**, which meets temperature safety under the shield and is within the Pareto tolerance of (or beats) the best plain-tank useful energy.
+Phase 7 searched 600 candidates per regime×PCM pair (arrangement sampled uniformly across single-layer/staggered/radial since 2026-09-17) and re-ran the top 5 per pair in the real simulator, with the safety shield active throughout search, confirmation, and selection (pipeline default since 2026-09-13). 45/45 PCM candidates (across all regimes) clear the 65 °C PCM safety limit. The pre-declared selection rule (reject temperature-unsafe → within 5 % of best useful energy → min pump energy → min PCM mass → min capsule count → max constraint margin) selects **Paraffin/HDPE PCM3**, which meets temperature safety under the shield and is within the Pareto tolerance of (or beats) the best plain-tank useful energy.
 
 ### Caveats
 
@@ -153,34 +161,38 @@ Objective 1 design targets: `Tm_target_C` = 57.0 °C, `L_required` = 319.9 kJ/kg
 
 ### Selected deployable design (Phase 7)
 
-**PCM: Paraffin/HDPE PCM3**
+**PCM: savE® OM50**
 
 | Capsule diameter | Capsule count | Flow rate | PCM volume fraction | PCM mass |
 |---|---|---|---|---|
-| 0.0416 m | 8 | 0.0181 kg/s | 0.0060 | 0.288 kg |
+| 0.0425 m | 31 | 0.0244 kg/s | 0.0250 | 1.200 kg |
 
 
-### Simulator-confirmed performance (sim_v1_rajasthan, full year)
+**Selected arrangement:** radial
+
+**Arrangement rationale:** arrangements tied within noise in this regime — arrangement not decisive here (margin=-0.00% <= noise band=0.03%; tied arrangements: ['radial', 'single-layer', 'staggered']).
+
+### Simulator-confirmed performance (sim_v2_rajasthan, full year)
 
 | Useful energy | Solar fraction | Unmet energy | Pump energy | Max water T | Safety-margin to 75 °C | Energy residual |
 |---|---|---|---|---|---|---|
-| 1593.5 kWh | 53.90 % | 1201.8 kWh | 0.0000 Wh | 68.8 °C | 2.9 °C | 0.001782 % |
+| 1593.8 kWh | 54.04 % | 1198.3 kWh | 0.0001 Wh | 68.9 °C | 2.8 °C | 0.001796 % |
 
 ### Surrogate vs simulator
 
-Surrogate predicted useful energy 1593.4 kWh; simulator confirmed 1593.5 kWh — **delta 0.001 %** (well inside the 15 % large-error rule; the surrogate was a proposal ranker only, Bug-Fix 5).
+Surrogate predicted useful energy 1592.8 kWh; simulator confirmed 1593.8 kWh — **delta 0.061 %** (well inside the 15 % large-error rule; the surrogate was a proposal ranker only, Bug-Fix 5).
 
 ### Robustness — 120 Monte Carlo draws (weather+noise, demand volume ±20 %, demand timing ±30 min, mains ±2 °C) — rule-based safety shield ACTIVE (bypass at 72.0 °C water / 62.0 °C PCM), the pipeline default since 2026-09-13 — see `src/simulation/tank_model.py`
 
 | P(meet delivery temp) | P(meet annual demand) | P(temp-safe) | P(exceeds max safe temp) | Useful energy P5–P95 | Max water T P95 |
 |---|---|---|---|---|---|
-| 0.99 | 0.83 | 1.00 | 0.00 | 1461–1713 kWh | 72.2 °C |
+| 0.99 | 0.85 | 1.00 | 0.00 | 1462–1713 kWh | 72.4 °C |
 
 Threshold: robust if P(meet annual demand) ≥ ~0.75 **and** P(temp-safe) ≥ ~0.95. Result: **ROBUST**.
 
 ### Decision rationale
 
-Phase 7 searched 400 candidates per regime×PCM pair and re-ran the top 5 per pair in the real simulator, with the safety shield active throughout search, confirmation, and selection (pipeline default since 2026-09-13). 45/45 PCM candidates (across all regimes) clear the 65 °C PCM safety limit. The pre-declared selection rule (reject temperature-unsafe → within 5 % of best useful energy → min pump energy → min PCM mass → min capsule count → max constraint margin) selects **Paraffin/HDPE PCM3**, which meets temperature safety under the shield and is within the Pareto tolerance of (or beats) the best plain-tank useful energy.
+Phase 7 searched 600 candidates per regime×PCM pair (arrangement sampled uniformly across single-layer/staggered/radial since 2026-09-17) and re-ran the top 5 per pair in the real simulator, with the safety shield active throughout search, confirmation, and selection (pipeline default since 2026-09-13). 45/45 PCM candidates (across all regimes) clear the 65 °C PCM safety limit. The pre-declared selection rule (reject temperature-unsafe → within 5 % of best useful energy → min pump energy → min PCM mass → min capsule count → max constraint margin) selects **savE® OM50**, which meets temperature safety under the shield and is within the Pareto tolerance of (or beats) the best plain-tank useful energy.
 
 ### Caveats
 

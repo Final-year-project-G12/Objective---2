@@ -54,6 +54,15 @@ pass had, and fixed by aligning to this implementation — see docs/08).
 "Robust" per the framework doc's rule of thumb: P(meets demand) >= ~75%
 and P(temperature-safe) >= ~95%; otherwise reported as an explicit
 caveat, never hidden.
+
+2026-09-17: arrangement was restored as a searched variable (Phase 1-2)
+and Phase 7's winners now carry a real `arrangement` column (not always
+"staggered") — run_monte_carlo_for_design() reads it from the deployable
+row so this Monte Carlo is re-run against the actual winning geometry,
+never assumed staggered. Every regime's robustness numbers in this run are
+freshly computed against Phase 7's new winners, not carried over from any
+prior staggered-only run, since the geometry (and therefore thermal
+margin) can differ even where the winning PCM identity is unchanged.
 """
 
 import sys
@@ -108,7 +117,7 @@ def run_monte_carlo_for_design(state: str, row: pd.Series, n_draws: int = N_DRAW
     cid = int(row["regime_id"])
     pcm_id = None if row["pcm_id"] == "NONE_plain_tank" else row["pcm_id"]
     design = DesignVector(float(row["capsule_diameter_m"]), int(row["n_capsule"]),
-                          float(row["flow_rate_kg_s"]))
+                          float(row["flow_rate_kg_s"]), capsule_arrangement=row["arrangement"])
     base_mains = get_regime(state, cid)["T_mains_est_C"]
     base_latent = get_pcm_properties(state, pcm_id)["latent_heat_kJ_kg"] if pcm_id else None
     n_hours = len(load_hourly_weather(state, cid))

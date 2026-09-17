@@ -27,7 +27,7 @@ ROBUSTNESS_PATH = RESULTS_DIR / "phase8_robustness.csv"
 OPTIMIZED_PATH = RESULTS_DIR / "phase7_optimized_designs.csv"
 CARDS_PATH = RESULTS_DIR / "phase8_recommendation_cards.md"
 
-SIM_VERSION = "sim_v1_rajasthan"
+SIM_VERSION = "sim_v2_rajasthan"
 
 
 def _fmt(x, nd=2):
@@ -109,6 +109,8 @@ def write_cards(state: str):
         lines.append(f"\n*(For the plain-tank selection the capsule diameter/count are the search's "
                      f"nominal values; `run_case` forces `n_capsule_effective = 0`, so the tank is "
                      f"simulated as plain sensible-water storage.)*" if is_plain else "")
+        lines.append(f"\n**Selected arrangement:** {dep['arrangement']}")
+        lines.append(f"\n**Arrangement rationale:** {dep['arrangement_rationale']}")
 
         # --- simulator-confirmed performance ----------------------------
         lines.append(f"\n### Simulator-confirmed performance ({SIM_VERSION}, full year)")
@@ -172,7 +174,8 @@ def write_cards(state: str):
         shield_search_note = (", with the safety shield active throughout search, confirmation, "
                               "and selection (pipeline default since 2026-09-13)" if shield_on else "")
         lines.append(f"\n### Decision rationale")
-        lines.append(f"\nPhase 7 searched 400 candidates per regime×PCM pair and re-ran the top 5 per pair "
+        lines.append(f"\nPhase 7 searched 600 candidates per regime×PCM pair (arrangement sampled uniformly "
+                     f"across single-layer/staggered/radial since 2026-09-17) and re-ran the top 5 per pair "
                      f"in the real simulator{shield_search_note}. "
                      f"{n_pcm_clears_limit}/{n_pcm_total} PCM candidates (across all regimes) clear the "
                      f"{int(max_pcm_C)} °C PCM safety limit. The pre-declared selection rule "

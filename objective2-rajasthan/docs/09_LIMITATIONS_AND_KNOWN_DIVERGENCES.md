@@ -541,3 +541,46 @@ itself) but not eliminated — weather/demand stochasticity under Monte
 Carlo perturbation (§D2.7/Phase 8) still argues for a learned controller
 that can do better than a fixed 72 °C/62 °C threshold, e.g. by not
 bypassing collector energy it didn't strictly need to reject.
+
+## 9. Capsule arrangement frozen to staggered-only — RESOLVED 2026-09-17
+
+**Status: RESOLVED.** Previously, `design_bounds_shared.yaml` froze
+`capsule_arrangement` to `[staggered]` as part of the same "40-hr scope
+cut" that froze `capsule_shape` to `[sphere]` — but unlike shape,
+arrangement is one of the four parameters the Objective 2 problem
+statement explicitly names ("capsule thickness, arrangement, number of
+capsules, and flow rate"), so this freeze was a real scope gap, not a
+justified simplification.
+
+Resolved by implementing `Objective2_Consolidated_Plan.md` Section 2 in
+full, per `docs/00_MASTER_CHANGE_PLAN.md` (Rajasthan run as the pilot
+state): `capsule_arrangement` is now a 3-way categorical
+(`single-layer`/`staggered`/`radial`) searched end-to-end through Phases
+2 (geometry engine — three packing models), 5 (arrangement-stratified
+DOE), 6 (surrogate one-hot feature + importance diagnostic), 7 (search
+samples arrangement, winner gets an `arrangement_rationale`), and 8
+(robustness re-run against the real winners, cards and the Objective 3
+contract both carry `arrangement`). `capsule_shape` stays frozen to
+`[sphere]` — that freeze remains a documented, undisputed simplification,
+not a gap.
+
+Headline results from the arrangement-restored run: arrangement's effect
+on every performance target is genuinely near-zero (Phase 6 feature
+importance 0.0000-0.0024, traced to arrangement only affecting the
+hydraulics/pump-power path, which is itself a negligible fraction of this
+system's energy balance — see `docs/03_PHASE3_GREYBOX_SIMULATOR.md` and
+`docs/06_PHASE6_SURROGATE.md`). Two of three regimes' Phase 7 winners are
+"tied within noise" across all three arrangements; only Regime 0 (RT50)
+had a decisive result, and only because staggered was the only
+arrangement that happened to survive into that pair's top-5 pool in this
+search. This does not change §0/§6/§7/§8's PCM-selection or safety-shield
+conclusions above — those were already computed under whichever
+arrangement the (then-frozen) search used, and are numerically consistent
+with the arrangement-restored re-run.
+
+Per `00_MASTER_CHANGE_PLAN.md`'s cross-cutting rule, `design_bounds_shared.yaml`
+is a shared, frozen-and-hashed file across all four states — this fix was
+applied to Rajasthan's copy only. Tamil Nadu, Assam, and Uttarakhand's
+copies of `design_bounds_shared.yaml` (and their own Phase 2-8 code) have
+**NOT** been updated, so any cross-state comparison remains stale until
+they receive the identical change — see `00_MASTER_CHANGE_PLAN.md`.

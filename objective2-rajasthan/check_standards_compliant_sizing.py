@@ -107,7 +107,7 @@ def run():
         ratio = overrides["tank"]["volume_L"] / overrides["collector"]["area_m2"]
         for c in cases:
             pcm_name = None if c["pcm_id"] == "NONE_plain_tank" else c["pcm_id"]
-            design = DesignVector(c["capsule_diameter_m"], c["n_capsule"], c["flow_rate_kg_s"])
+            design = DesignVector(c["capsule_diameter_m"], c["n_capsule"], c["flow_rate_kg_s"], capsule_arrangement="staggered")
             result = run_case("rajasthan", c["regime_id"], pcm_name, design,
                               system_config_overrides=overrides)
             row = {

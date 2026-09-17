@@ -72,7 +72,7 @@ def run():
     for cid in (0, 1, 2):
         regime = get_regime("rajasthan", cid)
         for pcm_name, record in candidates.items():
-            design = DesignVector(NOMINAL_DIAMETER_M, NOMINAL_N_CAPSULE, NOMINAL_FLOW_KG_S)
+            design = DesignVector(NOMINAL_DIAMETER_M, NOMINAL_N_CAPSULE, NOMINAL_FLOW_KG_S, capsule_arrangement="staggered")
             with patch.object(run_case_module, "get_pcm_properties", return_value=record):
                 result = run_case_module.run_case("rajasthan", cid, pcm_name, design)
             if not result["valid"]:

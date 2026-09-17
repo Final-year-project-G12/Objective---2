@@ -12,7 +12,7 @@ define the feasibility boundary...").
 
 PORTED FROM objective2-tamilnadu/src/doe/run_batch.py. Two differences,
 both stated:
-  - SIMULATOR_VERSION tag is this state's Phase 4 release, sim_v1_rajasthan.
+  - SIMULATOR_VERSION tag is this state's Phase 4 release, sim_v2_rajasthan.
   - n_lhs_per_pair default is 12 (not TN's 8): Rajasthan has 3 Level-A
     regimes vs Tamil Nadu's 5, so 9 regime x PCM pairs vs TN's 15. At
     8 LHS/pair that is only 9*(8+6)+3 = 129 cases — under the framework
@@ -32,13 +32,14 @@ from src.design.schema import DesignVector
 from src.simulation.run_case import run_case
 from src.doe.generate_cases import generate_all_cases
 
-SIMULATOR_VERSION = "sim_v1_rajasthan"   # released in Phase 4 — see docs/04_PHASE4_VERIFICATION_GATES.md
+SIMULATOR_VERSION = "sim_v2_rajasthan"   # released in Phase 4 — see docs/04_PHASE4_VERIFICATION_GATES.md
 N_LHS_PER_PAIR_DEFAULT = 12              # see module docstring (TN uses 8; RJ has fewer regimes)
 
 
 def run_case_spec(state: str, spec):
     design = DesignVector(capsule_diameter_m=spec.capsule_diameter_m,
-                           n_capsule=spec.n_capsule, flow_rate_kg_s=spec.flow_rate_kg_s)
+                           n_capsule=spec.n_capsule, flow_rate_kg_s=spec.flow_rate_kg_s,
+                           capsule_arrangement=spec.arrangement)
     t0 = time.time()
     out = run_case(state, spec.regime_id, spec.pcm_id, design, record_hourly=False)
     runtime_s = time.time() - t0
@@ -46,6 +47,7 @@ def run_case_spec(state: str, spec):
     row = {
         "case_id": spec.case_id, "regime_id": spec.regime_id,
         "pcm_id": spec.pcm_id if spec.pcm_id is not None else "NONE_plain_tank",
+        "arrangement": spec.arrangement,
         "sampling_method": spec.sampling_method, "seed": spec.seed,
         "capsule_diameter_m": spec.capsule_diameter_m, "n_capsule": spec.n_capsule,
         "flow_rate_kg_s": spec.flow_rate_kg_s,
@@ -88,8 +90,19 @@ def run_batch(state: str, n_lhs_per_pair: int = N_LHS_PER_PAIR_DEFAULT, progress
     n_invalid = len(df) - n_valid
     print(f"\nDONE — {len(df)} cases total: {n_valid} valid/simulated, {n_invalid} rejected at Phase 2 geometry.")
     if n_invalid:
-        print("Rejection reasons:")
+        print("Rejection reasons (pooled):")
         print(df.loc[~df["valid"], "reason"].value_counts().to_string())
+
+    # Per-arrangement rejection-rate table (docs/05_PROMPT_PHASE5_DOE.md step 7) —
+    # a single pooled rejection percentage can hide an arrangement whose different
+    # max-reachable-fraction ceiling (Phase 2) rejects at a very different rate.
+    print("\nRejection rate by arrangement:")
+    by_arr = df.groupby("arrangement")["valid"].agg(["size", "sum"])
+    by_arr["n_rejected"] = by_arr["size"] - by_arr["sum"]
+    by_arr["rejection_pct"] = 100.0 * by_arr["n_rejected"] / by_arr["size"]
+    print(by_arr[["size", "n_rejected", "rejection_pct"]]
+          .rename(columns={"size": "n_cases", "sum": "n_valid"}).to_string())
+
     print(f"\nSaved: {parquet_path}")
     print(f"Saved: {csv_path}")
     return df, manifest

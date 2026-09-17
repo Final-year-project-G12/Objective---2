@@ -15,245 +15,193 @@ This closes Objective 2 (D2.7, D2.8, D2.9) — every deliverable in the
 framework doc's Section 1.2 table now has a file behind it for Rajasthan.
 
 > **File/function naming matches `objective2-tamilnadu/src/handoff/` and
-> `src/robustness/` one-for-one** (`build_recommendation_cards.py` /
-> `build_obj3_contract.py`, entry points `run(state)`; `monte_carlo.py`'s
-> entry point `run_all(state, n_draws)`), and `pipeline.py` exposes the
-> same two-stage split (`robustness` then `handoff`) Tamil Nadu's does —
-> this project originally combined both into one `handoff` stage; the
-> split and the renames bring it in line with the reference layout.
+> `src/robustness/` one-for-one.**
 
-## Alignment with the Tamil Nadu implementation (this project was the template, not the follower)
+## History this phase carries (why today's numbers look the way they do)
 
-This project's Phase 8 pass was built **first**, and Tamil Nadu's own
-Phase 8 doc (`objective2-tamilnadu/docs_objective2/10_PHASE8_ROBUSTNESS_HANDOFF.md`,
-"Alignment with the Rajasthan implementation") records that its first
-Phase 8 pass was later revised to match three methodology choices made
-here — two-level weather noise (annual scale/offset **plus** independent
-per-hour noise, not one constant multiplier for the whole year), fixed
-absolute `solar_fraction` thresholds for the two "meets …" probabilities
-(rather than thresholds relative to each design's own nominal value,
-which trivially scores every design 100% and hides real differences), and
-120 draws/design — all so the two states' `phase8_robustness*.csv` files
-stay directly comparable column-by-column
-(`O2_Unified_PerState_Execution_Framework.md` §0.1). This doc records the
-reverse direction of the same alignment: one concrete improvement Tamil
-Nadu's later pass made — a clean `weather_perturbation` keyword on
-`run_case()` instead of monkey-patching `io_utils.load_hourly_weather` at
-call time — has been folded back into this project's `run_case.py` and
-`monte_carlo.py`, and the reported metrics were split to match Tamil
-Nadu's finer granularity (`p_temperature_violation` — any flagged
-safety sub-hour — kept separate from `p_exceeds_max_safe_temp` — the
-reported annual max actually clearing the hard limit — plus added
-`pump_energy_p05/p95_kWh` and `pcm_mass_p05/p95_kg` percentiles). Column
-names below (`p_meets_delivery_temp`, `p_meets_annual_demand`, etc.) are
-the result of that alignment.
+Three changes landed in sequence and each is visible in the results
+below — recorded here briefly so a reader isn't confused by why the
+"deployable design" changed identity twice:
 
-**A bug the original monkey-patch approach never actually had, worth
-recording anyway**: Tamil Nadu's first Phase 8 pass computed
-`p_exceeds_max_safe_temp` by checking `max_pcm_temp_C > 65°C` on
-**every** design, including plain-tank ones — wrongly flagging ordinary
-hot water (which only needs to respect the 75°C water limit) as a *PCM*
-over-temperature, because `tank_model.py` sets `T_pcm = T_w` exactly when
-there is no PCM. This project's `summarize_design()` already guarded that
-check with `if has_pcm:` from the start (see `monte_carlo.py`), so the
-bug never existed here — but it's worth stating explicitly, since the
-guard is easy to remove by accident in a future edit and every one of
-Rajasthan's 3 deployable designs is a plain tank, exactly the case that
-would trip it.
+1. **2026-09-13 — rule-based safety shield became the pipeline default**
+   (`system_config_shared.yaml: safety_shield.enabled: true`, bypass at
+   72 °C water / 62 °C PCM). Before this, no PCM candidate cleared the
+   65 °C PCM safety limit and the plain (no-PCM) tank was selected in
+   every regime; after it, PCM candidates clear safety too.
+2. **2026-09-14 — `apply_selection_rule()` corrected** to exclude the
+   plain tank from the pool it selects a winner from (Objective 2's
+   stated problem presupposes a PCM design — the plain tank was always a
+   diagnostic baseline, never an eligible final answer). Combined with
+   (1), all three regimes' deployable designs became real PCM designs
+   (RT45HC / Paraffin-HDPE PCM6 / Paraffin-HDPE PCM3).
+3. **2026-09-17 — capsule arrangement restored as a searched variable**
+   (`Objective2 Consolidated plan.md`). The widened count bound (8–37,
+   was 8–24), the larger 600-candidate search (was 400), and arrangement
+   now entering the candidate pool changed which near-tied PCM design
+   wins each regime again — current winners are RT50 / Paraffin-HDPE PCM3
+   / savE® OM50 (radial), see `07_PHASE7_OPTIMIZATION.md`. `monte_carlo.py`
+   now builds its `DesignVector` from the deployable row's own
+   `arrangement` column (never assumed staggered), so every number below
+   is freshly computed against these current winners, not carried over
+   from any earlier run.
+
+Two smaller methodology notes, both still true: (a) this project's
+weather/demand/mains perturbation model and fixed absolute
+`solar_fraction` thresholds were the template Tamil Nadu's own Phase 8
+pass was later aligned to match, for cross-state comparability
+(`O2_Unified_PerState_Execution_Framework.md` §0.1); (b) `monte_carlo.py`'s
+`summarize_design()` has always guarded the PCM-temperature check with
+`if has_pcm:`, so a plain-tank design's water temperature is never
+mis-flagged as a *PCM* over-temperature (a bug Tamil Nadu's first pass
+had and fixed by porting this guard).
 
 ## D2.7 — Light robustness (Bug-Fix 6, framework doc §11.1)
 
 **120 Monte Carlo draws per regime** (360 total; framework band 100–200,
-never < 50), each a full simulated year of the Phase 7 deployable design
-with independent perturbations, driven through `run_case`'s
-`weather_perturbation` keyword (per-hour numpy arrays for GHI multiplier
-and ambient-temperature delta — the same override seam Phase 4's
-`gates.py` uses for its own limiting-case tests, so `run_case` needed no
-Phase-8-specific code path):
+never < 50), each a full simulated year of the current Phase 7 deployable
+design with independent perturbations, driven through `run_case`'s
+`weather_perturbation` keyword:
 
 | Source | Distribution | Notes |
 |---|---|---|
-| Weather — GHI | annual scale ~ U(0.93, 1.07) × per-hour iid N(1, 0.04), clipped [0.5, 1.5] | "medoid + noise" — Rajasthan has no alternate member-point weather series (Objective 1 shipped medoid-only) |
+| Weather — GHI | annual scale ~ U(0.93, 1.07) × per-hour iid N(1, 0.04), clipped [0.5, 1.5] | "medoid + noise" — Rajasthan has no alternate member-point weather series |
 | Weather — ambient temp | annual offset ~ U(−1.5, +1.5) °C + per-hour iid N(0, 0.4) °C | |
 | Demand volume | `volume_multiplier` ~ U(0.80, 1.20) | ±20 % |
 | Demand timing | `timing_shift_hours` ~ U(−0.5, +0.5) | ±30 min |
 | Inlet / mains temperature | `T_mains_est_C` + U(−2, +2) °C | |
-| PCM latent heat ±10 % | — | **not applicable**: every Phase 7 deployable design is the plain (no-PCM) tank, so there is no latent heat to perturb. Applied automatically if a future selection picks a real PCM. Stated, not silently dropped. |
+| PCM latent heat ±10 % | applied | all three current winners are real PCM designs, so this source is genuinely exercised in every regime |
 
-**4 of the framework's 5 sources are covered; the 5th is structurally
-inapplicable to the selected designs.** Both "meets …" thresholds are
-FIXED and state-independent (Phase 3 doc's `solar_fraction` definition:
-*"fraction of the ideal 300 L/day @ 45 °C demand actually delivered at or
-above the 45 °C target"*): `p_meets_delivery_temp` = `solar_fraction ≥
-0.45`, `p_meets_annual_demand` = `solar_fraction ≥ 0.50`. Two distinct
+Both "meets …" thresholds are FIXED and state-independent:
+`p_meets_delivery_temp` = `solar_fraction ≥ 0.45`,
+`p_meets_annual_demand` = `solar_fraction ≥ 0.50`. Two distinct
 temperature-safety metrics are reported: `p_temperature_violation` (any
-per-substep safety flag over the year, `n_safety_violations > 0`) and
-`p_exceeds_max_safe_temp` (the reported annual max actually clearing the
-75 °C water / 65 °C PCM hard limit) — for Rajasthan's plain-tank designs
-these two are numerically identical by construction (only the water-limit
-check applies), but they are computed independently and kept as separate
-columns for cross-state comparability with PCM-bearing regimes elsewhere.
+per-substep safety flag over the year) and `p_exceeds_max_safe_temp` (the
+reported annual max actually clearing the 75 °C water / 65 °C PCM hard
+limit).
 
-### Result (re-run 2026-09-14, safety shield active + PCM-only selection)
+### Result (arrangement-restored run, 2026-09-17)
 
-| Regime | PCM | P(meets delivery temp) | P(meets annual demand) | **P(temp-safe)** | P(exceeds max safe temp) | Useful energy P5–P50–P95 (kWh) | Max water T P95 | Robust? |
-|---|---|---|---|---|---|---|---|---|
-| 0 | RT45HC | 1.00 | 0.933 | **1.00** | 0.00 | 1451 – 1556 – 1714 | 72.3 °C | **Yes** |
-| 1 | Paraffin/HDPE PCM6 | 1.00 | 0.983 | **1.00** | 0.00 | 1506 – 1650 – 1797 | 72.3 °C | **Yes** |
-| 2 | Paraffin/HDPE PCM3 | 0.992 | 0.833 | **1.00** | 0.00 | 1461 – 1575 – 1713 | 72.2 °C | **Yes** |
+| Regime | PCM | Arrangement | P(meets delivery temp) | P(meets annual demand) | **P(temp-safe)** | P(exceeds max safe temp) | Useful energy P5–P50–P95 (kWh) | Max water T P95 | Robust? |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 | RT50 | staggered | 1.000 | 0.917 | **1.00** | 0.00 | 1450 – 1555 – 1712 | 72.19 °C | **Yes** |
+| 1 | Paraffin/HDPE PCM3 | staggered | 1.000 | 0.983 | **1.00** | 0.00 | 1506 – 1649 – 1797 | 72.28 °C | **Yes** |
+| 2 | savE® OM50 | radial | 0.992 | 0.850 | **1.00** | 0.00 | 1462 – 1576 – 1713 | 72.36 °C | **Yes** |
 
 Robust if `P(meets annual demand) ≥ ~0.75` **and** `P(temp-safe) ≥ ~0.95`.
-**All three regimes now clear both bars — every regime is robust.** This
-reverses the earlier unshielded-physics result below (kept for the
-historical record, not deleted): P(temp-safe) has moved from 0.45–0.57
-to a clean 1.00 in every regime, and P95 max water temperature has
-dropped from 84.6–88.2 °C to 72.2–72.3 °C — a direct consequence of the
-rule-based safety shield (bypass at 72 °C water) becoming the pipeline
-default on 2026-09-13, now applied consistently from Phase 5 onward
-rather than only at this Monte Carlo step. Because the shield forces a
-pump bypass once water reaches 72 °C regardless of draw, the P95 max
-water temperature across all 120 draws in every regime converges tightly
-to just above that threshold — this is the shield acting as designed,
-not a coincidence of the sampling.
+**All three regimes clear both bars.** P95 max water temperature converges
+tightly to just above the 72 °C shield trip point in every regime — the
+shield forcing a pump bypass once water reaches 72 °C regardless of draw,
+acting as designed, not a coincidence of sampling. These numbers are
+freshly computed against the arrangement-restored winners (not carried
+over from the pre-2026-09-17 run) — the geometry differs from the earlier
+winners even where the same qualitative shield behavior holds, per the
+consolidated plan's requirement not to assume robustness transfers across
+a design-space change.
 
 ### What this means
 
-The Phase 7 deployable designs are now shortlisted **PCM** designs (RT45HC
-/ Paraffin-HDPE PCM6 / Paraffin-HDPE PCM3, one per regime — see
-`docs/07_PHASE7_OPTIMIZATION.md`), each protected by the same rule-based
-overheat shield that also protects the plain tank. Under realistic ±7 %
-GHI / ±20 % demand / ±2 °C mains variability, **not a single one of the
-360 Monte Carlo draws across all three regimes breaches either the 75 °C
-water or 65 °C PCM limit** — P(temp-safe) = 1.00 everywhere. This
-confirms, at Monte Carlo scale, what Phase 7's nominal run already showed
-per design: the shield closes the safety gap for PCM exactly as
-completely as it does for plain water, so once it is the pipeline
-default, PCM's small (fraction-of-a-percent) useful-energy edge over
-plain water is free to decide the winner without a safety penalty. See
-`docs/plots/08_robustness_plots.md` for the visual version of this
-result.
+Under realistic ±7% GHI / ±20% demand / ±2°C mains variability, **not a
+single one of the 360 Monte Carlo draws across all three regimes breaches
+either the 75 °C water or 65 °C PCM limit** — P(temp-safe) = 1.00
+everywhere. This confirms, at Monte Carlo scale, what Phase 7's nominal
+run already showed per design: the shield closes the safety gap for PCM
+exactly as completely as it does for plain water, so PCM's small
+(fraction-of-a-percent) useful-energy edge over plain water is free to
+decide the winner without a safety penalty — a conclusion arrangement
+restoration did not change (see `07_PHASE7_OPTIMIZATION.md`'s headline
+finding).
 
-Useful-energy spread is moderate (P5–P95 ≈ ±8–9 % around the median),
+Useful-energy spread is moderate (P5–P95 ≈ ±8-9% around the median),
 driven mostly by the GHI scale and demand-volume draws — no draw produced
-a NaN/inf or a failed year. `pump_energy_p05/p95_kWh` is also reported
-per regime (~1e-9 kWh, negligible at these flows); unlike the earlier
-all-plain-tank run, `pcm_mass_p05/p95_kg` is now non-zero in every regime
-(equal to each design's fixed PCM mass, since geometry — and therefore
-PCM mass — does not vary across Monte Carlo draws, only weather/demand
-does), and the PCM-latent-heat ±10% perturbation source (previously
-"not applicable") is now genuinely exercised for all three regimes.
-
----
-
-### Superseded result (unshielded physics / pre-2026-09-14 selection rule — kept for the record, not deleted)
-
-Before the safety shield became the pipeline default (2026-09-13) and
-before `apply_selection_rule()` was re-ported to exclude the plain tank
-from the winner pool (2026-09-14), all three Phase 7 deployable designs
-were the plain (sensible-only) tank, and their Monte Carlo robustness
-was:
-
-| Regime | P(meets delivery temp) | P(meets annual demand) | **P(temp-safe)** | P(exceeds max safe temp) | Useful energy P5–P50–P95 (kWh) | Max water T P95 | Robust? |
-|---|---|---|---|---|---|---|---|
-| 0 | 1.00 | 0.875 | **0.567** | 0.433 | 1454 – 1572 – 1673 | 84.6 °C | **No** |
-| 1 | 1.00 | 0.992 | **0.450** | 0.550 | 1523 – 1664 – 1781 | 88.2 °C | **No** |
-| 2 | 1.00 | 0.800 | **0.533** | 0.467 | 1447 – 1566 – 1692 | 84.6 °C | **No** |
-
-All three regimes cleared the demand bar but failed temperature safety —
-badly (P(temp-safe) 0.45–0.57, i.e. roughly half of draws exceeded the
-75 °C water limit even with no PCM installed, because the simulator
-recorded safety violations without preventing them). Regime 1 was worst
-(P(temp-safe) = 0.450) because its nominal Phase 7 margin was only
-2.6 °C, which a single +GHI or +mains draw erased; its P95 max water
-temperature was 88.2 °C. This was the finding that originally motivated building the safety
-shield. `docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §6 originally
-decided to keep the shield as Objective 3's territory and *not* adopt it
-as an Objective 2 Phase 5-7 default — that decision was itself reversed
-on 2026-09-13 (see `system_config_shared.yaml`'s `safety_shield` block
-comment and §6's addendum): the shield is now O2's own pipeline default,
-and this Phase 8 re-run is the direct consequence.
+a NaN/inf or a failed year. `pump_energy_p05/p95_kWh` is negligible in
+every regime (~1e-8 kWh, consistent with this system's tiny pump load,
+see `03_PHASE3_GREYBOX_SIMULATOR.md`); `pcm_mass_p05/p95_kg` is constant
+within each regime (0.35 / 0.28 / 1.20 kg for regimes 0/1/2) since
+geometry does not vary across Monte Carlo draws, only weather/demand/PCM
+latent heat do.
 
 ## D2.8 — Recommendation cards (`results/phase8_recommendation_cards.md`)
 
 One card per regime, each carrying: regime/climate summary
 (`cluster_profiles_rajasthan.csv`), the Objective 1 PCM shortlist with its
-MCDM rank + Monte-Carlo top-3 inclusion, the selected geometry + flow, the
-`sim_v1_rajasthan`-confirmed full-year performance, the Phase 8 robustness
-probabilities (both temperature-safety metrics), the surrogate-vs-simulator
-delta (0.06–0.10 %), an explicit decision rationale (why the plain tank,
-not the PCM shortlist), and a caveats block (imputed PCM properties,
-single-pass optimization, reduced Monte Carlo, single-state scope,
-lumped-model ±15 %). The file recomputes nothing — every number is a
-lookup from a frozen table or an earlier phase's output.
+MCDM rank + Monte-Carlo top-3 inclusion, the selected geometry + flow,
+**the selected arrangement and its rationale** (added 2026-09-17), the
+`sim_v2_rajasthan`-confirmed full-year performance, the Phase 8 robustness
+probabilities, the surrogate-vs-simulator delta (0.01–0.06%), a decision
+rationale, and a caveats block (imputed PCM properties, single-pass
+optimization, reduced Monte Carlo, single-state scope, lumped-model
+±15%). The file recomputes nothing — every number is a lookup from a
+frozen table or an earlier phase's output.
 
 ## D2.9 — Objective 3 environment contract (`results/obj3_environment_contract_rajasthan.json`)
 
-`schema: obj3_environment_contract/v1`. One entry per regime plus shared
-blocks:
+`schema: obj3_environment_contract/v1`, `simulator_version: sim_v2_rajasthan`.
+One entry per regime plus shared blocks:
 
 - **`global_limits`** — delivery target 45 °C, max water 75 °C, max PCM
   65 °C, max pressure 3.5 bar, irradiance cutoff 10 W/m², pump flow
   0.010–0.050 kg/s (all from `system_config_shared.yaml`).
 - **`control_skeleton`** — `actions: [charge, discharge, bypass]` with
   notes, the recommended continuous-flow hybrid action space, a
-  10-element `state_vector`, and a **`safety_shield`** that forces
-  `bypass` at `T_water ≥ 72 °C` (3 °C guard band), clamps flow to the
-  pump envelope, cuts the pump below the irradiance cutoff, and now also
-  states the dry-run and sensor-failure fallback rules explicitly. The
-  shield's rationale cites the Phase 8 P(temp-safe) result directly.
-- **`dynamic_state_schema`** *(new this pass, ported from Tamil Nadu)* —
-  a fielded schema (10 fields: `GHI_Wm2`, `T_amb_C`, `T_water_C`,
-  `T_pcm_C`, `f_melt`, `T_mains_C`, `draw_mass_kg_now`, `hour_of_day`,
-  `minutes_since_last_draw`, `store_energy_above_mains_kWh`), each with
-  unit, whether it's directly `measurable` or needs an estimator, and its
-  source — replaces the earlier bare name-list `state_vector`.
+  10-element `state_vector`, and a `safety_shield` that forces `bypass`
+  at `T_water ≥ 72 °C` (3 °C guard band), clamps flow to the pump
+  envelope, cuts the pump below the irradiance cutoff, and states the
+  dry-run and sensor-failure fallback rules explicitly.
+- **`dynamic_state_schema`** — a fielded schema (10 fields: `GHI_Wm2`,
+  `T_amb_C`, `T_water_C`, `T_pcm_C`, `f_melt`, `T_mains_C`,
+  `draw_mass_kg_now`, `hour_of_day`, `minutes_since_last_draw`,
+  `store_energy_above_mains_kWh`), each with unit, whether it's directly
+  `measurable` or needs an estimator, and its source.
 - **`reset_scenarios`**, **`reward_components_suggested`**,
-  **`acceptance_test_before_drl_training`**, **`weather_sequences`**
-  *(all new this pass, ported from Tamil Nadu)* — three PCM-state reset
-  scenarios (fully solid / partially charged / fully liquid), the
-  suggested (unweighted) reward formula with weights explicitly marked
-  "not yet chosen — Objective 3's decision", the 6-item pre-training
+  **`acceptance_test_before_drl_training`**, **`weather_sequences`** —
+  three PCM-state reset scenarios, the suggested (unweighted) reward
+  formula with weights marked "not yet chosen", the 6-item pre-training
   acceptance-test checklist, and an explicit note that no train/val/test
   weather split exists yet (medoid-only, 40-hr cut list).
 - **per regime** — `regime_id`, label, `regime_membership_rule`, medoid
   weather path, `T_mains_est_C`, `Tm_target_C`; `selected_design`
-  (`pcm_id` — `null` for the plain tank — optional `pcm_properties`, full
-  geometry, `flow_envelope_kg_s` = {nominal, min, max});
+  (`pcm_id`, `is_plain_tank`, `arrangement_rationale`, full geometry
+  **including the real per-regime `capsule_arrangement`** — was
+  hardcoded `"staggered"` before 2026-09-17 — `flow_envelope_kg_s`);
   `sim_confirmed_performance`; `robustness` (both temperature-safety
-  probabilities + P5/P95 + `robust_per_framework_rule` flag);
-  `sim_v1_rajasthan` tag.
+  probabilities + P5/P95 + `robust_per_framework_rule` flag).
 - **`deferred_future_work`** — multi-state comparison, active-learning
   loop / full NSGA-II, full-draw robustness with real member-point
-  weather, widened design bounds for 15–20 % PCM fraction, hardware
-  validation (Objective 4 scope).
+  weather, hardware validation (Objective 4 scope). No longer lists
+  "arrangement search" as a limitation — it is implemented.
+- **`supersedes`** — states explicitly that this version of the contract
+  supersedes any prior plain-tank / no-shield / staggered-only version.
 
 ## Exit check
 
 Every one of Rajasthan's 3 Level-A regimes has a recommendation card and
-appears in the contract file. **This is the Objective 2 "done" line for
-the ~40-hour version.** Explicitly deferred and named as future work (not
-silently dropped, and now enumerated in the contract's own
-`deferred_future_work` field): the full four-state comparison, the
-active-learning optimization loop, and full-draw robustness with a
-genuine alternate weather series. See
+appears in the contract file, with a real PCM design, a real searched
+arrangement, and a Monte-Carlo-confirmed robust safety margin under the
+rule-based shield. **This is the Objective 2 "done" line for the ~40-hour
+version, including the corrected 4-variable design vector.** Explicitly
+deferred and enumerated in the contract's own `deferred_future_work`
+field: the full four-state comparison (Tamil Nadu, Assam, and Uttarakhand
+have not yet received the identical arrangement-restore change — see
+`09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §9 and
+`00_MASTER_CHANGE_PLAN.md`), the active-learning optimization loop, and
+full-draw robustness with a genuine alternate weather series. See
 `docs/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md` for the full Objective 3
 hand-off brief.
 
-## The one caveat that must travel with these results
+## The caveat that must travel with these results
 
-Objective 2's Rajasthan conclusion is **negative and load-bearing, with
-two independent components**: (1) under the frozen shared collector/tank
-config and the pre-declared selection rule, no Objective 1 shortlisted
-PCM is deployable (0/45 cleared the 65 °C limit; energy gain < 0.15 %),
-so the plain tank is selected in all 3 regimes; and (2) **no selected
-design is robustly safe** without an active bypass (45–57 %
-temperature-safe, all below the 95 % target, for the plain tank alone —
-there being no PCM design to even compare against). Objective 3 must
-treat overheat protection as a first-class control objective for every
-Rajasthan regime, and any future PCM recommendation for hot-dry states
-needs either widened design bounds **plus** a bypass shield, or a
-hot-climate-specific revisit of the frozen 1.5 m² / 50 L sizing — the
-same conclusion Tamil Nadu's independently-run audit reached (all 5
-regimes fail the 95 % bar there too, 44–87 % temperature-safe), which is
-itself evidence this is a climate-general finding, not a one-state
-artifact.
+Rajasthan's Objective 2 conclusion is **positive but thin, not
+decisive**: all three regimes now deploy a real PCM design that clears
+temperature safety and beats plain water — but only by a
+fraction-of-a-percent in useful energy (see
+`07_PHASE7_OPTIMIZATION.md`'s headline finding), and only because the
+rule-based safety shield is active as a pipeline default. Arrangement
+restoration (2026-09-17) did not change this: arrangement's effect on
+every performance target is near-zero (`06_PHASE6_SURROGATE.md`), and two
+of three regimes' winning arrangement is "tied within noise," not
+decisive. Objective 3 should treat the shield's bypass rule as a hard
+floor to inherit, not a target to merely match — its own justification is
+not "make PCM survive at all" (Objective 2 already does that) but
+handling real-time weather/demand variability better than this fixed
+threshold can (see `09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §8 for the
+fuller reframing).

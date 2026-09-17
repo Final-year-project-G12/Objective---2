@@ -40,7 +40,8 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 from config import RESULTS_DIR
-from src.surrogate.features import build_feature_table, feature_target_split, TARGET_COLS
+from src.surrogate.features import (build_feature_table, feature_target_split, TARGET_COLS,
+                                     ARRANGEMENT_ONE_HOT_COLS)
 
 N_ESTIMATORS = 300
 RANDOM_STATE = 20260905
@@ -49,6 +50,7 @@ DESIGN_CASES_PATH = RESULTS_DIR / "phase5_design_cases.parquet"
 METRICS_PATH = RESULTS_DIR / "phase6_surrogate_metrics.csv"
 MODELS_PATH = RESULTS_DIR / "phase6_surrogate_models.pkl"
 FEATURE_COLS_PATH = RESULTS_DIR / "phase6_surrogate_feature_cols.json"
+ARRANGEMENT_IMPORTANCE_PATH = RESULTS_DIR / "phase6_arrangement_importance.csv"
 
 
 def _fit_eval(model, X_train, y_train, X_hold, y_hold):
@@ -76,6 +78,7 @@ def train_surrogate(state: str):
 
     models = {}
     metrics_rows = []
+    arrangement_importance_rows = []
     for target in TARGET_COLS:
         if target not in y_train_dict or target not in y_hold_dict:
             continue
@@ -94,6 +97,20 @@ def train_surrogate(state: str):
         print(f"  {target:22s} ExtraTrees RMSE={et_metrics['RMSE']:.4g} R2={et_metrics['R2']:.3f}  |  "
               f"Linear RMSE={lr_metrics['RMSE']:.4g} R2={lr_metrics['R2']:.3f}  "
               f"{'[tree beats linear]' if beats_linear else '[WARNING: linear as good or better]'}")
+
+        # Arrangement feature-importance diagnostic (docs/06_PROMPT_PHASE6_SURROGATE.md
+        # step 4) — reported honestly whichever way it comes out; a low combined
+        # value is a finding ("arrangement had minimal effect on <target> in this
+        # design-space region"), not a sign something is broken.
+        importances = dict(zip(feature_cols, et.feature_importances_))
+        arr_importances = {col: float(importances.get(col, 0.0)) for col in ARRANGEMENT_ONE_HOT_COLS}
+        combined = sum(arr_importances.values())
+        arrangement_importance_rows.append({"target": target, **arr_importances, "combined": combined})
+        finding = (f"arrangement had minimal effect on {target} in this design-space region"
+                   if combined < 0.01 else f"arrangement measurably affects {target}")
+        print(f"    Arrangement importance ({target}): "
+              + ", ".join(f"{k}={v:.4f}" for k, v in arr_importances.items())
+              + f", combined={combined:.4f}  -> {finding}")
 
     # --- feasibility classifier: trained on ALL cases (valid label) -----
     X_all, _, feas_y_all, _ = feature_target_split(feat_df, only_valid=False)
@@ -121,6 +138,10 @@ def train_surrogate(state: str):
 
     metrics_df = pd.DataFrame(metrics_rows)
     metrics_df.to_csv(METRICS_PATH, index=False)
+
+    arr_imp_df = pd.DataFrame(arrangement_importance_rows)
+    arr_imp_df.to_csv(ARRANGEMENT_IMPORTANCE_PATH, index=False)
+    print(f"\nSaved: {ARRANGEMENT_IMPORTANCE_PATH}")
 
     with open(MODELS_PATH, "wb") as f:
         pickle.dump({"models": models, "feature_cols": feature_cols}, f)

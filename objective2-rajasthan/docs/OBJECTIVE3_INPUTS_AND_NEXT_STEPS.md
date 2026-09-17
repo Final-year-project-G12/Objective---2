@@ -6,6 +6,14 @@ for the full digest). This document is the hand-off: what Objective 3
 receives, what it must NOT touch, and the concrete first steps for
 building the charge/discharge/bypass controller.
 
+> **2026-09-17: re-confirmed complete after the arrangement-restore change**
+> (`docs/00_MASTER_CHANGE_PLAN.md`). The `obj3_environment_contract_rajasthan.json`
+> this document points to has been regenerated with `simulator_version:
+> sim_v2_rajasthan` and a real per-regime `arrangement` (was hardcoded
+> `"staggered"`) — this supersedes the working-draft status noted during
+> Phases 1-7 of that change. Objective 3 should re-pull the contract file
+> before any DRL training run if it cached an earlier copy.
+
 Mirrors `objective2-tamilnadu/docs_objective2/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md`
 — same structure, Rajasthan's own numbers throughout.
 
