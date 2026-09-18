@@ -21,12 +21,14 @@ from src.design.schema import DesignVector
 from src.simulation.run_case import run_case
 from src.doe.generate_cases import generate_all_cases
 
-SIMULATOR_VERSION = "sim_v1_tamilnadu"   # released in Phase 4 — see docs_objective2/04_...
+SIMULATOR_VERSION = "sim_v2_tamilnadu"   # bumped 2026-09-17 — geometry module changed
+                                           # (arrangement restored); see docs_objective2/04_...
 
 
 def run_case_spec(state: str, spec):
     design = DesignVector(capsule_diameter_m=spec.capsule_diameter_m,
-                           n_capsule=spec.n_capsule, flow_rate_kg_s=spec.flow_rate_kg_s)
+                           n_capsule=spec.n_capsule, flow_rate_kg_s=spec.flow_rate_kg_s,
+                           capsule_arrangement=spec.capsule_arrangement)
     t0 = time.time()
     out = run_case(state, spec.regime_id, spec.pcm_id, design, record_hourly=False)
     runtime_s = time.time() - t0
@@ -34,6 +36,7 @@ def run_case_spec(state: str, spec):
     row = {
         "case_id": spec.case_id, "regime_id": spec.regime_id,
         "pcm_id": spec.pcm_id if spec.pcm_id is not None else "NONE_plain_tank",
+        "arrangement": spec.capsule_arrangement,
         "sampling_method": spec.sampling_method, "seed": spec.seed,
         "capsule_diameter_m": spec.capsule_diameter_m, "n_capsule": spec.n_capsule,
         "flow_rate_kg_s": spec.flow_rate_kg_s,
@@ -52,8 +55,8 @@ def run_case_spec(state: str, spec):
     return row
 
 
-def run_batch(state: str, n_lhs_per_pair: int = 8, progress_every: int = 20):
-    cases, manifest = generate_all_cases(state, n_lhs_per_pair=n_lhs_per_pair)
+def run_batch(state: str, n_lhs_per_pair_per_arrangement: int = 4, progress_every: int = 20):
+    cases, manifest = generate_all_cases(state, n_lhs_per_pair_per_arrangement=n_lhs_per_pair_per_arrangement)
     print(f"Running {len(cases)} DOE cases for state={state} "
           f"(simulator={SIMULATOR_VERSION}) ...")
 
@@ -76,9 +79,22 @@ def run_batch(state: str, n_lhs_per_pair: int = 8, progress_every: int = 20):
     n_valid = int(df["valid"].sum())
     n_invalid = len(df) - n_valid
     print(f"\nDONE — {len(df)} cases total: {n_valid} valid/simulated, {n_invalid} rejected at Phase 2 geometry.")
+
+    # Per-arrangement rejection-rate table (2026-09-17, adapted from
+    # "a Rajasthan-pilot change plan (source removed from this project after adaptation, see docs_objective2/tamilnadu_phase_docs/)" step 7) --
+    # never report one pooled percentage: the diameter/thickness interaction
+    # that drives rejections may bind at a different rate per arrangement
+    # given their different max-reachable-fraction ceilings (Phase 2 doc).
+    print("\nRejection rate by arrangement:")
+    by_arr = df.groupby("arrangement")["valid"].agg(n_total="count", n_valid="sum")
+    by_arr["n_rejected"] = by_arr["n_total"] - by_arr["n_valid"]
+    by_arr["rejection_pct"] = (by_arr["n_rejected"] / by_arr["n_total"] * 100).round(1)
+    print(by_arr.to_string())
     if n_invalid:
-        print("Rejection reasons:")
+        print("\nRejection reasons (pooled):")
         print(df.loc[~df["valid"], "reason"].value_counts().to_string())
+        print("\nRejection reasons by arrangement:")
+        print(df.loc[~df["valid"]].groupby(["arrangement", "reason"]).size().to_string())
     print(f"\nSaved: {parquet_path}")
     print(f"Saved: {csv_path}")
     return df, manifest

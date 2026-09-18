@@ -10,21 +10,24 @@ align with the parallel Rajasthan implementation of this framework, the
 annual weather-noise component draws from a real 10-year (2016-2025)
 historical weather ensemble, and — most consequentially for what these
 plots now show — all 5 designs evaluated below are genuine PCM designs,
-not four plain-tank plus one PCM. See `docs_objective2/
-10_PHASE8_ROBUSTNESS_HANDOFF.md` and `14_SELECTION_RULE_SCOPE_
-CORRECTION.md`.)*
+not four plain-tank plus one PCM, and regime 4's design (RT45HC) was
+chosen by a safety-first tie-break, not a mass-first one. See
+`docs_objective2/10_PHASE8_ROBUSTNESS_HANDOFF.md`, `14_SELECTION_RULE_
+SCOPE_CORRECTION.md`, and `15_MCDM_RERANKING_AND_SAFETY_TIEBREAK.md`.)*
 
 ---
 
 ## Plot 1 — Robustness probabilities per regime
 
-> **Note (2026-09-13):** the P(temperature-safe) bar has been removed
-> from this chart at the user's request. Temperature-safety numbers are
-> not dropped from the project — they are still fully computed and
-> reported in `robustness_summary.csv`, `10_PHASE8_ROBUSTNESS_HANDOFF.md`,
-> `RESULTS.md`, and the Objective 3 hand-off contract (0% for regimes
-> 0–3, 25% for regime 4) — only removed from *this specific figure*,
-> which now shows delivery/demand reliability only.
+> **Note (2026-09-13, numbers updated 2026-09-14):** the P(temperature-safe)
+> bar has been removed from this chart at the user's request. Temperature-
+> safety numbers are not dropped from the project — they are still fully
+> computed and reported in `robustness_summary.csv`,
+> `10_PHASE8_ROBUSTNESS_HANDOFF.md`, `RESULTS.md`, and the Objective 3
+> hand-off contract (0% for regimes 0–3, **30.8%** for regime 4, up from
+> ~22–25% before the safety-first tie-break fix, doc 15) — only removed
+> from *this specific figure*, which now shows delivery/demand reliability
+> only.
 
 **What it is**: two bars per regime — P(meets delivery temperature,
 `solar_fraction≥0.45`) and P(meets annual demand, `solar_fraction≥0.50`,
@@ -33,7 +36,7 @@ as a reference line.
 
 **What we infer**: the purple bars (delivery temperature) sit at 100% for
 every regime — that was never at risk anywhere. The blue bars (demand)
-show real variation: 80.8–98.3% for regimes 0–3, 73.3% for regime 4 (the
+show real variation: 80.8–98.3% for regimes 0–3, 76.7% for regime 4 (the
 only one below the 75% line).
 
 **How to justify it**: *"This chart isolates delivery and demand
@@ -56,9 +59,10 @@ nominal (unperturbed) Phase 7 value.
 interval, close to the median circle — confirming each PCM design's
 nominal Phase 7 value is representative of its own uncertainty
 distribution, not a lucky-draw outlier. Regime 4 has both the lowest and
-narrowest interval of the five — consistent with it also being the
-lowest-nominal-energy regime and the design operating closest to its own
-safety limit (a margin of just 0.009°C nominally).
+narrowest interval of the five — consistent with it being the
+lowest-nominal-energy regime, though its design (RT45HC, since the
+safety-first tie-break) now operates with a real +0.39°C safety margin
+rather than the razor-thin 0.009°C an earlier, superseded pick had.
 
 **How to justify it**: *"This is a sanity check on the nominal number
 itself, independent of the safety story in Plot 1: every diamond sits
@@ -77,4 +81,7 @@ See `10_PHASE8_ROBUSTNESS_HANDOFF.md`'s "Literature" section. Most
 directly relevant here: **[Chopra2023]** grounds the Monte Carlo
 methodology producing these probability/interval plots; **[Rubitherm2024]**
 is again the datasheet source of the 65°C limit driving the
-temperature-safety collapse shown in Plot 1.
+temperature-safety collapse for regimes 0-3, and the real (not
+razor-thin) margin regime 4 now clears. See `docs_objective2/
+15_MCDM_RERANKING_AND_SAFETY_TIEBREAK.md` for why regime 4's numbers
+improved between the previous and current version of these plots.

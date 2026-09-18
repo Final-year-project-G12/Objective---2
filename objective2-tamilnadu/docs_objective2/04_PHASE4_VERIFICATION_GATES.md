@@ -1,5 +1,11 @@
 # 04 — Phase 4 Audit: Simulator Verification Gates
 
+> **SUPERSEDED 2026-09-17.** Describes the pre-refresh, pre-arrangement
+> `sim_v1_tamilnadu` gate run (52.07% Gate 4 solar fraction, outside the
+> cited band). The current `sim_v2_tamilnadu` run is **5/5 gates clean**,
+> including Gate 4 now genuinely inside the benchmark band (59.03%) — see
+> `docs_objective2/tamilnadu_phase_docs/04_PROMPT_PHASE4_GATES_TAMILNADU.md`.
+
 > **Note (2026-09-13):** Gates 3/4's tables below use the
 > **pre-retargeting** shortlist PCM (n-Octacosane, Tm=61.6°C) at the
 > **pre-widening** bounds (max 12.9% PCM volume fraction) — this is a

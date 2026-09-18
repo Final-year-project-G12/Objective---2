@@ -57,7 +57,11 @@ from src.design.schema import DesignVector
 from src.simulation.run_case import run_case
 from src.io_utils import load_state_config
 
-REFERENCE_DESIGN = DesignVector(capsule_diameter_m=0.05, n_capsule=16, flow_rate_kg_s=0.030)
+REFERENCE_DESIGN = DesignVector(capsule_diameter_m=0.05, n_capsule=16, flow_rate_kg_s=0.030,
+                                 capsule_arrangement="staggered")   # fixed reference arrangement --
+                                 # retargeting derives a Tm target from tank behaviour, not from
+                                 # arrangement search, so one fixed arrangement is used identically
+                                 # for every regime (same principle as the fixed reference geometry).
 WINDOW_LO_OFFSET = -5.0   # matches Objective 1's own feasibility_survivors_by_cluster.csv window
 WINDOW_HI_OFFSET = 8.0    # (window_lo=52, window_hi=65 for the old Tm_target=57 -> -5/+8)
 TOP_N = 3
@@ -107,9 +111,21 @@ def select_shortlist_for_target(feasibility_df: pd.DataFrame, pcm_db_df: pd.Data
     df = feasibility_df[feasibility_df["cluster_id"] == cluster_id].copy()
     lo, hi = new_target + WINDOW_LO_OFFSET, new_target + WINDOW_HI_OFFSET
     df["new_pass_melting_window"] = df["Tm_C"].between(lo, hi)
+    # 2026-09-17 Objective 1 refresh renamed the per-filter columns to a
+    # c1-c8 string scheme (values "pass"/"fail"/"flag_..."/"not_applicable")
+    # plus clean survives_c7_corrosion/survives_c8_safety booleans -- see
+    # docs_objective2/16_OBJECTIVE1_DATA_REFRESH.md. c2/c3/c4/c5 do not
+    # depend on Tm_target (only c1_melting_window does), so they are reused
+    # unchanged exactly as the old pass_latent_heat/pass_cycling/
+    # pass_supercooling/pass_absolute_band columns were.
     df["new_passes_all"] = (
-        df["new_pass_melting_window"] & df["pass_latent_heat"] & df["pass_cycling"]
-        & df["pass_supercooling"] & df["pass_corrosion"] & df["pass_safety"]
+        df["new_pass_melting_window"]
+        & (df["c2_absolute_band"] == "pass")
+        & (df["c3_latent_heat"] == "pass")
+        & (df["c4_cycling"] == "pass")
+        & (df["c5_supercooling"] == "pass")
+        & df["survives_c7_corrosion"].fillna(False)
+        & df["survives_c8_safety"].fillna(False)
         & df["name"].isin(complete)
     )
     survivors = df[df["new_passes_all"]].copy()
@@ -124,7 +140,17 @@ def retarget_all(state: str) -> pd.DataFrame:
           f"{REFERENCE_DESIGN.flow_rate_kg_s} kg/s, plain tank, full year) ...")
     new_targets = derive_tm_targets(state)
 
-    feasibility_path = BASE_DIR / "data" / "objective1" / "feasibility_survivors_by_cluster.csv"
+    # Use the kappa-calibrated feasibility file, not the plain one: the
+    # 2026-09-17 Objective 1 refresh's latent-heat requirement (L_required)
+    # rose sharply (was ~301-326 kJ/kg, now ~406-438 kJ/kg per regime), which
+    # the plain file's strict 0.7x floor essentially no organic PCM in the
+    # database can clear (verified: it zeroes out every regime's eligible
+    # pool). Objective 1's own kappa-calibration mechanism is the
+    # already-validated rescue path for this -- it's what
+    # mcdm_topk_by_cluster.csv's own shortlist (e.g. RT57HC) is actually
+    # built from -- so this module uses the same pool Objective 1 itself
+    # now treats as authoritative, rather than a stricter local re-check.
+    feasibility_path = BASE_DIR / "data" / "objective1" / "feasibility_survivors_by_cluster_kappa_calibrated.csv"
     feasibility_df = pd.read_csv(feasibility_path)
     pcm_db_df = pd.read_csv(BASE_DIR / "data" / "objective1" / f"pcm_database_{state}.csv")
 

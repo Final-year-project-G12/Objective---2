@@ -119,7 +119,8 @@ def _sample_scenario(rng, has_pcm: bool, n_hours: int, historical_pairs) -> dict
 def run_monte_carlo_for_design(state: str, row: pd.Series, n_draws: int = N_DRAWS,
                                 seed: int = MC_SEED) -> pd.DataFrame:
     pcm_id = None if row["pcm_id"] == "NONE_plain_tank" else row["pcm_id"]
-    design = DesignVector(row["capsule_diameter_m"], int(row["n_capsule"]), row["flow_rate_kg_s"])
+    design = DesignVector(row["capsule_diameter_m"], int(row["n_capsule"]), row["flow_rate_kg_s"],
+                           capsule_arrangement=row["arrangement"])
     base_mains = row["sim_mains_temp_C"] if "sim_mains_temp_C" in row and pd.notna(row.get("sim_mains_temp_C")) else None
     if base_mains is None:
         from src.io_utils import get_regime

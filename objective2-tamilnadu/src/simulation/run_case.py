@@ -112,6 +112,7 @@ def run_case(state: str, cluster_id: int, pcm_name: str, design: DesignVector,
 
     metrics = {
         "state": state, "cluster_id": cluster_id, "pcm_name": pcm_name,
+        "arrangement": design.capsule_arrangement,   # pass-through only, never branches physics — see
         "mains_temp_C": mains_temp_C,
         "useful_energy_kWh": result.energy["E_load_kWh"],
         "solar_fraction": solar_fraction,

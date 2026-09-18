@@ -29,15 +29,29 @@
 # this only ADDS previously-unreachable higher-fraction designs to the
 # space Phase 5-7 search over. Affects all 4 states (shared config) --
 # re-run Phases 2-8 for every state after this change.
+#
+# arrangement RESTORED as a searched categorical variable 2026-09-17
+# (previously frozen to staggered-only, which contradicted the objective
+# statement naming "capsule arrangement" as one of the four things Objective
+# 2 must determine -- see a Rajasthan-pilot change plan (source removed from this project after adaptation, see docs_objective2/tamilnadu_phase_docs/)
+# Sec 3.1 and 01_PROMPT_PHASE1_CONFIG.md, adapted here for Tamil Nadu).
+# Shape stays frozen to sphere (never named in the objective statement).
+# capsule_count ceiling (37, above) is left as the shared starting ceiling
+# for all three arrangements; Phase 2 re-verifies per-arrangement reachable
+# PCM-volume-fraction against it and may find it asymmetric across
+# arrangements (report that, don't silently equalize it).
 # ============================================================================
 
-version: "config_v1.1_2026-09-12"
+version: "config_v2.0_2026-09-17"
 
 pcm_thickness_m:        {min: 0.02, max: 0.10}     # derived = diameter/2, checked independently
 capsule_diameter_m:     {min: 0.02, max: 0.08}
 capsule_count:           {min: 8, max: 37, step: 1}   # integer (widened from 24, see note above)
-capsule_shape:           [sphere]                       # 40-hr: sphere only
-capsule_arrangement:     [staggered]                    # 40-hr: staggered only
+capsule_shape:           [sphere]                       # frozen: never named in the objective statement
+capsule_arrangement:
+  type: categorical
+  allowed: [single-layer, staggered, radial]
+  default: staggered   # legacy-caller default only -- schema.py requires it be passed explicitly
 pcm_volume_fraction:     {min: 0.10, max: 0.20}      # derived from N_capsule*V_capsule / V_tank
 pcm_volume_fraction_levels_to_include_in_doe: [0.10, 0.15, 0.20]   # Chen audit baseline
 flow_rate_kg_s:          {min: 0.010, max: 0.050}

@@ -1,5 +1,12 @@
 # 08 — Phase 7 Audit: Optimization Pass + Simulator Confirmation
 
+> **SUPERSEDED 2026-09-17.** Describes the pre-refresh, pre-arrangement
+> winners (all staggered by assumption). The current search spans
+> arrangement (600 candidates/pair, `arrangement_rationale` field) and
+> selected **radial in all 3 regimes** — see
+> `docs_objective2/tamilnadu_phase_docs/07_PROMPT_PHASE7_OPTIMIZE_TAMILNADU.md`
+> for the full result and honesty-checked rationale.
+
 Files: `src/optimize/search.py`, `src/optimize/select_deployable.py`.
 Run: `python pipeline.py --state tamilnadu --stage optimize`.
 Output: `results/tamilnadu/surrogate_top_candidates.csv`,
@@ -7,10 +14,11 @@ Output: `results/tamilnadu/surrogate_top_candidates.csv`,
 included here for diagnostics), `deployable_design_per_regime.csv`
 (final PCM-only selection).
 
-**This doc describes the CURRENT (2026-09-13) methodology and results —
-after the Tm-target retargeting (doc 12), design-bounds widening (doc 13)
-and selection-rule scope correction (doc 14). All three are applied
-below; see those docs for why each was made.**
+**This doc describes the CURRENT (2026-09-14) methodology and results —
+after the Tm-target retargeting (doc 12), design-bounds widening (doc 13),
+selection-rule scope correction (doc 14), and the full-MCDM shortlist
+adoption + safety-first tie-break (doc 15). All four are applied below;
+see those docs for why each was made.**
 
 ## Method (D2.6) — one pass, not the full active-learning loop
 
@@ -32,11 +40,13 @@ below; see those docs for why each was made.**
    (`selection.pareto_tolerance_pct = 5%`) is applied per regime, over a
    **PCM-only candidate pool** (see "Selection-rule scope correction"
    below): keep every simulator-confirmed PCM candidate within 5% of the
-   best PCM useful energy found for that regime → among those, minimize
-   pump energy, then PCM mass, then capsule count → prefer the larger
-   constraint margin as a final tie-break. Safety
-   (`meets_temperature_safety`, `constraint_margin_C`) is computed and
-   reported on the winner, never used to fall back to a non-PCM answer.
+   best PCM useful energy found for that regime → among those, **prefer
+   `meets_temperature_safety=True` first** (added 2026-09-14, doc 15) →
+   then minimize pump energy, then PCM mass, then capsule count → prefer
+   the larger constraint margin as a final tie-break. Safety is always
+   computed and reported, never used to fall back to a non-PCM answer —
+   it is now also used, where a safe option exists within tolerance, to
+   choose *which* PCM design wins among near-equal-energy candidates.
 
 ## Selection-rule scope correction (2026-09-13)
 
@@ -65,23 +75,23 @@ expected when confirming 4× more candidates including some further from
 the surrogate's training distribution, but still two orders of magnitude
 below the 15% large-error threshold.
 
-## Result: deployable design per regime (PCM-only pool)
+## Result: deployable design per regime (PCM-only pool, safety-first tie-break)
 
 | Regime | Selected PCM | Diameter (m) | Count | Flow (kg/s) | Useful energy (kWh) | Solar fraction | PCM mass (kg) | vs. plain tank | Meets safety margin (nominal)? |
 |---|---|---|---|---|---|---|---|---|---|
-| 0 | n-Tetracosane (C24) | 0.0433 | 11 | 0.0235 | 1675.06 | 52.32% | 0.373 | +0.11% | No |
-| 1 | n-Tetracosane (C24) | 0.0495 | 9 | 0.0160 | 1811.31 | 53.18% | 0.457 | +0.08% | No |
-| 2 | PlusICE A52 | 0.0496 | 8 | 0.0227 | 1751.28 | 53.36% | 0.414 | +0.08% | No |
-| 3 | PureTemp 53 | 0.0430 | 36 | 0.0109 | 1818.75 | 54.75% | 1.375 | +0.12% | No |
-| 4 | n-Tricosane (C23) | 0.0454 | 36 | 0.0223 | 1624.28 | 51.45% | 1.404 | +0.12% | **Yes** (nominal only — see Phase 8) |
+| 0 | n-Tetracosane (C24) | 0.0419 | 14 | 0.0113 | 1675.06 | 52.34% | 0.432 | +0.11% | No |
+| 1 | n-Tetracosane (C24) | 0.0406 | 14 | 0.0405 | 1811.71 | 53.17% | 0.393 | +0.10% | No |
+| 2 | n-Hexacosane (C26) | 0.0432 | 10 | 0.0141 | 1750.76 | 53.27% | 0.325 | +0.05% | No |
+| 3 | n-Hexacosane (C26) | 0.0423 | 16 | 0.0100 | 1817.25 | 54.39% | 0.487 | +0.04% | No |
+| 4 | **RT45HC** | 0.0549 | 30 | 0.0334 | 1627.20 | 52.00% | 2.288 | **+0.30%** | **Yes** (margin +0.39°C — see Phase 8 for uncertainty) |
 
 Every regime now has a genuine, simulator-confirmed optimal PCM design —
 the actual Objective 2 deliverable.
 
-## The headline finding, now with two design-space fixes plus a 400-candidate search
+## The headline finding, now with four fixes plus a 400-candidate search
 
-Two real, documented changes moved PCM from "loses in 4/5 regimes" to
-"wins in 5/5 regimes on useful energy":
+Four real, documented changes moved PCM from "loses in 4/5 regimes" to
+"wins in 5/5 regimes, one of them genuinely safe":
 
 1. **`Tm_target_C` retargeting** (doc 12) — Objective 1's climate-anchored
    57°C target sat well above this tank's real charging-hour water
@@ -92,8 +102,21 @@ Two real, documented changes moved PCM from "loses in 4/5 regimes" to
    still-narrow design bounds).
 2. **Design-bounds widening** (doc 13) — `capsule_count.max` 24→37 let
    designs reach ~19.8% PCM volume fraction (vs. 12.9% before), giving PCM
-   enough mass to matter. Combined with retargeting, every regime's best
-   PCM candidate now beats plain tank by +0.08% to +0.12%.
+   enough mass to matter.
+3. **Full-MCDM shortlist adoption** (doc 15, Part 1) — replaced a
+   simplified nearest-Tm shortlist substitute with Objective 1's actual
+   4-method MCDM engine, which changed every regime's shortlist and
+   surfaced n-Tetracosane (C24)/n-Hexacosane (C26)/RT45HC as the
+   candidates actually searched.
+4. **Safety-first tie-break** (doc 15, Part 2) — among candidates already
+   within the energy tolerance, prefer `meets_temperature_safety=True`
+   before minimizing mass. This is what turned regime 4's pick from a
+   razor-thin-unsafe design into RT45HC: genuinely safe (+0.39°C margin)
+   *and* higher useful energy (+0.30% vs. plain tank, the best of any
+   regime).
+
+Combined, every regime's best PCM candidate now beats plain tank by
++0.04% to +0.30%.
 
 ## Additional finding: the temperature-safety limit is a real, binding, climate-driven constraint — not a search-coverage gap
 
@@ -110,12 +133,17 @@ because PCM's 65°C material-stability limit (Rubitherm datasheets) is
 already push tank water into the 70–72°C range on sunny days regardless
 of whether PCM is present. Only regime 4's cooler climate keeps water
 (and therefore PCM) generally under 65°C, letting its selected design
-clear the nominal safety check by a margin of just 0.009°C. This is not
-fixable by retargeting, widening bounds further, or searching more
-candidates — it is a property of this collector/tank's peak operating
-temperature relative to a fixed material limit, and the reason Objective
-3's active bypass is a universal requirement (see `10_PHASE8_
-ROBUSTNESS_HANDOFF.md` and `OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md`).
+clear the nominal safety check with a real margin (+0.39°C with RT45HC,
+after the safety-first tie-break fix in doc 15 — the search itself always
+had 40 of 60 confirmed regime-4 candidates clear this margin; the earlier,
+now-superseded 0.009°C figure was an artifact of the old tie-break order
+picking a different, lower-mass candidate that happened to sit right at
+the edge). This is not fixable in regimes 0–3 by retargeting, widening
+bounds further, or searching more candidates — it is a property of this
+collector/tank's peak operating temperature relative to a fixed material
+limit, and the reason Objective 3's active bypass is a universal
+requirement (see `10_PHASE8_ROBUSTNESS_HANDOFF.md` and
+`OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md`).
 
 ## Deviations from the full framework doc
 
@@ -139,3 +167,6 @@ silently skipped.
   `max_pcm_temp_C=65°C` limit identified in this doc as the real, binding
   constraint behind the temperature-safety finding above — not a tunable
   design parameter, a real material property.
+- See `docs_objective2/15_MCDM_RERANKING_AND_SAFETY_TIEBREAK.md` for the
+  MCDM methodology grounding the current shortlist (traced to Objective
+  1's own `tamilnadu_pipeline/08_mcdm_ranking.py`, not a new citation).

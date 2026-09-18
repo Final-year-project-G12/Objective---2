@@ -3,8 +3,8 @@
 Files: `phase6_parity_plots.*`, `phase6_feature_importance.*`. Data
 source: the trained models in `results/tamilnadu/surrogate/models.pkl`,
 evaluated on the 30-row hold-out set (never seen during training; the
-30-row figure is unchanged by the Tm-retargeting/bounds-widening
-revisions — it's still 30 valid-only hold-out rows out of 144 valid
+30-row figure is unchanged by the Tm-retargeting/bounds-widening/MCDM
+revisions — it's still 30 valid-only hold-out rows out of 146 valid
 cases, per current `surrogate_metrics.csv`).
 
 ---
@@ -20,10 +20,10 @@ held-out* case; dashed line = perfect agreement (y=x). One panel each for
 across the full range of both targets (useful energy ranges ~1620–1820
 kWh across the 5 regimes; solar fraction ~0.505–0.545) — visually
 confirming the R² values reported in `07_PHASE6_SURROGATE.md` and current
-`surrogate_metrics.csv` (0.9999 for useful energy, 0.9717 for solar
-fraction — the solar-fraction figure moved down slightly from an earlier
-0.9990 pre-widening snapshot, still comfortably >0.97) rather than asking
-the reader to trust a table. There's no
+`surrogate_metrics.csv` (0.9997 for useful energy, 0.9887 for solar
+fraction — both figures move slightly with each shortlist revision, per
+doc 15, always comfortably >0.94) rather than asking the reader to trust
+a table. There's no
 fan-out or curvature at the extremes (which would indicate the surrogate
 struggles outside the bulk of its training data) — points near both ends
 of the range track the line just as tightly as points in the middle.
@@ -54,9 +54,10 @@ the bottom with near-zero importance.
 
 This is not a weakness of the surrogate — it is a correct read of the
 data it was trained on. Annual useful energy varies by **hundreds of
-kWh** between climate regimes (1622–1818 kWh, Phase 5 doc) but by only a
+kWh** between climate regimes (1623–1818 kWh, Phase 5 doc) but by only a
 **few kWh** between different PCM/geometry choices *within* the same
-regime (Phase 7: PCM beats plain tank by ~0.08% at best). A model that
+regime (Phase 7: PCM beats plain tank by ~0.04–0.30% depending on
+regime). A model that
 explains variance will naturally attribute almost all of it to whichever
 features actually drive the large swings — here, climate. This is a
 **third independent line of evidence**, after Gate 3's baseline

@@ -1,11 +1,20 @@
 # 07 — Phase 6 Audit: AI Surrogate Model
 
-> **Note (2026-09-13):** retrained against the retargeted-PCM,
-> widened-bounds DOE set. Current headline: R²>0.97 on every target
-> (previously >0.98); three of five targets (`solar_fraction`,
-> `pump_energy_kWh`, `pcm_mass_kg`) now show the linear baseline tying or
-> slightly beating the tree model, not just pump energy — see
-> `RESULTS.md`'s Phase 6 section for the current table. Feature/model
+> **SUPERSEDED 2026-09-17.** Describes the pre-refresh surrogate (no
+> arrangement feature). The current surrogate (28 features incl. 3
+> arrangement one-hot columns, trained on 81 rows from the refreshed DOE,
+> `useful_energy_kWh` R²=1.000, arrangement feature-importance diagnostic)
+> is documented in
+> `docs_objective2/tamilnadu_phase_docs/06_PROMPT_PHASE6_SURROGATE_TAMILNADU.md`.
+
+> **Note (2026-09-14):** retrained against the real-MCDM-shortlist (doc
+> 15), widened-bounds DOE set. Current headline: R²>0.94 on every target;
+> two of five targets (`pump_energy_kWh`, `pcm_mass_kg`) now show the
+> linear baseline tying or slightly beating the tree model — this split
+> shifts with which specific PCMs are in the training data (it was
+> `solar_fraction`/`pump_energy_kWh`/`pcm_mass_kg` in an earlier,
+> now-superseded revision), not a fixed property of the design space —
+> see `RESULTS.md`'s Phase 6 section for the current table. Feature/model
 > methodology below is unaffected.
 
 Files: `src/surrogate/features.py`, `src/surrogate/train.py`, `src/surrogate/evaluate.py`.

@@ -1,5 +1,12 @@
 # 03 — Phase 3 Audit: Grey-Box Enthalpy Simulator
 
+> **SUPERSEDED 2026-09-17** for regime/PCM specifics (K=5→K=3, shortlist
+> changed) — the simulator PHYSICS below is unaffected (Phase 3 was not
+> re-run; arrangement is geometry-consumed, not physics-consumed, per
+> `docs_objective2/17_ARRANGEMENT_RESTORATION.md`). For current example
+> commands and smoke-test results, see
+> `docs_objective2/tamilnadu_phase_docs/03_PROMPT_PHASE3_SIMULATOR_TAMILNADU.md`.
+
 > **Note (2026-09-13):** the example command below still names
 > `n-Octacosane (C28)`, the pre-retargeting shortlist PCM for cluster 0.
 > After the Tm-retargeting revision (doc 12), cluster 0's shortlist is

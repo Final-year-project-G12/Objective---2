@@ -31,7 +31,13 @@ from src.io_utils import load_design_bounds, load_system_config
 from src.surrogate.features import build_feature_table, feature_target_split
 from src.doe.generate_cases import _stable_hash
 
-N_CANDIDATES_PER_PAIR = 400
+N_CANDIDATES_PER_PAIR = 600   # raised from 400 (2026-09-17, adapted from
+# "a Rajasthan-pilot change plan (source removed from this project after adaptation, see docs_objective2/tamilnadu_phase_docs/)" step 2):
+# candidates are now split ~3 ways by the uniform arrangement sample before
+# the geometry gate, so 400 total would give each arrangement roughly the
+# same surviving-candidate budget the OLD 400-staggered-only search had
+# only for staggered; 600 keeps each arrangement's post-gate pool close to
+# the old per-arrangement equivalent (~200 each vs the old ~400 staggered).
 SEARCH_SEED = 20260905
 
 
@@ -40,14 +46,17 @@ def _random_candidates(bounds, n, seed):
     d = rng.uniform(bounds["capsule_diameter_m"]["min"], bounds["capsule_diameter_m"]["max"], n)
     f = rng.uniform(bounds["flow_rate_kg_s"]["min"], bounds["flow_rate_kg_s"]["max"], n)
     c = rng.integers(bounds["capsule_count"]["min"], bounds["capsule_count"]["max"] + 1, n)
-    return d, c, f
+    arrangements = bounds["capsule_arrangement"]["allowed"]
+    a = rng.choice(arrangements, size=n)   # uniform sample across all three arrangements
+    return d, c, f, a
 
 
 def _candidate_row(regime_id, pcm_id, design: DesignVector, geom: dict) -> dict:
     return {
         "regime_id": regime_id, "pcm_id": pcm_id if pcm_id is not None else "NONE_plain_tank",
         "capsule_diameter_m": design.capsule_diameter_m, "n_capsule": design.n_capsule,
-        "flow_rate_kg_s": design.flow_rate_kg_s, "valid": True,
+        "flow_rate_kg_s": design.flow_rate_kg_s, "arrangement": design.capsule_arrangement,
+        "valid": True,
         "geom_pcm_thickness_m": geom["pcm_thickness_m"],
         "geom_pcm_volume_fraction": geom["pcm_volume_fraction"],
         "geom_void_fraction": geom["void_fraction"],
@@ -58,15 +67,17 @@ def _candidate_row(regime_id, pcm_id, design: DesignVector, geom: dict) -> dict:
 
 
 def search_regime_pcm(state: str, regime_id: int, pcm_id, models: dict, feature_cols: list,
-                       n_candidates: int = N_CANDIDATES_PER_PAIR, top_n: int = 5, seed: int = None):
+                       n_candidates: int = N_CANDIDATES_PER_PAIR, top_n: int = 5, seed: int = None,
+                       verbose: bool = True):
     seed = seed if seed is not None else SEARCH_SEED + regime_id * 97 + (_stable_hash(pcm_id) % 997 if pcm_id else 0)
     bounds = load_design_bounds()
     system_config = load_system_config()
-    diam, count, flow = _random_candidates(bounds, n_candidates, seed)
+    diam, count, flow, arrangement = _random_candidates(bounds, n_candidates, seed)
 
     rows = []
     for i in range(n_candidates):
-        design = DesignVector(float(diam[i]), int(count[i]), float(flow[i]))
+        design = DesignVector(float(diam[i]), int(count[i]), float(flow[i]),
+                               capsule_arrangement=str(arrangement[i]))
         geom = check_design(design, system_config, bounds)
         if not geom["valid"]:
             continue
@@ -88,7 +99,14 @@ def search_regime_pcm(state: str, regime_id: int, pcm_id, models: dict, feature_
             cand_df[f"pred_{target}"] = model.predict(X)
 
     cand_df = cand_df.sort_values("pred_useful_energy_kWh", ascending=False)
-    return cand_df.head(top_n).reset_index(drop=True)
+    top = cand_df.head(top_n).reset_index(drop=True)
+
+    if verbose and len(top):
+        composition = top["arrangement"].value_counts().to_dict()
+        comp_str = ", ".join(f"{n} {a}" for a, n in composition.items())
+        print(f"  regime {regime_id} / {pcm_id}: {len(rows)}/{n_candidates} candidates survived "
+              f"the geometry gate; top {len(top)} = {comp_str}")
+    return top
 
 
 def search_all_pairs(state: str, top_n: int = 5):

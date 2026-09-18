@@ -49,18 +49,26 @@ def build_card(state: str, regime: dict, deployable_row: pd.Series, robustness_r
     lines.append(f"- Population covered: {regime['n_points']} points, "
                   f"{regime['population_covered']:,} people")
     lines.append(f"- State: Tamil Nadu | Medoid weather file: `{regime['weather_hourly']}`")
-    lines.append(f"- Elevation: flat 150 m approximation (Objective 1 limitation, carried forward unchanged)")
+    elev = regime.get("medoid_elevation_m")
+    lines.append(f"- Elevation: {elev:.1f} m (real elevation via Objective 1's 00c_attach_elevation.py, "
+                  f"2026-09-17 refresh — supersedes the earlier flat 150 m approximation)"
+                  if elev is not None else "- Elevation: not recorded for this regime")
     lines.append(f"- Member-point robustness: NOT run (medoid-only for sub-daily/hourly shape; the annual "
                   f"weather magnitude below is now a real 10-year historical ensemble, not a noise proxy — "
                   f"see Caveats)")
     lines.append("")
     lines.append("### Climate")
-    lines.append(f"- Tm_target_C (Objective 1, climate/delivery-anchored): {regime['Tm_target_C']}")
+    lines.append(f"- Tm_target_C (Objective 1's own climate/delivery-anchored formula — Objective 2 "
+                  f"searches geometry/flow for Objective 1's actual shortlisted PCMs, it does not "
+                  f"re-derive this target; see docs_objective2/18_OBJECTIVE1_SHORTLIST_RESTORED.md): "
+                  f"{regime['Tm_target_C']}")
     lines.append(f"- Mains/inlet water temperature (population-weighted regime mean): {regime['T_mains_est_C']:.2f} C")
     lines.append(f"- L_required (Objective 1 sizing target): {regime['L_required_kJ_per_kg']:.1f} kJ/kg")
     lines.append(f"- Demand scenario: 300 L/day canonical dual-peak draw (`data/demand/demand_profile_{state}.csv`)")
     lines.append("")
-    lines.append("### PCM shortlist (Objective 1, this regime)")
+    lines.append("### PCM shortlist (Objective 1's actual Top-3 MCDM consensus shortlist for this "
+                  "regime — Objective 2 searches geometry/arrangement/flow for these candidates only; "
+                  "see docs_objective2/18_OBJECTIVE1_SHORTLIST_RESTORED.md)")
     for rank, name in enumerate(regime["pcm_shortlist"], start=1):
         marker = " <- SELECTED" if name == pcm_id else ""
         lines.append(f"  {rank}. {name}{marker}")
@@ -76,7 +84,11 @@ def build_card(state: str, regime: dict, deployable_row: pd.Series, robustness_r
         lines.append(f"- PCM: **{pcm_id}** "
                       f"(Tm={pcm_record['Tm_C']} C, latent heat={pcm_record['latent_heat_kJ_kg']} kJ/kg, "
                       f"conductivity={pcm_record['TC_W_mK']} W/mK)")
-        lines.append(f"- Capsule shape/arrangement: sphere, staggered (frozen for all states)")
+        lines.append(f"- Capsule shape: sphere (frozen for all states)")
+        lines.append(f"- **Selected arrangement: {deployable_row.get('arrangement', 'n/a')}** "
+                      f"(searched 2026-09-17 — single-layer/staggered/radial were all compared; "
+                      f"previously frozen to staggered-only)")
+        lines.append(f"- Arrangement rationale: {deployable_row.get('arrangement_rationale', 'n/a')}")
         lines.append(f"- Capsule diameter: {deployable_row['capsule_diameter_m']:.4f} m "
                       f"(max PCM conduction distance = {deployable_row['capsule_diameter_m']/2:.4f} m)")
         lines.append(f"- Capsule count: {int(deployable_row['n_capsule'])}")
@@ -85,7 +97,7 @@ def build_card(state: str, regime: dict, deployable_row: pd.Series, robustness_r
                   f"(permitted range 0.010-0.050 kg/s)")
     lines.append("")
 
-    lines.append("### Performance (simulator-confirmed, sim_v1_tamilnadu)")
+    lines.append("### Performance (simulator-confirmed, sim_v2_tamilnadu)")
     lines.append(f"- Useful annual energy: {deployable_row['sim_useful_energy_kWh']:.1f} kWh/year")
     lines.append(f"- Solar fraction: {deployable_row['sim_solar_fraction']*100:.2f}%")
     lines.append(f"- Delivery-temperature hours (>= 45 C): {_fmt(deployable_row.get('sim_delivery_temp_hours'), '{:.0f}')}")
@@ -129,9 +141,19 @@ def build_card(state: str, regime: dict, deployable_row: pd.Series, robustness_r
                       f"pump energy, then capsule count) picked the zero-mass plain tank. "
                       f"See `docs_objective2/08_PHASE7_OPTIMIZATION.md` for the full comparison.")
     else:
-        lines.append(f"- This PCM's best found design reached the regime's own best useful-energy value "
-                      f"({deployable_row['best_useful_energy_in_regime_kWh']:.1f} kWh), winning outright "
-                      f"before any tolerance tie-break was needed.")
+        own_energy = deployable_row["sim_useful_energy_kWh"]
+        best_energy = deployable_row["best_useful_energy_in_regime_kWh"]
+        gap_pct = (best_energy - own_energy) / best_energy * 100.0
+        if gap_pct < 0.01:
+            lines.append(f"- This design reached the regime's own best useful-energy value "
+                          f"({best_energy:.1f} kWh) outright.")
+        else:
+            lines.append(f"- This design ({own_energy:.1f} kWh) is {gap_pct:.2f}% below the regime's "
+                          f"best-found candidate ({best_energy:.1f} kWh, a different design within the "
+                          f"selection rule's pre-declared tolerance band) — it was picked by the tie-break "
+                          f"(safety first, then pump energy, then PCM mass, then capsule count) among "
+                          f"candidates already within tolerance of the best, not because it had the "
+                          f"highest useful energy in the regime.")
     lines.append(f"- Selection-rule pool size (candidates within 5% of best): "
                   f"{int(deployable_row['selection_rule_pool_size'])}")
     lines.append("")
@@ -170,7 +192,9 @@ def run(state: str):
     header = [
         f"# Objective 2 Recommendation Cards — {state}",
         "",
-        f"Simulator version: `sim_v1_{state}`. Generated from Phases 1-8 results; "
+        f"Simulator version: `sim_v2_{state}` (2026-09-17 — arrangement restored + fresh Objective 1 "
+        f"data, K=5->K=3 regimes; see docs_objective2/17_ARRANGEMENT_RESTORATION.md and "
+        f"16_OBJECTIVE1_DATA_REFRESH.md). Generated from Phases 1-8 results; "
         f"nothing below is a surrogate-only estimate -- every performance number is "
         f"simulator-confirmed (Phase 7) and every robustness probability comes from "
         f"real Monte Carlo simulator re-runs (Phase 8), not the surrogate.",

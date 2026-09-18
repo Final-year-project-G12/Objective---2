@@ -48,6 +48,10 @@ def main():
     ap.add_argument("--diameter", type=float, default=0.08, help="capsule diameter, m")
     ap.add_argument("--count", type=int, default=19, help="capsule count")
     ap.add_argument("--flow", type=float, default=0.030, help="flow rate, kg/s")
+    ap.add_argument("--arrangement", default="staggered", choices=["single-layer", "staggered", "radial"],
+                     help="capsule arrangement (restored as a searched variable 2026-09-17 -- "
+                          "the CLI still defaults to staggered for convenience, but every internal "
+                          "caller (DOE/search/etc.) must now pass it explicitly, no dataclass default)")
     ap.add_argument("--no-pcm", action="store_true", help="run the plain-tank baseline (ignores --pcm)")
     ap.add_argument("--top-n-per-pair", type=int, default=20,
                      help="optimize stage: real-simulator-confirmed candidates per regime x PCM pair "
@@ -60,7 +64,8 @@ def main():
 
     elif args.stage == "simulate":
         pcm_name = None if args.no_pcm else args.pcm
-        design = DesignVector(capsule_diameter_m=args.diameter, n_capsule=args.count, flow_rate_kg_s=args.flow)
+        design = DesignVector(capsule_diameter_m=args.diameter, n_capsule=args.count,
+                               flow_rate_kg_s=args.flow, capsule_arrangement=args.arrangement)
         print(f"Phase 3 — running 1 full-year case: state={args.state} cluster={args.cluster} "
               f"pcm={pcm_name} design={design.as_dict()}")
         out = run_case(args.state, args.cluster, pcm_name, design, record_hourly=True)

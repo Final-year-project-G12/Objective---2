@@ -7,9 +7,11 @@ tank included for comparison) and `deployable_design_per_regime.csv` (the
 5 final PCM-only selections) — read directly, nothing recomputed.
 
 *(These plots reflect the current, final methodology: retargeted
-`Tm_target_C`, widened design bounds, and the PCM-only selection rule —
-see `docs_objective2/12_TM_TARGET_RETARGETING.md`, `13_DESIGN_BOUNDS_
-WIDENING.md` and `14_SELECTION_RULE_SCOPE_CORRECTION.md`.)*
+`Tm_target_C`, widened design bounds, the PCM-only selection rule, the
+real-MCDM shortlist, and the safety-first tie-break — see
+`docs_objective2/12_TM_TARGET_RETARGETING.md`, `13_DESIGN_BOUNDS_
+WIDENING.md`, `14_SELECTION_RULE_SCOPE_CORRECTION.md`, and
+`15_MCDM_RERANKING_AND_SAFETY_TIEBREAK.md`.)*
 
 ---
 
@@ -81,11 +83,13 @@ per region** (spanning the full 8–37 capsule / 0.02–0.08 m diameter
 range) are safe — not a coverage gap, a structural result (confirmed by a
 follow-up direct test: even the smallest possible PCM dose already
 violates the limit by thousands of hours/year in these regimes, see
-`08_PHASE7_OPTIMIZATION.md`). In regime 4, a meaningful fraction of PCM
-candidates are safe, including the selected design — but only by a
-nominal margin of 0.009°C, which Phase 8 shows does not survive real-world
-uncertainty (25% safe under Monte Carlo, not the ~100% this nominal-only
-chart might suggest).
+`08_PHASE7_OPTIMIZATION.md`). In regime 4, **40 of 60** PCM candidates are
+safe, and — after the safety-first tie-break fix (doc 15) — the *selected*
+design (RT45HC) is now one of them, with a real +0.39°C nominal margin,
+not the razor-thin 0.009°C an earlier, now-superseded pick had. Phase 8
+shows this still doesn't fully survive real-world uncertainty (30.8% safe
+under Monte Carlo, not the ~100% this nominal-only chart might suggest),
+but it's a meaningfully better starting point than before.
 
 **How to justify it**: *"This chart shows the physical wall this project
 ran into after PCM started winning on energy: PCM's 65°C material limit
@@ -102,4 +106,6 @@ See `08_PHASE7_OPTIMIZATION.md`'s "Literature" section for the full
 mapping. Most directly relevant here: **[Rubitherm2024]** is the
 datasheet source of the 65°C limit this plot visualizes as a physical
 wall; **[Assareh2023]**/**[Chen2025]** ground the search-then-select
-methodology producing the candidates shown.
+methodology producing the candidates shown. See
+`docs_objective2/15_MCDM_RERANKING_AND_SAFETY_TIEBREAK.md` for why
+regime 4's star moved to a safer point in Plot 1/3.

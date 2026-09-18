@@ -1,6 +1,6 @@
 # 14 — Selection Rule Scope Correction: PCM-Only Final Selection (2026-09-13)
 
-**Status: APPLIED to `src/optimize/select_deployable.py`. Phase 7 re-selected (no new simulation needed — re-applied to the already-confirmed candidate pool from the widened-bounds run). Phase 8 (robustness + hand-off) re-run against the new selection. All current.**
+**Status: APPLIED to `src/optimize/select_deployable.py`. Phase 7 re-selected (no new simulation needed — re-applied to the already-confirmed candidate pool from the widened-bounds run). Phase 8 (robustness + hand-off) re-run against the new selection. Superseded in one respect by `15_MCDM_RERANKING_AND_SAFETY_TIEBREAK.md`: the tie-break order described below (minimize pump energy → PCM mass → count → margin) now has `meets_temperature_safety` inserted as the FIRST tie-break criterion. Everything else below (PCM-only pool, tolerance rule, safety always reported) is unchanged and current.**
 
 This is a deliberate, documented scope correction — not a tuning of results.
 
@@ -29,6 +29,15 @@ The zero-PCM "plain tank" candidate was added to Phase 5/7's search space by thi
 - Every other selection-rule mechanic (tolerance band, tie-break order) — unchanged, just applied to a PCM-only pool now.
 
 ## Result: before → after
+
+> **Superseded by doc 15 (2026-09-14):** the "after" column below used
+> the nearest-Tm shortlist and the mass-first tie-break, both since
+> replaced. Current PCMs/numbers (real MCDM shortlist + safety-first
+> tie-break): regime 0/1 n-Tetracosane, regime 2/3 n-Hexacosane, regime 4
+> **RT45HC** (now genuinely safe, +0.39°C margin, not razor-thin) — see
+> `RESULTS.md` or doc 15 for the current table. The point this table
+> still correctly makes — plain tank is no longer eligible to win — is
+> unaffected.
 
 | Regime | Before (plain-tank-eligible) | After (PCM-only pool) | vs. plain tank | Meets safety margin? |
 |---|---|---|---|---|

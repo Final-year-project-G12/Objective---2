@@ -1,5 +1,12 @@
 # 01 — Phase 1 Audit: Frozen Configuration & State Setup
 
+> **SUPERSEDED 2026-09-17.** Describes the pre-refresh K=5 run. For the
+> current K=3 state config and data-refresh mechanics, see
+> `docs_objective2/16_OBJECTIVE1_DATA_REFRESH.md` and
+> `docs_objective2/tamilnadu_phase_docs/01_PROMPT_PHASE1_CONFIG_TAMILNADU.md`.
+> Kept for historical methodology record (the Tm-retargeting note below
+> describes an approach still in use, just re-applied against fresh data).
+
 > **Note (2026-09-13):** `Tm_target_C` (all 5 clusters), the PCM
 > shortlist per cluster, and `capsule_count.max` described below are the
 > **original Phase 1 output**, since superseded by the Tm-retargeting

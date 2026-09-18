@@ -47,7 +47,8 @@ def confirm_candidates(state: str, candidates: pd.DataFrame) -> pd.DataFrame:
     rows = []
     for _, cand in candidates.iterrows():
         pcm_id = None if cand["pcm_id"] == "NONE_plain_tank" else cand["pcm_id"]
-        design = DesignVector(cand["capsule_diameter_m"], int(cand["n_capsule"]), cand["flow_rate_kg_s"])
+        design = DesignVector(cand["capsule_diameter_m"], int(cand["n_capsule"]), cand["flow_rate_kg_s"],
+                               capsule_arrangement=cand["arrangement"])
         out = run_case(state, int(cand["regime_id"]), pcm_id, design, record_hourly=True)
         if not out["valid"]:
             continue   # should not happen -- search.py already geometry-filtered
@@ -78,7 +79,41 @@ def confirm_candidates(state: str, candidates: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def apply_selection_rule(state: str, confirmed: pd.DataFrame) -> pd.DataFrame:
+def _arrangement_rationale(winner: pd.Series, group: pd.DataFrame, noise_band_pct: float) -> str:
+    """2026-09-17 (adapted from a Rajasthan-pilot change plan, source
+    removed from this project after adaptation -- see
+    docs_objective2/tamilnadu_phase_docs/07_PROMPT_PHASE7_OPTIMIZE_TAMILNADU.md
+    step 4): compares the winning
+    arrangement's simulator-confirmed useful energy against the best
+    simulator-confirmed candidate of the SAME PCM under each OTHER
+    arrangement in this regime. A margin inside the observed surrogate-vs-
+    simulator noise band is reported as "tied within noise," not a real
+    difference."""
+    winner_arrangement = winner.get("arrangement")
+    same_pcm = group[group["pcm_id"] == winner["pcm_id"]]
+    best_by_arrangement = same_pcm.groupby("arrangement")["sim_useful_energy_kWh"].max()
+    others = {a: e for a, e in best_by_arrangement.items() if a != winner_arrangement}
+    if not others:
+        return (f"only arrangement={winner_arrangement} was simulator-confirmed for this "
+                f"regime/PCM pool -- no other arrangement to compare.")
+
+    next_best_arrangement = max(others, key=others.get)
+    next_best_energy = others[next_best_arrangement]
+    winner_energy = winner["sim_useful_energy_kWh"]
+    margin_pct = ((winner_energy - next_best_energy) / next_best_energy * 100.0
+                  if next_best_energy else float("nan"))
+
+    if abs(margin_pct) > noise_band_pct:
+        return (f"arrangement {winner_arrangement} won by {margin_pct:.2f}% over "
+                f"next-best arrangement {next_best_arrangement} "
+                f"(surrogate-vs-sim noise band: {noise_band_pct:.2f}%)")
+    else:
+        return (f"arrangements tied within noise in this regime (margin {margin_pct:.2f}% is "
+                f"inside the {noise_band_pct:.2f}% surrogate-vs-sim noise band) -- "
+                f"arrangement not decisive here; next-best was {next_best_arrangement}")
+
+
+def apply_selection_rule(state: str, confirmed: pd.DataFrame, noise_band_pct: float = 1.0) -> pd.DataFrame:
     """Selects the deployable PCM design per regime.
 
     SCOPE CORRECTION (2026-09-13, per the actual problem statement,
@@ -107,6 +142,28 @@ def apply_selection_rule(state: str, confirmed: pd.DataFrame) -> pd.DataFrame:
     `deployment_note` as needing Objective 3's active bypass before
     hardware deployment -- reported, not disqualifying the pick back to a
     non-PCM answer the assignment never asked for.
+
+    TIE-BREAK REFINEMENT (2026-09-14, after adopting the full-MCDM
+    shortlist -- see docs_objective2/15_MCDM_RERANKING.md): among
+    candidates already within the pre-declared energy tolerance of the
+    regime's best (i.e. already satisfying "maximize thermal energy
+    storage" to within the accepted band), `meets_temperature_safety` is
+    now the FIRST tie-break criterion, ahead of pump energy/mass/count.
+    This was added because inspecting the full confirmed candidate pool
+    showed regime 4 had 40 simulator-confirmed, genuinely safe candidates
+    within the 5% tolerance band (positive constraint margin, e.g.
+    n-Docosane at +2.26 C) that the OLD tie-break order (mass-first)
+    passed over in favor of a lower-mass but temperature-UNSAFE
+    candidate -- even though the safe alternative was not a
+    energy/cost trade-off (it has HIGHER useful energy too, 1630.1 vs
+    1623.2 kWh). Preferring safety among already-energy-qualified
+    candidates is a strict improvement here, not a trade-off, and does
+    not touch the tolerance band, the safety limits, or which PCMs are
+    eligible -- it only changes which already-qualifying candidate wins
+    the tie-break. Where no safe candidate exists within tolerance
+    (regimes 0-3, verified empirically -- zero safe candidates in the
+    full 60-candidate pool each), this criterion is a no-op and the
+    previous mass-first order still decides the winner.
     """
     system_config = load_system_config()
     tol_pct = system_config["selection"]["pareto_tolerance_pct"]
@@ -123,12 +180,14 @@ def apply_selection_rule(state: str, confirmed: pd.DataFrame) -> pd.DataFrame:
         within_tol = pcm_only[pcm_only["sim_useful_energy_kWh"] >= best_energy * (1 - tol_pct / 100.0)]
 
         within_tol = within_tol.sort_values(
-            by=["sim_pump_energy_kWh", "sim_pcm_mass_kg", "n_capsule", "constraint_margin_C"],
-            ascending=[True, True, True, False],
+            by=["meets_temperature_safety", "sim_pump_energy_kWh", "sim_pcm_mass_kg",
+                "n_capsule", "constraint_margin_C"],
+            ascending=[False, True, True, True, False],
         )
         winner = within_tol.iloc[0].copy()
         winner["selection_rule_pool_size"] = len(within_tol)
         winner["best_useful_energy_in_regime_kWh"] = best_energy
+        winner["arrangement_rationale"] = _arrangement_rationale(winner, group, noise_band_pct)
 
         plain = group[group["pcm_id"] == "NONE_plain_tank"]
         if not plain.empty:
@@ -173,15 +232,21 @@ def run_phase7(state: str, top_n_per_pair: int = 20):
     print(f"  Saved: {out_dir / 'optimized_designs.csv'}")
 
     print("\nStep 3/3: applying the pre-declared deployable-design selection rule ...")
-    deployable = apply_selection_rule(state, confirmed)
+    # noise_band_pct = the observed surrogate-vs-simulator mean error (step 4,
+    # 2026-09-17): arrangement_rationale treats a margin smaller than this as
+    # noise, not a real arrangement difference.
+    deployable = apply_selection_rule(state, confirmed, noise_band_pct=float(mean_error))
     deployable.to_csv(out_dir / "deployable_design_per_regime.csv", index=False)
     print(f"  Saved: {out_dir / 'deployable_design_per_regime.csv'}")
 
     print("\nDeployable design per regime:")
-    cols = ["regime_id", "pcm_id", "capsule_diameter_m", "n_capsule", "flow_rate_kg_s",
+    cols = ["regime_id", "pcm_id", "arrangement", "capsule_diameter_m", "n_capsule", "flow_rate_kg_s",
             "sim_useful_energy_kWh", "sim_solar_fraction", "sim_pump_energy_kWh",
             "sim_pcm_mass_kg", "constraint_margin_C", "surrogate_vs_sim_error_pct"]
     print(deployable[cols].to_string(index=False))
+    print("\nArrangement rationale per regime:")
+    for _, row in deployable.iterrows():
+        print(f"  regime {row['regime_id']}: {row['arrangement_rationale']}")
 
     return confirmed, deployable
 

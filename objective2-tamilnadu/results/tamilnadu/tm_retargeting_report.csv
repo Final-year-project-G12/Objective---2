@@ -1,6 +1,4 @@
 cluster_id,label,old_Tm_target_C,new_Tm_target_C,old_pcm_shortlist,new_pcm_shortlist,new_shortlist_Tm_C,new_shortlist_latent_heat_kJ_kg
-0,"coastal/high-humidity (small, 8 pts)",57.0,48.9,n-Octacosane (C28); n-Hexacosane (C26); PureTemp 58,savE® OM49; n-Tricosane (C23); n-Tetracosane (C24),49.0; 47.5; 52.0,224.0; 232.0; 255.0
-1,"interior plains (largest, 42 pts)",57.0,49.5,n-Octacosane (C28); RT64HC; n-Hexacosane (C26),n-Tricosane (C23); n-Tetracosane (C24); n-Pentacosane (C25),47.5; 52.0; 54.0,232.0; 255.0; 238.0
-2,coastal belt (39 pts),57.0,50.4,n-Octacosane (C28); PureTemp 58; n-Hexacosane (C26),savE® OM49; PlusICE A52; n-Tetracosane (C24),49.0; 52.0; 52.0,224.0; 220.0; 255.0
-3,semi-arid interior / Coimbatore-Tiruppur-like (22 pts),57.0,51.5,n-Octacosane (C28); PureTemp 58; n-Hexacosane (C26),n-Tetracosane (C24); PlusICE A52; PureTemp 53,52.0; 52.0; 53.0,255.0; 220.0; 225.0
-4,high-humidity / highest HSI (22 pts),57.0,46.5,n-Octacosane (C28); RT64HC; n-Hexacosane (C26),n-Tricosane (C23); RT45HC; n-Docosane (C22),47.5; 45.0; 44.5,232.0; 240.0; 249.0
+0,"coastal/interior lowland (46 pts, medoid elev 156 m)",53.3,53.3,RT57HC; n-Hexacosane (C26); PureTemp 58,PureTemp 53; n-Pentacosane (C25); n-Tetracosane (C24),53.0; 54.0; 52.0,225.0; 238.0; 255.0
+1,"elevated/hill interior, Nilgiris-adjacent (41 pts, medoid elev 627 m)",46.5,46.5,RT57HC; n-Hexacosane (C26); n-Pentacosane (C25),savE® OM46; n-Tricosane (C23); RT45HC,47.0; 47.5; 45.0,177.0; 232.0; 240.0
+2,"coastal metro lowland, largest population (46 pts, medoid elev 44 m)",50.3,50.3,RT57HC; n-Pentacosane (C25); n-Hexacosane (C26),savE® OM49; PlusICE A52; n-Tetracosane (C24),49.0; 52.0; 52.0,224.0; 220.0; 255.0

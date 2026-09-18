@@ -1,11 +1,20 @@
 # 06 — Phase 5 Audit: Design-of-Experiments Dataset
 
-> **Note (2026-09-13):** the specific PCM shortlist and any "145 valid/70
-> rejected" style counts below are pre-retargeting. Current: retargeted
-> PCMs + widened bounds give 144 valid/71 rejected (same rejection
-> mechanism — diameter < 0.04 m thickness floor). See `12_TM_TARGET_
-> RETARGETING.md` and `13_DESIGN_BOUNDS_WIDENING.md`. Sampling methodology
-> below is unaffected.
+> **SUPERSEDED 2026-09-17.** Describes the pre-refresh, staggered-only
+> DOE. The current arrangement-stratified DOE (219 cases, 108 valid,
+> per-arrangement rejection-rate table) is documented in
+> `docs_objective2/tamilnadu_phase_docs/05_PROMPT_PHASE5_DOE_TAMILNADU.md`.
+
+> **Note (2026-09-14):** the specific PCM shortlist and any "145 valid/70
+> rejected" style counts below are pre-retargeting. Current: real-MCDM
+> shortlist (doc 15) + widened bounds give **146 valid/69 rejected** (same
+> rejection mechanism — diameter < 0.04 m thickness floor; the exact count
+> shifts by a case or two whenever the shortlisted PCMs change, since LHS
+> draws are per regime×PCM pair, but the ~32% rejection rate stays
+> essentially constant as expected for a purely geometric constraint). See
+> `12_TM_TARGET_RETARGETING.md`, `13_DESIGN_BOUNDS_WIDENING.md`, and
+> `15_MCDM_RERANKING_AND_SAFETY_TIEBREAK.md`. Sampling methodology below
+> is unaffected.
 
 Files: `src/doe/generate_cases.py`, `src/doe/run_batch.py`, `src/doe/split_cases.py`.
 Run: `python pipeline.py --state tamilnadu --stage doe`.

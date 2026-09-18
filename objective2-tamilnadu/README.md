@@ -1,5 +1,12 @@
 # Objective 2 — Input Data Reference
 
+> For methodology, current results, and the full Phases 1-8 record, see
+> `docs_objective2/00_MASTER_OVERVIEW.md` and
+> `docs_objective2/tamilnadu_phase_docs/*.md`. This file only
+> documents the `data/` folder's file layout (still accurate as of the
+> 2026-09-17 Objective 1 refresh, with per-file notes below where a
+> filename changed).
+
 This describes every file that lands in `objective2_design_optimization/data/`
 after running, **in this order**:
 
@@ -12,7 +19,7 @@ python build_demand_profile.py    # builds the canonical draw   -> data/demand/
 All three scripts have a `STATE = "tamilnadu"` variable near the top.
 **If you are doing a different state, change only that one line** (and
 `OBJ1_ROOT` in `config.py` if your Objective 1 folder isn't named
-`era5_tamilnadu`) — everything else, including every filename below,
+`tamilnadu_pipeline`) — everything else, including every filename below,
 follows automatically. This is the point of naming files
 `{thing}_{state}.csv`: every state's teammate produces an identically
 structured `data/` folder, so Objective 2's design/simulation/surrogate
@@ -40,13 +47,16 @@ code never needs to know which state it's looking at.
 | `cluster_profiles_{state}.csv` | `05_cluster_tamilnadu.py` | **1 row/cluster** | Population-weighted mean of every signature column, per regime — `n_points`, `total_population_covered`, plus mean `Tm_target_C`, `L_required_kJ_per_kg`, `HSI`, `GHI_daily_kWh`, etc. **This is what Obj2's DOE reads to get each regime's design target.** |
 | `bic_selection_{state}.csv`, `kmeans_comparison_{state}.csv` | `05_cluster_tamilnadu.py` | 1 row/K | Model-selection diagnostics (why K was chosen) — reference material, not a modeling input. |
 | `pcm_database_{state}.csv` | `06_build_pcm_database.py` | 1 row/PCM | **Full property records for every candidate PCM** (not just the shortlisted ones): `name, family, Tm_C, latent_heat_kJ_kg, density_*, Cp_*, TC_W_mK, cycles_tested, supercooling_K, rho_H_MJ_m3, corrosion_class`, plus `any_property_imputed` flagging which values came from MICE/RF imputation vs. a real datasheet/paper. |
-| `feasibility_survivors_by_cluster.csv` | `07_feasibility_filter.py` | 1 row/cluster/PCM | Every PCM checked against every cluster's `Tm_target`/`L_required`, with a pass/fail column per filter (melting window, latent-heat floor, cycling, supercooling, corrosion, safety) and `passes_all`. |
+| `feasibility_survivors_by_cluster.csv` | `07_feasibility_filter.py` | 1 row/cluster/PCM | Every PCM checked against every cluster's `Tm_target`/`L_required`, with a pass/fail column per filter (melting window, latent-heat floor, cycling, supercooling, corrosion, safety) and `passes_all`. **2026-09-17: filter columns renamed to a `c1`-`c8` string scheme** (`"pass"`/`"fail"`/`"flag_..."`), see `docs_objective2/16_OBJECTIVE1_DATA_REFRESH.md`. |
+| `feasibility_survivors_by_cluster_kappa_calibrated.csv` *(new, 2026-09-17)* | `07_feasibility_filter.py` | 1 row/cluster/PCM | Same as above, but with a calibrated (`calibrated_kappa`) relaxation of the strict latent-heat floor — **use this file, not the plain one**, for any downstream eligibility check: the plain file's strict floor rejects every candidate given the refreshed (higher) `L_required_kJ_per_kg`, this is the pool `mcdm_topk_by_cluster.csv` itself is actually built from. |
 | `mcdm_topk_by_cluster.csv` | `08_mcdm_ranking.py` | 1 row/cluster/top-3 | **The Top-3 PCM recommendation per regime** — `consensus_rank`, `name`, `Tm_C`, `latent_heat_kJ_kg`, plus each method's score (`topsis_score`, `gra_grade`, `promethee_flow`, `vikor_Q`) and `top3_inclusion_probability` from the Monte Carlo stability check. **This is what tells Obj2 which PCM(s) to design hardware for.** |
-| `mcdm_full_scores_by_cluster.csv` | `08_mcdm_ranking.py` | 1 row/cluster/survivor | Same as above but every feasibility survivor, not just the top 3 — useful if Obj2's DOE wants to simulate more than 3 candidates per regime. |
+| `mcdm_full_rankings.csv` *(renamed 2026-09-17, was `mcdm_full_scores_by_cluster.csv`)* | `08_mcdm_ranking.py` | 1 row/cluster/survivor | Same as `mcdm_topk_by_cluster.csv` but every feasibility survivor, not just the top 3 — useful if Obj2's DOE wants to simulate more than 3 candidates per regime. |
+| `mcdm_method_agreement.csv` *(new, 2026-09-17)* | `08_mcdm_ranking.py` | 1 row/cluster | How often TOPSIS/GRA/PROMETHEE II/VIKOR agree on the Top-3 for that cluster — a consensus-quality diagnostic. |
 | `monte_carlo_stability.csv` | `08_mcdm_ranking.py` | 1 row/cluster/PCM | Standalone version of the Monte Carlo columns above (inclusion probability, rank-reversal rate). |
 | `physics_validation_results.csv` *(optional)* | `10_physics_validation.py` | 1 row/cluster/PCM | Simulated annual solar fraction from Obj1's own grey-box check — **only present if you've run that script.** Useful as a sanity baseline before Obj2 builds its own (higher-fidelity, geometry-aware) simulator. |
 | `physics_validation_spearman.csv` *(optional)* | `10_physics_validation.py` | 1 row/cluster | Correlation between MCDM rank and simulated performance, per regime. |
-| `level_b_seasonal_topk.csv`, `level_b_seasonal_summary.md` *(optional)* | `11_level_b_seasonal_analysis.py` | 1 row/cluster/season | Whether the Top-1 PCM changes by season within a regime — if `flips_from_annual` is `True` anywhere, that regime may need a seasonal or cascaded PCM design in Obj2, not a single fixed one. |
+| `seasonal_pcm_sensitivity_topk.csv`, `seasonal_pcm_sensitivity_summary.md` *(renamed 2026-09-17, was `level_b_seasonal_topk.csv`/`level_b_seasonal_summary.md`; script rewritten to `11_seasonal_pcm_sensitivity.py`)* | 1 row/cluster/season | Whether the Top-1 PCM changes by season within a regime. |
+| `cluster_assignments_{state}_levelB.csv`, `bic_selection_{state}_levelB.csv`, `level_b_feature_importance_{state}.csv` *(new, 2026-09-17)* | `05a_level_b_regime_shift_tamilnadu.py` | varies | A separate, rewritten Level-B seasonal-regime-shift GMM analysis — distinct from the seasonal PCM sensitivity table above. |
 | `recommendation_cards.md` | `09_recommendation_cards.py` | — | Human-readable summary of everything above, one card per cluster — Obj1's results section. Good for a quick sanity read, not meant to be parsed programmatically. |
 | `manifest.json` | `build_input_package.py` (this project) | — | SHA-256 hash + source path of every file above, plus which files were too large to copy (hashed only — see below) and which points are each cluster's medoid. **Re-generate this any time Objective 1 is re-run**, so a stale copy is never silently used. |
 | `raw_weather/power_{point_id}_{year}.json` | `01b_download_nasapower.py` (copied selectively) | full hourly | Real, unmodified NASA POWER hourly records — **only for each cluster's medoid point**, all available years. This is the raw material `build_regime_weather.py` turns into the per-regime files below. |

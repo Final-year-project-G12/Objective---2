@@ -32,6 +32,7 @@ every figure from the current results.
 | `07_optimization_plots.md` | Phase 7 — Pareto view, surrogate-vs-simulator, safety compliance |
 | `08_robustness_plots.md` | Phase 8 — robustness probabilities (real 10-yr historical weather ensemble), useful-energy percentile intervals |
 | `../REFERENCES.md` | Literature base — every phase-doc citation used above, mapped to what it grounds |
+| `../15_MCDM_RERANKING_AND_SAFETY_TIEBREAK.md` | Why Phase 7/8's plots changed between 2026-09-13 and 2026-09-14 (real MCDM shortlist, safety-first tie-break) |
 
 ## One-line justification per phase (for a viva or report caption)
 
@@ -52,7 +53,10 @@ every figure from the current results.
   on 400 designs it wasn't directly trained on, and the Pareto view shows
   *why* the optimizer now picks a genuine PCM design in every regime — the
   PCM cluster sits just above and to the right of the plain-tank point,
-  a small but real, simulator-confirmed edge, not a statistical tie."
+  a small but real, simulator-confirmed edge, not a statistical tie.
+  Regime 4's star also moved to a genuinely safe candidate after a
+  safety-first tie-break fix (doc 15) — not the razor-thin-margin pick
+  from before."
 - **Phase 6b**: "a cheap low-fidelity simulator pass, used as an extra
   surrogate feature, recovers most of Phase 6's accuracy even when the
   expensive high-fidelity training set is cut sharply — the practical
@@ -62,7 +66,8 @@ every figure from the current results.
   and every regime now runs a genuine PCM design; demand reliability is
   solid except in regime 4. The robustness *chart* now shows delivery/
   demand only — temperature-safety (0% in regimes 0-3, never safe in 120
-  draws; 25% in regime 4, whose nominal margin was 0.009°C) is reported in
+  draws; 30.8% in regime 4, whose design now has a real +0.39°C nominal
+  margin rather than a razor-thin 0.009°C one) is reported in
   `robustness_summary.csv` / `10_PHASE8_ROBUSTNESS_HANDOFF.md` /
   `RESULTS.md` rather than plotted, and remains the clearest demonstration
   of why Objective 3's active bypass is not optional for any regime."

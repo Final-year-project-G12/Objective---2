@@ -309,8 +309,10 @@ docs.
 
 ## Full original bibliography
 
-The complete, unedited reference list this file draws from is
-`vertopal.com_references.txt` at the project root — every entry above is
-copied verbatim from there; nothing has been added, reworded, or
-invented. Consult that file directly for the handful of entries (general
-background, above) not given a per-phase citation here.
+Every entry above (including the "General / background" list) was already
+copied verbatim from the project's original `vertopal.com_references.txt`
+— nothing has been added, reworded, or invented. That file was folded
+entirely into this one during the 2026-09-17 docs consolidation (see
+`docs_objective2/16_OBJECTIVE1_DATA_REFRESH.md`) and removed from the
+project root as a redundant duplicate; this file is now the single
+citation source for Objective 2.

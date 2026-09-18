@@ -18,10 +18,10 @@ import pandas as pd
 from config import RESULTS_DIR
 from src.io_utils import load_system_config, load_state_config, get_pcm_properties
 
-SIMULATOR_VERSION = "sim_v1_tamilnadu"
+SIMULATOR_VERSION = "sim_v2_tamilnadu"   # bumped 2026-09-17 -- arrangement restored + fresh Objective 1 data
 
 
-def _design_block(state, regime, deployable_row, system_config):
+def _design_block(state, regime, deployable_row, system_config, n_regimes):
     cid = regime["cluster_id"]
     pcm_id = deployable_row["pcm_id"]
     is_plain = pcm_id == "NONE_plain_tank"
@@ -29,8 +29,10 @@ def _design_block(state, regime, deployable_row, system_config):
 
     return {
         "regime_id": int(cid),
-        "regime_membership_rule": f"GMM cluster {cid} of K=5 (Objective 1, cluster_assignments_{state}.csv); "
-                                   f"a new site is assigned to this regime by its max_membership_prob column",
+        "regime_membership_rule": f"GMM cluster {cid} of K={n_regimes} (Objective 1, "
+                                   f"cluster_assignments_{state}.csv, 2026-09-17 refresh -- was K=5 before "
+                                   f"this refresh); a new site is assigned to this regime by its "
+                                   f"max_membership_prob column",
         "selected_pcm": None if is_plain else {
             "pcm_id": pcm_id,
             "Tm_C": pcm_record["Tm_C"],
@@ -44,7 +46,8 @@ def _design_block(state, regime, deployable_row, system_config):
         },
         "is_plain_tank_no_pcm": is_plain,
         "capsule_shape": "sphere" if not is_plain else None,
-        "capsule_arrangement": "staggered" if not is_plain else None,
+        "capsule_arrangement": None if is_plain else deployable_row.get("arrangement"),
+        "arrangement_rationale": None if is_plain else deployable_row.get("arrangement_rationale"),
         "capsule_diameter_m": None if is_plain else deployable_row["capsule_diameter_m"],
         "max_pcm_conduction_distance_m": None if is_plain else deployable_row["capsule_diameter_m"] / 2.0,
         "n_capsule": 0 if is_plain else int(deployable_row["n_capsule"]),
@@ -160,7 +163,8 @@ def _global_limits(system_config):
 
 def _deferred_future_work():
     return [
-        "Full four-state comparison (Assam, Uttarakhand not yet run through this pipeline)",
+        "Full four-state comparison (Rajasthan, Assam, Uttarakhand each need their own Phase 1-8 "
+        "arrangement-restoration + data-refresh pass before a valid cross-state comparison exists)",
         "Active-learning optimization loop / full NSGA-II Pareto search (Phase 7 here is a single "
         "surrogate-scored search pass, not an iterative refine-and-repeat loop)",
         "Sub-daily (hourly) multi-year weather records -- Phase 8's historical-year ensemble "
@@ -168,11 +172,26 @@ def _deferred_future_work():
         "per regime instead of a synthetic range, but the within-year HOURLY shape still comes "
         "from a single medoid year plus synthetic per-hour jitter, since only daily-resolution "
         "multi-year data was pulled for this project",
-        "Widened design bounds to reach the documented 15-20% PCM-volume levels (currently capped "
-        "at ~12.9% by the frozen capsule diameter/count bounds -- see "
-        "docs_objective2/02_PHASE2_GEOMETRY_CONSTRAINTS.md)",
         "Experimental (hardware) validation of the simulator against a physical lab rig (Objective 4 scope)",
     ]
+
+
+def _supersession_note():
+    return (
+        "This obj3_environment_contract supersedes every version generated before 2026-09-17. "
+        "Two changes landed together: (1) capsule arrangement (single-layer/staggered/radial) is "
+        "now a searched design variable per regime (was frozen to staggered-only in every earlier "
+        "contract -- see capsule_arrangement/arrangement_rationale in each regime's design block), "
+        "and (2) Objective 1's underlying data was refreshed (GMM regime count K=5->K=3, real "
+        "elevation, rewritten MCDM/feasibility engine), which changed the regime definitions, "
+        "Tm targets, and PCM shortlists this contract's designs were selected from. Objective 3 "
+        "must re-pull this file rather than use a cached copy from before this date -- a design "
+        "selected under the old K=5/staggered-only run does not correspond to any regime in this "
+        "version. The previous 'PCM-volume capped at ~12.9%' and 'arrangement frozen to "
+        "staggered-only' limitations are RESOLVED as of this contract (mirroring how the "
+        "2026-09-13/14 safety-shield and selection-rule updates were documented as supersessions "
+        "in this project's history)."
+    )
 
 
 def _reward_function_spec(system_config, deployable) -> dict:
@@ -286,17 +305,19 @@ def build_contract(state: str) -> dict:
     deployable = pd.read_csv(out_dir / "deployable_design_per_regime.csv")
 
     regimes_out = []
+    n_regimes = len(cfg["regimes"])
     for regime in cfg["regimes"]:
         row = deployable[deployable["regime_id"] == regime["cluster_id"]]
         if row.empty:
             continue
-        regimes_out.append(_design_block(state, regime, row.iloc[0], system_config))
+        regimes_out.append(_design_block(state, regime, row.iloc[0], system_config, n_regimes))
 
     return {
         "state": state,
-        "contract_version": "obj3_contract_v1.0",
+        "contract_version": "obj3_contract_v2.0_2026-09-17",
         "validated_simulator_version": SIMULATOR_VERSION,
         "source": "Objective 2 Phases 1-8 (see docs_objective2/ for full methodology and verification)",
+        "supersession_note": _supersession_note(),
         "global_limits": _global_limits(system_config),
         "static_design_per_regime": regimes_out,
         "dynamic_state_schema": _dynamic_state_schema(),

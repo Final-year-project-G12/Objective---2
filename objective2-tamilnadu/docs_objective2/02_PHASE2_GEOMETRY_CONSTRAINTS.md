@@ -1,5 +1,11 @@
 # 02 — Phase 2 Audit: Geometry & Constraint Engine
 
+> **SUPERSEDED 2026-09-17.** Describes the staggered-only geometry engine
+> before capsule arrangement was restored as a searched variable. For the
+> current 3-arrangement packing engine (and the void-fraction physics bug
+> found while building it), see `docs_objective2/17_ARRANGEMENT_RESTORATION.md`
+> and `docs_objective2/tamilnadu_phase_docs/02_PROMPT_PHASE2_GEOMETRY_TAMILNADU.md`.
+
 > **Note (2026-09-13):** `capsule_count.max` was widened 24→37 after this
 > doc was written — any "12.9% max reachable PCM fraction" figure below is
 > superseded by ~19.8%. Code/methodology below (geometric model, reason

@@ -24,7 +24,10 @@ from pathlib import Path
 
 from config import BASE_DIR, RESULTS_DIR
 from src.design.schema import DesignVector
-from src.design.geometry import sphere_volume_m3, sphere_surface_area_m2, tank_dimensions_m, capsules_per_layer
+from src.design.geometry import (
+    sphere_volume_m3, sphere_surface_area_m2, tank_dimensions_m, pack_capsules,
+    get_max_reachable_pcm_fraction,
+)
 from src.io_utils import load_system_config, load_design_bounds, get_pcm_properties, load_hourly_weather, load_demand_profile
 from src.simulation.capsule_enthalpy import pcm_props_from_record, PCMThermalProps
 from src.simulation.demand_profile import load_demand_model
@@ -40,17 +43,17 @@ from src.simulation.run_case import run_case
 # test, so it must not go through src/design/constraints.py.
 # ─────────────────────────────────────────────────────────────────────────
 
-def _direct_runtime(diameter_m, n_capsule, flow_rate_kg_s, system_config):
+def _direct_runtime(diameter_m, n_capsule, flow_rate_kg_s, system_config, arrangement="staggered"):
     tank = tank_dimensions_m(system_config)
     v_capsule = sphere_volume_m3(diameter_m)
     a_capsule = sphere_surface_area_m2(diameter_m)
-    v_pcm_total = n_capsule * v_capsule
-    void_fraction = 1.0 - v_pcm_total / tank["tank_volume_m3"] if tank["tank_volume_m3"] > 0 else 1.0
-    void_fraction = min(max(void_fraction, 1e-3), 0.999)
-    per_layer = capsules_per_layer(tank["tank_cross_section_area_m2"], diameter_m, 0.003) if n_capsule > 0 else 1
-    n_layers = math.ceil(n_capsule / per_layer) if per_layer > 0 and n_capsule > 0 else 0
-    stack_height = n_layers * (diameter_m + 0.003)
-    bed_length = stack_height if stack_height > 0 else tank["tank_height_m"]
+    if n_capsule > 0:
+        packing = pack_capsules(arrangement, diameter_m, tank["tank_diameter_m"], tank["tank_height_m"],
+                                 0.003, n_capsule, v_capsule)
+        void_fraction = min(max(packing.void_fraction, 1e-3), 0.999)
+        bed_length = packing.stack_height_m if packing.stack_height_m > 0 else tank["tank_height_m"]
+    else:
+        void_fraction, bed_length = 0.999, tank["tank_height_m"]
     return DesignRuntime(
         n_capsule=n_capsule, capsule_diameter_m=diameter_m, capsule_area_m2=a_capsule,
         capsule_volume_m3=v_capsule, void_fraction=void_fraction,
@@ -61,7 +64,8 @@ def _direct_runtime(diameter_m, n_capsule, flow_rate_kg_s, system_config):
 
 
 def _direct_run(state, cluster_id, diameter_m, n_capsule, flow_rate_kg_s, pcm_name=None,
-                 system_config_overrides=None, volume_multiplier=1.0, mains_temp_C=None):
+                 system_config_overrides=None, volume_multiplier=1.0, mains_temp_C=None,
+                 arrangement="staggered"):
     system_config = load_system_config()
     if system_config_overrides:
         system_config = _deep_merge(system_config, system_config_overrides)
@@ -74,7 +78,8 @@ def _direct_run(state, cluster_id, diameter_m, n_capsule, flow_rate_kg_s, pcm_na
     demand_df = load_demand_profile(state)
     demand_model = load_demand_model(demand_df, volume_multiplier=volume_multiplier)
 
-    runtime = _direct_runtime(diameter_m, n_capsule if pcm_name else 0, flow_rate_kg_s, system_config)
+    runtime = _direct_runtime(diameter_m, n_capsule if pcm_name else 0, flow_rate_kg_s, system_config,
+                               arrangement=arrangement)
 
     if pcm_name is not None:
         record = get_pcm_properties(state, pcm_name)
@@ -108,12 +113,22 @@ def gate1_conservation(state: str, log):
     pass_pct = system_config["verification"]["gate1_residual_pass_pct"]
     warn_pct = system_config["verification"]["gate1_residual_warn_pct"]
 
+    # Fresh 2026-09-17 data: only clusters 0-2 exist now (K=5->K=3), and the
+    # PCM shortlist per regime changed entirely (Tm-retargeting + MCDM
+    # re-rank against the refreshed Objective 1 data). Cases now also cover
+    # all three restored arrangements, adapted from
+    # "a Rajasthan-pilot change plan (source removed from this project after adaptation, see docs_objective2/tamilnadu_phase_docs/)" for TN.
     cases = [
-        ("A: cluster0 / n-Octacosane / mid design", 0, "n-Octacosane (C28)", DesignVector(0.05, 14, 0.030)),
-        ("B: cluster1 / RT64HC / small-capsule design", 1, "RT64HC", DesignVector(0.04, 20, 0.020)),
-        ("C: cluster4 / n-Hexacosane / large-capsule design", 4, "n-Hexacosane (C26)", DesignVector(0.08, 10, 0.045)),
-        ("D: cluster2 / no-PCM plain-tank baseline", 2, None, DesignVector(0.05, 14, 0.030)),
-        ("E: cluster3 / n-Octacosane / bounds-extreme design", 3, "n-Octacosane (C28)", DesignVector(0.08, 24, 0.050)),
+        ("A: cluster0 / n-Tetracosane(C24) / staggered / mid design",
+         0, "n-Tetracosane (C24)", DesignVector(0.05, 14, 0.030, capsule_arrangement="staggered")),
+        ("B: cluster1 / RT45HC / single-layer / small-capsule design",
+         1, "RT45HC", DesignVector(0.04, 20, 0.020, capsule_arrangement="single-layer")),
+        ("C: cluster2 / n-Hexacosane(C26) / radial / radial max-feasible design",
+         2, "n-Hexacosane (C26)", DesignVector(0.08, 21, 0.045, capsule_arrangement="radial")),
+        ("D: cluster1 / no-PCM plain-tank baseline",
+         1, None, DesignVector(0.05, 14, 0.030, capsule_arrangement="staggered")),
+        ("E: cluster0 / n-Tetracosane(C24) / staggered / bounds-extreme design",
+         0, "n-Tetracosane (C24)", DesignVector(0.08, 37, 0.050, capsule_arrangement="staggered")),
     ]
 
     residuals = []
@@ -152,13 +167,13 @@ def gate2_limiting_cases(state: str, log):
     checks = []
 
     # 1. Zero irradiance -> zero collector heat, always.
-    r = _direct_run(state, 0, 0.05, 14, 0.030, pcm_name="n-Octacosane (C28)",
+    r = _direct_run(state, 0, 0.05, 14, 0.030, pcm_name="n-Tetracosane (C24)",
                      system_config_overrides={"collector": {"min_irradiance_cutoff_Wm2": 1.0e9}})
     ok = r.energy["E_collector_kWh"] < 1e-6
     checks.append(("zero_irradiance -> zero collector heat", ok, f"E_collector={r.energy['E_collector_kWh']:.6f} kWh"))
 
     # 2. Zero flow -> no crash, near-zero (but finite) heat transfer / pump power.
-    r = _direct_run(state, 0, 0.05, 14, 0.0, pcm_name="n-Octacosane (C28)")
+    r = _direct_run(state, 0, 0.05, 14, 0.0, pcm_name="n-Tetracosane (C24)")
     ok = r.energy["n_failed_steps"] == 0 and math.isfinite(r.energy["residual_pct_of_collector"])
     checks.append(("zero_flow -> simulator completes without crashing", ok,
                     f"residual={r.energy['residual_pct_of_collector']:.4f}%, "
@@ -171,7 +186,7 @@ def gate2_limiting_cases(state: str, log):
                     f"E_charge={r.energy['E_charge_kWh']:.9f}, E_discharge={r.energy['E_discharge_kWh']:.9f}"))
 
     # 4. Zero latent heat -> capsule behaves as pure sensible mass (no melt plateau).
-    record = get_pcm_properties(state, "n-Octacosane (C28)")
+    record = get_pcm_properties(state, "n-Tetracosane (C24)")
     record_zero_L = {**record, "latent_heat_kJ_kg": 0.0}
     pcm_props_zero_L = pcm_props_from_record(record_zero_L, system_config["pcm_integration"]["melting_half_width_K"])
     weather = load_hourly_weather(state, 0)
@@ -199,22 +214,22 @@ def gate2_limiting_cases(state: str, log):
                     f"gap_high_k={gap_hi:.3f} C, gap_nominal={gap_nom:.3f} C"))
 
     # 6. Perfectly insulated tank -> zero ambient tank loss.
-    r = _direct_run(state, 0, 0.05, 14, 0.030, pcm_name="n-Octacosane (C28)",
+    r = _direct_run(state, 0, 0.05, 14, 0.030, pcm_name="n-Tetracosane (C24)",
                      system_config_overrides={"tank": {"U_tank_W_m2K": 0.0}})
     ok = r.energy["E_loss_kWh"] < 1e-6
     checks.append(("perfectly_insulated_tank -> zero E_loss", ok, f"E_loss={r.energy['E_loss_kWh']:.6f} kWh"))
 
     # 7. Empty demand -> zero load, zero unmet energy.
-    r = _direct_run(state, 0, 0.05, 14, 0.030, pcm_name="n-Octacosane (C28)", volume_multiplier=0.0)
+    r = _direct_run(state, 0, 0.05, 14, 0.030, pcm_name="n-Tetracosane (C24)", volume_multiplier=0.0)
     ok = r.energy["E_load_kWh"] < 1e-6 and r.energy["E_unmet_kWh"] < 1e-6
     checks.append(("empty_demand -> zero load and zero unmet energy", ok,
                     f"E_load={r.energy['E_load_kWh']:.6f}, E_unmet={r.energy['E_unmet_kWh']:.6f}"))
 
     # 8/9. Fully solid vs fully liquid initial PCM -> melt fraction starts and
     #      moves in the physically-correct direction over the first day.
-    r_solid = _direct_run(state, 0, 0.05, 14, 0.030, pcm_name="n-Octacosane (C28)",
+    r_solid = _direct_run(state, 0, 0.05, 14, 0.030, pcm_name="n-Tetracosane (C24)",
                            system_config_overrides={"solver": {"initial_pcm_state": "solid"}})
-    r_liquid = _direct_run(state, 0, 0.05, 14, 0.030, pcm_name="n-Octacosane (C28)",
+    r_liquid = _direct_run(state, 0, 0.05, 14, 0.030, pcm_name="n-Tetracosane (C24)",
                             system_config_overrides={"solver": {"initial_pcm_state": "liquid"}})
     f0_solid, f24_solid = r_solid.initial_f_melt, r_solid.hourly["f_melt"].iloc[23]
     f0_liquid, f24_liquid = r_liquid.initial_f_melt, r_liquid.hourly["f_melt"].iloc[23]
@@ -225,8 +240,8 @@ def gate2_limiting_cases(state: str, log):
 
     # 10/11. Flow below/above permitted limits -> no crash, monotonic direction
     #        (higher flow -> better heat transfer -> smaller |Tw-Tpcm| gap).
-    r_low = _direct_run(state, 0, 0.05, 14, 0.002, pcm_name="n-Octacosane (C28)")   # below 0.010 min
-    r_high = _direct_run(state, 0, 0.05, 14, 0.20, pcm_name="n-Octacosane (C28)")   # above 0.050 max
+    r_low = _direct_run(state, 0, 0.05, 14, 0.002, pcm_name="n-Tetracosane (C24)")   # below 0.010 min
+    r_high = _direct_run(state, 0, 0.05, 14, 0.20, pcm_name="n-Tetracosane (C24)")   # above 0.050 max
     gap_low = (r_low.hourly["T_w_C"] - r_low.hourly["T_pcm_C"]).abs().mean()
     gap_high = (r_high.hourly["T_w_C"] - r_high.hourly["T_pcm_C"]).abs().mean()
     ok = math.isfinite(gap_low) and math.isfinite(gap_high) and gap_high <= gap_low
@@ -234,10 +249,25 @@ def gate2_limiting_cases(state: str, log):
                     f"gap@0.002kg/s={gap_low:.3f} C, gap@0.20kg/s={gap_high:.3f} C"))
 
     # 12. Capsules removed / allocated PCM volume = 0 -> identical to no-PCM case.
-    r = _direct_run(state, 0, 0.05, 0, 0.030, pcm_name="n-Octacosane (C28)")
+    # (N=0 skips packing math entirely regardless of arrangement, so this one
+    # check is arrangement-agnostic by construction -- not repeated 3x.)
+    r = _direct_run(state, 0, 0.05, 0, 0.030, pcm_name="n-Tetracosane (C24)")
     ok = r.energy["E_charge_kWh"] < 1e-9
     checks.append(("capsules_removed (N=0) -> zero PCM charge energy", ok,
                     f"E_charge={r.energy['E_charge_kWh']:.9f} kWh"))
+
+    # 13. Oversized capsule diameter -- genuinely packing-sensitive, re-run
+    # once per arrangement (adapted from
+    # "a Rajasthan-pilot change plan (source removed from this project after adaptation, see docs_objective2/tamilnadu_phase_docs/)" step 2):
+    # radial packing may hit overlap/passage_blocked at a different
+    # diameter than staggered/single-layer -- verify, don't assume identical.
+    for arrangement in ("single-layer", "staggered", "radial"):
+        from src.design.constraints import check_design
+        oversized = DesignVector(0.30, 14, 0.030, capsule_arrangement=arrangement)
+        r_over = check_design(oversized)
+        ok = (not r_over["valid"]) and r_over["reason"] in ("overlap", "bounds_violation", "passage_blocked")
+        checks.append((f"oversized_diameter_for_tank ({arrangement}) -> rejected cleanly", ok,
+                        f"reason={r_over['reason']}"))
 
     n_pass = sum(1 for _, ok, _ in checks if ok)
     for name, ok, detail in checks:
@@ -254,49 +284,60 @@ def gate2_limiting_cases(state: str, log):
 
 def gate3_baseline_comparison(state: str, log):
     log("\n" + "=" * 72)
-    log("GATE 3 — Baseline comparison (plain tank vs fixed PCM vs optimized-looking)")
+    log("GATE 3 — Baseline comparison (plain tank vs fixed PCM per arrangement vs optimized-looking)")
     log("=" * 72)
 
     cid = 0
-    pcm = "n-Octacosane (C28)"   # Objective 1 consensus rank-1 PCM for every TN cluster
-    # NOTE on the two designs below: design_bounds_shared.yaml bounds
-    # capsule_diameter_m to [0.02,0.08] and capsule_count to [8,24]. Within
-    # those bounds the MAXIMUM geometrically achievable PCM volume fraction
-    # is ~12.9% (n=24, d=0.08) -- the framework doc's documented 15%/20%
-    # Chen-style test levels are therefore NOT reachable with a sphere-only,
-    # staggered-only 50 L tank at these diameter/count bounds. This is a
-    # discovered interaction, not a bug -- flagged here and in
-    # docs_objective2/02_PHASE2_GEOMETRY_CONSTRAINTS.md.
-    plain = run_case(state, cid, None, DesignVector(0.08, 14, 0.030), record_hourly=False)
-    fixed = run_case(state, cid, pcm, DesignVector(0.08, 24, 0.030), record_hourly=False)      # ~12.9% (max feasible)
-    optimized = run_case(state, cid, pcm, DesignVector(0.08, 19, 0.040), record_hourly=False)  # ~10.2%
+    pcm = "n-Tetracosane (C24)"   # cluster 0's current MCDM consensus rank-1 PCM (2026-09-17 refresh + retargeting)
+    diameter = 0.08
 
-    rows = []
-    for label, out in [("plain_tank", plain), ("fixed_PCM_max_feasible", fixed), ("optimized_looking", optimized)]:
+    plain = run_case(state, cid, None, DesignVector(diameter, 14, 0.030, capsule_arrangement="staggered"),
+                      record_hourly=False)
+    log(f"  plain_tank             useful={plain['metrics']['useful_energy_kWh']:8.1f} kWh  "
+        f"SF={plain['metrics']['solar_fraction']*100:5.2f}%  unmet={plain['metrics']['unmet_energy_kWh']:8.1f} kWh")
+
+    # ---- per-arrangement "fixed PCM, max feasible fraction" row ---------
+    # 2026-09-17: each arrangement's own max-reachable fraction (Phase 2's
+    # get_max_reachable_pcm_fraction) is used, not a single shared ~12.9%-
+    # style figure applied to all three (adapted from
+    # "a Rajasthan-pilot change plan (source removed from this project after adaptation, see docs_objective2/tamilnadu_phase_docs/)" step 3).
+    fixed_rows = {}
+    for arrangement in ("single-layer", "staggered", "radial"):
+        max_info = get_max_reachable_pcm_fraction(arrangement, diameter_m=diameter)
+        n = max(max_info["max_n_feasible"], 1)
+        out = run_case(state, cid, pcm, DesignVector(diameter, n, 0.030, capsule_arrangement=arrangement),
+                        record_hourly=True)
+        fixed_rows[arrangement] = out
         m = out["metrics"]
-        rows.append((label, m["useful_energy_kWh"], m["solar_fraction"], m["unmet_energy_kWh"],
-                      m["loss_energy_kWh"], m["pump_energy_kWh"], m.get("mean_f_melt")))
-        log(f"  {label:22s} useful={m['useful_energy_kWh']:8.1f} kWh  "
-            f"SF={m['solar_fraction']*100:5.2f}%  unmet={m['unmet_energy_kWh']:8.1f} kWh  "
-            f"loss={m['loss_energy_kWh']:6.1f} kWh  pump={m['pump_energy_kWh']*1000:.4f} Wh  "
-            f"mean_f_melt={m.get('mean_f_melt')}")
+        log(f"  fixed_PCM/{arrangement:<12} (N={n}, {max_info['max_reachable_pcm_volume_fraction']*100:.1f}%) "
+            f"useful={m['useful_energy_kWh']:8.1f} kWh  SF={m['solar_fraction']*100:5.2f}%  "
+            f"unmet={m['unmet_energy_kWh']:8.1f} kWh  mean_f_melt={m.get('mean_f_melt')}")
+
+    best_arrangement = max(fixed_rows, key=lambda a: fixed_rows[a]["metrics"]["solar_fraction"])
+    fixed = fixed_rows[best_arrangement]
+    n_best = fixed["geometry"]["n_capsule"]
+    optimized = run_case(state, cid, pcm, DesignVector(diameter, n_best, 0.040, capsule_arrangement=best_arrangement),
+                          record_hourly=False)
+    log(f"  optimized_looking ({best_arrangement}, best of the 3 above at higher flow) "
+        f"useful={optimized['metrics']['useful_energy_kWh']:8.1f} kWh  "
+        f"SF={optimized['metrics']['solar_fraction']*100:5.2f}%")
 
     pcm_beats_plain = (fixed["metrics"]["solar_fraction"] >= plain["metrics"]["solar_fraction"]
                         and fixed["metrics"]["unmet_energy_kWh"] <= plain["metrics"]["unmet_energy_kWh"])
 
     # --- sanity/capability check: can this simulator show ANY PCM benefit? --
-    # If a PCM whose melting point is matched to the tank's actual operating
-    # range (rather than n-Octacosane's climate-derived 61.6 C) is plugged
-    # into the SAME geometry, does it beat plain tank? This isolates "is the
-    # simulator capable of rewarding a well-matched PCM" from "does THIS
-    # shortlisted PCM happen to suit THIS 50 L direct-encapsulation design".
-    matched_tm = run_case(state, cid, pcm, DesignVector(0.08, 24, 0.030), record_hourly=True,
-                           pcm_record_overrides={"Tm_C": 40.0})
+    # Isolates "is the simulator capable of rewarding a well-matched PCM"
+    # from "does THIS shortlisted PCM happen to suit THIS design" by
+    # swapping in a synthetic PCM whose melting point is matched to the
+    # tank's actual operating range.
+    n_best = fixed["geometry"]["n_capsule"]
+    matched_tm = run_case(state, cid, pcm, DesignVector(diameter, n_best, 0.030, capsule_arrangement=best_arrangement),
+                           record_hourly=True, pcm_record_overrides={"Tm_C": 40.0})
     simulator_can_reward_matched_pcm = (
         matched_tm["metrics"]["solar_fraction"] >= plain["metrics"]["solar_fraction"]
         and matched_tm["metrics"]["unmet_energy_kWh"] <= plain["metrics"]["unmet_energy_kWh"]
     )
-    log(f"\n  Capability check (synthetic PCM, Tm=40C matched to this tank's operating range):")
+    log(f"\n  Capability check (synthetic PCM, Tm=40C matched to this tank's operating range, {best_arrangement}):")
     log(f"    plain_tank          SF={plain['metrics']['solar_fraction']*100:5.2f}%")
     log(f"    matched_Tm_PCM      SF={matched_tm['metrics']['solar_fraction']*100:5.2f}%  "
         f"mean_f_melt={matched_tm['metrics'].get('mean_f_melt', 0.0):.3f}")
@@ -304,28 +345,29 @@ def gate3_baseline_comparison(state: str, log):
 
     # --- no-loss vs with-loss diagnostic (Bug-Fix 1) --------------------
     with_loss = fixed
-    no_loss = run_case(state, cid, pcm, DesignVector(0.08, 24, 0.030), record_hourly=False,
-                        system_config_overrides={"tank": {"U_tank_W_m2K": 0.0}})
+    no_loss = run_case(state, cid, pcm, DesignVector(diameter, n_best, 0.030, capsule_arrangement=best_arrangement),
+                        record_hourly=False, system_config_overrides={"tank": {"U_tank_W_m2K": 0.0}})
     loss_term_active = no_loss["metrics"]["solar_fraction"] >= with_loss["metrics"]["solar_fraction"]
     log(f"\n  Ambient-loss diagnostic: solar_fraction with-loss={with_loss['metrics']['solar_fraction']*100:.2f}%  "
         f"no-loss={no_loss['metrics']['solar_fraction']*100:.2f}%  "
         f"(no-loss >= with-loss confirms the U_tank term is active: {loss_term_active})")
 
-    log(f"\n  n-Octacosane (Objective 1's actual rank-1 PCM, Tm=61.6C) beats plain tank "
-        f"in THIS 50L/12.9%-fraction design: {pcm_beats_plain}")
+    log(f"\n  {pcm} (cluster0's current MCDM+retargeting shortlist winner, Tm={get_pcm_properties(state, pcm)['Tm_C']}C) "
+        f"beats plain tank at its best arrangement ({best_arrangement}): {pcm_beats_plain}")
     if not pcm_beats_plain:
-        log("  HONEST FINDING (not a simulator defect -- see capability check above): at this")
-        log("  tank size and PCM fraction, n-Octacosane's mean liquid fraction stays very low")
-        log("  (rarely reaches 61.6C), so it mostly displaces sensible-storage water without")
-        log("  activating as latent storage. This motivates Phase 5-7 (larger PCM fraction,")
-        log("  better-matched melting point, or a larger tank/collector) rather than accepting")
-        log("  the Objective 1 climate-ranked PCM as automatically effective in hardware.")
+        log("  HONEST FINDING (not a simulator defect -- see capability check above): even after")
+        log("  Tm-retargeting + MCDM re-ranking against the refreshed Objective 1 data, this PCM")
+        log("  still doesn't clearly beat plain tank in this 50L direct-encapsulation design.")
+        log("  This motivates Phase 5-7 (search across PCM fraction/flow/arrangement) rather than")
+        log("  accepting the shortlist winner as automatically effective in hardware.")
 
     verdict = "PASS" if (simulator_can_reward_matched_pcm and loss_term_active) else "FAIL"
     log(f"\n  Gate 3 verdict: {verdict}  "
         f"(gated on simulator capability + active loss term, not on today's PCM/geometry choice)")
     return {
-        "gate": 3, "verdict": verdict, "rows": rows,
+        "gate": 3, "verdict": verdict,
+        "fixed_rows_by_arrangement": {a: r["metrics"] for a, r in fixed_rows.items()},
+        "best_arrangement": best_arrangement,
         "pcm_beats_plain": pcm_beats_plain,
         "simulator_can_reward_matched_pcm": simulator_can_reward_matched_pcm,
         "loss_term_active": loss_term_active,
@@ -352,6 +394,8 @@ def gate4_calibration(state: str, optimized_metrics: dict, log):
 
     log(f"  Benchmark band (Singh et al. 2025, cited): {lo:.1f}-{hi:.1f}% solar fraction")
     log(f"  {note.strip()}")
+    log(f"  This simulator's optimized-looking design used arrangement={optimized_metrics.get('arrangement')} "
+        f"(traceability -- Gate 3 picks whichever arrangement scored best for this regime/PCM).")
     log(f"  This simulator's optimized-looking design: {sf_pct:.2f}% solar fraction")
     log(f"  Inside cited band: {in_band}" + ("" if in_band else f"  (mismatch = {mismatch_pct:.1f} percentage points)"))
     if not in_band:
@@ -376,11 +420,15 @@ def gate5_sensitivity(state: str, log):
     log("=" * 72)
 
     cid = 0
-    pcm = "n-Octacosane (C28)"
-    design = DesignVector(0.05, 18, 0.040)
+    pcm = "n-Tetracosane (C24)"
+    arrangement = "staggered"   # fixed for this gate -- Gate 5 tests physics sensitivity, not arrangement choice
+    design = DesignVector(0.05, 18, 0.040, capsule_arrangement=arrangement)
     base = run_case(state, cid, pcm, design, record_hourly=False)["metrics"]
-    log(f"  Baseline: useful={base['useful_energy_kWh']:.1f} kWh  SF={base['solar_fraction']*100:.2f}%  "
+    log(f"  Baseline ({arrangement}): useful={base['useful_energy_kWh']:.1f} kWh  SF={base['solar_fraction']*100:.2f}%  "
         f"pump={base['pump_energy_kWh']*1000:.4f} Wh  charge={base['charge_energy_kWh']:.2f} kWh")
+    log(f"  (Informational: this design's packed bed is still sparse enough at N=18/d=0.05 that the "
+        f"flow-vs-pump-energy check below remains a weak discriminator regardless of arrangement -- "
+        f"see docs_objective2/04_PHASE4_VERIFICATION_GATES.md Gate 5 caveat.)")
 
     checks = []
 
@@ -396,9 +444,11 @@ def gate5_sensitivity(state: str, log):
                     f"-10%: charge={minus['charge_energy_kWh']:.3f} kWh"))
 
     # Flow +50% / -50%
-    hi_flow = run_case(state, cid, pcm, DesignVector(0.05, 18, min(design.flow_rate_kg_s * 1.5, 0.05)),
+    hi_flow = run_case(state, cid, pcm, DesignVector(0.05, 18, min(design.flow_rate_kg_s * 1.5, 0.05),
+                                                       capsule_arrangement=arrangement),
                         record_hourly=False)["metrics"]
-    lo_flow = run_case(state, cid, pcm, DesignVector(0.05, 18, design.flow_rate_kg_s * 0.5),
+    lo_flow = run_case(state, cid, pcm, DesignVector(0.05, 18, design.flow_rate_kg_s * 0.5,
+                                                       capsule_arrangement=arrangement),
                         record_hourly=False)["metrics"]
     ok = hi_flow["pump_energy_kWh"] >= lo_flow["pump_energy_kWh"]
     checks.append(("flow +50% vs -50% -> higher flow means more pump energy", ok,
@@ -444,6 +494,9 @@ def run_all_gates(state: str):
 
     log("#" * 72)
     log(f"# Objective 2 Phase 4 — Simulator Verification Report — state={state}")
+    log(f"# sim_v2_{state} -- geometry module changed (arrangement restored + fresh Objective 1 data,")
+    log(f"# 2026-09-17); physics submodels unchanged from sim_v1 (see docs_objective2/")
+    log(f"# 17_ARRANGEMENT_RESTORATION.md and 16_OBJECTIVE1_DATA_REFRESH.md)")
     log("#" * 72)
 
     g1 = gate1_conservation(state, log)
@@ -465,7 +518,8 @@ def run_all_gates(state: str):
     go_no_go = "GO" if (g1["max_residual_pct"] < 0.5 and n_clean_pass >= 3) else "NO-GO"
     log(f"\n  Go/No-Go (framework doc Phase 4 rule: residual<0.5% AND >=3/5 gates clean): {go_no_go}")
     if go_no_go == "GO":
-        log(f"  Simulator released as sim_v1_{state}_<date> (tag it at commit time).")
+        log(f"  Simulator released as sim_v2_{state} (tag it at commit time). Every Phase 5+ row from")
+        log(f"  here on must carry this version, never pooled with sim_v1_{state} rows.")
     else:
         log("  STOP — repair before generating any Phase 5 DOE cases.")
 

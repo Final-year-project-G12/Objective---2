@@ -35,7 +35,7 @@ from plotly.subplots import make_subplots
 from config import BASE_DIR, RESULTS_DIR
 from src.design.schema import DesignVector
 from src.design.constraints import check_design
-from src.design.geometry import compute_hydraulics
+from src.design.geometry import compute_hydraulics, get_max_reachable_pcm_fraction
 from src.io_utils import load_system_config, load_design_bounds, get_pcm_properties
 from src.simulation.run_case import run_case
 from src.surrogate.features import build_feature_table, feature_target_split
@@ -59,36 +59,47 @@ def _save(fig: go.Figure, name: str, out_dir, width=1000, height=620):
 # ═══════════════════════════════════════════════════════════════════════
 
 def phase2_validity_map(state, out_dir):
+    # One panel per arrangement (2026-09-17): the valid/invalid region
+    # genuinely differs by arrangement now (radial's packing ceiling is
+    # well below single-layer/staggered's -- see Phase 2 doc), so a single
+    # map (as when arrangement was frozen to staggered-only) would be
+    # incomplete. Shown side by side for direct visual comparison.
     bounds = load_design_bounds()
     system_config = load_system_config()
     d_bounds, n_bounds, f_bounds = bounds["capsule_diameter_m"], bounds["capsule_count"], bounds["flow_rate_kg_s"]
+    arrangements = bounds["capsule_arrangement"]["allowed"]
     diam_grid = np.linspace(d_bounds["min"], d_bounds["max"], 61)
     count_grid = np.arange(n_bounds["min"], n_bounds["max"] + 1)
     mid_flow = (f_bounds["min"] + f_bounds["max"]) / 2
 
-    rows = []
-    for d in diam_grid:
-        for n in count_grid:
-            g = check_design(DesignVector(float(d), int(n), mid_flow), system_config, bounds)
-            rows.append({"diameter": d, "count": n, "reason": g["reason"] if not g["valid"] else "valid"})
-    df = pd.DataFrame(rows)
-
     colors = {"valid": "#2ca02c", "bounds_violation": "#d62728", "overlap": "#9467bd",
               "volume_exceeded": "#ff7f0e", "passage_blocked": "#8c564b", "pressure_drop_limit": "#e377c2"}
-    fig = go.Figure()
-    for reason, group in df.groupby("reason"):
-        fig.add_trace(go.Scatter(
-            x=group["diameter"], y=group["count"], mode="markers",
-            marker=dict(size=7, symbol="square", color=colors.get(reason, "#7f7f7f")),
-            name=reason, hovertemplate="diameter=%{x:.4f} m<br>count=%{y}<br>" + reason + "<extra></extra>",
-        ))
+
+    fig = make_subplots(rows=1, cols=len(arrangements), subplot_titles=arrangements)
+    for col, arrangement in enumerate(arrangements, start=1):
+        rows = []
+        for d in diam_grid:
+            for n in count_grid:
+                g = check_design(DesignVector(float(d), int(n), mid_flow, capsule_arrangement=arrangement),
+                                  system_config, bounds)
+                rows.append({"diameter": d, "count": n, "reason": g["reason"] if not g["valid"] else "valid"})
+        df = pd.DataFrame(rows)
+        for reason, group in df.groupby("reason"):
+            fig.add_trace(go.Scatter(
+                x=group["diameter"], y=group["count"], mode="markers",
+                marker=dict(size=6, symbol="square", color=colors.get(reason, "#7f7f7f")),
+                name=reason, legendgroup=reason, showlegend=(col == 1),
+                hovertemplate="diameter=%{x:.4f} m<br>count=%{y}<br>" + reason + "<extra></extra>",
+            ), row=1, col=col)
+        fig.add_vline(x=0.04, line_dash="dash", line_color="black", row=1, col=col)
+
     fig.update_layout(
-        title=f"Phase 2 — Design-space validity map (flow fixed at {mid_flow:.3f} kg/s) — {state}",
-        xaxis_title="capsule_diameter_m", yaxis_title="n_capsule",
+        title=f"Phase 2 — Design-space validity map by arrangement (flow fixed at {mid_flow:.3f} kg/s) — {state}",
+        width=1500,
     )
-    fig.add_vline(x=0.04, line_dash="dash", line_color="black",
-                  annotation_text="diameter=0.04 m (thickness bound edge)", annotation_position="top")
-    _save(fig, "phase2_validity_map", out_dir)
+    fig.update_xaxes(title_text="capsule_diameter_m")
+    fig.update_yaxes(title_text="n_capsule", col=1)
+    _save(fig, "phase2_validity_map", out_dir, width=1500, height=560)
 
 
 def phase2_ergun_hydraulics(state, out_dir):
@@ -115,12 +126,24 @@ def phase2_ergun_hydraulics(state, out_dir):
 # ═══════════════════════════════════════════════════════════════════════
 
 def _phase3_sample_run(state):
-    design = DesignVector(0.08, 19, 0.030)
-    out = run_case(state, cluster_id=0, pcm_name="n-Octacosane (C28)", design=design, record_hourly=True)
-    return out["hourly"], out["metrics"]
+    # Current cluster-0 deployable design (2026-09-17 refresh + arrangement
+    # restoration) -- was a generic n-Octacosane/staggered illustrative
+    # case before; now matches the actual Phase 7 winner for traceability.
+    deployable_path = RESULTS_DIR / state / "deployable_design_per_regime.csv"
+    if deployable_path.exists():
+        row = pd.read_csv(deployable_path)
+        row = row[row["regime_id"] == 0].iloc[0]
+        design = DesignVector(row["capsule_diameter_m"], int(row["n_capsule"]), row["flow_rate_kg_s"],
+                               capsule_arrangement=row["arrangement"])
+        pcm_name = row["pcm_id"]
+    else:
+        design = DesignVector(0.08, 19, 0.030, capsule_arrangement="staggered")
+        pcm_name = "n-Hexacosane (C26)"
+    out = run_case(state, cluster_id=0, pcm_name=pcm_name, design=design, record_hourly=True)
+    return out["hourly"], out["metrics"], pcm_name, design
 
 
-def phase3_temperature_timeseries(state, out_dir, hourly):
+def phase3_temperature_timeseries(state, out_dir, hourly, pcm_name, design):
     week = hourly.iloc[2400:2568]   # one representative week (~day 100-107)
     fig = make_subplots(specs=[[{"secondary_y": True}]])
     fig.add_trace(go.Scatter(x=week["hour_index"], y=week["T_w_C"], name="T_water (C)",
@@ -130,18 +153,18 @@ def phase3_temperature_timeseries(state, out_dir, hourly):
     fig.add_trace(go.Scatter(x=week["hour_index"], y=week["I_t_Wm2"], name="Irradiance (W/m2)",
                               line=dict(color="#ff7f0e", dash="dot")), secondary_y=True)
     fig.update_layout(title=f"Phase 3 — one representative week: T_water, T_PCM, irradiance — {state}, "
-                             f"cluster 0, n-Octacosane (C28)",
+                             f"cluster 0, {pcm_name}, {design.capsule_arrangement}",
                        xaxis_title="hour of year")
     fig.update_yaxes(title_text="Temperature (C)", secondary_y=False)
     fig.update_yaxes(title_text="Irradiance (W/m2)", secondary_y=True)
     _save(fig, "phase3_temperature_timeseries", out_dir)
 
 
-def phase3_melt_fraction_year(state, out_dir, hourly):
+def phase3_melt_fraction_year(state, out_dir, hourly, pcm_name, design):
     fig = go.Figure(go.Scatter(x=hourly["hour_index"], y=hourly["f_melt"], mode="lines",
                                 line=dict(color="#2ca02c", width=1)))
     fig.update_layout(title=f"Phase 3 — PCM liquid fraction over the simulated year — {state}, "
-                             f"cluster 0, n-Octacosane (C28)",
+                             f"cluster 0, {pcm_name}, {design.capsule_arrangement}",
                        xaxis_title="hour of year", yaxis_title="liquid fraction f_melt [0-1]")
     _save(fig, "phase3_melt_fraction_year", out_dir)
 
@@ -162,12 +185,19 @@ def phase3_energy_breakdown(state, out_dir, metrics):
 # ═══════════════════════════════════════════════════════════════════════
 
 def phase4_gate1_residuals(state, out_dir):
+    # Matches src/verify/gates.py's Gate 1 cases exactly (K=3 regimes,
+    # 2026-09-17 refresh + arrangement restoration) -- was 5 cases across
+    # a K=5 regime set with 2 clusters (3,4) that no longer exist.
     cases = [
-        ("A: cluster0/n-Octacosane", 0, "n-Octacosane (C28)", DesignVector(0.05, 14, 0.030)),
-        ("B: cluster1/RT64HC", 1, "RT64HC", DesignVector(0.04, 20, 0.020)),
-        ("C: cluster4/n-Hexacosane", 4, "n-Hexacosane (C26)", DesignVector(0.08, 10, 0.045)),
-        ("D: cluster2/no-PCM", 2, None, DesignVector(0.05, 14, 0.030)),
-        ("E: cluster3/bounds-extreme", 3, "n-Octacosane (C28)", DesignVector(0.08, 24, 0.050)),
+        ("A: cluster0/n-Tetracosane(C24)/staggered", 0, "n-Tetracosane (C24)",
+         DesignVector(0.05, 14, 0.030, capsule_arrangement="staggered")),
+        ("B: cluster1/RT45HC/single-layer", 1, "RT45HC",
+         DesignVector(0.04, 20, 0.020, capsule_arrangement="single-layer")),
+        ("C: cluster2/n-Hexacosane(C26)/radial", 2, "n-Hexacosane (C26)",
+         DesignVector(0.08, 21, 0.045, capsule_arrangement="radial")),
+        ("D: cluster1/no-PCM", 1, None, DesignVector(0.05, 14, 0.030, capsule_arrangement="staggered")),
+        ("E: cluster0/bounds-extreme/staggered", 0, "n-Tetracosane (C24)",
+         DesignVector(0.08, 37, 0.050, capsule_arrangement="staggered")),
     ]
     names, residuals = [], []
     for name, cid, pcm, design in cases:
@@ -199,21 +229,30 @@ def phase4_gate3_baseline_comparison(state, out_dir):
     deployable = pd.read_csv(RESULTS_DIR / state / "deployable_design_per_regime.csv")
     row = deployable[deployable["regime_id"] == cid].iloc[0]
     pcm = row["pcm_id"]
+    arrangement = row["arrangement"]
     bounds = load_design_bounds()
-    max_count = bounds["capsule_count"]["max"]
+    # Arrangement-specific max-feasible count, not the blanket shared bound
+    # -- radial's own ceiling (Phase 2) is well below single-layer/staggered's,
+    # so using the blanket bound here would get this case geometry-rejected.
+    max_info = get_max_reachable_pcm_fraction(arrangement, diameter_m=0.08,
+                                               count_max=bounds["capsule_count"]["max"])
+    max_count = max(max_info["max_n_feasible"], 1)
 
-    plain = run_case(state, cid, None, DesignVector(0.08, 14, 0.030), record_hourly=False)["metrics"]
-    max_feasible = run_case(state, cid, pcm, DesignVector(0.08, max_count, 0.030), record_hourly=False)["metrics"]
+    plain = run_case(state, cid, None, DesignVector(0.08, 14, 0.030, capsule_arrangement="staggered"),
+                      record_hourly=False)["metrics"]
+    max_feasible = run_case(state, cid, pcm, DesignVector(0.08, max_count, 0.030, capsule_arrangement=arrangement),
+                             record_hourly=False)["metrics"]
     deployed = run_case(state, cid, pcm,
-                         DesignVector(row["capsule_diameter_m"], int(row["n_capsule"]), row["flow_rate_kg_s"]),
+                         DesignVector(row["capsule_diameter_m"], int(row["n_capsule"]), row["flow_rate_kg_s"],
+                                      capsule_arrangement=arrangement),
                          record_hourly=False)["metrics"]
-    matched = run_case(state, cid, pcm, DesignVector(0.08, max_count, 0.030), record_hourly=False,
-                        pcm_record_overrides={"Tm_C": 40.0})["metrics"]
+    matched = run_case(state, cid, pcm, DesignVector(0.08, max_count, 0.030, capsule_arrangement=arrangement),
+                        record_hourly=False, pcm_record_overrides={"Tm_C": 40.0})["metrics"]
 
     labels = ["Plain tank",
-              f"Fixed PCM\n({pcm}, max feasible)",
-              f"Deployable design\n({pcm}, current optimum)",
-              "Capability check\n(synthetic Tm=40C PCM)"]
+              f"Fixed PCM\n({pcm}, {arrangement}, max feasible)",
+              f"Deployable design\n({pcm}, {arrangement}, current optimum)",
+              f"Capability check\n(synthetic Tm=40C PCM, {arrangement})"]
     sf = [m["solar_fraction"] * 100 for m in (plain, max_feasible, deployed, matched)]
     fig = go.Figure(go.Bar(x=labels, y=sf, marker_color=["#7f7f7f", "#d62728", "#2ca02c", "#9467bd"],
                             text=[f"{v:.2f}%" for v in sf], textposition="outside"))
@@ -223,8 +262,8 @@ def phase4_gate3_baseline_comparison(state, out_dir):
 
 
 def phase4_gate5_sensitivity(state, out_dir):
-    cid, pcm = 0, "n-Octacosane (C28)"
-    design = DesignVector(0.05, 18, 0.040)
+    cid, pcm, arrangement = 0, "n-Tetracosane (C24)", "staggered"
+    design = DesignVector(0.05, 18, 0.040, capsule_arrangement=arrangement)
     record = get_pcm_properties(state, pcm)
 
     base = run_case(state, cid, pcm, design, record_hourly=False)["metrics"]
@@ -232,9 +271,11 @@ def phase4_gate5_sensitivity(state, out_dir):
                        pcm_record_overrides={"latent_heat_kJ_kg": record["latent_heat_kJ_kg"] * 1.10})["metrics"]
     minus_l = run_case(state, cid, pcm, design, record_hourly=False,
                         pcm_record_overrides={"latent_heat_kJ_kg": record["latent_heat_kJ_kg"] * 0.90})["metrics"]
-    hi_flow = run_case(state, cid, pcm, DesignVector(0.05, 18, min(design.flow_rate_kg_s * 1.5, 0.05)),
+    hi_flow = run_case(state, cid, pcm, DesignVector(0.05, 18, min(design.flow_rate_kg_s * 1.5, 0.05),
+                                                       capsule_arrangement=arrangement),
                         record_hourly=False)["metrics"]
-    lo_flow = run_case(state, cid, pcm, DesignVector(0.05, 18, design.flow_rate_kg_s * 0.5),
+    lo_flow = run_case(state, cid, pcm, DesignVector(0.05, 18, design.flow_rate_kg_s * 0.5,
+                                                       capsule_arrangement=arrangement),
                         record_hourly=False)["metrics"]
 
     fig = make_subplots(rows=1, cols=2, subplot_titles=("PCM charge energy vs latent heat +/-10%",
@@ -263,10 +304,11 @@ def phase5_doe_coverage(state, out_dir, design_cases):
             marker=dict(size=7, color="#2ca02c" if valid else "#d62728",
                         symbol=group["sampling_method"].map({"lhs": "circle", "boundary": "diamond",
                                                               "baseline": "star"})),
-            name="valid" if valid else "rejected (bounds_violation)",
+            name="valid" if valid else "rejected (bounds_violation / passage_blocked)",
             text=group["case_id"], hovertemplate="%{text}<br>diameter=%{x:.4f}<br>flow=%{y:.4f}<extra></extra>",
         ))
-    fig.update_layout(title=f"Phase 5 — DOE sample coverage (215 cases: LHS + boundary + baseline) — {state}",
+    fig.update_layout(title=f"Phase 5 — DOE sample coverage ({len(design_cases)} cases: LHS + boundary + "
+                             f"baseline, arrangement-stratified) — {state}",
                        xaxis_title="capsule_diameter_m", yaxis_title="flow_rate_kg_s")
     _save(fig, "phase5_doe_coverage", out_dir)
 
@@ -278,7 +320,7 @@ def phase5_outcome_distribution(state, out_dir, design_cases):
                   row=1, col=1)
     fig.add_trace(go.Histogram(x=valid["solar_fraction"], marker_color="#ff7f0e", showlegend=False),
                   row=1, col=2)
-    fig.update_layout(title=f"Phase 5 — outcome distribution across 145 valid DOE cases — {state}")
+    fig.update_layout(title=f"Phase 5 — outcome distribution across {len(valid)} valid DOE cases — {state}")
     _save(fig, "phase5_outcome_distribution", out_dir, width=1150)
 
 
@@ -328,24 +370,43 @@ def phase6_feature_importance(state, out_dir):
 # ═══════════════════════════════════════════════════════════════════════
 
 def phase7_pareto_by_regime(state, out_dir, optimized, deployable):
-    fig = make_subplots(rows=2, cols=3, subplot_titles=[f"Regime {r}" for r in sorted(optimized["regime_id"].unique())])
-    positions = [(1, 1), (1, 2), (1, 3), (2, 1), (2, 2)]
+    # Grid sized to however many regimes actually exist (3 as of the
+    # 2026-09-17 K=5->K=3 refresh; was a fixed 2x3 layout for 5 regimes).
+    regime_ids = sorted(optimized["regime_id"].unique())
+    n_regimes = len(regime_ids)
+    n_cols = min(n_regimes, 3)
+    n_rows = -(-n_regimes // n_cols)   # ceil
+    positions = [(r + 1, c + 1) for r in range(n_rows) for c in range(n_cols)][:n_regimes]
+
+    fig = make_subplots(rows=n_rows, cols=n_cols, subplot_titles=[f"Regime {r}" for r in regime_ids])
+    seen_legend_groups = set()
     for (row, col), (regime_id, group) in zip(positions, optimized.groupby("regime_id")):
-        for pcm_id, sub in group.groupby("pcm_id"):
+        for (pcm_id, arrangement), sub in group.groupby(["pcm_id", "arrangement"]):
+            legend_name = f"{pcm_id} ({arrangement})"
+            first_seen = legend_name not in seen_legend_groups
+            seen_legend_groups.add(legend_name)
             fig.add_trace(go.Scatter(x=sub["sim_pcm_mass_kg"], y=sub["sim_useful_energy_kWh"], mode="markers",
-                                      name=pcm_id, legendgroup=pcm_id,
-                                      showlegend=(row, col) == (1, 1)), row=row, col=col)
+                                      name=legend_name, legendgroup=legend_name,
+                                      showlegend=first_seen), row=row, col=col)
         winner = deployable[deployable["regime_id"] == regime_id]
         if not winner.empty:
+            first_seen = "selected" not in seen_legend_groups
+            seen_legend_groups.add("selected")
             fig.add_trace(go.Scatter(x=winner["sim_pcm_mass_kg"], y=winner["sim_useful_energy_kWh"],
                                       mode="markers", marker=dict(size=16, symbol="star", color="black"),
-                                      name="selected", legendgroup="selected", showlegend=(row, col) == (1, 1)),
+                                      name="selected", legendgroup="selected", showlegend=first_seen),
                           row=row, col=col)
-    fig.update_layout(title=f"Phase 7 — useful energy vs PCM mass, all 100 confirmed candidates — {state}",
-                       height=760, width=1200)
+    # Legend now spans every distinct PCM+arrangement combo across all
+    # regimes (not just regime 0's), so its height must scale with that
+    # count rather than the fixed per-row height, or entries get clipped
+    # off the bottom of the static export.
+    legend_height = 220 + 34 * len(seen_legend_groups)
+    fig.update_layout(title=f"Phase 7 — useful energy vs PCM mass, all {len(optimized)} confirmed "
+                             f"candidates (arrangement in legend) — {state}",
+                       height=max(420 * n_rows, legend_height), width=1200)
     fig.update_xaxes(title_text="PCM mass (kg)")
     fig.update_yaxes(title_text="useful energy (kWh)")
-    _save(fig, "phase7_pareto_by_regime", out_dir, width=1200, height=760)
+    _save(fig, "phase7_pareto_by_regime", out_dir, width=1200, height=max(420 * n_rows, legend_height))
 
 
 def phase7_surrogate_vs_simulator(state, out_dir, optimized):
@@ -357,22 +418,34 @@ def phase7_surrogate_vs_simulator(state, out_dir, optimized):
                               text=optimized["pcm_id"], hovertemplate="%{text}<extra></extra>", name="candidates"))
     fig.add_trace(go.Scatter(x=[lo, hi], y=[lo, hi], mode="lines", line=dict(color="gray", dash="dash"),
                               name="perfect agreement"))
+    mean_err = optimized["surrogate_vs_sim_error_pct"].mean() if "surrogate_vs_sim_error_pct" in optimized.columns else float("nan")
     fig.update_layout(title=f"Phase 7 — surrogate-predicted vs simulator-confirmed useful energy "
-                             f"(100 candidates, mean error 0.02%) — {state}",
+                             f"({len(optimized)} candidates, mean error {mean_err:.2f}%) — {state}",
                        xaxis_title="simulator useful_energy_kWh", yaxis_title="surrogate-predicted useful_energy_kWh")
     _save(fig, "phase7_surrogate_vs_simulator", out_dir)
 
 
 def phase8_robustness_probabilities(state, out_dir, robustness_summary):
+    # Temperature-safety re-added to this chart (previously delivery/demand
+    # only) since it is the headline Phase 8 finding for the 2026-09-17
+    # arrangement-searched run: every regime fails the 95% safety bar
+    # (0%/18%/0%), directly following from Phase 7's negative/marginal
+    # nominal constraint margins -- this must be visible here, not only in
+    # the summary CSV/text.
     labels = [f"Regime {r} ({p})" for r, p in zip(robustness_summary["regime_id"], robustness_summary["pcm_id"])]
+    p_temp_safe = (1.0 - robustness_summary["p_temperature_violation"]) * 100
     fig = go.Figure()
     fig.add_trace(go.Bar(x=labels, y=robustness_summary["p_meets_delivery_temp"] * 100,
                           name="P(meets delivery temp, SF>=45%)", marker_color="#9467bd"))
     fig.add_trace(go.Bar(x=labels, y=robustness_summary["p_meets_annual_demand"] * 100,
                           name="P(meets annual demand, SF>=50%)", marker_color="#1f77b4"))
+    fig.add_trace(go.Bar(x=labels, y=p_temp_safe,
+                          name="P(temperature-safe, no violation)", marker_color="#d62728",
+                          text=[f"{v:.0f}%" for v in p_temp_safe], textposition="outside"))
     fig.add_hline(y=75, line_dash="dash", line_color="#1f77b4", annotation_text="75% demand threshold")
+    fig.add_hline(y=95, line_dash="dash", line_color="#d62728", annotation_text="95% temperature-safety threshold")
     fig.update_layout(barmode="group", title=f"Phase 8 — robustness probabilities (120 Monte Carlo draws/design) — {state}",
-                       yaxis_title="probability (%)")
+                       yaxis_title="probability (%)", yaxis_range=[0, 108])
     _save(fig, "phase8_robustness_probabilities", out_dir, width=1150)
 
 
@@ -402,7 +475,7 @@ def phase8_useful_energy_intervals(state, out_dir, robustness_summary, deployabl
 
 def phase6b_multifidelity(state, out_dir, speedup_report, efficiency_df):
     fig = make_subplots(rows=1, cols=2, subplot_titles=(
-        "Total simulator runtime: high- vs low-fidelity (215 cases)",
+        "Total simulator runtime: high- vs low-fidelity (all DOE cases)",
         "Hold-out R2 vs high-fidelity training fraction (useful_energy_kWh)"))
 
     fig.add_trace(go.Bar(
@@ -428,11 +501,10 @@ def phase6b_multifidelity(state, out_dir, speedup_report, efficiency_df):
 
 
 def phase7_safety_compliance(state, out_dir, optimized):
-    counts = (optimized.groupby(["regime_id", "meets_temperature_safety"]).size()
-              .unstack(fill_value=0).reindex(columns=[True, False], fill_value=0))
+    counts = optimized.groupby(["regime_id", "meets_temperature_safety"]).size().unstack(fill_value=0)
     fig = go.Figure()
-    fig.add_trace(go.Bar(x=counts.index, y=counts[True], name="meets safety", marker_color="#2ca02c"))
-    fig.add_trace(go.Bar(x=counts.index, y=counts[False], name="violates safety", marker_color="#d62728"))
+    fig.add_trace(go.Bar(x=counts.index, y=counts.get(True, 0), name="meets safety", marker_color="#2ca02c"))
+    fig.add_trace(go.Bar(x=counts.index, y=counts.get(False, 0), name="violates safety", marker_color="#d62728"))
     fig.update_layout(barmode="stack", title=f"Phase 7 — temperature-safety compliance of confirmed candidates — {state}",
                        xaxis_title="regime_id", yaxis_title="# confirmed candidates")
     _save(fig, "phase7_safety_compliance", out_dir)
@@ -449,9 +521,9 @@ def main(state: str):
     phase2_ergun_hydraulics(state, out_dir)
 
     print("Phase 3 ... (running one sample case)")
-    hourly, metrics = _phase3_sample_run(state)
-    phase3_temperature_timeseries(state, out_dir, hourly)
-    phase3_melt_fraction_year(state, out_dir, hourly)
+    hourly, metrics, pcm_name, design = _phase3_sample_run(state)
+    phase3_temperature_timeseries(state, out_dir, hourly, pcm_name, design)
+    phase3_melt_fraction_year(state, out_dir, hourly, pcm_name, design)
     phase3_energy_breakdown(state, out_dir, metrics)
 
     print("Phase 4 ... (re-running gate cases)")

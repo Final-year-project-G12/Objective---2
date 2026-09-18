@@ -1,12 +1,38 @@
 # Objective 3 — Inputs From Objective 2 and What To Do Next
 
+> **⚠️ NUMBERS BELOW ARE SUPERSEDED, 2026-09-17 — read this box before
+> anything else in this document.** Everything below reflects the
+> 2026-09-14 run (`sim_v1_tamilnadu`, K=5 regimes, arrangement frozen to
+> staggered-only). Since then: (1) Objective 1 was refreshed (K=5→K=3
+> regimes, real elevation, rewritten MCDM engine —
+> `docs_objective2/16_OBJECTIVE1_DATA_REFRESH.md`) and (2) capsule
+> arrangement was restored as a searched variable
+> (`docs_objective2/17_ARRANGEMENT_RESTORATION.md`). **Objective 3 must
+> consume `results/tamilnadu/obj3_environment_contract_tamilnadu.json` as
+> it exists NOW** (`contract_version: "obj3_contract_v2.0_2026-09-17"`,
+> `validated_simulator_version: "sim_v2_tamilnadu"`, 3 regimes each with a
+> `capsule_arrangement` field — currently "radial" in every regime — and
+> an `arrangement_rationale`) — not any cached copy, and not the specific
+> regime IDs/numbers quoted in the prose below, which describe regimes
+> 0-4 of a run that no longer exists. Current headline: **no regime meets
+> the 95% temperature-safety robustness bar** (P(temp-safe) = 0%/18%/0%
+> for regimes 0/1/2) — the safety-shield requirement this document
+> describes is, if anything, MORE universally binding now, not less. See
+> `docs_objective2/tamilnadu_phase_docs/08_PROMPT_PHASE8_HANDOFF_TAMILNADU.md`
+> for current numbers. The formal boundary and contract *structure*
+> described below (regime → PCM → geometry → flow envelope → safety
+> shield → action space) are unchanged and still accurate.
+
 Objective 2 is **complete** for Tamil Nadu (Phases 1–8, all built, run,
-and verified — see `RESULTS.md` at the project root for the full digest).
-**This document reflects the 2026-09-13 final state**, after three
-methodology revisions (Tm-target retargeting, design-bounds widening,
-selection-rule scope correction — docs 12/13/14) that together made every
-regime's Objective 2 recommendation a genuine PCM design, not the
-mostly-plain-tank result of the original run.
+and verified — see `docs_objective2/00_MASTER_OVERVIEW.md` for the
+current summary). The paragraph below describes the 2026-09-14 state and
+is kept for historical context only (see the box above for what's current):
+after five methodology revisions (Tm-target retargeting, design-bounds
+widening, selection-rule scope correction, full-MCDM shortlist adoption,
+and a safety-first selection tie-break — docs 12/13/14/15) that together
+made every regime's Objective 2 recommendation a genuine PCM design (not
+the mostly-plain-tank result of the original run), with regime 4's design
+then genuinely, not just nominally, temperature-safe.
 
 **The formal boundary** (do not cross it in either direction): Objective 1
 selected the PCM shortlist. Objective 2 selected the physical hardware
@@ -25,8 +51,8 @@ frozen, machine-readable package — read it programmatically, don't
 hand-copy numbers out of it. It contains, per climate regime:
 
 - the selected PCM — **every one of the 5 regimes now has a real PCM**
-  (n-Tetracosane ×2, PlusICE A52, PureTemp 53, n-Tricosane) with its
-  complete property record — with its complete property record
+  (n-Tetracosane ×2, n-Hexacosane ×2, RT45HC) with its complete property
+  record
 - capsule geometry (diameter, count, PCM mass, conduction distance)
 - tank/collector configuration
 - the flow envelope (nominal + min/max), pressure limit, pump efficiency
@@ -61,9 +87,10 @@ hand-copy numbers out of it. It contains, per climate regime:
 
 ## 2. What Objective 2 is telling Objective 3 about the physical system
 
-Read `RESULTS.md`, `08_PHASE7_OPTIMIZATION.md` and
-`14_SELECTION_RULE_SCOPE_CORRECTION.md` before writing a reward function —
-the physical story matters for reward shaping, and it changed
+Read `RESULTS.md`, `08_PHASE7_OPTIMIZATION.md`,
+`14_SELECTION_RULE_SCOPE_CORRECTION.md`, and
+`15_MCDM_RERANKING_AND_SAFETY_TIEBREAK.md` before writing a reward
+function — the physical story matters for reward shaping, and it changed
 substantially from earlier drafts of this document:
 
 - **All 5 regimes now have a real, optimal PCM design — not 4 plain-tank
@@ -71,14 +98,16 @@ substantially from earlier drafts of this document:
   meaningful state in **every** regime's contract now, not just regime 4.
   A controller that special-cases "no PCM" for 4 of the 5 regimes would
   be building against a stale assumption.
-- **Every PCM design uses a modest mass** (0.37–1.40 kg across the 5
-  regimes) matched to each regime's own real charging-hour water
-  temperature (46.5–51.5°C, not Objective 1's original climate-anchored
-  57°C) — expect meaningful, regular melt/freeze cycling in normal
-  operation, not the near-zero cycling the original (pre-retargeting)
-  n-Octacosane-based design showed. Don't assume the earlier "PCM barely
-  melts" characterization still applies; it was specific to the
-  since-corrected Tm-target mismatch.
+- **Every PCM design uses a modest mass** (0.33–2.29 kg across the 5
+  regimes — regime 4's RT45HC design is the heaviest, a deliberate
+  consequence of the safety-first tie-break, not an error) matched to
+  each regime's own real charging-hour water temperature (46.5–51.5°C,
+  not Objective 1's original climate-anchored 57°C) — expect meaningful,
+  regular melt/freeze cycling in normal operation, not the near-zero
+  cycling the original (pre-retargeting) n-Octacosane-based design
+  showed. Don't assume the earlier "PCM barely melts" characterization
+  still applies; it was specific to the since-corrected Tm-target
+  mismatch.
 - **No auxiliary/backup heater exists in this system.** "Unmet energy"
   in every Objective 2 metric means genuinely undelivered heat, not a
   gap an electric backup fills. If Objective 3's reward function assumes
@@ -92,8 +121,10 @@ substantially from earlier drafts of this document:
   design, weather/demand/property uncertainty including a real 10-year
   historical weather ensemble) found: **regimes 0–3 are 0% temperature-
   safe across all 120 draws each** — never safe, not a tail risk — and
-  **regime 4 is only 25% safe**, down from a nominal margin of just
-  0.009°C. See `10_PHASE8_ROBUSTNESS_HANDOFF.md` for the full table. The
+  **regime 4 is 30.8% safe**, from a real nominal margin of +0.39°C (RT45HC,
+  chosen by the safety-first tie-break, doc 15 — an improvement over an
+  earlier, now-superseded pick whose margin was a razor-thin 0.009°C).
+  See `10_PHASE8_ROBUSTNESS_HANDOFF.md` for the full table. The
   `safety_shield` block in the contract already trips on a 3°C
   precautionary margin below each hard limit (72°C water / 62°C PCM, not
   75°C/65°C) rather than exactly at the limit, but it is still a
@@ -152,9 +183,10 @@ substantially from earlier drafts of this document:
    build one contract-consuming Objective 3 codebase that takes
    `--state` the same way Objective 2's `pipeline.py` does, rather than
    forking per-state controller code. Note that those states' Objective 2
-   runs have NOT yet had the Tm-retargeting/bounds-widening/selection-rule
-   fixes applied (docs 12–14 are Tamil-Nadu-only so far) — do not assume
-   their contracts already describe all-PCM designs until confirmed.
+   runs have NOT yet had the Tm-retargeting/bounds-widening/selection-rule/
+   MCDM-reranking fixes applied (docs 12–15 are Tamil-Nadu-only so far) —
+   do not assume their contracts already describe all-PCM, safety-checked
+   designs until confirmed.
 
 ## 4. What Objective 2 explicitly did NOT resolve (don't assume it did)
 
@@ -173,7 +205,7 @@ substantially from earlier drafts of this document:
   or design bounds. Irrelevant to Objective 3 (it's a Phase 6 modeling
   bonus, not part of the environment contract) but noted for completeness.
 
-## 5. Two small documentation-only updates (2026-09-13), no contract change
+## 5. Two small documentation-only updates (2026-09-13, predate doc 15), no contract change beyond what §1–2 already describe
 
 - The Phase 4 Gate 3 comparison **plot** (not the frozen verification
   report) was regenerated to show the current shortlist PCM at its actual
@@ -214,3 +246,9 @@ relevant to what Objective 3 is being asked to build:
 - **[Rubitherm2024]** — the datasheet source for the 65°C PCM limit that
   is the direct physical trigger condition the safety shield exists to
   anticipate (§2 above).
+
+Also see `15_MCDM_RERANKING_AND_SAFETY_TIEBREAK.md` for why regime 4's
+design (RT45HC) is now the least-exposed regime by a real, not
+razor-thin, margin — relevant context for any reward-shaping decision
+that weighs regimes differently based on how close their nominal design
+already sits to the safety limit.

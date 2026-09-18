@@ -1,5 +1,15 @@
 # 11 — Phase 6b Audit: Multi-Fidelity Surrogate Augmentation
 
+> **STALE AND NOT YET RE-RUN, 2026-09-17.** Phase 6b is an optional
+> add-on (not one of the 8 core phases in `obj2_revised`) and was
+> deliberately left out of the 2026-09-17 arrangement-restoration +
+> data-refresh batch. `src/surrogate/multifidelity.py` still constructs
+> `DesignVector(...)` without the now-required `capsule_arrangement`
+> field and **will raise `TypeError` if run** (`pipeline.py --stage
+> multifidelity`) until that one-line fix is applied and it is re-run
+> against the refreshed DOE. Everything below describes the pre-refresh
+> (K=5, `design_cases_lowfid.*`) run.
+
 Files: `src/simulation/tank_model.py` (`fidelity` parameter),
 `src/surrogate/multifidelity.py`. Run:
 ```

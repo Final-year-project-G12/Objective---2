@@ -1,0 +1,4 @@
+cluster_id,Tm_target_C,n_eligible,current_shortlist_nearest_tm,mcdm_shortlist_borda_consensus,same_set,mcdm_top1_Tm_C,mcdm_top1_latent_heat_kJ_kg
+0,53.3,12,PureTemp 53; n-Pentacosane (C25); n-Tetracosane (C24),n-Tetracosane (C24); n-Hexacosane (C26); RT57HC,False,52.0,255.0
+1,46.5,19,savE® OM46; n-Tricosane (C23); RT45HC,n-Docosane (C22); RT45HC; n-Tricosane (C23),False,44.5,249.0
+2,50.3,10,savE® OM49; PlusICE A52; n-Tetracosane (C24),n-Tetracosane (C24); PureTemp 53; n-Hexacosane (C26),False,52.0,255.0

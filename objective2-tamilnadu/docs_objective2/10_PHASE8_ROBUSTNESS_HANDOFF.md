@@ -1,5 +1,15 @@
 # 10 — Phase 8 Audit: Robustness, Recommendation Cards, Objective 3 Hand-off
 
+> **SUPERSEDED 2026-09-17.** Describes the pre-refresh robustness run and
+> `obj3_environment_contract_tamilnadu.json` (`sim_v1`, no arrangement
+> field). The current run (`sim_v2_tamilnadu`, arrangement +
+> `arrangement_rationale` in every regime's design block, contract
+> `supersession_note` field) is documented in
+> `docs_objective2/tamilnadu_phase_docs/08_PROMPT_PHASE8_HANDOFF_TAMILNADU.md`.
+> **Robustness headline changed**: all 3 current regimes are NOT robust
+> (P(temp-safe) 0%/18%/0%) — re-check this doc's specific numbers against
+> the current `robustness_summary.csv` before citing anything from here.
+
 Files: `src/robustness/monte_carlo.py`, `src/robustness/weather_ensemble.py`,
 `src/handoff/build_recommendation_cards.py`, `src/handoff/build_obj3_contract.py`. Run:
 ```
@@ -13,7 +23,9 @@ Output: `results/tamilnadu/robustness_results.csv` (600 rows — 120 draws ×
 This closes Objective 2 (D2.7, D2.8, D2.9) — every deliverable in the
 framework doc's Section 1.2 table now has a file behind it for Tamil
 Nadu, evaluated against the **current, corrected** Phase 7 selection: a
-genuine PCM design in every regime (`14_SELECTION_RULE_SCOPE_CORRECTION.md`).
+genuine PCM design in every regime (`14_SELECTION_RULE_SCOPE_CORRECTION.md`),
+using the real-MCDM shortlist and safety-first tie-break
+(`15_MCDM_RERANKING_AND_SAFETY_TIEBREAK.md`).
 
 ---
 
@@ -55,33 +67,39 @@ Real observed variability turned out narrower than the range originally
 assumed (~0.97×–1.05× GHI vs. the assumed ±7%), a verifiable improvement
 in kind even where the resulting numbers move only modestly.
 
-## Result — all 5 designs are now PCM
+## Result — all 5 designs are now PCM, regime 4 genuinely safe
 
 | Regime | Design | P(meets delivery) | P(meets demand) | P(temp-safe) | Robust? | Useful energy P5–P50–P95 (kWh) | Max water T P95 |
 |---|---|---|---|---|---|---|---|
-| 0 | n-Tetracosane (C24) | 100% | 80.8% | **0%** | No | 1592 – 1682 – 1783 | 75.0°C |
-| 1 | n-Tetracosane (C24) | 100% | 91.7% | **0%** | No | 1706 – 1825 – 1939 | 78.4°C |
-| 2 | PlusICE A52 | 100% | 95.0% | **0%** | No | 1632 – 1743 – 1844 | 78.1°C |
-| 3 | PureTemp 53 | 100% | 98.3% | **0%** | No | 1712 – 1807 – 1900 | 78.0°C |
-| 4 | n-Tricosane (C23) | 100% | 73.3% | **25%** | No | 1533 – 1617 – 1703 | 74.3°C |
+| 0 | n-Tetracosane (C24) | 100% | 80.8% | **0%** | No | 1592 – 1682 – 1782 | 75.0°C |
+| 1 | n-Tetracosane (C24) | 100% | 90.8% | **0%** | No | 1706 – 1826 – 1940 | 78.4°C |
+| 2 | n-Hexacosane (C26) | 100% | 94.2% | **0%** | No | 1632 – 1742 – 1844 | 78.1°C |
+| 3 | n-Hexacosane (C26) | 100% | 98.3% | **0%** | No | 1710 – 1805 – 1900 | 78.0°C |
+| 4 | **RT45HC** | 100% | 76.7% | **30.8%** | No | 1535 – 1620 – 1706 | 74.3°C |
 
 Delivery-temperature reliability is never the problem (100% everywhere).
-Demand reliability is generally solid (81–98% in regimes 0–3; 73.3% in
+Demand reliability is generally solid (81–98% in regimes 0–3; 76.7% in
 regime 4, the only one below the 75% target). **Temperature safety is
 where the real story now sits**: regimes 0–3 are **0% safe across all 120
 draws each** — not a rare tail risk, never safe — because their nominal
 designs already ran several degrees over the 65°C PCM limit before any
 uncertainty was even applied (see `08_PHASE7_OPTIMIZATION.md`'s minimal-
-PCM-dose test). Regime 4's nominal margin was a razor-thin 0.009°C; under
-real weather/demand/property variability it is safe in only 25% of draws.
+PCM-dose test). Regime 4's design (RT45HC, chosen by the safety-first
+tie-break, doc 15) has a real +0.39°C nominal margin — not the previous
+selection's razor-thin 0.009°C — and is safe in **30.8%** of draws under
+real weather/demand/property variability, the best of the five regimes
+and a meaningful improvement over the ~22–25% the earlier, lower-margin
+pick achieved, though still well short of the 95% target.
 
 **This is the honest, load-bearing consequence of Objective 2 now
 answering its actual problem statement** (optimal PCM design, not
 whether to use PCM) — the safety gap moves from being hidden behind a
 "pick plain tank instead" fallback to being an explicit, quantified,
 per-regime number Objective 3 must close. No result here was tuned to
-produce this outcome; it falls directly out of re-running the same
-Monte Carlo methodology against the corrected Phase 7 selection.
+produce this outcome: the safety-first tie-break (doc 15) only changed
+*which already energy-qualified candidate* wins where a safe one exists
+in the search results; it did not relax any limit or invent a new
+candidate.
 
 ## A real bug found and fixed during earlier development (retained, now largely moot)
 
@@ -114,7 +132,7 @@ plain-tank + one PCM), plus:
 - **`safety_shield`** — trips with a **3°C precautionary guard band**
   below each hard limit (bypass at 72°C water / 62°C PCM, not at the
   75°C/65°C hard limits themselves). Given Phase 8's own P(temp-safe)
-  numbers (0–25%, all five regimes), this margin is not a formality — it
+  numbers (0–30.8%, all five regimes), this margin is not a formality — it
   is the difference between a controller that anticipates the limit and
   one that reacts to already having crossed it.
 - **`reward_function`** — a FULLY SPECIFIED default reward (formula,
@@ -124,8 +142,9 @@ plain-tank + one PCM), plus:
   guard-band trigger as the safety shield, and a tuning procedure).
 - **`deferred_future_work`** — four-state comparison, active-learning/
   NSGA-II, sub-daily/hourly multi-year weather records, hardware
-  validation. (Widened design bounds and the Tm-target/selection-rule
-  fixes are no longer deferred — both are now applied; see docs 12–14.)
+  validation. (Widened design bounds, the Tm-target/selection-rule fixes,
+  and the MCDM-shortlist/safety-tiebreak fixes are no longer deferred —
+  all are now applied; see docs 12–15.)
 
 Also present, unchanged: a 15-field dynamic-state schema with explicit
 sensor-measurability flags, both a discrete and a recommended continuous-
@@ -145,15 +164,17 @@ weather records.
 
 Objective 2's Tamil Nadu conclusion is **positive on the PCM design
 question and load-bearing on safety**: (1) with `Tm_target_C` correctly
-matched to this tank's real operating range and design bounds widened to
-reach the literature's tested PCM-volume levels, every regime's optimal
-PCM design beats plain water on useful energy (+0.08% to +0.12%) — a
-genuine, if modest, improvement, and the actual Objective 2 deliverable;
-and (2) **none of the five is safe without an active bypass** (0% safe in
-four regimes, 25% in the fifth, all under the 95% target). Objective 3
-must treat overheat protection as a first-class, universal control
-objective for every Tamil Nadu regime — not a regime-specific edge case —
-before any of these designs reaches hardware.
+matched to this tank's real operating range, design bounds widened to
+reach the literature's tested PCM-volume levels, the real MCDM shortlist
+adopted, and a safety-first tie-break applied, every regime's optimal PCM
+design beats plain water on useful energy (+0.04% to +0.30%) — a genuine
+improvement, and the actual Objective 2 deliverable; and (2) **none of
+the five is robust to the 95% bar without an active bypass** (0% safe in
+four regimes, 30.8% in the fifth — the best-performing regime now has a
+real, not razor-thin, nominal margin too). Objective 3 must treat overheat
+protection as a first-class, universal control objective for every Tamil
+Nadu regime — not a regime-specific edge case — before any of these
+designs reaches hardware.
 
 ## Literature
 
@@ -166,7 +187,8 @@ before any of these designs reaches hardware.
   GHI/ambient-temperature noise model layered on top of the historical
   year draw.
 - **[Rubitherm2024]** is again the datasheet source for the 65°C PCM
-  limit whose near-zero safety margin drives every regime's P(temp-safe)
+  limit whose margin (negative in regimes 0–3, now a real positive
+  +0.39°C in regime 4 post-doc-15) drives every regime's P(temp-safe)
   result in the table above.
 - **[Sivaraj2023]** and **[Emami2026]** (see `OBJECTIVE3_INPUTS_AND_
   NEXT_STEPS.md` for the fuller mapping) ground the reward-function and

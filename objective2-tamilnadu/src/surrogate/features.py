@@ -7,7 +7,10 @@ climate/PCM tables, per the framework doc §7.1 ("use the continuous
 Objective 1 climate features rather than only an integer regime label").
 
 Feature groups:
-  - design      : the sampled design vector + Phase 2 geometry outputs
+  - design      : the sampled design vector + Phase 2 geometry outputs +
+                   the arrangement one-hot (added 2026-09-17, see
+                   ARRANGEMENT_COLS below — adapted from
+                   "a Rajasthan-pilot change plan (source removed from this project after adaptation, see docs_objective2/tamilnadu_phase_docs/)")
   - climate     : Tier-1/Tier-2 climate-signature columns from
                    cluster_profiles_<state>.csv (population-weighted
                    regime means — NOT re-derived, read as-is)
@@ -27,16 +30,9 @@ from config import BASE_DIR
 from src.io_utils import load_state_config
 
 CLIMATE_COLS = [
-    # Names updated 2026-09-13 to match cluster_profiles_tamilnadu.csv's
-    # current schema (unified with Rajasthan's Phase 3/4 column names on
-    # 2026-09-08 — the old _true/_proxy-suffixed names and elev_proxy no
-    # longer exist in that file; the previous list silently matched ZERO
-    # columns here via the `if c in cluster_profiles.columns` guard below,
-    # so every climate feature had been dropped without error).
-    "GHI_daily_kWh", "Ta_mean", "Ta_p95", "Ta_p05", "DTR_true",
-    "RH_sunrise_mean", "HSI_sunrise", "wind_noon_mean", "wind_sunset_mean",
-    "monsoon_index", "Tm_target_C", "Tm_target_capped_C",
-    "L_required_kJ_per_kg", "seasonality",
+    "GHI_daily_kWh_mean", "Ta_mean_true", "Ta_p95_true", "Ta_p05_true", "DTR_true_mean",
+    "RH_mean_true", "HSI", "wind_mean_true", "monsoon_index", "elev_proxy",
+    "Tm_target_C", "T_mains_est_C", "L_required_kJ_per_kg", "seasonality_proxy",
 ]
 PCM_COLS = [
     "Tm_C", "latent_heat_kJ_kg", "TC_W_mK", "density_liquid_kg_m3", "density_solid_kg_m3",
@@ -48,6 +44,12 @@ DESIGN_COLS = [
     "geom_pcm_thickness_m", "geom_pcm_volume_fraction", "geom_void_fraction",
     "geom_pressure_drop_pa", "geom_pump_power_w", "geom_reynolds_number_particle",
 ]
+# Arrangement one-hot — design-vector feature, not a climate or PCM feature
+# (2026-09-17). Column order fixed here so evaluate.py's importance report
+# and train.py's feature_cols list agree on which column is which.
+ARRANGEMENT_COLS = ["arr_single_layer", "arr_staggered", "arr_radial"]
+_ARRANGEMENT_TO_COL = {"single-layer": "arr_single_layer", "staggered": "arr_staggered", "radial": "arr_radial"}
+DESIGN_COLS = DESIGN_COLS + ARRANGEMENT_COLS
 TARGET_COLS = ["useful_energy_kWh", "solar_fraction", "unmet_energy_kWh",
                "pump_energy_kWh", "pcm_mass_kg", "mean_f_melt"]
 
@@ -56,21 +58,24 @@ def build_feature_table(state: str, design_cases: pd.DataFrame) -> pd.DataFrame:
     cfg = load_state_config(state)
     cluster_profiles = pd.read_csv(BASE_DIR / "data" / "objective1" / f"cluster_profiles_{state}.csv")
     pcm_db = pd.read_csv(BASE_DIR / cfg["pcm_database_file"])
-    # Confidence source switched 2026-09-13 from monte_carlo_stability.csv
-    # to mcdm_full_rankings.csv: Phase 6's rename (mcdm_full_scores_by_
-    # cluster.csv -> mcdm_full_rankings.csv, 2026-09-08 unification) left
-    # monte_carlo_stability.csv with pcm_id/mc_top3_inclusion_pct (0-100
-    # scale) instead of the name/top3_inclusion_probability (0-1 scale)
-    # columns this script reads — a hard KeyError, not a silent mismatch,
-    # since this merge key is selected by name rather than an `if c in
-    # columns` guard. mcdm_full_rankings.csv already carries both the old
-    # and new-named confidence columns with the same values (just scaled),
-    # so no computation changes, only the source file.
-    mc_stability_path = BASE_DIR / "data" / "objective1" / "mcdm_full_rankings.csv"
+    mc_stability_path = BASE_DIR / "data" / "objective1" / "monte_carlo_stability.csv"
     mc_stability = pd.read_csv(mc_stability_path) if mc_stability_path.exists() else None
 
     df = design_cases.copy()
     df["is_no_pcm"] = (df["pcm_id"] == "NONE_plain_tank").astype(int)
+
+    # --- arrangement one-hot (2026-09-17) -------------------------------
+    for col in ARRANGEMENT_COLS:
+        df[col] = 0
+    for arrangement, col in _ARRANGEMENT_TO_COL.items():
+        df.loc[df["arrangement"] == arrangement, col] = 1
+    # No-PCM baseline rows get an explicit all-zero encoding (paired with
+    # is_no_pcm=1) rather than the "staggered" label their dummy geometry
+    # happens to carry — a no-PCM design has no real capsule arrangement,
+    # and leaving its one-hot as [0,0,1] could teach the model that
+    # "no PCM" is a 4th arrangement category rather than the absence of one.
+    for col in ARRANGEMENT_COLS:
+        df.loc[df["is_no_pcm"] == 1, col] = 0
 
     # --- climate features: join on regime_id == cluster_id ------------
     clim = cluster_profiles[["cluster_id"] + [c for c in CLIMATE_COLS if c in cluster_profiles.columns]]
@@ -83,10 +88,16 @@ def build_feature_table(state: str, design_cases: pd.DataFrame) -> pd.DataFrame:
     df[pcm_present_cols] = df[pcm_present_cols].fillna(0.0)
 
     # --- Objective 1 confidence: top3_inclusion_probability ------------
-    if mc_stability is not None:
-        conf = mc_stability[["cluster_id", "name", "top3_inclusion_probability"]]
-        df = df.merge(conf, left_on=["regime_id", "pcm_id"], right_on=["cluster_id", "name"],
-                       how="left", suffixes=("", "_conf"))
+    # 2026-09-17 refresh renamed monte_carlo_stability.csv's columns:
+    # name -> pcm_id, top3_inclusion_probability -> mc_top3_inclusion_pct
+    # (now a 0-100 percentage, not a 0-1 probability) -- normalized back to
+    # [0,1] here so the feature's scale/semantics are unchanged downstream.
+    if mc_stability is not None and "mc_top3_inclusion_pct" in mc_stability.columns:
+        conf = mc_stability[["cluster_id", "pcm_id", "mc_top3_inclusion_pct"]].copy()
+        conf = conf.rename(columns={"cluster_id": "regime_id"})
+        conf["top3_inclusion_probability"] = conf["mc_top3_inclusion_pct"] / 100.0
+        conf = conf[["regime_id", "pcm_id", "top3_inclusion_probability"]]
+        df = df.merge(conf, on=["regime_id", "pcm_id"], how="left")
         df["top3_inclusion_probability"] = df["top3_inclusion_probability"].fillna(0.0)
     else:
         df["top3_inclusion_probability"] = 0.0

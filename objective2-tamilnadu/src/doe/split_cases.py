@@ -7,10 +7,14 @@ in design_cases.parquet is already one complete simulation case (not a
 timestep), a random 80/20 split over ROWS is automatically leakage-free —
 there is no shared design/weather trajectory between rows to leak.
 
-Stratified by (regime_id, pcm_id, valid) so every regime x PCM pair has
-hold-out coverage, not just the pairs that happened to get more LHS draws
--- and so that INVALID cases also get a holdout share. That last point
-matters: the performance regressors only ever train/evaluate on valid
+Stratified by (regime_id, pcm_id, arrangement, valid) -- arrangement added
+2026-09-17 now that it's a searched variable (adapted from
+"a Rajasthan-pilot change plan (source removed from this project after adaptation, see docs_objective2/tamilnadu_phase_docs/)" step 6) -- so
+every regime x PCM x arrangement combination gets hold-out coverage, not
+just every regime x PCM pair pooled across arrangements. Singleton groups
+(len==1) still get zero holdout, same rule as before. That INVALID cases
+also get a holdout share matters: the performance regressors only ever
+train/evaluate on valid
 rows (src/surrogate/features.feature_target_split filters on `valid`), so
 mixing invalid rows into the same train/holdout column is harmless for
 them, but it is required for the feasibility CLASSIFIER (trained on every
@@ -40,7 +44,7 @@ def add_split_column(df: pd.DataFrame) -> pd.DataFrame:
     df["split"] = "train"
     rng = np.random.default_rng(SPLIT_SEED)
 
-    for (regime_id, pcm_id, valid), group in df.groupby(["regime_id", "pcm_id", "valid"]):
+    for (regime_id, pcm_id, arrangement, valid), group in df.groupby(["regime_id", "pcm_id", "arrangement", "valid"]):
         idx = group.index.to_numpy().copy()
         rng.shuffle(idx)
         n_holdout = max(1, int(round(len(idx) * HOLDOUT_FRACTION))) if len(idx) > 1 else 0
@@ -61,9 +65,9 @@ def run_split(state: str):
     counts = df["split"].value_counts()
     print(f"Split written for state={state}:")
     print(counts.to_string())
-    n_pairs = df[df["valid"]].groupby(["regime_id", "pcm_id"]).ngroups
-    n_pairs_with_holdout = df[df["split"] == "holdout"].groupby(["regime_id", "pcm_id"]).ngroups
-    print(f"\nregime x PCM pairs with >=1 holdout case: {n_pairs_with_holdout}/{n_pairs}")
+    n_pairs = df[df["valid"]].groupby(["regime_id", "pcm_id", "arrangement"]).ngroups
+    n_pairs_with_holdout = df[df["split"] == "holdout"].groupby(["regime_id", "pcm_id", "arrangement"]).ngroups
+    print(f"\nregime x PCM x arrangement combos with >=1 holdout case: {n_pairs_with_holdout}/{n_pairs}")
     return df
 
 
