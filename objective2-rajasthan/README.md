@@ -1,5 +1,14 @@
 # Objective 2 — Rajasthan
 
+> **Update 2026-09-17:** capsule arrangement is now a searched variable
+> (single-layer/staggered/radial), not frozen to staggered-only — see
+> `docs/00_MASTER_CHANGE_PLAN.md` and `docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md`
+> §9. The simulator is re-tagged `sim_v2_rajasthan` (was `sim_v1_rajasthan`,
+> referenced throughout the rest of this file and in `results/README.md`
+> below — those narrative sections describe the pre-2026-09-17 state and
+> have not been rewritten; the per-phase docs (`docs/0N_PHASEN_*.md`) carry
+> the current numbers).
+
 Per-state Objective 2 project for Rajasthan. Same layout, naming, and
 frozen shared configs as `objective2-tamilnadu/` (the reference
 implementation) — only the state-specific inputs differ (weather, regimes,

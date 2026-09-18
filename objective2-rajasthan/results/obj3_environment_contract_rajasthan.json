@@ -1,7 +1,7 @@
 {
   "schema": "obj3_environment_contract/v1",
   "state": "rajasthan",
-  "simulator_version": "sim_v1_rajasthan",
+  "simulator_version": "sim_v2_rajasthan",
   "generated_from": {
     "deployable": "phase7_deployable_design_per_regime.csv",
     "robustness": "phase8_robustness.csv",
@@ -165,57 +165,58 @@
       "T_mains_est_C": 25.092,
       "Tm_target_C": 57.0,
       "selected_design": {
-        "pcm_id": "RT45HC",
+        "pcm_id": "RT50",
         "is_plain_tank": false,
+        "arrangement_rationale": "only arrangement staggered was confirmed for this regime/PCM pool.",
         "pcm_properties": {
-          "name": "RT45HC",
-          "Tm_C": 45.0,
-          "Tm_freezing_C": 45.0,
-          "latent_heat_kJ_kg": 240.0,
+          "name": "RT50",
+          "Tm_C": 48.0,
+          "Tm_freezing_C": 48.5,
+          "latent_heat_kJ_kg": 160.0,
           "density_liquid_kg_m3": 770.0,
           "density_solid_kg_m3": 880.0,
           "Cp_liquid_kJ_kgK": 2.0,
           "Cp_solid_kJ_kgK": 2.0,
-          "TC_W_mK": 0.24,
-          "supercooling_K": 0.0,
-          "cycles_tested": 1216.0,
+          "TC_W_mK": 0.177,
+          "supercooling_K": -0.5,
+          "cycles_tested": 1675.0,
           "any_property_imputed": "True",
           "source": "manufacturer_datasheet_MICE_RF_PMM_completed"
         },
         "geometry": {
           "capsule_shape": "sphere",
           "capsule_arrangement": "staggered",
-          "capsule_diameter_m": 0.05002,
-          "n_capsule": 24,
-          "pcm_thickness_m": 0.02501,
-          "pcm_volume_fraction": 0.03146,
-          "void_fraction": 0.96854,
+          "capsule_diameter_m": 0.04091,
+          "n_capsule": 11,
+          "pcm_thickness_m": 0.02046,
+          "pcm_volume_fraction": 0.00789,
+          "void_fraction": 0.88556,
           "tank_volume_L": 50.0,
           "collector_area_m2": 1.5
         },
         "flow_envelope_kg_s": {
-          "nominal": 0.01755,
+          "nominal": 0.02671,
           "min": 0.01,
           "max": 0.05
         }
       },
       "sim_confirmed_performance": {
-        "useful_energy_kWh": 1587.88,
-        "solar_fraction": 0.5533,
-        "unmet_energy_kWh": 1132.16,
-        "max_water_temp_C": 68.84,
-        "constraint_margin_C": 2.86,
-        "surrogate_vs_sim_error_pct": 0.0021
+        "useful_energy_kWh": 1586.89,
+        "solar_fraction": 0.5499,
+        "unmet_energy_kWh": 1140.85,
+        "max_water_temp_C": 68.7,
+        "constraint_margin_C": 2.9,
+        "surrogate_vs_sim_error_pct": 0.0104
       },
       "robustness": {
         "n_draws": 120,
         "p_meets_delivery_temp": 1.0,
-        "p_meets_annual_demand": 0.9333333333333332,
+        "p_meets_annual_demand": 0.9166666666666666,
         "p_temperature_violation": 0.0,
         "p_exceeds_max_safe_temp": 0.0,
-        "useful_energy_p05_kWh": 1451.4747978124683,
-        "useful_energy_p95_kWh": 1713.760679384821,
-        "max_water_temp_p95_C": 72.25350752202172,
+        "useful_energy_p05_kWh": 1449.9094633719874,
+        "useful_energy_p95_kWh": 1712.415877929785,
+        "max_water_temp_p95_C": 72.18836998279835,
         "robust_per_framework_rule": true
       }
     },
@@ -227,70 +228,9 @@
       "T_mains_est_C": 25.783,
       "Tm_target_C": 57.0,
       "selected_design": {
-        "pcm_id": "Paraffin/HDPE PCM6",
-        "is_plain_tank": false,
-        "pcm_properties": {
-          "name": "Paraffin/HDPE PCM6",
-          "Tm_C": 50.3,
-          "Tm_freezing_C": 49.3,
-          "latent_heat_kJ_kg": 187.0,
-          "density_liquid_kg_m3": 851.0,
-          "density_solid_kg_m3": 953.0,
-          "Cp_liquid_kJ_kgK": 2.19,
-          "Cp_solid_kJ_kgK": 2.02,
-          "TC_W_mK": 0.1745,
-          "supercooling_K": 1.0,
-          "cycles_tested": 2000.0,
-          "any_property_imputed": "True",
-          "source": "manufacturer_datasheet_MICE_RF_PMM_completed"
-        },
-        "geometry": {
-          "capsule_shape": "sphere",
-          "capsule_arrangement": "staggered",
-          "capsule_diameter_m": 0.0414,
-          "n_capsule": 15,
-          "pcm_thickness_m": 0.0207,
-          "pcm_volume_fraction": 0.01115,
-          "void_fraction": 0.98885,
-          "tank_volume_L": 50.0,
-          "collector_area_m2": 1.5
-        },
-        "flow_envelope_kg_s": {
-          "nominal": 0.03017,
-          "min": 0.01,
-          "max": 0.05
-        }
-      },
-      "sim_confirmed_performance": {
-        "useful_energy_kWh": 1674.69,
-        "solar_fraction": 0.5828,
-        "unmet_energy_kWh": 1020.78,
-        "max_water_temp_C": 72.01,
-        "constraint_margin_C": 2.84,
-        "surrogate_vs_sim_error_pct": 0.0015
-      },
-      "robustness": {
-        "n_draws": 120,
-        "p_meets_delivery_temp": 1.0,
-        "p_meets_annual_demand": 0.9833333333333332,
-        "p_temperature_violation": 0.0,
-        "p_exceeds_max_safe_temp": 0.0,
-        "useful_energy_p05_kWh": 1505.9117587245585,
-        "useful_energy_p95_kWh": 1796.6915418007557,
-        "max_water_temp_p95_C": 72.2782505217402,
-        "robust_per_framework_rule": true
-      }
-    },
-    {
-      "regime_id": 2,
-      "label": "cooler arid / low-monsoon, erratic solar, largest population, medoid RJP_0055 (103 pts)",
-      "regime_membership_rule": "GMM cluster 2 of K=3 (Objective 1, cluster_assignments_levelA_rajasthan.csv); a new site is assigned to this regime by its max_membership_prob column",
-      "medoid_weather_hourly": "data/weather/weather_regime_rajasthan_cluster2_hourly.csv",
-      "T_mains_est_C": 24.524,
-      "Tm_target_C": 57.0,
-      "selected_design": {
         "pcm_id": "Paraffin/HDPE PCM3",
         "is_plain_tank": false,
+        "arrangement_rationale": "arrangements tied within noise in this regime \u2014 arrangement not decisive here (margin=-0.00% <= noise band=0.03%; tied arrangements: ['radial', 'single-layer', 'staggered']).",
         "pcm_properties": {
           "name": "Paraffin/HDPE PCM3",
           "Tm_C": 49.9,
@@ -309,37 +249,100 @@
         "geometry": {
           "capsule_shape": "sphere",
           "capsule_arrangement": "staggered",
-          "capsule_diameter_m": 0.04164,
+          "capsule_diameter_m": 0.04125,
           "n_capsule": 8,
-          "pcm_thickness_m": 0.02082,
-          "pcm_volume_fraction": 0.00605,
-          "void_fraction": 0.99395,
+          "pcm_thickness_m": 0.02063,
+          "pcm_volume_fraction": 0.00588,
+          "void_fraction": 0.91482,
           "tank_volume_L": 50.0,
           "collector_area_m2": 1.5
         },
         "flow_envelope_kg_s": {
-          "nominal": 0.01811,
+          "nominal": 0.03595,
           "min": 0.01,
           "max": 0.05
         }
       },
       "sim_confirmed_performance": {
-        "useful_energy_kWh": 1593.46,
-        "solar_fraction": 0.539,
-        "unmet_energy_kWh": 1201.84,
-        "max_water_temp_C": 68.82,
-        "constraint_margin_C": 2.86,
-        "surrogate_vs_sim_error_pct": 0.0009
+        "useful_energy_kWh": 1674.69,
+        "solar_fraction": 0.5825,
+        "unmet_energy_kWh": 1021.48,
+        "max_water_temp_C": 72.07,
+        "constraint_margin_C": 2.82,
+        "surrogate_vs_sim_error_pct": 0.0029
+      },
+      "robustness": {
+        "n_draws": 120,
+        "p_meets_delivery_temp": 1.0,
+        "p_meets_annual_demand": 0.9833333333333332,
+        "p_temperature_violation": 0.0,
+        "p_exceeds_max_safe_temp": 0.0,
+        "useful_energy_p05_kWh": 1505.6035454761748,
+        "useful_energy_p95_kWh": 1796.7396279838076,
+        "max_water_temp_p95_C": 72.28035305236874,
+        "robust_per_framework_rule": true
+      }
+    },
+    {
+      "regime_id": 2,
+      "label": "cooler arid / low-monsoon, erratic solar, largest population, medoid RJP_0055 (103 pts)",
+      "regime_membership_rule": "GMM cluster 2 of K=3 (Objective 1, cluster_assignments_levelA_rajasthan.csv); a new site is assigned to this regime by its max_membership_prob column",
+      "medoid_weather_hourly": "data/weather/weather_regime_rajasthan_cluster2_hourly.csv",
+      "T_mains_est_C": 24.524,
+      "Tm_target_C": 57.0,
+      "selected_design": {
+        "pcm_id": "savE\u00ae OM50",
+        "is_plain_tank": false,
+        "arrangement_rationale": "arrangements tied within noise in this regime \u2014 arrangement not decisive here (margin=-0.00% <= noise band=0.03%; tied arrangements: ['radial', 'single-layer', 'staggered']).",
+        "pcm_properties": {
+          "name": "savE\u00ae OM50",
+          "Tm_C": 50.0,
+          "Tm_freezing_C": 50.0,
+          "latent_heat_kJ_kg": 189.0,
+          "density_liquid_kg_m3": 859.0,
+          "density_solid_kg_m3": 961.0,
+          "Cp_liquid_kJ_kgK": 2.78,
+          "Cp_solid_kJ_kgK": 3.33,
+          "TC_W_mK": 0.175,
+          "supercooling_K": 0.0,
+          "cycles_tested": 2000.0,
+          "any_property_imputed": "True",
+          "source": "manufacturer_datasheet_MICE_RF_PMM_completed"
+        },
+        "geometry": {
+          "capsule_shape": "sphere",
+          "capsule_arrangement": "radial",
+          "capsule_diameter_m": 0.04253,
+          "n_capsule": 31,
+          "pcm_thickness_m": 0.02127,
+          "pcm_volume_fraction": 0.02498,
+          "void_fraction": 0.65226,
+          "tank_volume_L": 50.0,
+          "collector_area_m2": 1.5
+        },
+        "flow_envelope_kg_s": {
+          "nominal": 0.02439,
+          "min": 0.01,
+          "max": 0.05
+        }
+      },
+      "sim_confirmed_performance": {
+        "useful_energy_kWh": 1593.82,
+        "solar_fraction": 0.5404,
+        "unmet_energy_kWh": 1198.34,
+        "max_water_temp_C": 68.91,
+        "constraint_margin_C": 2.76,
+        "surrogate_vs_sim_error_pct": 0.061
       },
       "robustness": {
         "n_draws": 120,
         "p_meets_delivery_temp": 0.9916666666666668,
-        "p_meets_annual_demand": 0.8333333333333334,
+        "p_meets_annual_demand": 0.85,
         "p_temperature_violation": 0.0,
         "p_exceeds_max_safe_temp": 0.0,
-        "useful_energy_p05_kWh": 1460.698012247712,
-        "useful_energy_p95_kWh": 1712.8865133961656,
-        "max_water_temp_p95_C": 72.23903364823776,
+        "useful_energy_p05_kWh": 1462.0619572179598,
+        "useful_energy_p95_kWh": 1713.4104996616277,
+        "max_water_temp_p95_C": 72.36474745355787,
         "robust_per_framework_rule": true
       }
     }
@@ -350,5 +353,6 @@
     "full-draw robustness with real alternate member-point weather series",
     "widened design bounds to reach 15-20% PCM volume fraction (Phase-0-gate decision)",
     "experimental (hardware) validation of the simulator against a physical lab rig (Objective 4 scope)"
-  ]
+  ],
+  "supersedes": "2026-09-17: capsule arrangement is now a searched variable (single-layer/staggered/radial), not frozen to staggered-only \u2014 this version of the contract SUPERSEDES any prior plain-tank / no-shield / staggered-only version (mirroring how the 2026-09-13/14 safety-shield and selection-rule updates were documented as supersessions). See docs/00_MASTER_CHANGE_PLAN.md and docs/08_PROMPT_PHASE8_HANDOFF.md."
 }

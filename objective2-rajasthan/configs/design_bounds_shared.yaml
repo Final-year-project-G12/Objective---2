@@ -5,8 +5,16 @@
 # "DESIGN-SPACE BOUNDS — IDENTICAL FOR ALL STATES".
 #
 # 40-hr corner cut (documented, not silently dropped): capsule shape is
-# sphere-only and arrangement is staggered-only. Full spec explores all
-# shape x arrangement combinations — noted as future work.
+# sphere-only. Full spec explores shape as a variable too — noted as
+# future work.
+#
+# Arrangement restored 2026-09-17: previously frozen to staggered-only, which
+# contradicted the objective statement naming arrangement as a required
+# output. See Objective2_Consolidated_Plan.md Section 2 and
+# docs/00_MASTER_CHANGE_PLAN.md. Count ceiling widened pending Phase 2
+# per-arrangement reachability check. Rajasthan-only for now — Tamil Nadu,
+# Assam, and Uttarakhand's copies of this file have NOT been updated yet
+# (see docs/01_PROMPT_PHASE1_CONFIG.md exit check).
 #
 # NOTE on the two "thickness" variables: for a sphere, the maximum PCM
 # conduction distance (center to surface) equals the radius, i.e.
@@ -22,9 +30,9 @@ version: "config_v1.0_2026-09-05"
 
 pcm_thickness_m:        {min: 0.02, max: 0.10}     # derived = diameter/2, checked independently
 capsule_diameter_m:     {min: 0.02, max: 0.08}
-capsule_count:           {min: 8, max: 24, step: 1}   # integer
+capsule_count:           {min: 8, max: 37, step: 1}   # integer; widened 24->37, see note above
 capsule_shape:           [sphere]                       # 40-hr: sphere only
-capsule_arrangement:     [staggered]                    # 40-hr: staggered only
+capsule_arrangement:     [single-layer, staggered, radial]   # restored 2026-09-17 (was staggered-only)
 pcm_volume_fraction:     {min: 0.10, max: 0.20}      # derived from N_capsule*V_capsule / V_tank
 pcm_volume_fraction_levels_to_include_in_doe: [0.10, 0.15, 0.20]   # Chen audit baseline
 flow_rate_kg_s:          {min: 0.010, max: 0.050}

@@ -1,0 +1,599 @@
+# Objective2_MultiState_Implementation_Workflow.md
+
+# Objective 2 — Multi-State Implementation Workflow
+
+## Climate-adaptive PCM design optimization for Tamil Nadu, Rajasthan, Assam, and Uttarakhand
+
+### Purpose and scope
+Objective 2 converts the climate-specific PCM shortlist from Objective 1 into a simulator-confirmed physical design for each climate regime in each state. The design variables are PCM capsule diameter, capsule count, PCM volume, and flow rate; the PCM identity is taken from the state/regime shortlist produced by Objective 1. The result is not a PCM ranking alone. It is a deployable design record with geometry, hydraulic limits, annual thermal performance, uncertainty results, and a hand-off contract for Objective 3. [@unknown0000]
+
+Run the same workflow independently for **Tamil Nadu, Rajasthan, Assam, and Uttarakhand**. The implementation is state-parameterized rather than state-branched: the simulator, geometry engine, DOE procedure, surrogate family, randomized search procedure, selection rule, and verification gates must remain common. Only the state-specific weather, climate regimes, PCM shortlist, mains-water temperature, and demand profile change. [@guanrong2025]
+
+Tamil Nadu is the reference implementation because its current Objective 2 run has already exercised the full workflow, including the later corrections to the melting-point target, capsule-count bound, MCDM shortlist, selection rule, and robustness ensemble. The other three states should reproduce this corrected workflow rather than copying Tamil Nadu's numerical results. [@unknown0000a]
+
+## Corrected implementation decisions
+The following decisions are frozen for the next state runs.
+
+1. **Capsule arrangement is not an optimization variable in the reduced implementation.** Use spherical capsules in staggered packing for every state. The arrangement is therefore a fixed modeling assumption, not a result to be reported as if it had been searched. [@guanrong2025]
+
+2. **The optimization is a randomized search ranked by the surrogate.** Generate feasible random candidate designs, score them with the trained surrogate, retain the highest-ranked candidates, and re-run those candidates in the real simulator. Do not describe this as Bayesian Optimization or as a Genetic Algorithm. [@unknown0000]
+
+3. **Active learning and full NSGA-II are deferred extensions.** The current deliverable is one DOE round followed by one surrogate-ranked search and simulator confirmation. Do not silently claim convergence of an active-learning loop or a complete multi-objective Pareto front. [@unknown2026]
+
+4. **The simulator is the final authority.** A surrogate prediction is used for screening and ranking only. Every selected design and every robustness draw must be evaluated by the actual grey-box enthalpy simulator. [@unknown0000]
+
+5. **The ambient tank-loss term remains active.** The simulator must include Q_loss = U_tank A_tank (T_water − T_ambient) and must pass the corresponding diagnostic. Removing this term can inflate solar-fraction results and invalidates the comparison. [@unknown2026]
+
+6. **The shared design bounds must be frozen before the four state runs.** The current corrected Tamil Nadu implementation widened the capsule-count maximum from 24 to 37 so that approximately 15–20% PCM-volume test levels are reachable; its maximum verified-valid fraction is 19.8%. The same corrected shared bound must be used for all states, or the comparison must be declared invalid and the affected states rerun. [@unknown0000a]
+
+7. **Objective 2 selects a PCM design.** A plain-water tank may remain in the results as a diagnostic baseline, but it must not silently replace the requested PCM design in the final per-regime recommendation. [@unknown0000a]
+
+8. **Safety is reported, not hidden.** A design can be the best PCM design within the energy tolerance while still requiring an active over-temperature bypass in Objective 3. Nominal safety and robustness safety must be separate reported fields. [@unknown0000a]
+
+## State-specific inputs and shared inputs
+
+### Shared across all four states
+Freeze and hash these files once:
+
+- configs/system_config_shared.yaml
+
+- configs/design_bounds_shared.yaml
+
+- universal code under src/
+
+- solver, timestep, tolerances, safety limits, delivery target, and selection tolerance
+
+- random-seed policy and output schema
+
+The common baseline described in the framework is a 1.5 m² flat-plate collector, a 50 L tank, direct aluminium capsule encapsulation, a 0.010–0.050 kg/s pump range, 75 °C maximum water temperature, 65 °C maximum PCM temperature, 3.5 bar maximum pressure, 45 °C delivery target, backward Euler with adaptive sub-stepping, and a pre-declared 5% useful-energy selection tolerance. [@guanrong2025]
+
+### Replaced for each state
+Each state receives its own versioned state configuration containing:
+
+- Objective 1 regime identifiers and profiles;
+
+- medoid hourly weather and at least one alternate/member weather point when available;
+
+- the Objective 1 PCM shortlist for each regime;
+
+- PCM property records and uncertainty fields;
+
+- mains/inlet-water temperature range;
+
+- demand-profile path and documented daily demand total;
+
+- input hashes and the Objective 1 version that produced the inputs.
+
+Do not copy Tamil Nadu's regimes, PCM winners, demand curve, or weather into another state. The framework explicitly treats these as the state-specific inputs while keeping the physics and search method invariant. [@guanrong2025]
+
+### State run matrix
+
+| State | Input preparation | Expected use in Objective 2 |
+|---|---|---|
+| Tamil Nadu | Use the current corrected `tamilnadu.yaml`, retargeted regime melting-point targets, MCDM-derived PCM shortlists, weather, mains temperature, and demand profile. | Reference implementation and reproducibility check; do not reuse its output values as values for other states. |
+| Rajasthan | Import Rajasthan's Objective 1 regimes, hot-dry weather, PCM shortlist, mains temperature, and demand profile into the shared Objective 2 code. | Test the same design space under high-solar, hot-dry conditions. |
+| Assam | Import Assam's humid, monsoon-dominated regimes, weather, PCM shortlist, mains temperature, and demand profile. | Test cloudy/humid conditions and longer low-solar periods using the same simulator and bounds. |
+| Uttarakhand | Import elevation-corrected regimes and weather, PCM shortlist, mains temperature, and demand profile. | Test cold and elevation-variable conditions; verify that elevation is not silently replaced by a flat default. |
+
+The climate descriptions in this matrix are planning labels, not final cluster results. The final regime identities must come from each state's frozen Objective 1 outputs. Objective 1's design was explicitly state-agnostic and intended to produce state-specific regimes and PCM candidates from the corresponding data. [@unknown0000b]
+
+# Eight-phase workflow
+
+## Phase 1 — Freeze the project and prepare one state
+
+### Objective
+Create a reproducible state package before any geometry, simulation, DOE, or optimization run begins.
+
+### Implementation
+
+1. Freeze the shared system and design-bound files.
+
+2. Record the shared-file hashes and a project version tag.
+
+3. Create configs/states/&lt;state&gt;.yaml by referencing, not copying, the shared files.
+
+4. Add the state weather paths, regime IDs, PCM IDs, mains temperature, and demand-profile path.
+
+5. Record the demand total and the reason for choosing that demand profile.
+
+6. Confirm that the state's medoid weather belongs to that state by checking annual irradiance, humidity, temperature range, and—especially for Uttarakhand—elevation.
+
+7. Confirm that every selected PCM has a property record, including melting behavior, latent heat, conductivity, density, heat capacity, uncertainty, and safety/cycling fields.
+
+8. Freeze the 5% selection tolerance and do not change it after seeing results.
+
+### Required outputs
+
+- configs/states/&lt;state&gt;.yaml
+
+- input manifest with paths, versions, hashes, and Objective 1 provenance
+
+- climate-signature sanity-check report
+
+- state readiness checklist
+
+- frozen shared-config tag
+
+### Verification
+The phase passes only if the state configuration is complete, all referenced files exist, the weather signature is plausible for the named state, and no state-specific branch has been added to universal simulation or optimization code. A wrong-state weather file is a stop condition, not a problem to patch later. [@unknown2026]
+
+## Phase 2 — Implement and verify geometry and constraints
+
+### Objective
+Turn a design vector into a deterministic physical and hydraulic description and reject impossible designs before simulation.
+
+### Design vector
+Use the reduced search vector:
+
+[capsule_diameter_m, capsule_count, flow_rate_kg_s, pcm_id, regime_id] PCM thickness is derived from spherical capsule diameter as the maximum conduction distance, rather than independently sampled as an inconsistent second geometry variable. Capsule shape is sphere and capsule arrangement is staggered for every state. [@unknown0000]
+
+### Implementation
+
+1. Derive tank dimensions from the frozen tank volume.
+
+2. Compute spherical capsule volume and surface area.
+
+3. Compute total PCM volume and the resulting volume fraction.
+
+4. Generate the staggered packing geometry and passage space.
+
+5. Check diameter/thickness, capsule-count, volume, overlap, passage, flow, and pressure-drop constraints.
+
+6. Calculate hydraulic diameter, Reynolds number, Ergun pressure drop, and pump power.
+
+7. Return a structured result with valid, derived quantities, and one or more explicit reason codes.
+
+8. Make the calculation deterministic: the same input vector must produce byte-identical output.
+
+The current corrected Tamil Nadu run found that widening the count bound to 37 makes the intended 15–20% PCM-volume range reachable, with a maximum verified-valid fraction of 19.8%. Diameters below 0.04 m still fail because the derived radius falls below the 0.02 m thickness floor. This constraint interaction must be recomputed and reported for the shared configuration used by all states. [@unknown0000a]
+
+### Required outputs
+
+- src/design/geometry.py
+
+- src/design/constraints.py
+
+- geometry boundary-test table
+
+- valid/invalid design map
+
+- hydraulic calculation output
+
+- reason-code summary
+
+### Verification
+Run minimum and maximum diameter, count, and flow cases; intentionally create overlap, volume, passage, and pressure-drop failures; repeat every boundary case twice; and confirm identical results. The geometry phase is complete only when invalid cases fail cleanly rather than crashing or being silently dropped. [@unknown0000]
+
+## Phase 3 — Implement the grey-box PCM solar-water-heating simulator
+
+### Objective
+Build the authoritative physics evaluator used for verification, DOE generation, optimization confirmation, and robustness analysis.
+
+### Required model components
+
+1. **Collector:** flat-plate Hottel–Whillier–Bliss energy balance with zero useful heat at zero or insufficient irradiance.
+
+2. **Tank:** water energy balance including collector input, demand load, PCM exchange, and active ambient heat loss.
+
+3. **PCM:** enthalpy formulation with solid, phase-change, and liquid behavior; clipped liquid fraction rather than a binary solid/liquid switch.
+
+4. **Heat transfer:** effective thermal resistance/UA_eff model for water, capsule wall, and PCM.
+
+5. **Hydraulics:** pressure drop and pump power computed separately from thermal energy.
+
+6. **Demand:** hourly state-specific demand profile, distributed through the simulator's internal sub-steps; record unmet energy.
+
+7. **Solver:** backward Euler with adaptive sub-stepping when the melt state or PCM time constant changes rapidly.
+
+8. **Safety:** track water temperature, PCM temperature, pressure, and all safety-limit violations.
+
+9. **Accounting:** log collector energy, useful delivered energy, losses, pump energy, PCM energy change, final stored energy, residual, and unmet demand.
+
+The simulator's state vector should include water and collector temperatures, PCM temperature/enthalpy and melt fraction, tank-wall state, flow, demand, ambient temperature, and irradiance. The sign convention for PCM heat transfer must be documented and used consistently in both water and PCM balances. [@guanrong2025]
+
+### Required outputs
+
+- universal simulation modules under src/simulation/
+
+- one-case annual simulation output
+
+- temperature, melt-fraction, energy-breakdown, and residual histories
+
+- simulator version tag, such as sim_v1_&lt;state&gt; for the verification run
+
+### Verification
+Run one full year for one state/regime/PCM/design before producing the DOE. Inspect water and PCM temperature histories, collector behavior during low irradiance, melt-fraction behavior, demand timing, and energy accounting. Never proceed to DOE because a single simulation merely completed; it must also be physically interpretable. [@unknown0000]
+
+## Phase 4 — Pass the five simulator verification gates
+
+### Objective
+Establish that the simulator is numerically stable, physically directional, and sufficiently calibrated for design-space exploration.
+
+### Gate 1 — Energy conservation
+For several diverse designs, verify:
+
+collector input + initial stored energy ≈ delivered load + tank loss + pump energy + final stored energy + residual The framework's reduced acceptance rule is mean residual below 0.1% and maximum residual below 0.5%. The current Tamil Nadu implementation reported a maximum residual of 0.00008% after fixing reverse-collector-flow accounting. [@unknown0000]
+
+### Gate 2 — Limiting cases
+At minimum, test zero irradiance, zero flow, no PCM, zero latent heat, solid and liquid initial PCM states, very high conductivity, insulated-tank behavior, empty demand, and flow limits. Each test must have a written expected direction before execution. [@unknown0000]
+
+### Gate 3 — Baseline and loss-term diagnostic
+Compare a plain tank, a fixed PCM design, and an optimized-looking design under identical weather and demand. Separately run a diagnostic with ambient tank loss disabled and confirm that the no-loss case inflates solar fraction. The production model must retain the loss term. [@unknown2026]
+
+### Gate 4 — Benchmark calibration
+Compare a fixed configuration against a formally cited published benchmark or the project's accepted benchmark band. A mismatch above 15% is not a reason to tune parameters until the result agrees; it must be logged and explained. [@unknown2026]
+
+### Gate 5 — Sensitivity and monotonicity
+Perturb latent heat, flow, and ambient or loss parameters. Confirm that useful energy, losses, pump energy, and temperature behavior move in physically plausible directions.
+
+### Required outputs
+
+- results/&lt;state&gt;/simulator_verification_report.txt
+
+- gate-by-gate pass/fail table
+
+- residual statistics
+
+- limiting-case output table
+
+- baseline and loss-term diagnostic
+
+- benchmark-comparison note
+
+- simulator version tag
+
+### Go/no-go rule
+Proceed only when the residual threshold and limiting-case checks pass and at least three of the five gates pass cleanly. Any unphysical limiting case or residual above 0.5% requires a simulator fix before DOE generation. [@unknown2026]
+
+## Phase 5 — Generate the reduced design-of-experiments dataset
+
+### Objective
+Create the training and audit dataset: one row per complete simulator case, not one row per timestep.
+
+### Implementation
+
+1. Sample continuous diameter, flow, and PCM-volume-related variables with Latin Hypercube Sampling.
+
+2. Enumerate the small integer capsule-count set within the corrected shared bounds.
+
+3. Keep spherical, staggered packing fixed.
+
+4. Include minimum and maximum diameter/flow/count cases.
+
+5. Include the intended PCM-volume levels where geometrically valid.
+
+6. Include one no-PCM diagnostic baseline per regime, clearly marked as a baseline rather than a permitted final PCM recommendation.
+
+7. Include every shortlisted PCM in every regime.
+
+8. Preserve invalid cases and their reason codes.
+
+9. Split by complete case_id, not by timestep; stratify the hold-out by regime, PCM, and validity.
+
+10. Record the stable random seed and the exact configuration hashes.
+
+The Tamil Nadu reference run used 215 cases with Latin Hypercube, boundary, and baseline cases; the corrected rerun reported 146 valid and 69 rejected cases, with all rejections attributed to the diameter/thickness constraint. Other states may use the same target count, but they must report their actual counts rather than copying Tamil Nadu's numbers. [@unknown0000a]
+
+### Required outputs
+
+- results/&lt;state&gt;/design_cases.parquet
+
+- results/&lt;state&gt;/design_cases.csv
+
+- DOE manifest with sampling method, seed, counts, and configuration hashes
+
+- valid/invalid case summary
+
+- train/hold-out split labels
+
+### Verification
+Check that all required corners and PCM/regime combinations are present; confirm that rejected cases are retained; verify no duplicate case IDs; compare the observed rejection fraction with the deterministic geometry boundary; and confirm that the hold-out contains both feasible and infeasible cases. [@unknown0000]
+
+## Phase 6 — Train and audit the surrogate model
+
+### Objective
+Build a fast proposal-ranking model without allowing it to become the final source of reported performance.
+
+### Inputs and targets
+Use design and geometry features, continuous climate-signature features, PCM properties, regime information where appropriate, and an explicit no-PCM flag for diagnostics. Train separate models for useful energy, solar fraction, unmet energy, pump energy, PCM mass, and feasibility when needed. [@unknown0000]
+
+### Implementation
+
+1. Fit an Extra Trees regressor/classifier or the frozen shared model family.
+
+2. Fit a linear-regression baseline on the identical split.
+
+3. Report MAE, RMSE, and R² on the hold-out.
+
+4. Report results by regime and PCM, not only pooled averages.
+
+5. Check feature importance, but do not interpret importance as causal evidence.
+
+6. Treat the surrogate as a ranker and feasibility pre-screen.
+
+7. If performance is inadequate, add DOE cases or simplify the target; do not proceed by presenting a weak surrogate as reliable.
+
+The Tamil Nadu rerun achieved R² values above 0.94 for all reported targets, while the linear baseline remained better for some near-linear quantities such as pump energy and PCM mass. That comparison should be repeated for each state rather than assumed. [@unknown0000a]
+
+### Required outputs
+
+- results/&lt;state&gt;/surrogate_metrics.csv
+
+- results/&lt;state&gt;/surrogate_error_by_group.csv
+
+- serialized models
+
+- parity and residual plots
+
+- feature-importance output
+
+- model configuration and seed
+
+### Verification
+The hold-out must be genuinely unseen by the model. Check pooled and group-wise errors, feasibility recall, prediction error near the feasibility boundary, and whether the model is extrapolating beyond the DOE. Report any group with inadequate accuracy. A high pooled R² does not authorize surrogate-only reporting. [@unknown0000]
+
+## Phase 7 — Randomized surrogate-ranked search and simulator confirmation
+
+### Objective
+Find high-performing PCM designs efficiently while retaining the simulator as the decision authority.
+
+### Exact procedure
+
+1. Generate a large set of random candidate design vectors within the shared bounds for every state regime and shortlisted PCM.
+
+2. Apply the real geometry/constraint gate first.
+
+3. Score only feasible candidates with the trained surrogate.
+
+4. Rank candidates by the pre-declared objective and hard constraints.
+
+5. Retain the top candidates per regime–PCM pair. The current Tamil Nadu implementation broadened confirmation to 20 candidates per pair, 400 total, to search more thoroughly for safe competitive designs; each state must report its actual retained count. [@unknown0000a]
+
+6. Re-run every retained candidate in the real simulator.
+
+7. Compute surrogate-versus-simulator deltas.
+
+8. If a delta exceeds 15%, trust and report the simulator result, log the discrepancy, and do not use the surrogate value as final. [@unknown2026]
+
+9. Apply the selection rule only after simulator confirmation:
+
+- reject hard-infeasible designs;
+
+- retain the PCM candidates meeting the delivery and reliability requirements;
+
+- retain candidates within 5% of the best simulator-confirmed useful energy;
+
+- use temperature safety as the first tie-break among those candidates;
+
+- then minimize pump energy, PCM mass, and capsule count;
+
+- prefer larger constraint margin and simpler designs.
+
+1. Keep the plain-tank result in the comparison file, but do not let it silently become the final PCM recommendation.
+
+This is a **single randomized search pass ranked by the surrogate**, not Bayesian Optimization, not a Genetic Algorithm, and not a full NSGA-II Pareto search. Active-learning loops, convergence-based Pareto stopping, and NSGA-II remain explicitly deferred future work. [@unknown0000]
+
+### Required outputs
+
+- results/&lt;state&gt;/surrogate_top_candidates.csv
+
+- results/&lt;state&gt;/optimized_designs.csv
+
+- results/&lt;state&gt;/deployable_design_per_regime.csv
+
+- simulator-confirmed performance table
+
+- surrogate-versus-simulator error table
+
+- nominal safety and constraint-margin fields
+
+- optimization-seed and candidate-count manifest
+
+### Verification
+Confirm that every selected row has a simulator result, not only a surrogate result. Recalculate the selection rule from the confirmed table; verify that no plain-tank diagnostic entered the PCM-only final pool; check that safety is evaluated using the correct water and PCM limits; and inspect the top candidates that were rejected. The selected design is not final until this audit passes. [@unknown0000]
+
+## Phase 8 — Robustness, recommendation cards, and Objective 3 hand-off
+
+### Objective
+Quantify whether the selected design remains useful and safe under weather, demand, PCM, and inlet-temperature uncertainty, then freeze the interface consumed by Objective 3.
+
+### Robustness procedure
+For every selected regime design, draw at least 50 scenarios; the recommended reduced implementation uses 100–200 draws, with the Tamil Nadu reference run using 120 draws per selected design. Re-run every draw through the real simulator, never the surrogate. [@unknown2026]
+
+At minimum perturb:
+
+- PCM latent heat by a documented ±10% distribution;
+
+- weather using the medoid plus an alternate/member point, or a documented historical-year ensemble where available;
+
+- demand volume and timing;
+
+- mains/inlet-water temperature;
+
+- any additional dominant uncertainty source available in the state data.
+
+Report:
+
+- probability of meeting delivery temperature;
+
+- probability of meeting annual demand;
+
+- useful-energy 5th, 50th, and 95th percentiles;
+
+- probability of any water-temperature violation;
+
+- probability of any PCM-temperature violation;
+
+- number and type of uncertainty draws;
+
+- thresholds used to define delivery, demand, and safety.
+
+The current Tamil Nadu results show why nominal performance is insufficient: regimes 0–3 had 0% temperature-safe draws, while regime 4 had 30.8%; demand reliability varied from 76.7% to 98.3%. These are Tamil Nadu results only, not defaults for the other states. [@unknown0000a]
+
+### Recommendation card
+Create one card for each state regime containing:
+
+- state and regime ID;
+
+- climate summary and Objective 1 provenance;
+
+- shortlisted PCMs and MCDM rank;
+
+- selected PCM design and geometry;
+
+- flow rate and hydraulic limits;
+
+- simulator-confirmed annual performance;
+
+- nominal safety margin;
+
+- robustness probabilities and percentile intervals;
+
+- surrogate-versus-simulator error;
+
+- selection rationale;
+
+- caveats, deferred work, and Objective 3 safety requirements.
+
+### Objective 3 contract
+Create obj3_environment_contract_&lt;state&gt;.json with:
+
+- regime ID and selected PCM properties;
+
+- capsule geometry and flow envelope;
+
+- pressure and temperature limits;
+
+- delivery target;
+
+- simulator version and configuration hashes;
+
+- dynamic state-vector definition;
+
+- measurable versus estimated state fields;
+
+- charge, discharge, and bypass action-space skeleton;
+
+- safety-shield conditions and guard bands;
+
+- acceptance tests before controller training.
+
+The contract should state explicitly that a bypass or other active safety mechanism is required whenever Phase 8 shows inadequate temperature robustness. Objective 3 receives the design; it does not retroactively change Objective 2's frozen simulator limits or selection rule. [@unknown0000]
+
+### Required outputs
+
+- results/&lt;state&gt;/robustness_results.csv
+
+- results/&lt;state&gt;/robustness_summary.csv
+
+- results/&lt;state&gt;/recommendation_cards.md
+
+- results/&lt;state&gt;/obj3_environment_contract_&lt;state&gt;.json
+
+- uncertainty-distribution manifest
+
+- robustness plots and safety summary
+
+### Verification
+Check that all draws are simulator-based; verify draw counts and seeds; confirm that every regime has one card and one contract entry; audit percentile calculations from the raw draw file; and ensure that the safety shield is stricter than or equal to the hard simulator limits. Do not call a design robust merely because it performs well in the nominal medoid year. [@unknown0000]
+
+# State-by-state execution order
+Run the eight phases in this order for each state:
+
+Tamil Nadu Phase 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 Rajasthan Phase 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 Assam Phase 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 Uttarakhand Phase 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 The runs may be parallelized after the shared configuration and code are frozen, but no state may modify the shared simulator, bounds, solver, selection tolerance, or output schema independently. If a shared file changes after a state has completed DOE, all affected states must be rerun from Phase 5 onward; if simulator physics changes, rerun from Phase 3 or Phase 4 according to the change. [@unknown2026]
+
+Use the same command pattern for every state:
+
+python pipeline.py --state &lt;state&gt; --stage geometry python pipeline.py --state &lt;state&gt; --stage simulate python pipeline.py --state &lt;state&gt; --stage verify python pipeline.py --state &lt;state&gt; --stage doe python pipeline.py --state &lt;state&gt; --stage surrogate python pipeline.py --state &lt;state&gt; --stage optimize python pipeline.py --state &lt;state&gt; --stage robustness python pipeline.py --state &lt;state&gt; --stage handoff The exact flags may expose additional plotting or diagnostic stages, but the state argument must select only the state-specific configuration and input files. It must not select a different physics implementation. [@unknown0000]
+
+# Cross-state assembly after all four runs
+Do not assemble the comparative result until all four state folders contain verified Phase 8 outputs.
+
+## Comparative outputs
+Create one project-level comparison containing:
+
+1. PCM-by-state/regime performance comparison using simulator-confirmed useful energy or solar fraction.
+
+2. Selected capsule count, diameter, PCM volume, and flow-rate comparison.
+
+3. Safety-robustness comparison using the same probability definitions and thresholds.
+
+4. Overlaid performance-versus-mass or performance-versus-pump-energy plots, clearly labeled as confirmed designs rather than a complete NSGA-II Pareto front.
+
+5. Shared-config hash consistency report.
+
+6. A narrative separating genuine climate-driven differences from differences caused by missing data, different regime counts, or incomplete robustness coverage.
+
+## Cross-state validity checks
+The four-state comparison is valid only if:
+
+- the shared system configuration hash is identical;
+
+- the shared design-bound hash is identical;
+
+- the simulator code/version is identical;
+
+- the selection tolerance and tie-break order are identical;
+
+- the output definitions and robustness thresholds are identical;
+
+- each state used its own Objective 1 weather, regimes, PCM shortlist, mains temperature, and demand profile;
+
+- all selected designs were confirmed by the simulator;
+
+- all state-specific deviations are documented.
+
+A difference in the winning PCM or flow rate is interpretable as climate-responsive only after these checks pass. The framework's central comparative claim depends on identical methodology and state-specific inputs. [@unknown2026]
+
+# Objective 2 completion checklist
+Objective 2 is complete for a state only when every item below is satisfied:
+
+- shared configs frozen and hashed;
+
+- state inputs and Objective 1 provenance frozen;
+
+- climate-signature sanity check passed;
+
+- geometry engine deterministic and boundary-tested;
+
+- sphere and staggered arrangement explicitly recorded as fixed;
+
+- simulator includes ambient tank loss;
+
+- simulator passes conservation, limiting-case, baseline, benchmark, and sensitivity checks;
+
+- DOE includes feasible and infeasible cases;
+
+- hold-out split is valid and surrogate errors are reported by group;
+
+- randomized surrogate-ranked search is documented as a single pass;
+
+- all retained candidates are simulator-confirmed;
+
+- the &gt;15% surrogate-error rule is applied;
+
+- PCM-only final selection is used, with plain tank retained only as a diagnostic;
+
+- nominal safety and robustness safety are reported separately;
+
+- robustness uses at least 50 draws and preferably 100–200;
+
+- recommendation cards are complete for every regime;
+
+- Objective 3 contract is complete for every regime;
+
+- all seeds, versions, hashes, and caveats are recorded.
+
+The project-level Objective 2 is complete only after the same checklist passes for Tamil Nadu, Rajasthan, Assam, and Uttarakhand and the cross-state hash and comparability checks pass. The full active-learning loop, full NSGA-II search, exhaustive capsule-shape/arrangement search, larger uncertainty campaign, and experimental hardware validation remain future extensions unless separately implemented and reverified. [@unknown2026]
+
+## References
+
+[1] G.-R. Chen, T.-W. Liao, C.-C. Hsieh, J. Barman, C.-Y. Huang and C.-F. J. Kuo, “Using the Taguchi method and grey relational analysis to optimize the parameter design of flat-plate collectors with nanofluids, and phase change materials in an integrated solar water heating system”, Energy Conversion and Management: X, vol. 26, p. 100910, 2025, doi: 10.1016/j.ecmx.2025.100910.
+
+[2] obj2_explanation, n.d.
+
+[3] FINALIZATION_SUMMARY, n.d.
+
+[4] obj1_explanation, n.d.
+
+[5] Objective 2 Multi-State Design Optimization Framework (internal project specification), 2026.

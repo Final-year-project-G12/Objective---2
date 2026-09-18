@@ -58,7 +58,7 @@ def _search_max_loading(state, cid, pcm_name, bounds, diam, count_grid, flow_kg_
     the largest geometrically-valid PCM volume fraction."""
     best = None
     for n_capsule in count_grid:
-        design = DesignVector(capsule_diameter_m=diam, n_capsule=n_capsule, flow_rate_kg_s=flow_kg_s)
+        design = DesignVector(capsule_diameter_m=diam, n_capsule=n_capsule, flow_rate_kg_s=flow_kg_s, capsule_arrangement="staggered")
         result = run_case(state, cid, pcm_name, design, design_bounds=bounds)
         if not result["valid"]:
             continue

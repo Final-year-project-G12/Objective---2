@@ -59,7 +59,8 @@ def confirm_candidates(state: str, candidates: pd.DataFrame) -> pd.DataFrame:
     rows = []
     for _, cand in candidates.iterrows():
         pcm_id = None if cand["pcm_id"] == "NONE_plain_tank" else cand["pcm_id"]
-        design = DesignVector(cand["capsule_diameter_m"], int(cand["n_capsule"]), cand["flow_rate_kg_s"])
+        design = DesignVector(cand["capsule_diameter_m"], int(cand["n_capsule"]), cand["flow_rate_kg_s"],
+                               capsule_arrangement=cand["arrangement"])
         out = run_case(state, int(cand["regime_id"]), pcm_id, design, record_hourly=True)
         if not out["valid"]:
             continue   # should not happen -- search.py already geometry-filtered
@@ -89,7 +90,34 @@ def confirm_candidates(state: str, candidates: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def apply_selection_rule(state: str, confirmed: pd.DataFrame) -> pd.DataFrame:
+def _arrangement_rationale(confirmed: pd.DataFrame, regime_id, pcm_id, winner_arrangement,
+                            winner_energy_kWh: float, noise_band_pct: float) -> str:
+    """Compares the winning arrangement's simulator-confirmed useful_energy_kWh
+    against the best simulator-confirmed candidate from each of the other two
+    arrangements in the SAME regime x PCM pool (docs/07_PROMPT_PHASE7_OPTIMIZE.md
+    step 4). noise_band_pct is the mean surrogate-vs-simulator error observed
+    in this run (Phase 6/7) — margins inside that band aren't a real signal."""
+    pool = confirmed[(confirmed["regime_id"] == regime_id) & (confirmed["pcm_id"] == pcm_id)]
+    best_by_arrangement = pool.groupby("arrangement")["sim_useful_energy_kWh"].max()
+    others = best_by_arrangement.drop(labels=[winner_arrangement], errors="ignore")
+    if others.empty:
+        return f"only arrangement {winner_arrangement} was confirmed for this regime/PCM pool."
+
+    next_arrangement = others.idxmax()
+    next_energy = others.max()
+    margin_pct = ((winner_energy_kWh - next_energy) / next_energy * 100.0) if next_energy else float("inf")
+
+    if margin_pct > noise_band_pct:
+        return f"arrangement {winner_arrangement} won by {margin_pct:.2f}% over next-best arrangement {next_arrangement}."
+    else:
+        tied = [winner_arrangement] + [a for a, e in others.items()
+                                        if abs((e - winner_energy_kWh) / winner_energy_kWh * 100.0) <= noise_band_pct]
+        return (f"arrangements tied within noise in this regime — arrangement not decisive here "
+                f"(margin={margin_pct:.2f}% <= noise band={noise_band_pct:.2f}%; "
+                f"tied arrangements: {sorted(set(tied))}).")
+
+
+def apply_selection_rule(state: str, confirmed: pd.DataFrame, noise_band_pct: float = 0.0) -> pd.DataFrame:
     """Selects the deployable PCM design per regime.
 
     SCOPE CORRECTION (2026-09-14, ported from objective2-tamilnadu's
@@ -141,6 +169,9 @@ def apply_selection_rule(state: str, confirmed: pd.DataFrame) -> pd.DataFrame:
         winner = within_tol.iloc[0].copy()
         winner["selection_rule_pool_size"] = len(within_tol)
         winner["best_useful_energy_in_regime_kWh"] = best_energy
+        winner["arrangement_rationale"] = _arrangement_rationale(
+            confirmed, regime_id, winner["pcm_id"], winner["arrangement"],
+            winner["sim_useful_energy_kWh"], noise_band_pct)
 
         plain = group[group["pcm_id"] == "NONE_plain_tank"]
         if not plain.empty:
@@ -184,14 +215,15 @@ def run_phase7(state: str, top_n_per_pair: int = 5):
     print(f"  Saved: {OPTIMIZED_DESIGNS_PATH}")
 
     print("\nStep 3/3: applying the pre-declared deployable-design selection rule ...")
-    deployable = apply_selection_rule(state, confirmed)
+    deployable = apply_selection_rule(state, confirmed, noise_band_pct=mean_error)
     deployable.to_csv(DEPLOYABLE_PATH, index=False)
     print(f"  Saved: {DEPLOYABLE_PATH}")
 
     print("\nDeployable design per regime:")
-    cols = ["regime_id", "pcm_id", "capsule_diameter_m", "n_capsule", "flow_rate_kg_s",
+    cols = ["regime_id", "pcm_id", "arrangement", "capsule_diameter_m", "n_capsule", "flow_rate_kg_s",
             "sim_useful_energy_kWh", "sim_solar_fraction", "sim_pump_energy_kWh",
-            "sim_pcm_mass_kg", "constraint_margin_C", "surrogate_vs_sim_error_pct"]
+            "sim_pcm_mass_kg", "constraint_margin_C", "surrogate_vs_sim_error_pct",
+            "arrangement_rationale"]
     print(deployable[cols].to_string(index=False))
 
     return confirmed, deployable

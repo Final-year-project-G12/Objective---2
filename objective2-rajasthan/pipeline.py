@@ -39,7 +39,7 @@ import argparse
 import json
 
 from src.design.schema import DesignVector
-from src.design.constraints import run_boundary_self_test
+from src.design.constraints import run_boundary_self_test, report_max_reachable_pcm_fraction
 from src.simulation.run_case import run_case
 from src.verify.gates import run_all_gates
 from src.doe.run_batch import run_batch
@@ -64,6 +64,8 @@ def main():
     ap.add_argument("--diameter", type=float, default=0.08, help="capsule diameter, m")
     ap.add_argument("--count", type=int, default=19, help="capsule count")
     ap.add_argument("--flow", type=float, default=0.030, help="flow rate, kg/s")
+    ap.add_argument("--arrangement", default="staggered",
+                    choices=["single-layer", "staggered", "radial"], help="capsule arrangement")
     ap.add_argument("--no-pcm", action="store_true", help="run the plain-tank baseline (ignores --pcm)")
     ap.add_argument("--mc-draws", type=int, default=N_DRAWS_DEFAULT,
                     help="Phase 8 Monte Carlo draws per regime (robustness stage; min 50)")
@@ -73,12 +75,13 @@ def main():
         print(f"Phase 2 — geometry & constraint boundary self-test "
               f"(state-agnostic; state={args.state} unused here)")
         _rows, all_deterministic = run_boundary_self_test()
+        report_max_reachable_pcm_fraction()
         raise SystemExit(0 if all_deterministic else 1)
 
     elif args.stage == "simulate":
         pcm_name = None if args.no_pcm else args.pcm
         design = DesignVector(capsule_diameter_m=args.diameter, n_capsule=args.count,
-                              flow_rate_kg_s=args.flow)
+                              flow_rate_kg_s=args.flow, capsule_arrangement=args.arrangement)
         print(f"Phase 3 — running 1 full-year case: state={args.state} cluster={args.cluster} "
               f"pcm={pcm_name} design={design.as_dict()}")
         out = run_case(args.state, args.cluster, pcm_name, design, record_hourly=True)

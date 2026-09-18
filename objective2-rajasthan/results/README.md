@@ -1,5 +1,12 @@
 # Results — Rajasthan, Phases 0–8 (Objective 2 complete)
 
+> **Update 2026-09-17:** capsule arrangement restored as a searched
+> variable (single-layer/staggered/radial); simulator re-tagged
+> `sim_v2_rajasthan`. See `docs/00_MASTER_CHANGE_PLAN.md` and
+> `docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §9 for the full change and
+> `docs/0N_PHASEN_*.md` for current per-phase numbers — the narrative below
+> predates this change and still describes `sim_v1_rajasthan`.
+
 > **⚠ Update 2026-09-14: PCM now wins outright in ALL 3 regimes (not just
 > Regime 0) — `select_deployable.py`'s selection rule was corrected.**
 > Two changes now compound:

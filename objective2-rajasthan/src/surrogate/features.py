@@ -61,7 +61,15 @@ DESIGN_COLS = [
     "capsule_diameter_m", "n_capsule", "flow_rate_kg_s",
     "geom_pcm_thickness_m", "geom_pcm_volume_fraction", "geom_void_fraction",
     "geom_pressure_drop_pa", "geom_pump_power_w", "geom_reynolds_number_particle",
+    # Arrangement one-hot, added 2026-09-17 when arrangement was restored as
+    # a searched variable (docs/06_PROMPT_PHASE6_SURROGATE.md step 1): 9->12
+    # design/geometry features. No-PCM baseline rows get all three zero
+    # (see build_feature_table) — arrangement doesn't apply there, and an
+    # arbitrary default would look like a 4th category to the model.
+    "arr_single_layer", "arr_staggered", "arr_radial",
 ]
+ARRANGEMENT_ONE_HOT_COLS = ["arr_single_layer", "arr_staggered", "arr_radial"]
+_ARRANGEMENT_TO_COL = {"single-layer": "arr_single_layer", "staggered": "arr_staggered", "radial": "arr_radial"}
 TARGET_COLS = ["useful_energy_kWh", "solar_fraction", "unmet_energy_kWh",
                "pump_energy_kWh", "pcm_mass_kg", "mean_f_melt"]
 
@@ -75,6 +83,16 @@ def build_feature_table(state: str, design_cases: pd.DataFrame) -> pd.DataFrame:
 
     df = design_cases.copy()
     df["is_no_pcm"] = (df["pcm_id"] == "NONE_plain_tank").astype(int)
+
+    # --- arrangement one-hot (design/geometry feature, not climate/PCM) ---
+    for col in ARRANGEMENT_ONE_HOT_COLS:
+        df[col] = 0
+    for arrangement, col in _ARRANGEMENT_TO_COL.items():
+        df.loc[df["arrangement"] == arrangement, col] = 1
+    # No-PCM baseline rows: arrangement doesn't apply — force all three to
+    # zero rather than leaving the "staggered" sampling sentinel's one-hot
+    # set, so the model never reads "no-PCM" as a 4th arrangement category.
+    df.loc[df["is_no_pcm"] == 1, ARRANGEMENT_ONE_HOT_COLS] = 0
 
     # --- climate features: join on regime_id == cluster_id ------------
     clim_cols_here = [c for c in CLIMATE_COLS if c in cluster_profiles.columns]

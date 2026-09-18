@@ -81,7 +81,8 @@ def phase2_validity_map(state, out_dir):
     rows = []
     for d in diam_grid:
         for n in count_grid:
-            g = check_design(DesignVector(float(d), int(n), mid_flow), system_config, bounds)
+            g = check_design(DesignVector(float(d), int(n), mid_flow, capsule_arrangement="staggered"),
+                              system_config, bounds)
             rows.append({"diameter": d, "count": n, "reason": g["reason"] if not g["valid"] else "valid"})
     df = pd.DataFrame(rows)
 
@@ -127,7 +128,7 @@ def phase2_ergun_hydraulics(state, out_dir):
 # ═══════════════════════════════════════════════════════════════════════
 
 def _phase3_sample_run(state):
-    design = DesignVector(0.08, 19, 0.030)
+    design = DesignVector(0.08, 19, 0.030, capsule_arrangement="staggered")
     out = run_case(state, cluster_id=0, pcm_name=PCM_C0, design=design, record_hourly=True)
     return out["hourly"], out["metrics"]
 
@@ -176,11 +177,11 @@ def phase3_energy_breakdown(state, out_dir, metrics):
 def phase4_gate1_residuals(state, out_dir):
     # mirrors src/verify/gates.py::gate1_conservation for Rajasthan (3 clusters)
     cases = [
-        ("A: cluster0/RT50", 0, "RT50", DesignVector(0.05, 14, 0.030)),
-        ("B: cluster1/savE OM50", 1, "savE® OM50", DesignVector(0.04, 20, 0.020)),
-        ("C: cluster2/savE OM50", 2, "savE® OM50", DesignVector(0.08, 10, 0.045)),
-        ("D: cluster2/no-PCM", 2, None, DesignVector(0.05, 14, 0.030)),
-        ("E: cluster0/bounds-extreme", 0, "RT50", DesignVector(0.08, 24, 0.050)),
+        ("A: cluster0/RT50", 0, "RT50", DesignVector(0.05, 14, 0.030, capsule_arrangement="staggered")),
+        ("B: cluster1/savE OM50", 1, "savE® OM50", DesignVector(0.04, 20, 0.020, capsule_arrangement="staggered")),
+        ("C: cluster2/savE OM50", 2, "savE® OM50", DesignVector(0.08, 10, 0.045, capsule_arrangement="staggered")),
+        ("D: cluster2/no-PCM", 2, None, DesignVector(0.05, 14, 0.030, capsule_arrangement="staggered")),
+        ("E: cluster0/bounds-extreme", 0, "RT50", DesignVector(0.08, 24, 0.050, capsule_arrangement="staggered")),
     ]
     names, residuals = [], []
     for name, cid, pcm, design in cases:
@@ -199,10 +200,10 @@ def phase4_gate1_residuals(state, out_dir):
 
 def phase4_gate3_baseline_comparison(state, out_dir):
     cid, pcm = 0, PCM_C0
-    plain = run_case(state, cid, None, DesignVector(0.08, 14, 0.030), record_hourly=False)["metrics"]
-    fixed = run_case(state, cid, pcm, DesignVector(0.08, 24, 0.030), record_hourly=False)["metrics"]
-    optimized = run_case(state, cid, pcm, DesignVector(0.08, 19, 0.040), record_hourly=False)["metrics"]
-    matched = run_case(state, cid, pcm, DesignVector(0.08, 24, 0.030), record_hourly=False,
+    plain = run_case(state, cid, None, DesignVector(0.08, 14, 0.030, capsule_arrangement="staggered"), record_hourly=False)["metrics"]
+    fixed = run_case(state, cid, pcm, DesignVector(0.08, 24, 0.030, capsule_arrangement="staggered"), record_hourly=False)["metrics"]
+    optimized = run_case(state, cid, pcm, DesignVector(0.08, 19, 0.040, capsule_arrangement="staggered"), record_hourly=False)["metrics"]
+    matched = run_case(state, cid, pcm, DesignVector(0.08, 24, 0.030, capsule_arrangement="staggered"), record_hourly=False,
                         pcm_record_overrides={"Tm_C": 40.0})["metrics"]
 
     labels = ["Plain tank", f"Fixed PCM\n({pcm}, ~12.9%)", "Optimized-looking\n(~10.2%)",
@@ -217,7 +218,7 @@ def phase4_gate3_baseline_comparison(state, out_dir):
 
 def phase4_gate5_sensitivity(state, out_dir):
     cid, pcm = 0, PCM_C0
-    design = DesignVector(0.05, 18, 0.040)
+    design = DesignVector(0.05, 18, 0.040, capsule_arrangement="staggered")
     record = get_pcm_properties(state, pcm)
 
     base = run_case(state, cid, pcm, design, record_hourly=False)["metrics"]
@@ -225,9 +226,10 @@ def phase4_gate5_sensitivity(state, out_dir):
                        pcm_record_overrides={"latent_heat_kJ_kg": record["latent_heat_kJ_kg"] * 1.10})["metrics"]
     minus_l = run_case(state, cid, pcm, design, record_hourly=False,
                         pcm_record_overrides={"latent_heat_kJ_kg": record["latent_heat_kJ_kg"] * 0.90})["metrics"]
-    hi_flow = run_case(state, cid, pcm, DesignVector(0.05, 18, min(design.flow_rate_kg_s * 1.5, 0.05)),
+    hi_flow = run_case(state, cid, pcm, DesignVector(0.05, 18, min(design.flow_rate_kg_s * 1.5, 0.05),
+                                                      capsule_arrangement="staggered"),
                         record_hourly=False)["metrics"]
-    lo_flow = run_case(state, cid, pcm, DesignVector(0.05, 18, design.flow_rate_kg_s * 0.5),
+    lo_flow = run_case(state, cid, pcm, DesignVector(0.05, 18, design.flow_rate_kg_s * 0.5, capsule_arrangement="staggered"),
                         record_hourly=False)["metrics"]
 
     fig = make_subplots(rows=1, cols=2, subplot_titles=("PCM charge energy vs latent heat +/-10%",
