@@ -1,0 +1,19 @@
+# ============================================================
+# Oversize intermediates (exceed GitHub's 50 MB recommendation)
+# Regenerate locally with the Objective-1/Objective-2 pipeline scripts.
+# ============================================================
+
+data/objective1/daily_aggregates_tamilnadu.csv
+data/objective1/suntimes.csv
+
+# ============================================================
+# Caches / temp
+# ============================================================
+
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.log
