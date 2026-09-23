@@ -18,11 +18,15 @@ For each of Phase 7's deployable designs (`phase7_deployable_design_per_regime.c
 draws N=120 independent scenarios from:
 
   - PCM latent heat        : +/-10% uniform (skipped for the plain-tank baseline — no PCM to perturb)
-  - Weather — GHI          : annual scale ~ U(0.93, 1.07) x per-hour iid noise ~ N(1, 0.04),
-                              clipped [0.5, 1.5] — "medoid + noise" proxy for an unseen
-                              weather year, since no member-point weather file exists for
-                              Rajasthan (Objective 1 shipped medoid-only, see docs/00)
-  - Weather — ambient temp : annual offset ~ U(-1.5, +1.5) C + per-hour iid noise ~ N(0, 0.4) C
+  - Weather — GHI / T_amb  : annual scale/offset drawn from one of the 10 REAL observed years
+                              (2016-2025) for this regime (src/robustness/weather_ensemble.py,
+                              step 6.2 of the 2026-09-20 fix plan — replaces the earlier
+                              synthetic U(0.93,1.07)/U(-1.5,+1.5) "medoid + noise" proxy),
+                              jittered slightly (~1% GHI, ~0.1C T_amb) plus per-hour iid noise
+                              (GHI: N(1,0.04) clipped [0.5,1.5]; T_amb: N(0,0.4) C) so the
+                              within-year hourly SHAPE still comes from the single medoid
+                              year's hourly file — only the annual magnitude is now real
+                              inter-annual variability, not an assumed range.
   - Demand                 : +/-20% volume (uniform), +/-30 min timing shift (uniform)
   - Inlet/mains temperature: +/-2 C (uniform)
 
@@ -72,8 +76,10 @@ import pandas as pd
 
 from config import RESULTS_DIR
 from src.design.schema import DesignVector
-from src.io_utils import get_pcm_properties, get_regime, load_system_config, load_hourly_weather
+from src.io_utils import (get_pcm_properties, get_regime, load_system_config, load_hourly_weather,
+                           write_manifest_sidecar)
 from src.simulation.run_case import run_case
+from src.robustness.weather_ensemble import load_historical_ensemble
 
 N_DRAWS = 120
 MC_SEED = 20260905
@@ -91,12 +97,21 @@ ROBUSTNESS_SUMMARY_PATH = RESULTS_DIR / "phase8_robustness.csv"
 ROBUSTNESS_DRAWS_PATH = RESULTS_DIR / "phase8_robustness_draws.csv"
 
 
-def _sample_scenario(rng, has_pcm: bool, n_hours: int) -> dict:
-    annual_ghi_scale = rng.uniform(0.93, 1.07)
+def _sample_scenario(rng, has_pcm: bool, n_hours: int, historical_pairs) -> dict:
+    # Step 6.2 of the 2026-09-20 fix plan: draw the annual GHI-scale/T_amb-
+    # offset from one of the 10 REAL observed years for this cluster
+    # (src/robustness/weather_ensemble.py) instead of an assumed uniform
+    # range -- then jitter slightly to smooth the discrete year-support
+    # into a continuous distribution (does not change the real magnitude,
+    # just avoids only ever drawing exactly 10 distinct annual values
+    # across N_DRAWS=120 draws).
+    year_ghi_scale, year_tamb_offset_C = historical_pairs[rng.integers(0, len(historical_pairs))]
+    annual_ghi_scale = year_ghi_scale * rng.normal(1.0, 0.01)
+    annual_tamb_offset_C = year_tamb_offset_C + rng.normal(0.0, 0.1)
+
     hourly_ghi_noise = rng.normal(1.0, 0.04, size=n_hours)
     ghi_multiplier_array = np.clip(annual_ghi_scale * hourly_ghi_noise, 0.5, 1.5)
 
-    annual_tamb_offset_C = rng.uniform(-1.5, 1.5)
     hourly_tamb_noise_C = rng.normal(0.0, 0.4, size=n_hours)
     tamb_delta_array = annual_tamb_offset_C + hourly_tamb_noise_C
 
@@ -121,11 +136,12 @@ def run_monte_carlo_for_design(state: str, row: pd.Series, n_draws: int = N_DRAW
     base_mains = get_regime(state, cid)["T_mains_est_C"]
     base_latent = get_pcm_properties(state, pcm_id)["latent_heat_kJ_kg"] if pcm_id else None
     n_hours = len(load_hourly_weather(state, cid))
+    historical_pairs = load_historical_ensemble(state, cid)
     rng = np.random.default_rng(seed + cid * 131)
 
     draws = []
     for i in range(n_draws):
-        s = _sample_scenario(rng, pcm_id is not None, n_hours)
+        s = _sample_scenario(rng, pcm_id is not None, n_hours, historical_pairs)
         pcm_overrides = ({"latent_heat_kJ_kg": base_latent * s["latent_heat_mult"]}
                           if pcm_id is not None else None)
         out = run_case(
@@ -219,6 +235,8 @@ def run_all(state: str, n_draws: int = N_DRAWS):
     summary_df.to_csv(ROBUSTNESS_SUMMARY_PATH, index=False)
     print(f"\nSaved: {ROBUSTNESS_SUMMARY_PATH}  ({len(summary_df)} rows)")
     print(f"Saved: {ROBUSTNESS_DRAWS_PATH}  ({len(draws_df)} rows)")
+    write_manifest_sidecar(ROBUSTNESS_SUMMARY_PATH, state,
+                            extra={"n_draws": n_draws, "weather_source": "historical_ensemble"})
     return draws_df, summary_df
 
 

@@ -42,7 +42,7 @@ import pandas as pd
 from config import RESULTS_DIR
 from src.design.schema import DesignVector
 from src.simulation.run_case import run_case
-from src.io_utils import load_system_config, load_state_config
+from src.io_utils import load_system_config, load_state_config, get_regime, write_manifest_sidecar
 from src.optimize.search import search_all_pairs
 
 LARGE_ERROR_THRESHOLD_PCT = 15.0
@@ -71,7 +71,10 @@ def confirm_candidates(state: str, candidates: pd.DataFrame) -> pd.DataFrame:
                     if k in ("useful_energy_kWh", "solar_fraction", "unmet_energy_kWh",
                               "pump_energy_kWh", "pcm_mass_kg", "mean_f_melt",
                               "max_water_temp_C", "max_pcm_temp_C", "n_safety_violations",
-                              "residual_pct_of_collector")})
+                              "residual_pct_of_collector",
+                              # carried through so the delivery requirement can be
+                              # reported (step 3.2, 2026-09-20 fix plan):
+                              "delivery_temp_hours", "mains_temp_C")})
 
         pred_e, sim_e = cand.get("pred_useful_energy_kWh"), m["useful_energy_kWh"]
         row["surrogate_vs_sim_error_pct"] = (abs(pred_e - sim_e) / sim_e * 100.0
@@ -105,15 +108,17 @@ def _arrangement_rationale(confirmed: pd.DataFrame, regime_id, pcm_id, winner_ar
 
     next_arrangement = others.idxmax()
     next_energy = others.max()
-    margin_pct = ((winner_energy_kWh - next_energy) / next_energy * 100.0) if next_energy else float("inf")
+    margin_kWh = winner_energy_kWh - next_energy
+    margin_pct = (margin_kWh / next_energy * 100.0) if next_energy else float("inf")
 
     if margin_pct > noise_band_pct:
-        return f"arrangement {winner_arrangement} won by {margin_pct:.2f}% over next-best arrangement {next_arrangement}."
+        return (f"arrangement {winner_arrangement} won by {margin_kWh:+.3f} kWh "
+                f"({margin_pct:.2f}%) over next-best arrangement {next_arrangement}.")
     else:
         tied = [winner_arrangement] + [a for a, e in others.items()
                                         if abs((e - winner_energy_kWh) / winner_energy_kWh * 100.0) <= noise_band_pct]
         return (f"arrangements tied within noise in this regime — arrangement not decisive here "
-                f"(margin={margin_pct:.2f}% <= noise band={noise_band_pct:.2f}%; "
+                f"(margin={margin_kWh:+.3f} kWh / {margin_pct:.2f}% <= noise band={noise_band_pct:.2f}%; "
                 f"tied arrangements: {sorted(set(tied))}).")
 
 
@@ -162,9 +167,13 @@ def apply_selection_rule(state: str, confirmed: pd.DataFrame, noise_band_pct: fl
         best_energy = pcm_only["sim_useful_energy_kWh"].max()
         within_tol = pcm_only[pcm_only["sim_useful_energy_kWh"] >= best_energy * (1 - tol_pct / 100.0)]
 
+        # Tie-break order (decision D3, 2026-09-20 fix plan): safety margin
+        # first, not pump energy -- least-pump-energy-first (the previous
+        # rule) is not a safety or performance argument among designs
+        # already tied within the Pareto tolerance on useful energy.
         within_tol = within_tol.sort_values(
-            by=["sim_pump_energy_kWh", "sim_pcm_mass_kg", "n_capsule", "constraint_margin_C"],
-            ascending=[True, True, True, False],
+            by=["constraint_margin_C", "sim_pump_energy_kWh", "sim_pcm_mass_kg", "n_capsule"],
+            ascending=[False, True, True, True],
         )
         winner = within_tol.iloc[0].copy()
         winner["selection_rule_pool_size"] = len(within_tol)
@@ -189,12 +198,41 @@ def apply_selection_rule(state: str, confirmed: pd.DataFrame, noise_band_pct: fl
             "OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md). Not a disqualification of the design; "
             "a specified precondition for deploying it."
         )
+
+        # Cohesion-gap fix #3 (2026-09-18): O2's selection rule (useful-energy
+        # tolerance -> pump/mass/count/margin tie-break) never references
+        # Objective 1's MCDM consensus ranking -- it is legitimately possible,
+        # and does happen here, for O2 to deploy a PCM O1 ranked #2 or #3
+        # rather than its #1 pick. This was previously silent (see
+        # docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md, cohesion-gap analysis
+        # 2026-09-18). Not made a tie-break criterion itself (that decision is
+        # out of this fix's scope -- would change which design wins, not just
+        # how it's reported) -- logged and flagged instead, so the divergence
+        # is visible rather than discovered later by a reviewer.
+        o1_shortlist = get_regime(state, regime_id).get("pcm_shortlist", [])
+        o1_rank1_pcm = o1_shortlist[0] if o1_shortlist else None
+        winner["o1_rank1_pcm"] = o1_rank1_pcm
+        winner["diverges_from_o1_rank1"] = bool(o1_rank1_pcm is not None and winner["pcm_id"] != o1_rank1_pcm)
+        if winner["diverges_from_o1_rank1"]:
+            msg = (f"O2's deployable design for regime {regime_id} is {winner['pcm_id']!r}, "
+                   f"not Objective 1's rank-1 consensus pick {o1_rank1_pcm!r} -- Objective 2's "
+                   f"selection rule (useful-energy tolerance, then pump/mass/count/margin) does "
+                   f"not weight O1's MCDM ranking. See docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md.")
+            print(f"  [NOTE] {msg}")
+            winner["o1_divergence_note"] = msg
+        else:
+            winner["o1_divergence_note"] = f"Matches Objective 1's rank-1 consensus pick for regime {regime_id}."
+
         selected.append(winner)
 
     return pd.DataFrame(selected)
 
 
-def run_phase7(state: str, top_n_per_pair: int = 5):
+def run_phase7(state: str, top_n_per_pair: int = 15):
+    # Raised 5->15 (step 3.3, 2026-09-20 fix plan) together with search.py's
+    # per-arrangement quota, so each of the 3 arrangements reaches the
+    # simulator-confirmation step (5 each) rather than one dominating the
+    # surrogate ranking.
     print(f"Phase 7 -- optimization pass + simulator confirmation, state={state}")
     print("Step 1/3: surrogate proposal search ...")
     candidates = search_all_pairs(state, top_n=top_n_per_pair)
@@ -213,17 +251,24 @@ def run_phase7(state: str, top_n_per_pair: int = 5):
 
     confirmed.to_csv(OPTIMIZED_DESIGNS_PATH, index=False)
     print(f"  Saved: {OPTIMIZED_DESIGNS_PATH}")
+    write_manifest_sidecar(OPTIMIZED_DESIGNS_PATH, state,
+                            extra={"mean_surrogate_vs_sim_error_pct": float(mean_error),
+                                   "large_error_threshold_pct": LARGE_ERROR_THRESHOLD_PCT})
 
     print("\nStep 3/3: applying the pre-declared deployable-design selection rule ...")
     deployable = apply_selection_rule(state, confirmed, noise_band_pct=mean_error)
     deployable.to_csv(DEPLOYABLE_PATH, index=False)
     print(f"  Saved: {DEPLOYABLE_PATH}")
+    write_manifest_sidecar(DEPLOYABLE_PATH, state,
+                            extra={"tie_break_order": ["constraint_margin_C (desc)", "sim_pump_energy_kWh (asc)",
+                                                        "sim_pcm_mass_kg (asc)", "n_capsule (asc)"],
+                                   "pareto_tolerance_pct": load_system_config()["selection"]["pareto_tolerance_pct"]})
 
     print("\nDeployable design per regime:")
     cols = ["regime_id", "pcm_id", "arrangement", "capsule_diameter_m", "n_capsule", "flow_rate_kg_s",
             "sim_useful_energy_kWh", "sim_solar_fraction", "sim_pump_energy_kWh",
             "sim_pcm_mass_kg", "constraint_margin_C", "surrogate_vs_sim_error_pct",
-            "arrangement_rationale"]
+            "o1_rank1_pcm", "diverges_from_o1_rank1", "arrangement_rationale"]
     print(deployable[cols].to_string(index=False))
 
     return confirmed, deployable

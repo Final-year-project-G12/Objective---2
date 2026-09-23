@@ -1,0 +1,4 @@
+cluster_id,label,old_o1_Tm_target_C,new_Tm_target_C,old_pcm_shortlist,new_pcm_shortlist,new_shortlist_Tm_C,new_shortlist_latent_heat_kJ_kg,dropped_missing_simulator_properties
+0,"cooler, arid/low-monsoon, erratic solar resource, medoid RJP_0132 -- Udaipur (109 pts)",67.0,43.5,Palmitic-stearic acid/Expanded graphite; savE® OM55; Myristic acid/NBR-0.5,savE® OM42; RT44HC; RT47,44.0; 42.5; 44.5,199.0; 250.0; 160.0,
+1,"hot, monsoon-influenced, steady solar resource, long low-clearness runs (high autonomy demand), medoid RJP_0192 -- Nagaur (83 pts)",67.0,47.9,PureTemp 60; CrodaTherm 60; n-Heptacosane (C27),n-Tricosane (C23); savE® OM49; RT45HC,47.5; 49.0; 45.0,232.0; 224.0; 240.0,
+2,"cooler, arid/low-monsoon, erratic solar resource, largest population, medoid RJP_0083 -- Jaipur (128 pts)",67.0,45.7,n-Heptacosane (C27); PureTemp 58; PlusICE A58,RT45HC; Lauric acid (C12); n-Docosane (C22),45.0; 44.8; 44.5,240.0; 184.0; 249.0,

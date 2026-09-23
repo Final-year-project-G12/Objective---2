@@ -112,6 +112,20 @@ def write_cards(state: str):
         lines.append(f"\n**Selected arrangement:** {dep['arrangement']}")
         lines.append(f"\n**Arrangement rationale:** {dep['arrangement_rationale']}")
 
+        # --- O1<->O2 cohesion (2026-09-18 cohesion-gap fix #5) ------------
+        if not is_plain and "diverges_from_o1_rank1" in dep.index:
+            if bool(dep["diverges_from_o1_rank1"]):
+                lines.append(f"\n**Match to Objective 1's ranking:** DIVERGES — O2 deploys **{pcm_id}**, "
+                             f"but Objective 1's MCDM consensus rank-1 pick for this regime is "
+                             f"**{dep['o1_rank1_pcm']}**. Objective 2's selection rule (useful-energy "
+                             f"tolerance, then pump energy/PCM mass/capsule count/margin) does not weight "
+                             f"O1's consensus rank, so a lower-ranked-but-still-shortlisted PCM can win on "
+                             f"design-level performance. This is expected and reported, not a defect — see "
+                             f"`docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §2/§8.")
+            else:
+                lines.append(f"\n**Match to Objective 1's ranking:** MATCHES — O2's deployable design uses "
+                             f"**{pcm_id}**, Objective 1's MCDM consensus rank-1 pick for this regime.")
+
         # --- simulator-confirmed performance ----------------------------
         lines.append(f"\n### Simulator-confirmed performance ({SIM_VERSION}, full year)")
         lines.append(f"\n| Useful energy | Solar fraction | Unmet energy | Pump energy | Max water T | "

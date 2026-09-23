@@ -26,8 +26,11 @@ Output: `results/phase6_surrogate_metrics.csv`,
 
 One combined tree-based surrogate (no ablation, per the reduced 40-hr
 spec) so Phase 7's optimization pass doesn't need thousands of physics
-runs. Trained from the 128 valid rows of `phase5_design_cases.parquet`
-(101 train / 27 holdout), using its `split` column (Phase 5).
+runs. Trained from the 126 valid rows of `phase5_design_cases.parquet`
+(99 train / 27 holdout), using its `split` column (Phase 5). (126 valid /
+99+27 split verified directly from `results/phase5_design_cases.csv` on
+2026-09-18 — supersedes the pre-resync 128/101/27 figures previously
+stated here.)
 
 ## Features (42 total)
 
@@ -86,26 +89,29 @@ framework doc's "what VARIES per state" list anticipates; the surrogate
 
 ExtraTreesRegressor (300 trees, seed `20260905`) per target, each compared
 against a plain LinearRegression baseline on the identical split
-(**101 train / 27 holdout valid rows**), plus one ExtraTreesClassifier for
+(**99 train / 27 holdout valid rows**), plus one ExtraTreesClassifier for
 feasibility (trained on all non-holdout rows, valid + invalid; 54-row
 holdout).
 
 ## Hold-out results (actual run)
 
+**Re-run 2026-09-18 (post-resync) — table below replaces the pre-resync
+numbers, pulled directly from `results/phase6_surrogate_metrics.csv`.**
+
 | Target | ExtraTrees MAE | ExtraTrees RMSE | ExtraTrees R² | Linear RMSE | Linear R² | Tree beats linear? |
 |---|---|---|---|---|---|---|
-| useful_energy_kWh | 0.362 kWh | 0.723 kWh | **0.9997** | 0.529 kWh | 0.9998 | No (tie — linear marginally lower RMSE) |
-| solar_fraction | 3.69e-4 | 6.20e-4 | 0.9990 | 1.01e-3 | 0.9973 | Yes |
-| unmet_energy_kWh | 0.932 kWh | 1.537 kWh | 0.9996 | 2.498 kWh | 0.9990 | Yes |
-| pump_energy_kWh | 4.24e-8 kWh | 1.368e-7 kWh | 0.9631 | 4.44e-9 kWh | 0.99996 | No |
-| pcm_mass_kg | 0.164 kg | 0.516 kg | 0.9403 | 0.0867 kg | 0.9983 | No |
+| useful_energy_kWh | 0.305 kWh | 0.512 kWh | **0.99998** | 0.680 kWh | 0.99996 | Yes |
+| solar_fraction | 1.12e-4 | 1.81e-4 | 0.99995 | 7.39e-4 | 0.99917 | Yes |
+| unmet_energy_kWh | 0.304 kWh | 0.485 kWh | 0.99997 | 1.808 kWh | 0.99954 | Yes |
+| pump_energy_kWh | 9.07e-9 kWh | 1.58e-8 kWh | 0.99952 | 4.73e-9 kWh | 0.99992 | No |
+| pcm_mass_kg | 0.042 kg | 0.081 kg | 0.99781 | 0.141 kg | 0.99331 | Yes |
 | feasibility (accuracy / infeasible-recall) | — | — | 1.000 / 1.000 (27/27 infeasible holdout rows) | — | — | — |
 
 ### Exit check
 
 Framework doc: hold-out R² for useful energy must clear **> 0.80** to
 trust ranking (< 0.75 → add DOE cases or drop to a single target).
-**Result: useful-energy hold-out R² = 0.9997 (Extra Trees), 0.9998
+**Result: useful-energy hold-out R² = 0.99998 (Extra Trees), 0.99996
 (linear).** Passed with a wide margin on the larger, arrangement-
 stratified dataset — no extra DOE cases needed. The three "key outputs"
 named in D2.5 (useful energy, solar fraction, unmet energy) all sit at
@@ -115,14 +121,18 @@ R² ≥ 0.999.
 
 | Target | arr_single_layer | arr_staggered | arr_radial | Combined |
 |---|---|---|---|---|
-| useful_energy_kWh | 0.000004 | 0.000009 | 0.000004 | 0.000018 |
-| solar_fraction | 0.000026 | 0.000048 | 0.000025 | 0.000100 |
-| unmet_energy_kWh | 0.000013 | 0.000021 | 0.000011 | 0.000045 |
-| pump_energy_kWh | 0.000550 | 0.000676 | 0.000739 | 0.001964 |
-| pcm_mass_kg | 0.000980 | 0.000349 | 0.001092 | 0.002421 |
+| useful_energy_kWh | 0.000002 | 0.000001 | 0.000001 | 0.000003 |
+| solar_fraction | 0.000011 | 0.000004 | 0.000010 | 0.000024 |
+| unmet_energy_kWh | 0.000005 | 0.000002 | 0.000007 | 0.000014 |
+| pump_energy_kWh | 0.000991 | 0.000336 | 0.000182 | 0.001509 |
+| pcm_mass_kg | 0.000700 | 0.000346 | 0.000658 | 0.001704 |
+
+(Pulled directly from `results/phase6_arrangement_importance.csv`,
+2026-09-18 re-run — replaces the pre-resync values previously listed
+here.)
 
 **Finding — arrangement's feature importance is genuinely near-zero for
-every target** (combined importance 0.000018–0.002421, highest for
+every target** (combined importance 0.000003–0.001704, highest for
 `pcm_mass_kg` and `pump_energy_kWh`). This is not a bug: it is the direct,
 consistent consequence of Phase 3's finding that `void_fraction` (the only
 channel arrangement affects) is consumed solely by the hydraulics/pump-
@@ -134,19 +144,22 @@ number as a sign something is broken.
 
 ### Honest findings (framework doc requires this comparison be reported as-is)
 
-1. **Linear regression ties or slightly beats the tree on
-   `useful_energy_kWh`, `pump_energy_kWh` and `pcm_mass_kg`.** The physics
-   in this design region is close to linear in the sampled variables:
-   `pcm_mass_kg` is exactly linear in `n_capsule·diameter³·ρ`;
-   `pump_energy_kWh` is Ergun-viscous-term dominated (linear in flow) and
-   only ~1e-7 kWh in magnitude anyway (near numerical noise — the tree's
-   R²=0.963 there is not a real defect, it is a model fitting nanoscale
-   noise); and annual `useful_energy` is driven mostly by the (few)
-   regime-level climate features plus a near-linear PCM-mass contribution.
-   The tree still wins where the relationship is genuinely non-linear
-   (`solar_fraction`, `unmet_energy_kWh`) — so it is kept as the ranking
-   model, and the linear baseline is retained in the metrics CSV as the
-   honest comparator.
+1. **Linear regression only ties/beats the tree on `pump_energy_kWh`
+   in the current (2026-09-18 post-resync) run** (ET RMSE=1.58e-8 kWh vs.
+   Linear RMSE=4.73e-9 kWh). `pump_energy_kWh` is Ergun-viscous-term
+   dominated (linear in flow) and only ~1e-8 kWh in magnitude anyway (near
+   numerical noise — the tree's R²=0.9995 there is not a real defect, it
+   is a model fitting nanoscale noise). On every other target — including
+   `useful_energy_kWh` and `pcm_mass_kg` — Extra Trees now has the lower
+   hold-out RMSE (e.g. `pcm_mass_kg`: ET RMSE=0.081 kg vs. Linear
+   RMSE=0.141 kg; `useful_energy_kWh`: ET RMSE=0.512 kWh vs. Linear
+   RMSE=0.680 kWh). **This reverses the pre-resync finding stated in an
+   earlier version of this doc, which had linear tying/beating on
+   `useful_energy_kWh` and `pcm_mass_kg` too** — not re-derived here (no
+   root-cause investigation was done into why the resync's re-shuffled/
+   larger dataset changed this), flagged for anyone relying on the older
+   claim. The tree is kept as the ranking model regardless, and the linear
+   baseline is retained in the metrics CSV as the honest comparator.
 2. **Feasibility classifier: 100% hold-out accuracy, 100% recall on the
    infeasible class (27 infeasible hold-out examples).** Expected, not
    suspicious: the feasibility boundary here is one sharp deterministic
@@ -158,24 +171,33 @@ number as a sign something is broken.
    reliably", not as a precise generalisation-error estimate. Phase 7
    re-confirms every selected design in the real simulator regardless
    (Bug-Fix 5) — the 0.03% mean surrogate-vs-simulator error reported
-   there is the number that actually matters.
+   there is the number that actually matters (UNVERIFIED against the
+   2026-09-18 post-resync Phase 7 outputs — this audit was scoped to
+   docs 05/06 only; Phase 7's own doc should be checked separately for
+   whether this figure still holds after the resync).
 
 ## Error breakdown by regime, PCM, and arrangement (`phase6_surrogate_error_by_group.csv`)
 
-`useful_energy_kWh` MAE: 0.11–0.54 kWh across the 3 regimes (9 holdout
-rows each); 0.07–0.88 kWh across the 6 PCM groups (highest for `RT50`,
-which has only 3 holdout rows). `solar_fraction` MAE ≤ 7.1e-4 everywhere.
-No regime is a systematic weak spot; the per-PCM spread is dominated by
-holdout-count noise (3–6 rows per group), not by any PCM being modelled
-badly. The file's new `(regime_id, pcm_id, arrangement)` breakdown (30
-groups, 1 holdout row each) shows no arrangement is a systematic weak
-spot either — errors scatter across all three arrangements without a
-consistent pattern by arrangement. Full ablation (regime-ID-only /
-design-only / no-confidence) is deferred per the 40-hr cut list.
+`useful_energy_kWh` MAE: 0.20–0.37 kWh across the 3 regimes (9 holdout
+rows each); 0.14–0.44 kWh across the 8 PCM groups (highest for
+`PureTemp 58`, which has only 3 holdout rows; `n-Heptacosane (C27)`
+pools 6 holdout rows since it appears in both regimes 1 and 2 — the
+pre-resync shortlist's `RT50` no longer exists post-resync). `solar_fraction`
+MAE ≤ 6.2e-4 everywhere. No regime is a systematic weak spot; the per-PCM
+spread is dominated by holdout-count noise (3–6 rows per group), not by
+any PCM being modelled badly. The file's `(regime_id, pcm_id,
+arrangement)` breakdown (27 groups with ≥1 holdout row — of 30 valid
+combinations, the 3 `(regime, NONE_plain_tank, staggered)` singleton
+baseline combos have none, per Phase 5's split logic — 1 holdout row each)
+shows no arrangement is a systematic weak spot either — errors scatter
+across all three arrangements without a consistent pattern by
+arrangement. Full ablation (regime-ID-only / design-only / no-confidence)
+is deferred per the 40-hr cut list.
 
 ## Deviations from the full framework doc
 
 No neural-network / Gaussian-process comparison, no 4-way ablation — both
 explicitly deferred. XGBoost not tried: Extra Trees already reaches
-R² ≥ 0.94 on every non-noise target, so there was no signal a second tree
-family was needed at this dataset size.
+R² ≥ 0.997 on every non-noise target (lowest is `pcm_mass_kg` at 0.9978),
+so there was no signal a second tree family was needed at this dataset
+size.

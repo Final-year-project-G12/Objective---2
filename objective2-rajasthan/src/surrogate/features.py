@@ -46,9 +46,15 @@ from src.io_utils import load_state_config
 # Column names as they appear in cluster_profiles_rajasthan.csv (see docstring).
 CLIMATE_COLS = [
     "GHI_daily_kWh", "Ta_mean", "Ta_p95", "Ta_p05", "DTR_true",
-    "RH_sunrise_mean", "HSI_sunrise", "wind_noon_mean", "monsoon_index",
+    "RH_sunrise_mean", "HSI_sunrise", "wind_noon_mean", "wind_sunset_mean", "monsoon_index",
     "seasonality", "CDD24", "HDD18", "kt_daily_mean", "cloudy_frac",
-    "Tm_target_C", "L_required_kJ_per_kg",
+    # Tm_target_capped_C (not the uncapped Tm_target_C) — relevance fix, step
+    # 5.4 of the 2026-09-20 fix plan: the surrogate should see the target the
+    # design was actually evaluated against (CLAUDE.md §3.1's kappa-gated
+    # capped value), not the uncapped climate/delivery formula's raw output.
+    # wind_sunset_mean added alongside — both already exist in this CSV, so
+    # nothing was silently dropped before, just under-used.
+    "Tm_target_capped_C", "L_required_kJ_per_kg",
     # T_mains_est_C is injected from the state config, not this CSV (see docstring)
     "T_mains_est_C",
 ]

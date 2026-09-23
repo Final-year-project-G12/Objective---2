@@ -37,6 +37,7 @@ Target total ~150-350 cases per state (framework doc §Phase 5), stated
 sampling method and count are printed and returned in the manifest dict.
 """
 
+import zlib
 from dataclasses import dataclass, asdict
 
 import numpy as np
@@ -49,6 +50,16 @@ ARRANGEMENTS = ("single-layer", "staggered", "radial")
 BASELINE_ARRANGEMENT_SENTINEL = "staggered"   # no-PCM baseline: arrangement doesn't apply,
                                                 # but the schema field is required — documented
                                                 # sentinel, not an implicit/accidental default.
+
+
+def _stable_hash(text: str) -> int:
+    """Deterministic, process-independent string hash for seed derivation.
+    Python's built-in hash() is randomized per-process for strings (a
+    security feature, PYTHONHASHSEED) -- using it here silently broke the
+    "fixed seed" reproducibility claim (different PCM-name seeds, hence
+    slightly different LHS draws, on every fresh process). crc32 is stable
+    across processes, machines and Python versions."""
+    return zlib.crc32(text.encode("utf-8"))
 
 
 @dataclass
@@ -153,7 +164,7 @@ def generate_all_cases(state: str, n_lhs_per_pair: int = 12):
         for pcm_id in regime["pcm_shortlist"]:
             n_pairs += 1
             prefix = f"c{cid}_{_slug(pcm_id)}"
-            seed = RANDOM_SEED + cid * 1000 + hash(pcm_id) % 1000
+            seed = RANDOM_SEED + cid * 1000 + _stable_hash(pcm_id) % 1000
             n_lhs_per_arrangement = max(1, n_lhs_per_pair // len(ARRANGEMENTS))
             all_cases += _lhs_cases(cid, pcm_id, n_lhs_per_arrangement, bounds, seed, prefix)
             all_cases += _boundary_cases(cid, pcm_id, bounds, prefix)

@@ -1,0 +1,20 @@
+{
+  "generated_at_utc": "2026-09-20T20:24:56.949276+00:00",
+  "state": "rajasthan",
+  "config_hashes": {
+    "system_config_shared.yaml": {
+      "version": "config_v1.1_2026-09-13-safety-shield",
+      "sha256": "bfbb3e392b73f31c548e73be904b21964bbea6afb91c8a928664b14fc254b636"
+    },
+    "design_bounds_shared.yaml": {
+      "version": "config_v1.2_2026-09-20-rajasthan-loading-floor-fix",
+      "sha256": "7e2e40e5048c008f698ded3717c5bf6bc135a9dda61799119845967c641269a4"
+    },
+    "states/rajasthan.yaml": {
+      "version": "state_config_rajasthan_v2.1_2026-09-20-fixplan-step1",
+      "sha256": "6ff5dc6c868f1a12de20afaf7b006913f4540aef218c58eebc0b25712894e3d8"
+    }
+  },
+  "mean_surrogate_vs_sim_error_pct": 0.04398300032607735,
+  "large_error_threshold_pct": 15.0
+}

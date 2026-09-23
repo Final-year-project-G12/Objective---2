@@ -74,6 +74,15 @@ and `docs/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md`.
 **Still open:** Tamil Nadu, Assam, and Uttarakhand have not received this same change — see the
 cross-cutting rule above and `docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §9.
 
+**Note (2026-09-18):** a separate, later change — the full Objective 1 ↔ Objective 2 re-sync
+documented in `docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §10 — replaced the PCM shortlist,
+Tm_target_C, and two of three clusters' medoids that Phases 2-8 run against, and triggered a full
+Phase 2-8 re-run. That re-sync is independent of and does not undo this arrangement-restore plan
+(the arrangement enum/count-bound edit to `design_bounds_shared.yaml` this plan describes is still
+in effect) — but any PCM name or numeric result quoted in this plan's history above should be read
+as describing the pre-resync (2026-09-17) run; current numbers live in the `0N_PHASEN_*.md` docs
+and `results/` files.
+
 ## Files in this set
 
 The original per-phase prompt files this plan shipped with

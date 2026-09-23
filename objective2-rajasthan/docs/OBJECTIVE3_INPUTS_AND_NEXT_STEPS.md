@@ -1,18 +1,25 @@
 # Objective 3 — Inputs From Objective 2 and What To Do Next (Rajasthan)
 
 Objective 2 is **complete** for Rajasthan (Phases 1–8, all built, run, and
-verified — see `README.md` at the project root and `results/README.md`
-for the full digest). This document is the hand-off: what Objective 3
-receives, what it must NOT touch, and the concrete first steps for
-building the charge/discharge/bypass controller.
+verified — see `docs/00_MASTER_OVERVIEW.md` for the full digest). This
+document is the hand-off: what Objective 3 receives, what it must NOT
+touch, and the concrete first steps for building the charge/discharge/
+bypass controller.
 
-> **2026-09-17: re-confirmed complete after the arrangement-restore change**
-> (`docs/00_MASTER_CHANGE_PLAN.md`). The `obj3_environment_contract_rajasthan.json`
-> this document points to has been regenerated with `simulator_version:
-> sim_v2_rajasthan` and a real per-regime `arrangement` (was hardcoded
-> `"staggered"`) — this supersedes the working-draft status noted during
-> Phases 1-7 of that change. Objective 3 should re-pull the contract file
-> before any DRL training run if it cached an earlier copy.
+**Current as of 2026-09-18** (Objective 1 → Objective 2 input chain
+resynced, `configs/states/rajasthan.yaml`
+`state_config_rajasthan_v2.0_2026-09-18-resync`; Phase 7/8 re-run today):
+the `obj3_environment_contract_rajasthan.json` this document points to
+carries `simulator_version: sim_v2_rajasthan` and a real per-regime
+`arrangement` (was hardcoded `"staggered"` before the 2026-09-17
+arrangement-restore change). Sections 1 and 2 below describe **today's**
+winners — **savE® OM55 (single-layer)** / **PureTemp 60 (staggered)** /
+**PureTemp 58 (staggered)** — not the pre-resync RT50 (staggered) /
+Paraffin-HDPE PCM3 (staggered) / savE® OM50 (radial) set, nor the earlier
+pre-arrangement-restore RT45HC / Paraffin-HDPE PCM6 / Paraffin-HDPE PCM3
+set, that earlier versions of this document described. Objective 3 should
+re-pull the contract file before any DRL training run if it cached an
+earlier copy.
 
 Mirrors `objective2-tamilnadu/docs_objective2/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md`
 — same structure, Rajasthan's own numbers throughout.
@@ -32,18 +39,29 @@ geometry, tank volume, safety limits, or the physics model released here.
 machine-readable package — read it programmatically, don't hand-copy
 numbers out of it. It contains, per climate regime:
 
-- **Updated 2026-09-14**: the selected PCM (**all 3 Rajasthan regimes now
-  select a shortlisted PCM** — RT45HC / Paraffin-HDPE PCM6 / Paraffin-HDPE
-  PCM3, one per regime, see §2) with its complete property record. This
-  reverses an earlier all-plain-tank contract, superseded when the
-  rule-based safety shield became the pipeline default and the Phase 7
-  selection rule was corrected to no longer let the plain tank win by
-  tie-break (see `docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §8).
-- capsule geometry (diameter, count, PCM mass, conduction distance)
+- **Current as of 2026-09-18**: the selected PCM (**all 3 Rajasthan
+  regimes select a shortlisted PCM** — savE® OM55 / PureTemp 60 /
+  PureTemp 58, one per regime, see §2) with its complete property record
+  and its **searched arrangement** (single-layer / staggered / staggered
+  — restored as a real decision variable, not assumed, see
+  `docs/07_PHASE7_OPTIMIZATION.md`). This reflects three compounding
+  changes: the rule-based safety shield becoming the pipeline default and
+  the Phase 7 selection rule being corrected to no longer let the plain
+  tank win by tie-break (2026-09-13/14, see
+  `docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §8), capsule arrangement
+  being restored as a searched variable (2026-09-17, see
+  `docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §9), and then the
+  Objective 1 → Objective 2 input chain being resynced (2026-09-18,
+  `configs/states/rajasthan.yaml`
+  `state_config_rajasthan_v2.0_2026-09-18-resync`), which replaced the
+  O1 PCM shortlist itself and changed which PCM design wins each regime
+  again.
+- capsule geometry (diameter, count, **arrangement**, PCM mass, conduction
+  distance)
 - tank/collector configuration
 - the flow envelope (nominal + min/max), pressure limit, pump efficiency
 - delivery-temperature target and both safety temperature limits
-- the validated simulator version tag (`sim_v1_rajasthan`)
+- the validated simulator version tag (`sim_v2_rajasthan`)
 - a dynamic-state **schema** (field names, units, and which fields need a
   state estimator vs. a real sensor)
 - the recommended continuous-flow hybrid action space (mode +
@@ -69,21 +87,30 @@ numbers out of it. It contains, per climate regime:
 
 Read `docs/00_MASTER_OVERVIEW.md` and `docs/07_PHASE7_OPTIMIZATION.md`
 before writing a reward function — the physical story matters for reward
-shaping. **This section was rewritten 2026-09-14** to match the current
-pipeline default (rule-based safety shield active since 2026-09-13 +
-PCM-only Phase 7 selection rule since 2026-09-14); the prior all-plain-
-tank / no-shield version of this section is quoted at the end for the
-historical record.
+shaping. **This section reflects the 2026-09-18 resynced run** (current).
+Prior history is summarized, not quoted in full, at the end of this
+section — see the docs cited there for complete detail rather than
+treating any earlier version of this section as authoritative.
 
-- **All 3 of Rajasthan's regimes now select a shortlisted PCM design**
-  (RT45HC / Paraffin-HDPE PCM6 / Paraffin-HDPE PCM3), each beating the
+- **All 3 of Rajasthan's regimes select a shortlisted PCM design** —
+  **savE® OM55 (single-layer)** in regime 0, **PureTemp 60 (staggered)**
+  in regime 1, **PureTemp 58 (staggered)** in regime 2 — each beating the
   best plain-tank geometry the same search found by a fraction of a
-  percent in useful energy, and each clearing both the 75 °C water and
-  65 °C PCM limits with a ~2.8–2.9 °C margin. `f_melt`, `T_pcm_C`, and
-  the PCM-related safety limit are now live, meaningful state for every
-  Rajasthan regime's contract, not structural placeholders — a
-  controller for Rajasthan is controlling a real phase-change system in
-  all 3 regimes.
+  percent (0.07–0.08%) in useful energy, and each clearing both the
+  75 °C water and 65 °C PCM limits with a 1.65–2.10 °C margin. `f_melt`,
+  `T_pcm_C`, and the PCM-related safety limit are live, meaningful state
+  for every Rajasthan regime's contract, not structural placeholders.
+- **Capsule arrangement is now a genuinely searched variable, not an
+  assumption** (`Objective2 Consolidated plan.md` §0.1). All three
+  regimes' winners are "tied within noise" across the arrangements that
+  were confirmed for their regime/PCM pool (`arrangement_rationale` in
+  the contract states this explicitly for each) — none of the three
+  current winners reflects a decisive energy advantage from its
+  arrangement. Objective 3 should treat `arrangement` as a fixed input
+  from the contract, exactly like PCM identity and geometry — not as a
+  signal that arrangement materially changes the thermal dynamics it
+  needs to model (Phase 6's surrogate found arrangement's effect on every
+  performance target is near-zero, see `docs/06_PHASE6_SURROGATE.md`).
 - **A rule-based safety shield IS implemented in the physics model
   itself, and is the pipeline default as of 2026-09-13**
   (`system_config_shared.yaml: safety_shield.enabled: true`,
@@ -96,16 +123,24 @@ historical record.
   2's own simulator already enforces it, for every phase (5 through 8),
   not only at the Monte Carlo step. Objective 3 inherits a working
   reference implementation to build on (or replace with something
-  smarter), not a blank page.
+  smarter), not a blank page. **A separate, still-not-adopted finding is
+  also relevant context**: `docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md`
+  §7 found that the frozen 50 L tank / 1.5 m² collector ratio
+  (33.3 L/m²) is itself below IS 12976:2023's own 40–100 L/m² range
+  (75 L/m² reference), and that resizing to the standard's reference
+  ratio (112.5 L) makes every shortlisted PCM pass safety **and** beat
+  plain water **without any shield at all** — deliberately not adopted
+  here (a frozen-shared-config change needs a coordinated 4-state
+  re-run), but Objective 3 should not assume the shield is the only or
+  best route to safety, only that it is the one this contract currently
+  ships with.
 - **Phase 8's Monte Carlo robustness analysis (120 draws/design,
-  weather/demand/mains uncertainty) now shows all 3 selected PCM designs
-  are robustly safe**: P(temp-safe) = 1.00 in every regime (up from
-  0.45–0.57 for the earlier, now-superseded plain-tank/no-shield
-  baseline), P95 max water temperature 72.2–72.3 °C in every regime — the
-  shield converges every regime's worst-case draws to just above its own
-  72 °C trigger point, exactly as designed. See
-  `docs/08_PHASE8_ROBUSTNESS_HANDOFF.md` for the full table (and its
-  "superseded result" subsection for the pre-shield numbers).
+  weather/demand/mains/PCM-latent-heat uncertainty) shows all 3 selected
+  PCM designs are robustly safe**: P(temp-safe) = 1.00 in every regime,
+  P95 max water temperature 72.15–72.36 °C in every regime — the shield
+  converges every regime's worst-case draws to just above its own 72 °C
+  trigger point, exactly as designed. See
+  `docs/08_PHASE8_ROBUSTNESS_HANDOFF.md` for the full table.
 - **This narrows, but does not eliminate, Objective 3's justification.**
   The original brief for this section argued the controller's job was
   "make the system survive at all" — that argument no longer holds,
@@ -121,32 +156,42 @@ historical record.
   in every Objective 2 metric means genuinely undelivered heat, not a
   gap an electric backup fills. If Objective 3's reward function assumes
   a backup exists, that assumption must be stated as a NEW addition, not
-  inherited from Objective 2. (Unchanged by the shield/selection-rule
-  update.)
+  inherited from Objective 2.
 - **All 3 regimes clear the demand bar** (P(meets annual demand)
-  83.3–98.3%; the 75% threshold holds in all 3) alongside the now-clean
-  temperature-safety record — a reward function still should not conflate
-  "delivers enough hot water" with "does so safely," since Phase 8 tracks
-  them as genuinely separate mechanisms (the shield trades a small amount
-  of collected energy for safety; it does not automatically guarantee
+  **91.7–100%** — regime 0: 91.7%, regime 1: 100.0%, regime 2: 100.0%; the
+  75% threshold holds in all 3) alongside the clean temperature-safety
+  record — a reward function still should not conflate "delivers enough
+  hot water" with "does so safely," since Phase 8 tracks them as
+  genuinely separate mechanisms (the shield trades a small amount of
+  collected energy for safety; it does not automatically guarantee
   demand is met, and vice versa), even though both currently pass.
 
-### What this section said before the 2026-09-13/14 updates (superseded, kept for the record)
+### History this section summarizes (see the cited docs for full detail, not reproduced here)
 
-> All 3 of Rajasthan's regimes selected a plain sensible-water tank, not
-> a PCM design. None of the environment contracts carried a real PCM.
-> No PCM candidate cleared the 65 °C safety limit anywhere in Rajasthan
-> (0/45 across all regimes and all shortlisted PCMs). A real safety
-> shield was not yet implemented in the physics model itself — Objective
-> 2's simulator recorded temperature-safety violations but did not
-> prevent them — and every one of the 3 selected (plain-tank) designs
-> failed the framework's 95% temperature-safety bar badly (P(temp-safe)
-> 45–57%). This was the finding that originally motivated treating an
-> active overheat bypass as an Objective 3 first-class requirement,
-> "more urgently than for any other state run under this framework so
-> far." That framing is now out of date in degree (the shield is real and
-> O2's own default) but not in spirit (see the narrowed justification
-> above).
+Three changes preceded today's numbers, each documented in full elsewhere
+so this section doesn't accumulate a second unreconciled "old version
+quoted inside the current one":
+
+1. **2026-09-13/14** — before the rule-based safety shield became the
+   pipeline default and `apply_selection_rule()` was corrected to exclude
+   the plain tank from the winner pool, all 3 Rajasthan regimes selected
+   a plain sensible-water tank (0/45 PCM candidates cleared the 65 °C
+   limit; P(temp-safe) 45–57% for the plain-tank baseline). Full detail:
+   `docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §0/§6/§8.
+2. **2026-09-17** — after capsule arrangement was restored as a searched
+   variable, the widened count bound and larger candidate search changed
+   which near-tied PCM design wins each regime (RT45HC / Paraffin-HDPE
+   PCM6 / Paraffin-HDPE PCM3 → RT50 / Paraffin-HDPE PCM3 / savE® OM50),
+   without changing the qualitative safety/robustness story. Full detail:
+   `docs/07_PHASE7_OPTIMIZATION.md`, `docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §9.
+3. **2026-09-18** — the Objective 1 → Objective 2 input chain was
+   resynced (`configs/states/rajasthan.yaml`
+   `state_config_rajasthan_v2.0_2026-09-18-resync`), replacing the O1 PCM
+   shortlist itself per regime and changing which PCM design wins each
+   regime again (RT50 / Paraffin-HDPE PCM3 / savE® OM50 → savE® OM55 /
+   PureTemp 60 / PureTemp 58), again without changing the qualitative
+   safety/robustness story. Full detail: `docs/07_PHASE7_OPTIMIZATION.md`,
+   `docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §10.
 
 ## 3. Concrete first steps for Objective 3
 
@@ -201,25 +246,27 @@ historical record.
   designs (medoid-only, 40-hr cut list) — Objective 3's own weather
   train/val/test split is genuinely unstarted work, not something to
   look for in Objective 2's outputs.
-- No widened PCM design bounds and no re-investigation of the
-  `Tm_target_C` derivation — if the project later decides to revisit
-  either, Objective 3's contract will need to be regenerated from a new
-  Phase 7 run, and any trained controller re-validated against it.
-- Phase 8's robustness analysis covers weather-noise, demand, and mains-
-  temperature uncertainty only (PCM-property uncertainty is structurally
-  inapplicable here — every selected design is the plain tank); pump/
+- No re-investigation of the `Tm_target_C` derivation, and no widened
+  PCM design bounds beyond the diameter/count/flow/arrangement bounds
+  already in place — if the project later decides to revisit either,
+  Objective 3's contract will need to be regenerated from a new Phase 7
+  run, and any trained controller re-validated against it.
+- Phase 8's robustness analysis covers weather-noise, demand, mains-
+  temperature, and PCM-latent-heat uncertainty (all applicable now that
+  every selected design is a real PCM, not the plain tank); pump/
   heat-transfer-coefficient and manufacturing-tolerance uncertainty (also
   listed in the full framework spec §11.1) were not sampled, per the
   40-hr cut list.
-- **Rajasthan-specific, updated 2026-09-14**: all 3 regimes now deploy a
-  real PCM design, and Phase 4's Gate 1–5 battery was run (GO, 5/5 gates
-  clean) — but that Gate battery predates both the safety-shield default
-  and the corrected Phase 7 selection rule, and was never re-run against
-  the shield-enabled physics or against the specific PCM designs now
-  selected (RT45HC / Paraffin-HDPE PCM6 / Paraffin-HDPE PCM3). The PCM
-  physics (`capsule_enthalpy.py`, `heat_transfer.py`) is the same,
-  verified engine used for Tamil Nadu's PCM regime and for Rajasthan's
-  own Phase 3 smoke runs, but a Gate 1–5 re-run specifically against the
-  shielded physics and today's three selected designs has not been done.
-  Treat that as open verification work before fully trusting these
-  numbers the way a from-scratch Gate re-run would justify.
+- **Rajasthan-specific, current as of 2026-09-18**: all 3 regimes deploy
+  a real PCM design (savE® OM55 / PureTemp 60 / PureTemp 58), and Phase
+  4's Gate 1–5 battery has been re-run against the shield-enabled physics
+  with these exact three winning designs as explicit informational
+  checks (see `docs/04_PHASE4_VERIFICATION_GATES.md`'s "shield-vs-winning-
+  designs" section) — GO, 5/5 gates clean, shield confirmed engaging
+  correctly for all three. UNVERIFIED — could not confirm whether
+  `04_PHASE4_VERIFICATION_GATES.md` has itself been re-run against
+  today's (2026-09-18) resynced winners specifically, as opposed to the
+  pre-resync arrangement-restore winners this bullet previously named;
+  check that file directly before relying on this claim for the current
+  PCM set. The PCM physics (`capsule_enthalpy.py`, `heat_transfer.py`) is
+  the same, verified engine used for Tamil Nadu's PCM regime.

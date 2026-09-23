@@ -26,6 +26,17 @@ Output: `results/phase7_surrogate_top_candidates.csv`,
 >   best confirmed candidate from each other arrangement in the same
 >   regime×PCM pool, using the run's own mean surrogate-vs-simulator error
 >   as the noise band.
+> - **2026-09-18** — the whole Objective 1 -> Objective 2 input chain was
+>   resynced (`configs/states/rajasthan.yaml`,
+>   `state_config_version: "state_config_rajasthan_v2.0_2026-09-18-resync"`):
+>   the O1 PCM shortlist per regime changed (cluster0 -> Palmitic-stearic
+>   acid/Expanded graphite / savE(R) OM55 / Myristic acid/NBR-0.5;
+>   cluster1 -> PureTemp 60 / CrodaTherm 60 / n-Heptacosane (C27);
+>   cluster2 -> n-Heptacosane (C27) / PureTemp 58 / PlusICE A58),
+>   superseding the pre-resync RT50/RT45HC/Lauric acid C12 and savE
+>   OM50/PCM3/PCM6 shortlists. Phase 7 was re-run against the resynced
+>   config today (13:43-13:46); every result below is from that re-run,
+>   not the arrangement-restore-only run this section otherwise describes.
 
 ## Method (D2.6) — one pass, not the full active-learning loop
 
@@ -59,81 +70,93 @@ Output: `results/phase7_surrogate_top_candidates.csv`,
 
 ## Result: surrogate accuracy in practice
 
-**Mean surrogate-vs-simulator error across all 60 confirmed candidates:
-0.03% (0/60 exceeded the 15% large-error threshold).** Essentially
-unchanged from the pre-arrangement-restore baseline (0.023%, max 0.090%)
-— the surrogate generalizes across arrangements about as well as it did
-within one. Independent confirmation (beyond Phase 6's hold-out R²) that
-surrogate, geometry engine and simulator are self-consistent.
+**Mean surrogate-vs-simulator error across all 60 confirmed candidates
+(2026-09-18 resynced run): 0.02% (max 0.064%; 0/60 exceeded the 15%
+large-error threshold).** Independent confirmation (beyond Phase 6's
+hold-out R²) that surrogate, geometry engine and simulator are
+self-consistent under the resynced PCM shortlist too.
 Energy-conservation residual across the same 60 full-year runs stayed
-tiny (mean 0.00090%, max 0.0019% of collector energy) — generalising
+tiny (mean 0.00029%, max 0.00037% of collector energy) — generalising
 Gate 1's 7-case result to the whole search.
 
 ## Result: deployable design per regime (arrangement-restored search)
 
 | Regime | Winning PCM | Arrangement | Diameter (m) | Count | Flow (kg/s) | Useful energy (kWh) | Solar fraction | Max water T (°C) | Max PCM T (°C) | Margin to nearest limit | Arrangement rationale |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 0 | **RT50** | staggered | 0.0409 | 11 | 0.0267 | 1586.89 | 54.99% | 68.7 | 62.1 | 2.90 °C (to 65 °C PCM) | Only arrangement `staggered` was confirmed for this regime/PCM pool |
-| 1 | **Paraffin/HDPE PCM3** | staggered | 0.0413 | 8 | 0.0359 | 1674.69 | 58.25% | 72.1 | 62.2 | 2.82 °C (to 65 °C PCM) | Tied within noise (margin ~0.00% ≤ 0.03% noise band) against `radial`/`single-layer` |
-| 2 | **savE® OM50** | **radial** | 0.0425 | 31 | 0.0244 | 1593.82 | 54.04% | 68.9 | 62.2 | 2.76 °C (to 65 °C PCM) | Tied within noise (margin ~0.00% ≤ 0.03% noise band) against `staggered`/`single-layer` |
+| 0 | **savE® OM55** | single-layer | 0.04068 | 9 | 0.01648 | 1584.88 | 54.98% | 68.68 | 62.90 | 2.10 °C (to 65 °C PCM) | Tied within noise (margin=-0.06% ≤ 0.02% noise band) against `single-layer` |
+| 1 | **PureTemp 60** | staggered | 0.04263 | 10 | 0.01230 | 1844.48 | 61.60% | 72.06 | 63.35 | 1.65 °C (to 65 °C PCM) | Tied within noise (margin=-0.00% ≤ 0.02% noise band) against `single-layer`/`staggered` |
+| 2 | **PureTemp 58** | staggered | 0.04524 | 9 | 0.01851 | 1789.95 | 58.21% | 72.02 | 63.17 | 1.83 °C (to 65 °C PCM) | Tied within noise (margin=0.00% ≤ 0.02% noise band) against `radial`/`single-layer`/`staggered` |
 
 All three deployable designs are PCM (plain tank excluded from the
 winner pool per the 2026-09-14 selection-rule correction) and all clear
 temperature safety under the rule-based safety shield
 (`system_config_shared.yaml: safety_shield.enabled`, adopted 2026-09-13
 — see `09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §6-§8). **These winners
-differ from the pre-arrangement-restore run** (which selected RT45HC /
-Paraffin-HDPE-PCM6 / Paraffin-HDPE-PCM3) — expected, not a regression: the
-widened count bound (8–37, was 8–24), the 600-candidate search (was 400),
-and arrangement now entering the candidate pool all genuinely change
-which designs the surrogate proposes and which survive Phase 2's gate, so
-a different near-tied winner can emerge from the same underlying PCM
-shortlist and safety shield. Regime 2's winner is now **radial**, not
-staggered — the first regime where a non-staggered arrangement actually
-wins outright (though within Phase 6's near-zero-importance noise band,
-see "Arrangement did or did not decide the outcome" below).
+are from today's (2026-09-18) resynced run** — the O1 → O2 input chain
+was rebuilt (`configs/states/rajasthan.yaml`
+`state_config_rajasthan_v2.0_2026-09-18-resync`), replacing the prior
+RT50 / Paraffin-HDPE PCM3 / savE® OM50 (radial) winners (themselves the
+arrangement-restore-run winners, which had in turn replaced RT45HC /
+Paraffin-HDPE-PCM6 / Paraffin-HDPE-PCM3) with the current
+savE® OM55 (single-layer) / PureTemp 60 (staggered) / PureTemp 58
+(staggered) set — expected, not a regression: the resync changed which
+PCMs are even in each regime's shortlist, on top of the widened count
+bound (8–37, was 8–24), the 600-candidate search (was 400), and
+arrangement now entering the candidate pool. None of the three current
+winners is `radial` — all three are decided within Phase 6's
+near-zero-importance noise band, see "Arrangement did or did not decide
+the outcome" below.
 
 ## Top-5 composition per regime×PCM pair — what the search actually surfaced
 
 | Regime / PCM | single-layer | staggered | radial |
 |---|---|---|---|
-| 0 / RT50 | 0 | 5 | 0 |
-| 0 / RT45HC | 0 | 5 | 0 |
-| 0 / Lauric acid (C12) | 1 | 3 | 1 |
-| 0 / NONE_plain_tank | 3 | 0 | 2 |
-| 1 / savE® OM50 | 2 | 3 | 0 |
-| 1 / Paraffin/HDPE PCM3 | 1 | 3 | 1 |
-| 1 / Paraffin/HDPE PCM6 | 0 | 1 | 4 |
-| 1 / NONE_plain_tank | 3 | 1 | 1 |
-| 2 / savE® OM50 | 1 | 1 | 3 |
-| 2 / Paraffin/HDPE PCM3 | 3 | 1 | 1 |
-| 2 / Paraffin/HDPE PCM6 | 2 | 1 | 2 |
-| 2 / NONE_plain_tank | 3 | 2 | 0 |
+| 0 / Palmitic-stearic acid/Expanded graphite | 2 | 0 | 3 |
+| 0 / savE® OM55 | 2 | 0 | 3 |
+| 0 / Myristic acid/NBR-0.5 | 3 | 0 | 2 |
+| 0 / NONE_plain_tank | 1 | 1 | 3 |
+| 1 / PureTemp 60 | 2 | 3 | 0 |
+| 1 / CrodaTherm 60 | 2 | 3 | 0 |
+| 1 / n-Heptacosane (C27) | 1 | 2 | 2 |
+| 1 / NONE_plain_tank | 2 | 3 | 0 |
+| 2 / n-Heptacosane (C27) | 2 | 3 | 0 |
+| 2 / PureTemp 58 | 2 | 2 | 1 |
+| 2 / PlusICE A58 | 0 | 3 | 2 |
+| 2 / NONE_plain_tank | 1 | 2 | 2 |
 
-Composition varies considerably by pair — some pairs (0/RT50, 0/RT45HC)
-came back 5/5 staggered, while others (1/Paraffin-HDPE-PCM6) came back
-4/5 radial. Consistent with Phase 6's finding that arrangement has
-near-zero effect on predicted useful energy: which arrangement lands in a
-given top-5 is close to a coin flip rather than a strong preference, so
-this scatter is the expected consequence of that finding, not a
-search-quality problem.
+(Rebuilt from today's, 2026-09-18, resynced `phase7_surrogate_top_candidates.csv`
+— the old table's RT50/RT45HC/Lauric acid C12 and savE OM50/Paraffin-HDPE
+PCM3/PCM6 rows no longer exist; the current shortlist is per
+`configs/states/rajasthan.yaml`.) Composition still varies considerably
+by pair — some pairs (0/Palmitic-stearic, 0/savE OM55) lean radial
+(3/5), while regime 1's pairs lean staggered (3/5 in all three). No pair
+is unanimous (5/5) this run, but the spread is still consistent with
+Phase 6's finding that arrangement has near-zero effect on predicted
+useful energy: which arrangement lands in a given top-5 is close to a
+coin flip rather than a strong preference, so this scatter is the
+expected consequence of that finding, not a search-quality problem.
 
 ## Arrangement did or did not decide the outcome — reported per regime, not forced to a single story
 
-- **Regime 0 (RT50):** decisive by elimination, not by margin — `staggered`
-  was the *only* arrangement that survived into this pair's top-5 pool in
-  this search (0 single-layer, 0 radial candidates reached the confirmed
-  set at all for RT50). No comparison against another arrangement was
-  possible for this specific PCM.
-- **Regime 1 (Paraffin/HDPE PCM3):** all three arrangements' best
-  simulator-confirmed useful energy landed within the run's own 0.03%
-  surrogate-vs-simulator noise band of each other — reported honestly as
-  "tied within noise," per the consolidated plan's instruction not to
-  force a single winner when the margin is inside noise.
-- **Regime 2 (savE® OM50):** same as Regime 1 — tied within noise, with
-  `radial` winning the tie-break (lower pump energy / larger margin among
-  near-identical candidates), not because it produced meaningfully more
-  useful energy.
+- **Regime 0 (savE® OM55):** reported as tied within noise by
+  `select_deployable.py`'s own rationale text (margin=-0.06% vs. a 0.02%
+  noise band, tied arrangements list = `['single-layer']`) — both
+  `single-layer` and `radial` savE® OM55 candidates were confirmed for
+  this regime/PCM pool (no `staggered` one was), but the code's own tie
+  classification only names `single-layer` as tied; treated here as a
+  UNVERIFIED — could not confirm whether this is a deliberate "only
+  within-noise-band alternatives count as tied" rule or a reporting quirk,
+  since `radial`'s own best confirmed energy (1585.80 kWh) is actually
+  higher than the `single-layer` winner's (1584.88 kWh) but is not listed
+  as tied.
+- **Regime 1 (PureTemp 60):** all confirmed arrangements' best
+  simulator-confirmed useful energy landed within the run's own 0.02%
+  surrogate-vs-simulator noise band of each other — reported as "tied
+  within noise."
+- **Regime 2 (PureTemp 58):** same as Regimes 0/1 — tied within noise
+  across `radial`/`single-layer`/`staggered`, with `staggered` winning
+  the tie-break (lower pump energy / larger margin among near-identical
+  candidates), not because it produced meaningfully more useful energy.
 
 None of this contradicts Phase 6's arrangement-importance finding — if
 anything it is exactly what near-zero importance predicts: arrangement
@@ -152,16 +175,21 @@ under the default safety shield every one of the 60 confirmed candidates
 
 | Regime | Best plain tank (kWh) | Best PCM found (kWh) | PCM's edge | PCM meets safety? |
 |---|---|---|---|---|
-| 0 | 1585.70 | 1588.34 (RT45HC, staggered) | +0.17% | **Yes** |
-| 1 | 1673.34 | 1675.07 (savE® OM50, staggered) | +0.10% | **Yes** |
-| 2 | 1592.27 | 1593.86 (savE® OM50, radial) | +0.10% | **Yes** |
+| 0 | 1584.82 | 1585.93 (Palmitic-stearic acid/Expanded graphite, radial) | +0.07% | **Yes** |
+| 1 | 1843.39 | 1844.91 (n-Heptacosane (C27), staggered) | +0.08% | **Yes** |
+| 2 | 1788.92 | 1790.22 (n-Heptacosane (C27), staggered) | +0.07% | **Yes** |
 
 (Note: the single best-simulated PCM candidate per regime above is not
 always the same PCM as the deployable winner in the table further up —
 several PCM candidates land within the 5% Pareto tolerance of each other,
 and the selection rule's tie-break — min pump energy, then PCM mass, then
 capsule count, then max margin — picks among that near-tied pool, not
-simply the single highest-energy row.)
+simply the single highest-energy row. E.g. regime 0's best-found PCM
+above is `Palmitic-stearic acid/Expanded graphite`, but the deployable
+winner is `savE® OM55`; regimes 1/2's best-found PCM above is
+`n-Heptacosane (C27)`, but the deployable winners are `PureTemp 60` /
+`PureTemp 58` respectively — all within Pareto tolerance of the
+best-found row.)
 
 Same physical story as before arrangement was restored, and as this
 project's own Phase 4 Gate 3 / Phase 5 DOE: within these bounds and this
@@ -171,6 +199,15 @@ plain water — two orders of magnitude below the pre-declared 5% Pareto
 tolerance. Restoring arrangement as a search variable did not change this
 qualitative conclusion; it added a fourth searched dimension without
 producing a new, decisive result along it.
+
+**Note on why this thin margin is the reported result, not the resized
+alternative:** `09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §7 already shows
+a strictly better result is available — resizing the frozen 50 L tank to
+IS 12976:2023's 75 L/m² reference ratio (112.5 L) makes every shortlisted
+PCM beat plain water more decisively **without** the safety shield at
+all. It was deliberately not adopted here because it requires changing a
+shared, frozen, hashed config file that all four states re-run from, out
+of this 40-hr pass's scope — not because it was unknown.
 
 ## Deviations from the full framework doc
 

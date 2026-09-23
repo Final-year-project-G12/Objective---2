@@ -34,8 +34,9 @@ import pandas as pd
 from config import RESULTS_DIR
 from src.design.schema import DesignVector
 from src.design.constraints import check_design
-from src.io_utils import load_design_bounds, load_system_config, load_state_config
+from src.io_utils import load_design_bounds, load_system_config, load_state_config, write_manifest_sidecar
 from src.surrogate.features import build_feature_table, feature_target_split
+from src.doe.generate_cases import _stable_hash
 
 N_CANDIDATES_PER_PAIR = 600   # widened 400->600 on 2026-09-17 when arrangement was restored
                                 # as a searched variable (docs/07_PROMPT_PHASE7_OPTIMIZE.md step 2):
@@ -76,7 +77,7 @@ def _candidate_row(regime_id, pcm_id, design: DesignVector, geom: dict) -> dict:
 
 def search_regime_pcm(state: str, regime_id: int, pcm_id, models: dict, feature_cols: list,
                        n_candidates: int = N_CANDIDATES_PER_PAIR, top_n: int = 5, seed: int = None):
-    seed = seed if seed is not None else SEARCH_SEED + regime_id * 97 + (hash(pcm_id) % 997 if pcm_id else 0)
+    seed = seed if seed is not None else SEARCH_SEED + regime_id * 97 + (_stable_hash(pcm_id) % 997 if pcm_id else 0)
     bounds = load_design_bounds()
     system_config = load_system_config()
     diam, count, flow, arrangement = _random_candidates(bounds, n_candidates, seed)
@@ -106,9 +107,19 @@ def search_regime_pcm(state: str, regime_id: int, pcm_id, models: dict, feature_
             cand_df[f"pred_{target}"] = model.predict(X)
 
     cand_df = cand_df.sort_values("pred_useful_energy_kWh", ascending=False)
-    top = cand_df.head(top_n).reset_index(drop=True)
 
-    # Log which arrangement(s) appear in this pair's top 5 (docs/07_PROMPT_PHASE7_OPTIMIZE.md step 3).
+    # Per-arrangement quota (step 3.3, 2026-09-20 fix plan): a flat top_n by
+    # predicted useful energy let one arrangement dominate the surrogate
+    # ranking, so the other arrangements never reached simulator confirmation
+    # at all. Take the top (top_n // n_arrangements) candidates from EACH
+    # arrangement instead, so every arrangement gets a shot at confirm_candidates().
+    quota = max(1, top_n // len(ARRANGEMENTS))
+    top = (cand_df.groupby("arrangement", group_keys=False)
+                   .apply(lambda g: g.head(quota))
+                   .sort_values("pred_useful_energy_kWh", ascending=False)
+                   .reset_index(drop=True))
+
+    # Log which arrangement(s) appear in this pair's top N (docs/07_PROMPT_PHASE7_OPTIMIZE.md step 3).
     if len(top):
         counts = top["arrangement"].value_counts()
         composition = ", ".join(f"{counts.get(a, 0)} {a}" for a in ARRANGEMENTS)
@@ -145,6 +156,10 @@ def search_all_pairs(state: str, top_n: int = 5):
     print(f"Surrogate proposed {len(result)} top candidates "
           f"across {result.groupby(['regime_id', 'pcm_id']).ngroups if len(result) else 0} regime x PCM pairs.")
     print(f"Saved: {TOP_CANDIDATES_PATH}")
+    manifest_path = write_manifest_sidecar(TOP_CANDIDATES_PATH, state,
+                                            extra={"n_candidates_per_pair": N_CANDIDATES_PER_PAIR,
+                                                   "search_seed_base": SEARCH_SEED, "top_n": top_n})
+    print(f"Saved: {manifest_path}")
     return result
 
 

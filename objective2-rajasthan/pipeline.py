@@ -24,7 +24,7 @@ objective2-tamilnadu/pipeline.py exactly.
 
 USAGE
   python pipeline.py --state rajasthan --stage geometry
-  python pipeline.py --state rajasthan --stage simulate --cluster 0 --pcm "RT50" --diameter 0.08 --count 24 --flow 0.025
+  python pipeline.py --state rajasthan --stage simulate --cluster 0 --pcm "Palmitic-stearic acid/Expanded graphite" --diameter 0.08 --count 37 --flow 0.025
   python pipeline.py --state rajasthan --stage simulate --cluster 0 --no-pcm
   python pipeline.py --state rajasthan --stage verify
   python pipeline.py --state rajasthan --stage doe
@@ -60,7 +60,8 @@ def main():
                     choices=["geometry", "simulate", "verify", "doe", "surrogate", "optimize",
                              "robustness", "handoff", "plots"])
     ap.add_argument("--cluster", type=int, default=0, help="climate regime cluster_id (simulate stage)")
-    ap.add_argument("--pcm", default="RT50", help="PCM name from mcdm_topk_by_cluster.csv")
+    ap.add_argument("--pcm", default="Palmitic-stearic acid/Expanded graphite",
+                    help="PCM name from mcdm_topk_by_cluster.csv")
     ap.add_argument("--diameter", type=float, default=0.08, help="capsule diameter, m")
     ap.add_argument("--count", type=int, default=19, help="capsule count")
     ap.add_argument("--flow", type=float, default=0.030, help="flow rate, kg/s")

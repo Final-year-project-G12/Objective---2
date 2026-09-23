@@ -52,7 +52,8 @@ DEPLOYABLE_PATH = RESULTS_DIR / "phase7_deployable_design_per_regime.csv"
 ROBUSTNESS_PATH = RESULTS_DIR / "phase8_robustness.csv"
 
 # Rajasthan Objective 1 rank-1 PCM for cluster 0 (matches src/verify/gates.py).
-PCM_C0 = "RT50"
+# Updated 2026-09-18 re-sync (was RT50, the pre-T_DELIVERY-correction shortlist's rank-1).
+PCM_C0 = "Palmitic-stearic acid/Expanded graphite"
 
 
 def _save(fig: go.Figure, name: str, out_dir, width=1000, height=620):
@@ -176,12 +177,13 @@ def phase3_energy_breakdown(state, out_dir, metrics):
 
 def phase4_gate1_residuals(state, out_dir):
     # mirrors src/verify/gates.py::gate1_conservation for Rajasthan (3 clusters)
+    count_ceiling = load_design_bounds()["capsule_count"]["max"]
     cases = [
-        ("A: cluster0/RT50", 0, "RT50", DesignVector(0.05, 14, 0.030, capsule_arrangement="staggered")),
-        ("B: cluster1/savE OM50", 1, "savE® OM50", DesignVector(0.04, 20, 0.020, capsule_arrangement="staggered")),
-        ("C: cluster2/savE OM50", 2, "savE® OM50", DesignVector(0.08, 10, 0.045, capsule_arrangement="staggered")),
+        ("A: cluster0/Palmitic-stearic acid/Expanded graphite", 0, PCM_C0, DesignVector(0.05, 14, 0.030, capsule_arrangement="staggered")),
+        ("B: cluster1/PureTemp 60", 1, "PureTemp 60", DesignVector(0.04, 20, 0.020, capsule_arrangement="staggered")),
+        ("C: cluster2/n-Heptacosane (C27)", 2, "n-Heptacosane (C27)", DesignVector(0.08, 10, 0.045, capsule_arrangement="staggered")),
         ("D: cluster2/no-PCM", 2, None, DesignVector(0.05, 14, 0.030, capsule_arrangement="staggered")),
-        ("E: cluster0/bounds-extreme", 0, "RT50", DesignVector(0.08, 24, 0.050, capsule_arrangement="staggered")),
+        ("E: cluster0/bounds-extreme", 0, PCM_C0, DesignVector(0.08, count_ceiling, 0.050, capsule_arrangement="staggered")),
     ]
     names, residuals = [], []
     for name, cid, pcm, design in cases:
@@ -200,13 +202,20 @@ def phase4_gate1_residuals(state, out_dir):
 
 def phase4_gate3_baseline_comparison(state, out_dir):
     cid, pcm = 0, PCM_C0
+    bounds = load_design_bounds()
+    count_ceiling = bounds["capsule_count"]["max"]
     plain = run_case(state, cid, None, DesignVector(0.08, 14, 0.030, capsule_arrangement="staggered"), record_hourly=False)["metrics"]
-    fixed = run_case(state, cid, pcm, DesignVector(0.08, 24, 0.030, capsule_arrangement="staggered"), record_hourly=False)["metrics"]
-    optimized = run_case(state, cid, pcm, DesignVector(0.08, 19, 0.040, capsule_arrangement="staggered"), record_hourly=False)["metrics"]
-    matched = run_case(state, cid, pcm, DesignVector(0.08, 24, 0.030, capsule_arrangement="staggered"), record_hourly=False,
+    fixed_design = DesignVector(0.08, count_ceiling, 0.030, capsule_arrangement="staggered")
+    fixed_geom = check_design(fixed_design, load_system_config(), bounds)
+    fixed_fraction_pct = fixed_geom["pcm_volume_fraction"] * 100.0
+    fixed = run_case(state, cid, pcm, fixed_design, record_hourly=False)["metrics"]
+    optimized_design = DesignVector(0.08, 19, 0.040, capsule_arrangement="staggered")
+    optimized_fraction_pct = check_design(optimized_design, load_system_config(), bounds)["pcm_volume_fraction"] * 100.0
+    optimized = run_case(state, cid, pcm, optimized_design, record_hourly=False)["metrics"]
+    matched = run_case(state, cid, pcm, DesignVector(0.08, count_ceiling, 0.030, capsule_arrangement="staggered"), record_hourly=False,
                         pcm_record_overrides={"Tm_C": 40.0})["metrics"]
 
-    labels = ["Plain tank", f"Fixed PCM\n({pcm}, ~12.9%)", "Optimized-looking\n(~10.2%)",
+    labels = ["Plain tank", f"Fixed PCM\n({pcm}, ~{fixed_fraction_pct:.1f}%)", f"Optimized-looking\n(~{optimized_fraction_pct:.1f}%)",
               "Capability check\n(synthetic Tm=40C PCM)"]
     sf = [m["solar_fraction"] * 100 for m in (plain, fixed, optimized, matched)]
     fig = go.Figure(go.Bar(x=labels, y=sf, marker_color=["#7f7f7f", "#d62728", "#ff7f0e", "#2ca02c"],

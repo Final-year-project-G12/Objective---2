@@ -22,9 +22,13 @@ thresholds, verdict rules and structure are byte-for-byte the Tamil Nadu
 reference. Only the *state-specific test inputs* differ, and only because
 they must (framework doc "what VARIES per state"):
   - climate regimes: Rajasthan has 3 Level-A clusters (0,1,2), not TN's 5.
-  - PCM names: Rajasthan's Objective 1 shortlist is RT50 / RT45HC /
-    Lauric acid (C12) (cluster 0) and savE(R) OM50 / Paraffin/HDPE PCM3 /
-    PCM6 (clusters 1,2) — see configs/states/rajasthan.yaml.
+  - PCM names: Rajasthan's Objective 1 rank-1 shortlist (current as of the
+    2026-09-18 re-sync) is Palmitic-stearic acid/Expanded graphite
+    (cluster 0), PureTemp 60 (cluster 1), n-Heptacosane (C27) (cluster 2)
+    — see PCM_C0/PCM_C1/PCM_C2 below and configs/states/rajasthan.yaml.
+    (Earlier RT50/RT45HC/savE OM50-era names were read off a
+    pre-T_DELIVERY-correction O1 run and are stale — see that file's
+    2026-09-18 re-sync note.)
   - one extra INFORMATIONAL Gate 2 check records Rajasthan Cluster 0's
     plain-tank overheating (docs/00_MASTER_OVERVIEW.md "one finding worth
     reading before Phase 4"); it never changes a pass/fail verdict.
@@ -33,6 +37,8 @@ they must (framework doc "what VARIES per state"):
 import math
 import sys
 from pathlib import Path
+
+import pandas as pd
 
 from config import BASE_DIR, RESULTS_DIR
 from src.design.schema import DesignVector
@@ -45,9 +51,12 @@ from src.simulation.run_case import run_case
 
 # Rajasthan Objective 1 MCDM rank-1 PCM per Level-A cluster
 # (configs/states/rajasthan.yaml -> regimes[*].pcm_shortlist[0]).
-PCM_C0 = "RT50"
-PCM_C1 = "savE® OM50"
-PCM_C2 = "savE® OM50"
+# Updated 2026-09-18 re-sync — RT50/savE OM50 were the pre-T_DELIVERY-
+# correction shortlist's rank-1 picks; still present in pcm_database_
+# rajasthan.csv, but no longer O1's current rank-1 PCM per cluster.
+PCM_C0 = "Palmitic-stearic acid/Expanded graphite"
+PCM_C1 = "PureTemp 60"
+PCM_C2 = "n-Heptacosane (C27)"
 
 
 # ─────────────────────────────────────────────────────────────────────────
@@ -126,17 +135,17 @@ def gate1_conservation(state: str, log):
     warn_pct = system_config["verification"]["gate1_residual_warn_pct"]
 
     # Original 5 diverse cases (kept, all staggered) + 2 new cases covering
-    # single-layer and radial, per docs/04_PROMPT_PHASE4_GATES.md step 1.
+    # single-layer and radial, per docs/04_PHASE4_VERIFICATION_GATES.md step 1.
     # Arrangement doesn't touch energy accounting (Phase 3 finding), so all
     # 7 are still expected far under the 0.1% pass threshold.
     cases = [
-        ("A: cluster0 / RT50 / mid design", 0, PCM_C0, DesignVector(0.05, 14, 0.030, capsule_arrangement="staggered")),
-        ("B: cluster1 / savE OM50 / small-capsule design", 1, PCM_C1, DesignVector(0.04, 20, 0.020, capsule_arrangement="staggered")),
-        ("C: cluster2 / savE OM50 / large-capsule design", 2, PCM_C2, DesignVector(0.08, 10, 0.045, capsule_arrangement="staggered")),
+        (f"A: cluster0 / {PCM_C0} / mid design", 0, PCM_C0, DesignVector(0.05, 14, 0.030, capsule_arrangement="staggered")),
+        (f"B: cluster1 / {PCM_C1} / small-capsule design", 1, PCM_C1, DesignVector(0.04, 20, 0.020, capsule_arrangement="staggered")),
+        (f"C: cluster2 / {PCM_C2} / large-capsule design", 2, PCM_C2, DesignVector(0.08, 10, 0.045, capsule_arrangement="staggered")),
         ("D: cluster2 / no-PCM plain-tank baseline", 2, None, DesignVector(0.05, 14, 0.030, capsule_arrangement="staggered")),
-        ("E: cluster0 / RT50 / bounds-extreme design", 0, PCM_C0, DesignVector(0.08, 24, 0.050, capsule_arrangement="staggered")),
-        ("F: cluster1 / savE OM50 / single-layer", 1, PCM_C1, DesignVector(0.04, 20, 0.020, capsule_arrangement="single-layer")),
-        ("G: cluster2 / savE OM50 / radial", 2, PCM_C2, DesignVector(0.08, 10, 0.045, capsule_arrangement="radial")),
+        (f"E: cluster0 / {PCM_C0} / bounds-extreme design", 0, PCM_C0, DesignVector(0.08, 37, 0.050, capsule_arrangement="staggered")),
+        (f"F: cluster1 / {PCM_C1} / single-layer", 1, PCM_C1, DesignVector(0.04, 20, 0.020, capsule_arrangement="single-layer")),
+        (f"G: cluster2 / {PCM_C2} / radial", 2, PCM_C2, DesignVector(0.08, 10, 0.045, capsule_arrangement="radial")),
     ]
 
     residuals = []
@@ -257,7 +266,7 @@ def gate2_limiting_cases(state: str, log):
                     f"gap@0.002kg/s={gap_low:.3f} C, gap@0.20kg/s={gap_high:.3f} C"))
 
     # 12. Capsules removed / allocated PCM volume = 0 -> identical to no-PCM case.
-    #     Repeated per arrangement since 2026-09-17 (docs/04_PROMPT_PHASE4_GATES.md
+    #     Repeated per arrangement since 2026-09-17 (docs/04_PHASE4_VERIFICATION_GATES.md
     #     step 2) — radial packing in particular may hit overlap/passage_blocked
     #     differently than staggered at small N, so this is verified, not assumed.
     for arrangement in ("single-layer", "staggered", "radial"):
@@ -296,7 +305,8 @@ def gate2_limiting_cases(state: str, log):
     for name, ok, detail in checks:
         log(f"  [{'PASS' if ok else 'FAIL'}] {name:58s} {detail}")
     log(f"\n  Gate 2: {n_pass}/{len(gating)} limiting cases passed "
-        f"(+1 informational Cluster-0 overheat record, non-gating).")
+        f"(+2 informational: Cluster-0 overheat record and oversized-diameter "
+        f"cross-reference, both non-gating; {len(checks)} rows printed above in total).")
     verdict = "PASS" if n_pass == len(gating) else ("PASS-WITH-CAVEAT" if n_pass >= len(gating) - 1 else "FAIL")
     log(f"  Gate 2 verdict: {verdict}")
     return {"gate": 2, "verdict": verdict, "n_pass": n_pass, "n_total": len(gating), "checks": checks}
@@ -356,7 +366,7 @@ def gate3_baseline_comparison(state: str, log):
     # into the SAME geometry, does it beat plain tank? This isolates "is the
     # simulator capable of rewarding a well-matched PCM" from "does THIS
     # shortlisted PCM happen to suit THIS 50 L direct-encapsulation design".
-    matched_tm = run_case(state, cid, pcm, DesignVector(0.08, 24, 0.030, capsule_arrangement="staggered"), record_hourly=True,
+    matched_tm = run_case(state, cid, pcm, DesignVector(0.08, count_ceiling, 0.030, capsule_arrangement="staggered"), record_hourly=True,
                            pcm_record_overrides={"Tm_C": 40.0})
     simulator_can_reward_matched_pcm = (
         matched_tm["metrics"]["solar_fraction"] >= plain["metrics"]["solar_fraction"]
@@ -370,15 +380,16 @@ def gate3_baseline_comparison(state: str, log):
 
     # --- no-loss vs with-loss diagnostic (Bug-Fix 1) --------------------
     with_loss = fixed
-    no_loss = run_case(state, cid, pcm, DesignVector(0.08, 24, 0.030, capsule_arrangement="staggered"), record_hourly=False,
+    no_loss = run_case(state, cid, pcm, DesignVector(0.08, count_ceiling, 0.030, capsule_arrangement="staggered"), record_hourly=False,
                         system_config_overrides={"tank": {"U_tank_W_m2K": 0.0}})
     loss_term_active = no_loss["metrics"]["solar_fraction"] >= with_loss["metrics"]["solar_fraction"]
     log(f"\n  Ambient-loss diagnostic: solar_fraction with-loss={with_loss['metrics']['solar_fraction']*100:.2f}%  "
         f"no-loss={no_loss['metrics']['solar_fraction']*100:.2f}%  "
         f"(no-loss >= with-loss confirms the U_tank term is active: {loss_term_active})")
 
+    fixed_fraction_pct = fixed["geometry"]["pcm_volume_fraction"] * 100.0
     log(f"\n  {pcm} (Objective 1's actual rank-1 PCM for Cluster 0, Tm={pcm_Tm_C:.1f}C) beats plain tank "
-        f"in THIS 50L/12.9%-fraction design: {pcm_beats_plain}")
+        f"in THIS 50L/{fixed_fraction_pct:.1f}%-fraction design: {pcm_beats_plain}")
     if not pcm_beats_plain:
         log(f"  HONEST FINDING (not a simulator defect -- see capability check above): at this")
         log(f"  tank size and PCM fraction, {pcm}'s mean liquid fraction stays low (rarely reaches")
@@ -497,6 +508,66 @@ def gate5_sensitivity(state: str, log):
 
 
 # ─────────────────────────────────────────────────────────────────────────
+# INFORMATIONAL — shield confirmation against today's actual Phase 7 winners
+# ─────────────────────────────────────────────────────────────────────────
+
+def gate_shield_confirmation_for_winners(state: str, log):
+    """Non-gating, informational (same convention as Gate 2's Cluster-0
+    overheat line): re-runs Phase 7's ACTUAL simulator-confirmed deployable
+    designs — not a generic baseline/boundary design — through run_case()
+    with the safety shield active, and confirms the shield genuinely
+    engages and every design clears temperature safety. Requires
+    `results/phase7_deployable_design_per_regime.csv` to exist (i.e. Phase
+    7 has already been run at least once) — if it doesn't yet, this check
+    is skipped with a note, and never blocks the Go/No-Go verdict either
+    way. See docs/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md's note that the
+    Gate battery had not previously been checked against the specific
+    winning designs, only generic boundary/baseline ones."""
+    log("\n" + "=" * 72)
+    log("INFORMATIONAL — safety-shield confirmation against today's Phase 7 winners")
+    log("=" * 72)
+
+    deployable_path = RESULTS_DIR / "phase7_deployable_design_per_regime.csv"
+    if not deployable_path.exists():
+        log("  [SKIP] phase7_deployable_design_per_regime.csv not found yet — "
+            "run --stage optimize first. This never blocks Go/No-Go.")
+        return {"gate": "shield_confirmation", "verdict": "SKIPPED", "checks": []}
+
+    system_config = load_system_config()
+    max_water_C = system_config["safety"]["max_water_temp_C"]
+    max_pcm_C = system_config["safety"]["max_pcm_temp_C"]
+    shield_on = bool(system_config.get("safety_shield", {}).get("enabled", False))
+
+    deployable = pd.read_csv(deployable_path)
+    checks = []
+    for _, row in deployable.iterrows():
+        cid = int(row["regime_id"])
+        pcm_id = None if row["pcm_id"] == "NONE_plain_tank" else row["pcm_id"]
+        design = DesignVector(float(row["capsule_diameter_m"]), int(row["n_capsule"]),
+                               float(row["flow_rate_kg_s"]), capsule_arrangement=row["arrangement"])
+        out = run_case(state, cid, pcm_id, design, record_hourly=True)
+        m = out["metrics"]
+        shield_activated = (m["n_shield_water_activations"] > 0 or m["n_shield_pcm_activations"] > 0)
+        clears_water = m["max_water_temp_C"] <= max_water_C
+        clears_pcm = (pcm_id is None) or (m["max_pcm_temp_C"] <= max_pcm_C)
+        ok = clears_water and clears_pcm and m["n_safety_violations"] == 0
+        label = f"regime {cid} / {row['pcm_id']} / {row['arrangement']}"
+        checks.append((label, ok, shield_activated,
+                       f"max_water={m['max_water_temp_C']:.2f}C max_pcm={m.get('max_pcm_temp_C', float('nan')):.2f}C "
+                       f"shield_water_activations={m['n_shield_water_activations']} "
+                       f"shield_pcm_activations={m['n_shield_pcm_activations']} "
+                       f"n_safety_violations={m['n_safety_violations']}"))
+        log(f"  [{'PASS' if ok else 'FAIL'}] {label:48s} shield_active={shield_activated!s:5s} {checks[-1][3]}")
+
+    n_pass = sum(1 for _, ok, _, _ in checks if ok)
+    verdict = "PASS" if n_pass == len(checks) else "FAIL"
+    log(f"\n  {n_pass}/{len(checks)} of today's Phase 7 winning designs clear temperature safety "
+        f"under the {'active' if shield_on else 'DISABLED'} shield.")
+    log(f"  Shield confirmation verdict: {verdict} (informational — does not affect Go/No-Go)")
+    return {"gate": "shield_confirmation", "verdict": verdict, "checks": checks}
+
+
+# ─────────────────────────────────────────────────────────────────────────
 # Runner
 # ─────────────────────────────────────────────────────────────────────────
 
@@ -521,6 +592,7 @@ def run_all_gates(state: str):
     g3 = gate3_baseline_comparison(state, log)
     g4 = gate4_calibration(state, g3["optimized_metrics"], log)
     g5 = gate5_sensitivity(state, log)
+    gate_shield_confirmation_for_winners(state, log)
 
     gates = [g1, g2, g3, g4, g5]
     n_clean_pass = sum(1 for g in gates if g["verdict"] == "PASS")
@@ -536,7 +608,7 @@ def run_all_gates(state: str):
     log(f"\n  Go/No-Go (framework doc Phase 4 rule: residual<0.5% AND >=3/5 gates clean): {go_no_go}")
     if go_no_go == "GO":
         log(f"  Simulator released as sim_v2_{state} (tag it at commit time — bumped from sim_v1_{state} "
-            f"2026-09-17 when arrangement was restored as a searched variable, docs/04_PROMPT_PHASE4_GATES.md).")
+            f"2026-09-17 when arrangement was restored as a searched variable, docs/04_PHASE4_VERIFICATION_GATES.md).")
     else:
         log("  STOP — repair before generating any Phase 5 DOE cases.")
 

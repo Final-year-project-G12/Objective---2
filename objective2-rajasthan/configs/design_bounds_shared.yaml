@@ -26,15 +26,57 @@
 # caught explicitly (reason code in src/design/constraints.py).
 # ============================================================================
 
-version: "config_v1.0_2026-09-05"
+version: "config_v1.2_2026-09-20-rajasthan-loading-floor-fix"
+# v1.1 (Rajasthan-only divergence, decision D4 of the 2026-09-20 fix plan --
+# "Objective2 rajasthan fix plan.md" -- NOT yet propagated to Tamil Nadu,
+# Assam or Uttarakhand's copies of this file; see
+# docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md):
+# capsule_diameter_m.min raised 0.02->0.04. Since pcm_thickness_m is
+# DERIVED as diameter/2 (see note below) and pcm_thickness_m.min=0.02,
+# any diameter below 0.04 always failed the thickness bound check in
+# src/design/constraints.py -- the entire [0.02, 0.04) slice of the
+# diameter range was dead space, unreachable by definition, not a
+# sampling-coverage problem. This was the root cause behind step 5's DOE
+# audit finding "54 of 108 boundary cases are minimum-diameter corners
+# that cannot be built": ALL of them, at every arrangement/flow/count
+# combination, because d=0.02 always violates pcm_thickness_m.min before
+# any packing/passage/pressure check is even reached. It also silently
+# wasted roughly a quarter of every LHS draw's diameter range (any drawn
+# diameter in [0.02, 0.04) was invalid on this bound alone). Raising the
+# floor to 0.04 removes the dead zone at its source, fixing DOE, search
+# and boundary-case coverage together rather than papering over it with
+# per-corner clipping.
+#
+# v1.2 (same divergence status as v1.1 -- decision D1 of the 2026-09-20 fix
+# plan): pcm_volume_fraction.min dropped 0.10->0.003. The 10% figure was
+# never grounded in a run of this simulator -- scripts/sweep_pcm_loading.py
+# (2026-09-20) swept realized pcm_volume_fraction from 0.54% to 19.84% at
+# each regime's O1 rank-1 PCM and found useful_energy_kWh gain over the
+# plain-tank baseline is POSITIVE only below ~2.5-3% loading (mean +0.04%
+# in the 0.5-2.5% bin across all 3 regimes) and monotonically WORSE as
+# loading rises, reaching -0.62% to -0.87% at the 19.84% ceiling. Enforcing
+# the old 10% floor as a hard rejection (which src/design/geometry.py's
+# below_min_pcm_fraction gate was about to become, per step 3.4) would have
+# rejected every design that actually beats the plain tank and forced the
+# search into the only region that reliably loses to it -- the opposite of
+# what a "minimum viable PCM fraction" gate should do. 0.3% sits just below
+# the smallest fraction reachable under this file's own count_min=8/
+# diameter_min=0.04 bounds (~0.54%), so it is a sanity floor against a
+# future bounds change producing a near-zero-PCM design, not a binding
+# constraint on the current search space. Full sweep table:
+# results/phase3_5_pcm_loading_sweep.csv (per-point) and
+# docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md §11 (per-decile summary).
 
 pcm_thickness_m:        {min: 0.02, max: 0.10}     # derived = diameter/2, checked independently
-capsule_diameter_m:     {min: 0.02, max: 0.08}
+capsule_diameter_m:     {min: 0.04, max: 0.08}
 capsule_count:           {min: 8, max: 37, step: 1}   # integer; widened 24->37, see note above
 capsule_shape:           [sphere]                       # 40-hr: sphere only
 capsule_arrangement:     [single-layer, staggered, radial]   # restored 2026-09-17 (was staggered-only)
-pcm_volume_fraction:     {min: 0.10, max: 0.20}      # derived from N_capsule*V_capsule / V_tank
-pcm_volume_fraction_levels_to_include_in_doe: [0.10, 0.15, 0.20]   # Chen audit baseline
+pcm_volume_fraction:     {min: 0.003, max: 0.20}     # derived from N_capsule*V_capsule / V_tank; min set
+                                                        # from scripts/sweep_pcm_loading.py, see version note
+pcm_volume_fraction_levels_to_include_in_doe: [0.01, 0.02, 0.03]   # updated with the loading-floor fix above --
+                                                                     # the old [0.10, 0.15, 0.20] Chen-audit levels
+                                                                     # sit entirely in the sweep's loss region
 flow_rate_kg_s:          {min: 0.010, max: 0.050}
 
 geometry:

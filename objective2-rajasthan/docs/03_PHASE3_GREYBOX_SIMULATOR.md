@@ -36,7 +36,7 @@ internal stepping.
 | Heat transfer | `heat_transfer.py` | `1/UA_eff = 1/(h_w A_w) + R_wall + R_pcm,eff`; `h_w` via Wakao & Kaguei (1982) packed-bed correlation |
 | Hydraulics | `hydraulic_model.py` (wraps `design/geometry.py`) | Ergun equation, reported separately from thermal energy |
 | Demand | `demand_profile.py` | 300 L/day canonical curve, spread evenly across sub-hourly steps |
-| Tank/water balance | `tank_model.py` | Linear-implicit (closed-form) backward Euler per sub-step, PCM temperature lagged one sub-step |
+| Tank/water balance | `tank_model.py` | Linear-implicit (closed-form) backward Euler per sub-step, PCM temperature lagged one sub-step; rule-based safety shield (bypass) runs inside the same loop — see item 8 below |
 
 ## Documented simplifications (state them in the report, don't hide them)
 
@@ -57,6 +57,18 @@ internal stepping.
    canonical demand file has hourly resolution, not sub-hourly).
 7. **Pressure drop** only models the packed-capsule-bed term (Ergun) —
    pipe/valve losses in the rest of the loop are out of scope.
+8. **Rule-based safety shield** (`tank_model.py`, O2 Fix 2, adopted as the
+   pipeline default `safety_shield.enabled: true` in
+   `system_config_shared.yaml` on 2026-09-13) runs inside the same
+   sub-step loop documented above: a water-side bypass stops circulation
+   once `T_w >= bypass_water_C` (default 72 °C, 3 °C below the 75 °C hard
+   limit), and a PCM-side charge-only block zeroes `UA_eff` once
+   `T_pcm >= bypass_pcm_C` (default 62 °C) **only** while the flow
+   direction would be charging — discharging (PCM cooling back down) is
+   never blocked. This was previously omitted from this table; it is not
+   a separate module but lives inline in `run_year()` (see that file's
+   module docstring for the full mechanism and its IS 12976:2023 §8.2
+   grounding).
 
 None of these are hidden inside the code — each function's docstring
 states which resistance/energy terms are *measured*, *correlated*, or
@@ -130,6 +142,19 @@ fraction is stricter than a real installed system's (which would top up
 the shortfall electrically).
 
 ## Phase 3 smoke run — Rajasthan Cluster 0 (RJP_0132), one per arrangement
+
+> **PCM-name note (post-2026-09-18-resync):** the smoke runs below name
+> `RT50` explicitly via `--pcm "RT50"`. `RT50` is still a valid row in
+> `data/objective1/pcm_database_rajasthan.csv`, but it is **no longer**
+> Objective 1's rank-1 pick for Cluster 0 after the 2026-09-18 resync —
+> that is now `Palmitic-stearic acid/Expanded graphite` (see
+> `configs/states/rajasthan.yaml` and
+> `docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §10). Phase 3 runs
+> directly off whatever `pcm_name` is passed and does not consult O1's
+> ranking, so the numbers below (from `results/phase3_simulate_cluster0_
+> RT50_maxload.json`, dated 17-09-2026 — before the resync) remain
+> accurate and reproducible; they should just not be read as "the
+> current Cluster-0 deployable PCM's" numbers.
 
 ```
 python pipeline.py --state rajasthan --stage simulate --cluster 0 --pcm "RT50" --diameter 0.08 --count 24 --arrangement staggered --flow 0.025

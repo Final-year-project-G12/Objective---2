@@ -10,6 +10,7 @@ Nothing here is state-specific except the `state` argument you pass in.
 
 from pathlib import Path
 import functools
+import hashlib
 
 import yaml
 import pandas as pd
@@ -17,6 +18,64 @@ import pandas as pd
 from config import BASE_DIR, CONFIGS_DIR, DATA_DIR
 
 STATES_DIR = CONFIGS_DIR / "states"
+
+
+def _sha256_of(path: Path) -> str:
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def write_manifest_sidecar(results_path: Path, state: str, extra: dict = None) -> Path:
+    """Writes `<results_path>.manifest.json` next to a results file, stamped
+    with config_hashes(state) plus a UTC timestamp and whatever phase-specific
+    `extra` dict is passed in. CSV/parquet files have no header section to
+    embed this in, so a sidecar JSON is the equivalent (step 1 of the
+    2026-09-20 fix plan: "Write a sha256 of both shared configs and the state
+    config into every results file header")."""
+    import json
+    from datetime import datetime, timezone
+
+    results_path = Path(results_path)
+    manifest = {
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "state": state,
+        "config_hashes": config_hashes(state),
+    }
+    if extra:
+        manifest.update(extra)
+    manifest_path = results_path.with_suffix(results_path.suffix + ".manifest.json")
+    with open(manifest_path, "w", encoding="utf-8") as f:
+        json.dump(manifest, f, indent=2, default=str)
+    return manifest_path
+
+
+def config_hashes(state: str) -> dict:
+    """SHA-256 of the two shared configs + the state config, for stamping
+    into every results-file header (step 1 of the 2026-09-20 fix plan).
+    Lets a results file prove which exact config versions produced it,
+    instead of only carrying a hand-written version string that can go
+    stale (system_config_shared.yaml gained the safety_shield block on
+    2026-09-13 without a version bump — see that file's own history)."""
+    system_config_path = CONFIGS_DIR / "system_config_shared.yaml"
+    design_bounds_path = CONFIGS_DIR / "design_bounds_shared.yaml"
+    state_config_path = STATES_DIR / f"{state}.yaml"
+    return {
+        "system_config_shared.yaml": {
+            "version": load_system_config().get("version"),
+            "sha256": _sha256_of(system_config_path),
+        },
+        "design_bounds_shared.yaml": {
+            "version": load_design_bounds().get("version"),
+            "sha256": _sha256_of(design_bounds_path),
+        },
+        f"states/{state}.yaml": {
+            "version": load_state_config(state).get("state_config_version"),
+            "sha256": _sha256_of(state_config_path),
+        },
+    }
 
 
 def _load_yaml(path):

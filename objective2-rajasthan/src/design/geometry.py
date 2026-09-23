@@ -315,11 +315,17 @@ def compute_geometry(design: DesignVector, system_config: dict = None,
         result.update(valid=False, reason="passage_blocked")
         return result
     if pcm_volume_fraction < vf_bounds["min"] - 1e-9:
-        # Below the documented 10% floor — not a hard geometric failure, but
-        # flagged so DOE/optimize can treat it as "below the tested range".
+        # Step 3.4 of the 2026-09-20 fix plan (decision D1): this used to be
+        # a soft flag only ("below the documented 10% floor, not a hard
+        # geometric failure"), which let DOE/search/selection silently keep
+        # designs the floor was supposed to filter out. Now a hard
+        # rejection, at a floor value grounded in scripts/sweep_pcm_loading.py
+        # rather than the old, never-run-against-the-simulator 10% figure —
+        # see design_bounds_shared.yaml's version note for the sweep result.
         result["below_min_pcm_fraction"] = True
-    else:
-        result["below_min_pcm_fraction"] = False
+        result.update(valid=False, reason="below_min_pcm_fraction")
+        return result
+    result["below_min_pcm_fraction"] = False
 
     # ---- hydraulics: Ergun equation over the packed capsule bed --------
     hydraulics = compute_hydraulics(

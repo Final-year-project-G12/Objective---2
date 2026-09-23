@@ -1,0 +1,227 @@
+{
+  "generated_at_utc": "2026-09-20T20:16:08.677715+00:00",
+  "state": "rajasthan",
+  "config_hashes": {
+    "system_config_shared.yaml": {
+      "version": "config_v1.1_2026-09-13-safety-shield",
+      "sha256": "bfbb3e392b73f31c548e73be904b21964bbea6afb91c8a928664b14fc254b636"
+    },
+    "design_bounds_shared.yaml": {
+      "version": "config_v1.2_2026-09-20-rajasthan-loading-floor-fix",
+      "sha256": "7e2e40e5048c008f698ded3717c5bf6bc135a9dda61799119845967c641269a4"
+    },
+    "states/rajasthan.yaml": {
+      "version": "state_config_rajasthan_v2.1_2026-09-20-fixplan-step1",
+      "sha256": "6ff5dc6c868f1a12de20afaf7b006913f4540aef218c58eebc0b25712894e3d8"
+    }
+  },
+  "doe_manifest": {
+    "state": "rajasthan",
+    "random_seed_base": 20260905,
+    "n_regime_pcm_pairs": 9,
+    "n_lhs_per_pair": 24,
+    "n_boundary_per_pair": 12,
+    "n_baseline_cases": 3,
+    "n_total_cases": 327,
+    "design_bounds_version": "config_v1.2_2026-09-20-rajasthan-loading-floor-fix",
+    "arrangements": [
+      "single-layer",
+      "staggered",
+      "radial"
+    ],
+    "case_count_decision": "2026-09-17: dropped nmin/nmax boundary corners per arrangement (4 corners x 3 arrangements = 12/pair, not 6x3=18/pair) to keep the arrangement-stratified total (219) inside the 150-350 target band without a full 3x blowup from the pre-restore 165 total; see docs/05_PROMPT_PHASE5_DOE.md step 4."
+  },
+  "min_valid_per_cell_target": 25,
+  "n_cells_below_target": 27,
+  "coverage_table": [
+    {
+      "arrangement": "radial",
+      "regime_id": 0,
+      "pcm_id": "RT44HC",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "single-layer",
+      "regime_id": 0,
+      "pcm_id": "RT44HC",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "staggered",
+      "regime_id": 0,
+      "pcm_id": "RT44HC",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "radial",
+      "regime_id": 0,
+      "pcm_id": "RT47",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "single-layer",
+      "regime_id": 0,
+      "pcm_id": "RT47",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "staggered",
+      "regime_id": 0,
+      "pcm_id": "RT47",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "radial",
+      "regime_id": 0,
+      "pcm_id": "savE\u00ae OM42",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "single-layer",
+      "regime_id": 0,
+      "pcm_id": "savE\u00ae OM42",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "staggered",
+      "regime_id": 0,
+      "pcm_id": "savE\u00ae OM42",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "radial",
+      "regime_id": 1,
+      "pcm_id": "RT45HC",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "single-layer",
+      "regime_id": 1,
+      "pcm_id": "RT45HC",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "staggered",
+      "regime_id": 1,
+      "pcm_id": "RT45HC",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "radial",
+      "regime_id": 1,
+      "pcm_id": "n-Tricosane (C23)",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "single-layer",
+      "regime_id": 1,
+      "pcm_id": "n-Tricosane (C23)",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "staggered",
+      "regime_id": 1,
+      "pcm_id": "n-Tricosane (C23)",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "radial",
+      "regime_id": 1,
+      "pcm_id": "savE\u00ae OM49",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "single-layer",
+      "regime_id": 1,
+      "pcm_id": "savE\u00ae OM49",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "staggered",
+      "regime_id": 1,
+      "pcm_id": "savE\u00ae OM49",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "radial",
+      "regime_id": 2,
+      "pcm_id": "Lauric acid (C12)",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "single-layer",
+      "regime_id": 2,
+      "pcm_id": "Lauric acid (C12)",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "staggered",
+      "regime_id": 2,
+      "pcm_id": "Lauric acid (C12)",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "radial",
+      "regime_id": 2,
+      "pcm_id": "RT45HC",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "single-layer",
+      "regime_id": 2,
+      "pcm_id": "RT45HC",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "staggered",
+      "regime_id": 2,
+      "pcm_id": "RT45HC",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "radial",
+      "regime_id": 2,
+      "pcm_id": "n-Docosane (C22)",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "single-layer",
+      "regime_id": 2,
+      "pcm_id": "n-Docosane (C22)",
+      "n_cases": 12,
+      "n_valid": 12
+    },
+    {
+      "arrangement": "staggered",
+      "regime_id": 2,
+      "pcm_id": "n-Docosane (C22)",
+      "n_cases": 12,
+      "n_valid": 12
+    }
+  ]
+}

@@ -52,8 +52,10 @@ arrangements.
 
 ## Result
 
-**219 cases: 128 valid / 91 rejected — all 91 for the same reason,
-`bounds_violation`.**
+**219 cases: 126 valid / 93 rejected — all 93 for the same reason,
+`bounds_violation`.** (Verified directly from `results/phase5_design_cases.csv`
+on 2026-09-18 — `valid` value counts: 126 True / 93 False, all with
+`reason=bounds_violation`.)
 
 This is the Phase 2 finding (`02_PHASE2_GEOMETRY_CONSTRAINTS.md`) showing
 up at DOE scale, not a new bug and not caused by arrangement: any design
@@ -63,17 +65,17 @@ own thickness floor, regardless of arrangement.
 
 | Rejected by | Count | Note |
 |---|---|---|
-| LHS draws | 37 / 108 (34.3%) | ≈ `(0.04−0.02)/(0.08−0.02)` = 33.3% of the diameter range — matches the expected rate |
+| LHS draws | 39 / 108 (36.1%) | ≈ `(0.04−0.02)/(0.08−0.02)` = 33.3% of the diameter range — close to, though slightly above, the expected rate |
 | Boundary cases | 54 / 108 | exactly the `dmin` corners (2 of 4 corners) × 9 pairs × 3 arrangements |
-| **Total** | **91 / 219 (41.6%)** | |
+| **Total** | **93 / 219 (42.5%)** | |
 
 ### Rejection rate by arrangement — the check this restore-change specifically required
 
 | Arrangement | n cases | n rejected | Rejection % |
 |---|---|---|---|
 | single-layer | 72 | 32 | 44.4% |
-| radial | 72 | 30 | 41.7% |
-| staggered | 75 | 29 | 38.7% |
+| radial | 72 | 31 | 43.1% |
+| staggered | 75 | 30 | 40.0% |
 
 Close enough to each other (all driven by the same diameter-vs-thickness
 bound, which is independent of arrangement) that **no arrangement is
@@ -98,24 +100,29 @@ just staggered.
 | every arrangement represented per pair | ✔ 12 LHS + 12 boundary cases per pair split evenly across single-layer/staggered/radial |
 | ≥1 case per shortlisted PCM per regime | ✔ 13-15 valid rows per (regime, PCM) pair (see table below) |
 | one no-PCM baseline per regime | ✔ `c{0,1,2}_baseline_noPCM` |
-| keep failed/infeasible cases + reason codes | ✔ 91 rows with `valid=False`, `reason=bounds_violation` |
+| keep failed/infeasible cases + reason codes | ✔ 93 rows with `valid=False`, `reason=bounds_violation` |
 | 10 / 15 / 20% PCM-volume baselines | reachable PCM volume fraction now spans up to 19.84% at the widened count ceiling (37) — see `02_PHASE2_GEOMETRY_CONSTRAINTS.md`; the 15%/20% Chen-style levels are now geometrically reachable, unlike the pre-2026-09-17 24-capsule ceiling. |
 
-Valid rows per (regime, PCM) pair:
+Valid rows per (regime, PCM) pair (updated for the 2026-09-18 resync's
+current PCM shortlists — `configs/states/rajasthan.yaml
+state_config_rajasthan_v2.0_2026-09-18-resync`; verified directly from
+`results/phase5_design_cases.csv`, superseding the pre-resync
+RT50/RT45HC/Lauric-acid-C12 (cluster 0) and savE OM50/PCM3/PCM6
+(clusters 1–2) shortlist previously listed here):
 
 | Regime | PCM | Valid rows |
 |---|---|---|
-| 0 | Lauric acid (C12) | 15 |
-| 0 | RT45HC | 14 |
-| 0 | RT50 | 15 |
+| 0 | Myristic acid/NBR-0.5 | 15 |
+| 0 | Palmitic-stearic acid/Expanded graphite | 14 |
+| 0 | savE® OM55 | 14 |
 | 0 | NONE_plain_tank | 1 |
-| 1 | Paraffin/HDPE PCM3 | 14 |
-| 1 | Paraffin/HDPE PCM6 | 15 |
-| 1 | savE® OM50 | 13 |
+| 1 | CrodaTherm 60 | 14 |
+| 1 | n-Heptacosane (C27) | 14 |
+| 1 | PureTemp 60 | 13 |
 | 1 | NONE_plain_tank | 1 |
-| 2 | Paraffin/HDPE PCM3 | 13 |
-| 2 | Paraffin/HDPE PCM6 | 13 |
-| 2 | savE® OM50 | 13 |
+| 2 | n-Heptacosane (C27) | 13 |
+| 2 | PlusICE A58 | 13 |
+| 2 | PureTemp 58 | 13 |
 | 2 | NONE_plain_tank | 1 |
 
 ## Case-level train/hold-out split
@@ -142,15 +149,15 @@ random split at the row level is leakage-free by construction.
 
 ## What the valid rows look like (first read, not a Phase 6/7 result)
 
-- `solar_fraction` 0.5382–0.5897 across the 128 valid cases (mean 0.560)
+- `solar_fraction` 0.5466–0.6165 across the 126 valid cases (mean 0.579)
   — a narrow band, consistent with Phase 4 Gate 3's finding that a single
   PCM's marginal effect on annual solar fraction is small in this
   lumped-tank architecture, and now also consistent with Phase 6's
   finding that arrangement's effect is near-zero.
-- `max_pcm_temp_C` up to 72.0 °C — above the frozen 65 °C PCM safety
+- `max_pcm_temp_C` up to 72.3 °C — above the frozen 65 °C PCM safety
   limit for a number of sampled designs (expected: this raw DOE sweep
   covers the whole design space, not just the safety-filtered subset a
-  real deployment would use) — but **0/128 valid rows log
+  real deployment would use) — but **0/126 valid rows log
   `n_safety_violations > 0`**, because the rule-based safety shield
   (`system_config_shared.yaml: safety_shield.enabled`, adopted
   2026-09-13, active as the pipeline default through Phases 5–8, see

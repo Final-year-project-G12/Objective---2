@@ -1,11 +1,39 @@
-﻿Phase 2 — geometry & constraint boundary self-test (state-agnostic; state=rajasthan unused here)
-  min_diameter_min_count       valid=False reason=bounds_violation     deterministic=True
-  max_diameter_max_count       valid=True  reason=None                 deterministic=True
-  min_diameter_max_count       valid=False reason=bounds_violation     deterministic=True
-  max_diameter_min_count       valid=True  reason=None                 deterministic=True
-  mid_case                     valid=True  reason=None                 deterministic=True
-  flow_below_min               valid=False reason=flow_out_of_range    deterministic=True
-  flow_above_max               valid=False reason=flow_out_of_range    deterministic=True
-  oversized_diameter_for_tank  valid=False reason=bounds_violation     deterministic=True
+Phase 2 � geometry & constraint boundary self-test (state-agnostic; state=rajasthan unused here)
+  min_diameter_min_count [single-layer]      valid=False reason=bounds_violation     deterministic=True
+  max_diameter_max_count [single-layer]      valid=True  reason=None                 deterministic=True
+  min_diameter_max_count [single-layer]      valid=False reason=bounds_violation     deterministic=True
+  max_diameter_min_count [single-layer]      valid=True  reason=None                 deterministic=True
+  mid_case [single-layer]                    valid=True  reason=None                 deterministic=True
+  flow_below_min [single-layer]              valid=False reason=flow_out_of_range    deterministic=True
+  flow_above_max [single-layer]              valid=False reason=flow_out_of_range    deterministic=True
+  oversized_diameter_for_tank [single-layer] valid=False reason=bounds_violation     deterministic=True
+  min_diameter_min_count [staggered]         valid=False reason=bounds_violation     deterministic=True
+  max_diameter_max_count [staggered]         valid=True  reason=None                 deterministic=True
+  min_diameter_max_count [staggered]         valid=False reason=bounds_violation     deterministic=True
+  max_diameter_min_count [staggered]         valid=True  reason=None                 deterministic=True
+  mid_case [staggered]                       valid=True  reason=None                 deterministic=True
+  flow_below_min [staggered]                 valid=False reason=flow_out_of_range    deterministic=True
+  flow_above_max [staggered]                 valid=False reason=flow_out_of_range    deterministic=True
+  oversized_diameter_for_tank [staggered]    valid=False reason=bounds_violation     deterministic=True
+  min_diameter_min_count [radial]            valid=False reason=bounds_violation     deterministic=True
+  max_diameter_max_count [radial]            valid=True  reason=None                 deterministic=True
+  min_diameter_max_count [radial]            valid=False reason=bounds_violation     deterministic=True
+  max_diameter_min_count [radial]            valid=True  reason=None                 deterministic=True
+  mid_case [radial]                          valid=True  reason=None                 deterministic=True
+  flow_below_min [radial]                    valid=False reason=flow_out_of_range    deterministic=True
+  flow_above_max [radial]                    valid=False reason=flow_out_of_range    deterministic=True
+  oversized_diameter_for_tank [radial]       valid=False reason=bounds_violation     deterministic=True
 
-  All boundary cases deterministic: True
+  All 24 boundary cases deterministic: True
+
+  Cross-arrangement sanity (same d=0.05, n=14, flow=0.030):
+    single-layer   void_fraction=0.7801881857177827     pressure_drop_pa=0.0002043368652251768
+    staggered      void_fraction=0.7779102822429281     pressure_drop_pa=0.00020912000105411443
+    radial         void_fraction=0.7808351840194597     pressure_drop_pa=0.0002029947415395535
+  Dispatcher genuinely branches (values differ across arrangements): True
+
+  Max-reachable-fraction table (diameter=0.08 m, count ceiling=37):
+  arrangement    max_n_feasible   max_reachable_pcm_fraction  
+  single-layer   37               0.1984
+  staggered      37               0.1984
+  radial         37               0.1984

@@ -18,9 +18,9 @@ corrected 4-variable design vector.
 | Phase 2 | D2.2 — geometry & constraint engine, 3-way arrangement-branched (`src/design/`) | COMPLETE |
 | Phase 3 | D2.3 — grey-box enthalpy simulator (`src/simulation/`) | COMPLETE (smoke-tested, all 3 arrangements) |
 | Phase 4 | Simulator verification, Gates 1–5 (`src/verify/gates.py`) | COMPLETE — **GO, 5/5 gates clean**, `sim_v2_rajasthan` |
-| Phase 5 | D2.4 — arrangement-stratified DOE (`src/doe/`) | COMPLETE — **219 cases (128 valid / 91 infeasible-retained), 165/54 train/holdout** |
-| Phase 6 | D2.5 — surrogate with arrangement one-hot feature (`src/surrogate/`) | COMPLETE — **useful-energy hold-out R² = 0.9997 (target > 0.80)**; arrangement importance near-zero (finding, not a defect) |
-| Phase 7 | D2.6 — optimization spanning arrangement + simulator confirmation (`src/optimize/`) | COMPLETE — **60/60 candidates pass temperature safety; PCM wins all 3 regimes; regime 2 winner is `radial`** |
+| Phase 5 | D2.4 — arrangement-stratified DOE (`src/doe/`) | COMPLETE — **219 cases (126 valid / 93 infeasible-retained), 165/54 train/holdout** |
+| Phase 6 | D2.5 — surrogate with arrangement one-hot feature (`src/surrogate/`) | COMPLETE — **useful-energy hold-out R² = 0.99998 (target > 0.80)**; arrangement importance near-zero (finding, not a defect) |
+| Phase 7 | D2.6 — optimization spanning arrangement + simulator confirmation (`src/optimize/`) | COMPLETE — **60/60 candidates pass temperature safety; PCM wins all 3 regimes; regime 0 winner is `single-layer`, regimes 1-2 are `staggered`** |
 | Phase 8 | D2.7–D2.9 — robustness + recommendation cards + Obj3 handoff (`src/robustness/`, `src/handoff/`) | COMPLETE — **ROBUST in all 3 regimes (P(temp-safe) = 1.00); arrangement carried through cards + contract** |
 
 ## How this project relates to Tamil Nadu, and to the other two states
@@ -116,20 +116,20 @@ objective2-rajasthan/
 │   ├── OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md   # the Objective 3 hand-off brief (ported from Tamil Nadu)
 │   └── plots/                        # 00_INDEX.md + per-phase figure walkthroughs (viva/report captions)
 └── results/
-    ├── phase0_climate_signature_check.txt          # Phase 0 output (PASSED, 3/3)
-    ├── phase2_geometry_boundary_selftest.txt       # Phase 2 output — stale (8/8, pre-arrangement-restore); current 24/24 result lives in docs/02_… + console output only
-    ├── phase3_simulate_cluster*_*.json             # Phase 3 output — 6 smoke-run cases, stale (pre-arrangement-restore); current 3-arrangement smoke run documented in docs/03_…
-    ├── phase4_simulator_verification_report.txt    # Phase 4 output (GO, 5/5 gates clean, sim_v2_rajasthan) — current, regenerated 2026-09-17
-    ├── phase5_design_cases.parquet                 # Phase 5 output — 219 rows, 1 per simulation (+ .csv copy), incl. `arrangement` column
-    ├── phase6_surrogate_metrics.csv / _error_by_group.csv / _models.pkl (gitignored) / _feature_cols.json / _arrangement_importance.csv
-    ├── phase7_surrogate_top_candidates.csv         # Phase 7 — 60 surrogate-ranked candidates (proposal only), incl. `arrangement`
-    ├── phase7_optimized_designs.csv                # Phase 7 — all 60 re-run in the real simulator (PCM-comparison report)
-    ├── phase7_deployable_design_per_regime.csv     # Phase 7 — final selection, 1 row per regime, incl. `arrangement` + `arrangement_rationale`
-    ├── phase8_robustness.csv / _robustness_draws.csv   # Phase 8 D2.7 — per-regime summary + every MC draw
-    ├── phase8_recommendation_cards.md              # Phase 8 D2.8 — one card per regime, incl. Selected arrangement + rationale
-    ├── obj3_environment_contract_rajasthan.json    # Phase 8 D2.9 — Objective 3 handoff contract, incl. real per-regime arrangement + supersedes note
-    ├── plots/static/*.png + plots/interactive/*.html (gitignored)   # Phase 2-8 figures (not regenerated for the arrangement restore — see docs/plots/00_INDEX.md)
-    └── README.md                                   # what each file above contains (predates the 2026-09-17 arrangement restore — see its own pointer note)
+    ├── phase0_climate_signature_check.txt          # Phase 0 output (PASSED, 3/3) — regenerated 2026-09-17, predates the 2026-09-18 O1<->O2 re-sync
+    ├── phase2_geometry_boundary_selftest.txt       # Phase 2 output — regenerated 2026-09-17, 24/24 boundary cases (8 x 3 arrangements); PCM-agnostic, unaffected by the 2026-09-18 re-sync
+    ├── phase3_simulate_cluster*_*.json             # Phase 3 output — regenerated 2026-09-17, same 6 cases as originally captured, now arrangement-aware; smoke-tested against RT50/savE OM50, the PRE-2026-09-18-resync shortlist (see docs/03_PHASE3_GREYBOX_SIMULATOR.md)
+    ├── phase4_simulator_verification_report.txt    # Phase 4 output (GO, 5/5 gates clean, sim_v2_rajasthan) — regenerated 2026-09-18 against the current, post-resync PCM shortlist
+    ├── phase5_design_cases.parquet                 # Phase 5 output — 219 rows (126 valid), 1 per simulation (+ .csv copy), incl. `arrangement` column — regenerated 2026-09-18
+    ├── phase6_surrogate_metrics.csv / _error_by_group.csv / _models.pkl (gitignored) / _feature_cols.json / _arrangement_importance.csv   # regenerated 2026-09-18
+    ├── phase7_surrogate_top_candidates.csv         # Phase 7 — 60 surrogate-ranked candidates (proposal only), incl. `arrangement` — regenerated 2026-09-18
+    ├── phase7_optimized_designs.csv                # Phase 7 — all 60 re-run in the real simulator (PCM-comparison report) — regenerated 2026-09-18
+    ├── phase7_deployable_design_per_regime.csv     # Phase 7 — final selection, 1 row per regime, incl. `arrangement` + `arrangement_rationale` — regenerated 2026-09-18 (savE® OM55 / PureTemp 60 / PureTemp 58)
+    ├── phase8_robustness.csv / _robustness_draws.csv   # Phase 8 D2.7 — per-regime summary + every MC draw — regenerated 2026-09-18
+    ├── phase8_recommendation_cards.md              # Phase 8 D2.8 — one card per regime, incl. Selected arrangement + rationale — regenerated 2026-09-18, current
+    ├── obj3_environment_contract_rajasthan.json    # Phase 8 D2.9 — Objective 3 handoff contract, incl. real per-regime arrangement + supersedes note — regenerated 2026-09-18
+    ├── plots/static/*.png + plots/interactive/*.html (gitignored)   # Phase 2-8 figures — NOT regenerated for the 2026-09-17 arrangement restore or the 2026-09-18 re-sync; treat captions/PCM names as stale (see docs/plots/00_INDEX.md)
+    └── README.md                                   # what each file above contains — predates BOTH the 2026-09-17 arrangement restore AND the 2026-09-18 O1<->O2 re-sync; its per-phase numbers and PCM names (RT50/RT45HC/savE OM50/PCM3/PCM6) are stale relative to the current results/ files — see its own pointer note at the top for the arrangement-restore caveat, and `docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §10 for the re-sync
 ```
 
 ## Headline result: Phases 0–8 complete, arrangement restored
@@ -139,10 +139,10 @@ Phase 0 (climate signature):  PASSED   3/3 regimes — genuinely hot-dry/high-cl
 Phase 2 (geometry self-test): PASS     24/24 boundary cases deterministic (8 cases x 3 arrangements); cross-arrangement dispatcher confirmed genuine
 Phase 3 (simulator smoke run): completes cleanly for all 3 arrangements, residual 0.000636% identical across arrangements (well under 0.1% Gate-1 threshold)
 Phase 4 (verification gates):  GO      5/5 gates clean — sim_v2_rajasthan
-Phase 5 (arrangement-stratified DOE): 219 cases — 128 valid / 91 infeasible-retained (all bounds_violation); rejection rate comparable across arrangements (38.7-44.4%); 165 train / 54 holdout
-Phase 6 (surrogate):          useful-energy hold-out R²=0.9997 (Extra Trees), past the >0.80 exit target; feasibility classifier 100%/100%; arrangement importance near-zero (0.00002-0.0024, a finding)
-Phase 7 (optimize + confirm): PCM wins all 3 regimes; surrogate-vs-sim mean error 0.03% (0/60 >15%); 60/60 candidates pass temperature safety; regime 2 winner is radial (tied within noise)
-Phase 8 (robustness+handoff): ROBUST in all 3 regimes — P(temp-safe) = 1.00 (P(demand) 0.85-0.98); 3 recommendation cards + obj3 contract written, all carrying real arrangement
+Phase 5 (arrangement-stratified DOE): 219 cases — 126 valid / 93 infeasible-retained (all bounds_violation); 165 train / 54 holdout
+Phase 6 (surrogate):          useful-energy hold-out R²=0.99998 (Extra Trees), past the >0.80 exit target; feasibility classifier 100%/100%; arrangement importance near-zero (~1e-6 to ~1.7e-3 across targets, a finding)
+Phase 7 (optimize + confirm): PCM wins all 3 regimes; 0/60 large surrogate errors; 60/60 candidates pass temperature safety; regime 0 winner is single-layer, regimes 1-2 are staggered (all tied within noise)
+Phase 8 (robustness+handoff): ROBUST in all 3 regimes — P(temp-safe) = 1.00 (P(demand) 0.92-1.00); 3 recommendation cards + obj3 contract written, all carrying real arrangement
 ```
 
 **2026-09-17 — capsule arrangement restored as a searched variable**
@@ -166,10 +166,13 @@ Objective 3 contract all carry the real per-regime arrangement.
 target in this design-space region** (Phase 6's feature-importance
 diagnostic, Phase 3's traced root cause — `void_fraction` only reaches the
 hydraulics/pump-power path, itself negligible in this system's energy
-balance). Two of three regimes' Phase 7 winners are "tied within noise"
-across all three arrangements; only Regime 2 (savE® OM50) has a decisive
-non-staggered winner (`radial`), and even that is a tie-break among
-near-identical candidates, not a real energy advantage. This does not
+balance). Regimes 1 and 2's winners are "tied within noise" across all
+three arrangements (Regime 2's `radial` win is a tie-break among
+near-identical candidates, not a real energy advantage); Regime 0's
+`staggered` winner reflects no comparison at all — it was the only
+arrangement that survived into that pair's confirmed candidate pool.
+Neither regime produced a genuine, margin-based arrangement preference.
+This does not
 change the deployability conclusion below — restoring arrangement as a
 genuine search variable answers the "is arrangement doing anything here"
 question with real evidence instead of an assumption, which is itself the
@@ -181,24 +184,45 @@ unchanged from the pre-arrangement-restore run** (see
 the rule-based overheat safety shield
 (`system_config_shared.yaml: safety_shield.enabled`, adopted 2026-09-13)
 remains the pipeline default, and `apply_selection_rule()`'s PCM-only
-selection pool (2026-09-14) remains in place. Combined with the
-arrangement restoration, all three Rajasthan regimes deploy a real PCM
-design — RT50 (staggered) / Paraffin-HDPE PCM3 (staggered) / savE® OM50
-(radial) — each with a small (0.10–0.17%) useful-energy edge over the
-best plain-tank geometry found by the same search, and each robust at
-Monte Carlo scale (P(temp-safe) = 1.00). Full detail:
-`docs/07_PHASE7_OPTIMIZATION.md`, `docs/08_PHASE8_ROBUSTNESS_HANDOFF.md`.
+selection pool (2026-09-14) remains in place. **Updated 2026-09-18** after
+the full O1↔O2 re-sync (`09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §10):
+combined with the arrangement restoration, all three Rajasthan regimes
+deploy a real PCM design against the current, post-resync shortlist —
+savE® OM55 (single-layer, regime 0) / PureTemp 60 (staggered, regime 1) /
+PureTemp 58 (staggered, regime 2) — each robust at Monte Carlo scale
+(P(temp-safe) = 1.00). Full detail: `docs/07_PHASE7_OPTIMIZATION.md`,
+`docs/08_PHASE8_ROBUSTNESS_HANDOFF.md`,
+`results/phase7_deployable_design_per_regime.csv`.
 
-Phase 4 detail: Gate 1 max residual 0.0016% (pass < 0.1%); Gate 2 12/12
-limiting cases; Gate 3 all three arrangements land at 55.13% solar
-fraction for the max-feasible PCM design, beating the plain tank's
-54.97%; Gate 4 solar fraction 55.06% (staggered optimized-looking design)
-is **inside** the cited 54–84% band. Phase 5 detail: 9 regime×PCM pairs ×
-(12 LHS + 12 boundary, split across 3 arrangements) + 3 no-PCM baselines;
-91 infeasible rows all `bounds_violation` from the diameter/thickness
-bound interaction (`02_…`), kept with reason codes, regardless of
-arrangement. Full readouts in `04_…` / `05_…` and the matching
-`results/phase4_*` / `results/phase5_*` files.
+**This is a deliberate, stated choice, not an oversight:** a stronger,
+standards-defensible alternative to the shield is already known and
+computed — `09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md` §7 found the frozen
+50 L / 1.5 m² tank:collector ratio (33.3 L/m²) itself violates IS
+12976:2023 (40–100 L/m² range, 75 L/m² reference), and resizing to the
+standard's own reference ratio (112.5 L) makes every shortlisted PCM pass
+safety **and** beat plain water **with no shield needed at all**, at a
+higher solar fraction than the shielded/small-tank result reported here.
+It was not adopted for this run because `system_config_shared.yaml` is a
+frozen, hashed file shared across all four states — changing it means a
+coordinated Phase 2–8 re-run for Tamil Nadu, Assam, and Uttarakhand too,
+out of scope for a single-state 40-hr pass. The recommendation cards
+(`results/phase8_recommendation_cards.md`) already carry this caveat
+explicitly per regime; it is repeated here so it isn't missed by a reader
+who starts at this overview instead.
+
+**Updated 2026-09-18** (post O1↔O2 re-sync, `09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md`
+§10) — Phase 4 detail: Gate 1 mean residual 0.000290%, max 0.000362% (7
+cases, pass < 0.1%); Gate 2 12/12 limiting cases + 2 informational; Gate 3
+`fixed_PCM_max_feasible` lands at 54.67% solar fraction across all three
+arrangements, below the plain tank's 55.00% at this loading (a stated,
+non-gating finding — Gate 3 passes on simulator capability + active loss
+term, not on today's PCM/geometry choice beating the plain tank); Gate 4
+solar fraction 54.85% (`optimized_looking`, staggered) is **inside** the
+cited 54–84% band. Phase 5 detail: 219 total cases, 126 valid / 93
+infeasible (all `bounds_violation` from the diameter/thickness bound
+interaction, `02_…`), kept with reason codes, regardless of arrangement.
+Full readouts in `04_…` / `05_…` and the matching `results/phase4_*` /
+`results/phase5_*` files.
 
 ## Documents in this folder
 
@@ -217,8 +241,8 @@ arrangement. Full readouts in `04_…` / `05_…` and the matching
 - `04_PHASE4_VERIFICATION_GATES.md` — the reduced 5-gate battery, now
   arrangement-aware; Rajasthan result: GO, 5/5 gates clean, `sim_v2_rajasthan`
 - `05_PHASE5_DOE.md` — the arrangement-stratified DOE: 219-case sampling
-  plan, the 91 retained infeasible rows, the 80/20 split, per-arrangement
-  rejection rates
+  plan, the 93 retained infeasible rows (126 valid), the 80/20 split,
+  per-arrangement rejection rates
 - `06_PHASE6_SURROGATE.md` — the tree surrogate: 42 features (TN's groups,
   RJ column names, + 3 arrangement one-hot), hold-out R²≈1.0 on the key
   targets, the arrangement feature-importance diagnostic (near-zero — a
@@ -226,7 +250,9 @@ arrangement. Full readouts in `04_…` / `05_…` and the matching
 - `07_PHASE7_OPTIMIZATION.md` — search spanning arrangement + 60-candidate
   simulator confirmation + the pre-declared (PCM-only) selection rule +
   `arrangement_rationale`; result: a shortlisted PCM deployable in all 3
-  regimes, 60/60 candidates pass safety, regime 2's winner is `radial`
+  regimes, 60/60 candidates pass safety (savE® OM55/single-layer, PureTemp
+  60/staggered, PureTemp 58/staggered — current post-2026-09-18-resync
+  winners, all tied within noise across arrangements)
 - `08_PHASE8_ROBUSTNESS_HANDOFF.md` — 120-draw Monte Carlo (ROBUST in all
   3 regimes: P(temp-safe) = 1.00), the D2.8 recommendation cards (now with
   arrangement + rationale), the D2.9 Objective 3 contract (now with real

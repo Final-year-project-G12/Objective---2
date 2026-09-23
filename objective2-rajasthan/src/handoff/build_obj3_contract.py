@@ -29,7 +29,7 @@ import sys
 import pandas as pd
 
 from config import BASE_DIR, RESULTS_DIR
-from src.io_utils import load_state_config, load_system_config, load_design_bounds
+from src.io_utils import load_state_config, load_system_config, load_design_bounds, config_hashes
 
 DEPLOYABLE_PATH = RESULTS_DIR / "phase7_deployable_design_per_regime.csv"
 ROBUSTNESS_PATH = RESULTS_DIR / "phase8_robustness.csv"
@@ -72,6 +72,85 @@ def _dynamic_state_schema():
             {"name": "hour_of_day", "unit": "hour [0,24)", "measurable": True, "source": "clock"},
             {"name": "minutes_since_last_draw", "unit": "minutes", "measurable": True, "source": "derived from draw sensor history"},
             {"name": "store_energy_above_mains_kWh", "unit": "kWh (cumulative)", "measurable": False, "source": "estimator, from T_water_C/T_pcm_C vs T_mains_C"},
+        ],
+    }
+
+
+def _reward_function_spec(system_config, deployable: pd.DataFrame) -> dict:
+    """Fully specified reward function -- adopted from
+    objective2-tamilnadu/src/handoff/build_obj3_contract.py (step 6.1,
+    2026-09-20 fix plan). Rajasthan's contract previously left the weights
+    'NOT YET CHOSEN'; this closes that gap with the same formula, guard
+    band and documented rationale Tamil Nadu ships, re-normalized against
+    Rajasthan's own 3 Phase-7-selected designs (not copied numbers)."""
+    max_water = system_config["safety"]["max_water_temp_C"]
+    max_pcm = system_config["safety"]["max_pcm_temp_C"]
+    water_trigger = max_water - GUARD_BAND_C
+    pcm_trigger = max_pcm - GUARD_BAND_C
+
+    q_ref = float(deployable["sim_useful_energy_kWh"].mean()) / 8760.0
+    unmet_ref = max(float(deployable["sim_unmet_energy_kWh"].mean()) / 8760.0, 1e-6)
+    pump_ref = max(float(deployable["sim_pump_energy_kWh"].mean()) / 8760.0, 1e-6)
+
+    return {
+        "status": "FULLY SPECIFIED -- the default weights below are ready to train with "
+                   "(step 6.1, 2026-09-20 fix plan; previously 'NOT YET CHOSEN').",
+        "formula": "r_t = w1*(Q_delivered_t/Q_delivered_ref) - w2*(E_unmet_t/E_unmet_ref) "
+                   "- w3*(E_pump_t/E_pump_ref) - w4*Penalty_safety_t - w5*Penalty_bypass_t",
+        "normalization_references": {
+            "note": "each energy term is divided by a per-hour nominal reference magnitude "
+                    "(this state's Phase-7-selected designs' own simulator-confirmed annual "
+                    "output / 8760h) so terms of very different natural size (kWh of heat vs. "
+                    "a 0/1 penalty flag) contribute comparably before weights are applied -- "
+                    "the same normalize-then-weight pattern used by Xu et al. (2024), "
+                    "\"Multi-objective deep reinforcement learning for a water heating system "
+                    "with solar energy and heat recovery\", Applied Energy "
+                    "(https://www.sciencedirect.com/science/article/abs/pii/S0360544224000677), "
+                    "for combining heterogeneous reward terms in a closely related system.",
+            "Q_delivered_ref_kWh_per_hour": round(q_ref, 4),
+            "E_unmet_ref_kWh_per_hour": round(unmet_ref, 4),
+            "E_pump_ref_kWh_per_hour": round(pump_ref, 8),
+        },
+        "default_weights": {
+            "w1_delivered_energy": 1.0,
+            "w2_unmet_energy": 1.0,
+            "w3_pump_energy": 0.1,
+            "w4_safety_penalty": 10.0,
+            "w5_bypass_switching_penalty": 0.05,
+            "rationale": "w1=w2=1.0 treats delivering energy and avoiding unmet demand "
+                         "symmetrically -- the same two quantities this project's own "
+                         "P(meets delivery)/P(meets demand) Phase 8 metrics already track. "
+                         "w3=0.1 reflects pump energy being a genuine but secondary cost. "
+                         "w4=10.0 makes the safety penalty dominate any single-step energy "
+                         "gain, consistent with the safety shield above being a hard override, "
+                         "not a soft preference. w5=0.05 is a small switching-cost term that "
+                         "discourages bypass chattering without discouraging a genuinely "
+                         "necessary safety bypass (already rewarded via avoiding the much "
+                         "larger w4 penalty). Adopted from objective2-tamilnadu's contract "
+                         "(step 6.1, 2026-09-20 fix plan) rather than re-derived independently.",
+        },
+        "penalty_term_definitions": {
+            "Penalty_safety_t": f"1.0 if T_water_C >= {water_trigger} C OR (PCM regime) "
+                                 f"T_pcm_C >= {pcm_trigger} C, else 0.0 -- the SAME "
+                                 f"{GUARD_BAND_C} C guard-band trigger as this contract's "
+                                 "safety_shield above, so the reward penalizes the policy for "
+                                 "approaching the limit, not only for a hard violation the "
+                                 "shield would already have blocked from occurring.",
+            "Penalty_bypass_t": "1.0 if mode_t == 'bypass' AND mode_{t-1} != 'bypass' (a NEW "
+                                 "transition into bypass), else 0.0 -- penalizes switching, "
+                                 "not sustained bypass, so the agent is not punished for "
+                                 "correctly remaining in bypass across an extended unsafe period.",
+        },
+        "tuning_procedure": [
+            "Start training with the default weights above -- they are not placeholders.",
+            "If the trained policy tolerates safety near-misses, raise w4.",
+            "If the policy bypasses far more often than the safety shield alone requires, "
+            "lower w4 slightly, or check Penalty_safety_t is wired to the guard-banded "
+            "trigger above, not the hard limit.",
+            "If pump energy is not a real cost concern for the target hardware, w3 may be "
+            "set to 0 -- it is the only weight here without a safety implication.",
+            "Re-run this contract's acceptance_test_before_drl_training list after any "
+            "weight change, before trusting a newly trained policy.",
         ],
     }
 
@@ -164,6 +243,7 @@ def write_contract(state: str):
         "schema": "obj3_environment_contract/v1",
         "state": state,
         "simulator_version": SIM_VERSION,
+        "config_hashes": config_hashes(state),
         "generated_from": {
             "deployable": DEPLOYABLE_PATH.name,
             "robustness": ROBUSTNESS_PATH.name,
@@ -242,10 +322,7 @@ def write_contract(state: str):
         },
         "demand_profile_file": cfg["demand_profile"]["file"],
         "time_step_s": sc["solver"]["timestep_s"],
-        "reward_components_suggested": {
-            "formula": "r_t = w1*Q_delivered_t - w2*E_unmet_t - w3*E_pump_t - w4*Penalty_safety_t - w5*Penalty_bypass_t",
-            "weights": "NOT YET CHOSEN — must be frozen by Objective 3 before training, per framework doc Sec 13.3",
-        },
+        "reward_function": _reward_function_spec(sc, deployable.reset_index()),
         "acceptance_test_before_drl_training": [
             "every action stays within flow_envelope_kg_s / temperature limits above",
             "charge/discharge/bypass transitions are physically valid",

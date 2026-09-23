@@ -31,9 +31,18 @@ from config import RESULTS_DIR
 from src.design.schema import DesignVector
 from src.simulation.run_case import run_case
 from src.doe.generate_cases import generate_all_cases
+from src.io_utils import write_manifest_sidecar
 
 SIMULATOR_VERSION = "sim_v2_rajasthan"   # released in Phase 4 — see docs/04_PHASE4_VERIFICATION_GATES.md
-N_LHS_PER_PAIR_DEFAULT = 12              # see module docstring (TN uses 8; RJ has fewer regimes)
+N_LHS_PER_PAIR_DEFAULT = 24              # raised 12->24 (step 5.3, 2026-09-20 fix plan): the
+                                           # capsule_diameter_m floor fix (design_bounds_shared.yaml
+                                           # 0.02->0.04) removed the dead diameter zone that used to
+                                           # reject every dmin-adjacent draw, so the old 12/pair budget
+                                           # (already thin once split 3 ways by arrangement) is doubled
+                                           # to make the MIN_VALID_PER_CELL target in the coverage table
+                                           # below reachable without a full adaptive per-cell resampler
+                                           # (documented simplification of step 5.3 -- see coverage_table()).
+MIN_VALID_PER_CELL = 25                  # step 5.2 target: valid cases per (arrangement, regime, PCM) cell
 
 
 def run_case_spec(state: str, spec):
@@ -103,9 +112,36 @@ def run_batch(state: str, n_lhs_per_pair: int = N_LHS_PER_PAIR_DEFAULT, progress
     print(by_arr[["size", "n_rejected", "rejection_pct"]]
           .rename(columns={"size": "n_cases", "sum": "n_valid"}).to_string())
 
+    coverage = coverage_table(df)
+    print(f"\nCoverage table (valid cases per arrangement x regime x PCM, target >= {MIN_VALID_PER_CELL}):")
+    print(coverage.to_string(index=False))
+    under_target = coverage[coverage["n_valid"] < MIN_VALID_PER_CELL]
+    if len(under_target):
+        print(f"\n  [WARN] {len(under_target)} cell(s) below the {MIN_VALID_PER_CELL}-valid-case target "
+              f"(step 5.2, 2026-09-20 fix plan) -- surrogate error for these cells should be checked "
+              f"individually, not only pooled (step 5's exit check).")
+
     print(f"\nSaved: {parquet_path}")
     print(f"Saved: {csv_path}")
+    manifest_path = write_manifest_sidecar(csv_path, state, extra={
+        "doe_manifest": manifest, "min_valid_per_cell_target": MIN_VALID_PER_CELL,
+        "n_cells_below_target": int(len(under_target)),
+        "coverage_table": coverage.to_dict("records"),
+    })
+    print(f"Saved: {manifest_path}")
     return df, manifest
+
+
+def coverage_table(df: pd.DataFrame) -> pd.DataFrame:
+    """Valid-case count per (arrangement, regime_id, pcm_id) cell (step 5.2,
+    2026-09-20 fix plan). No-PCM baseline rows are excluded -- there is only
+    ever one per regime, and arrangement doesn't apply to them (see
+    generate_cases.py's BASELINE_ARRANGEMENT_SENTINEL)."""
+    pcm_rows = df[df["pcm_id"] != "NONE_plain_tank"]
+    grouped = pcm_rows.groupby(["arrangement", "regime_id", "pcm_id"])["valid"].agg(["size", "sum"]).reset_index()
+    grouped = grouped.rename(columns={"size": "n_cases", "sum": "n_valid"})
+    grouped["n_valid"] = grouped["n_valid"].astype(int)
+    return grouped.sort_values(["regime_id", "pcm_id", "arrangement"])
 
 
 if __name__ == "__main__":

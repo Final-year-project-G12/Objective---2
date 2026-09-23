@@ -1,181 +1,191 @@
 target,group_type,group,MAE,n,regime_id,pcm_id,arrangement
-useful_energy_kWh,regime,0,0.44005779514577625,9,,,
-useful_energy_kWh,regime,1,0.5391541045508651,9,,,
-useful_energy_kWh,regime,2,0.10806198830803421,9,,,
-useful_energy_kWh,pcm,Lauric acid (C12),0.09169276982296044,3,,,
-useful_energy_kWh,pcm,Paraffin/HDPE PCM3,0.06827198196898128,6,,,
-useful_energy_kWh,pcm,Paraffin/HDPE PCM6,0.568171176151092,6,,,
-useful_energy_kWh,pcm,RT45HC,0.352714063742269,3,,,
-useful_energy_kWh,pcm,RT50,0.8757665518720993,3,,,
-useful_energy_kWh,pcm,savE® OM50,0.3343809811682756,6,,,
-useful_energy_kWh,regime_pcm_arrangement,0|Lauric acid (C12)|radial,0.18798221410929727,1,0.0,Lauric acid (C12),radial
-useful_energy_kWh,regime_pcm_arrangement,0|Lauric acid (C12)|single-layer,0.011356316829505886,1,0.0,Lauric acid (C12),single-layer
-useful_energy_kWh,regime_pcm_arrangement,0|Lauric acid (C12)|staggered,0.07573977853007818,1,0.0,Lauric acid (C12),staggered
-useful_energy_kWh,regime_pcm_arrangement,0|RT45HC|radial,0.16711340749088777,1,0.0,RT45HC,radial
-useful_energy_kWh,regime_pcm_arrangement,0|RT45HC|single-layer,0.6616471961897332,1,0.0,RT45HC,single-layer
-useful_energy_kWh,regime_pcm_arrangement,0|RT45HC|staggered,0.22938158754618598,1,0.0,RT45HC,staggered
-useful_energy_kWh,regime_pcm_arrangement,0|RT50|radial,0.32830307316567087,1,0.0,RT50,radial
-useful_energy_kWh,regime_pcm_arrangement,0|RT50|single-layer,0.4299025658162918,1,0.0,RT50,single-layer
-useful_energy_kWh,regime_pcm_arrangement,0|RT50|staggered,1.8690940166343353,1,0.0,RT50,staggered
-useful_energy_kWh,regime_pcm_arrangement,1|Paraffin/HDPE PCM3|radial,0.1270156612199571,1,1.0,Paraffin/HDPE PCM3,radial
-useful_energy_kWh,regime_pcm_arrangement,1|Paraffin/HDPE PCM3|single-layer,7.958078640513122e-12,1,1.0,Paraffin/HDPE PCM3,single-layer
-useful_energy_kWh,regime_pcm_arrangement,1|Paraffin/HDPE PCM3|staggered,0.07030891105046067,1,1.0,Paraffin/HDPE PCM3,staggered
-useful_energy_kWh,regime_pcm_arrangement,1|Paraffin/HDPE PCM6|radial,0.07784511816316808,1,1.0,Paraffin/HDPE PCM6,radial
-useful_energy_kWh,regime_pcm_arrangement,1|Paraffin/HDPE PCM6|single-layer,2.8720150226299666,1,1.0,Paraffin/HDPE PCM6,single-layer
-useful_energy_kWh,regime_pcm_arrangement,1|Paraffin/HDPE PCM6|staggered,0.1253725836998001,1,1.0,Paraffin/HDPE PCM6,staggered
-useful_energy_kWh,regime_pcm_arrangement,1|savE® OM50|radial,0.5843109633317454,1,1.0,savE® OM50,radial
-useful_energy_kWh,regime_pcm_arrangement,1|savE® OM50|single-layer,0.9676412675603387,1,1.0,savE® OM50,single-layer
-useful_energy_kWh,regime_pcm_arrangement,1|savE® OM50|staggered,0.027877413294390863,1,1.0,savE® OM50,staggered
-useful_energy_kWh,regime_pcm_arrangement,2|Paraffin/HDPE PCM3|radial,0.016114683455953127,1,2.0,Paraffin/HDPE PCM3,radial
-useful_energy_kWh,regime_pcm_arrangement,2|Paraffin/HDPE PCM3|single-layer,0.10428319098173233,1,2.0,Paraffin/HDPE PCM3,single-layer
-useful_energy_kWh,regime_pcm_arrangement,2|Paraffin/HDPE PCM3|staggered,0.09190944509782639,1,2.0,Paraffin/HDPE PCM3,staggered
-useful_energy_kWh,regime_pcm_arrangement,2|Paraffin/HDPE PCM6|radial,0.13758568311209274,1,2.0,Paraffin/HDPE PCM6,radial
-useful_energy_kWh,regime_pcm_arrangement,2|Paraffin/HDPE PCM6|single-layer,0.008340861572833091,1,2.0,Paraffin/HDPE PCM6,single-layer
-useful_energy_kWh,regime_pcm_arrangement,2|Paraffin/HDPE PCM6|staggered,0.18786778772869184,1,2.0,Paraffin/HDPE PCM6,staggered
-useful_energy_kWh,regime_pcm_arrangement,2|savE® OM50|radial,0.07897895511746356,1,2.0,savE® OM50,radial
-useful_energy_kWh,regime_pcm_arrangement,2|savE® OM50|single-layer,0.34747728769775676,1,2.0,savE® OM50,single-layer
-useful_energy_kWh,regime_pcm_arrangement,2|savE® OM50|staggered,7.958078640513122e-12,1,2.0,savE® OM50,staggered
-solar_fraction,regime,0,0.000418987632112924,9,,,
-solar_fraction,regime,1,0.0005042880269567032,9,,,
-solar_fraction,regime,2,0.00018481249377482682,9,,,
-solar_fraction,pcm,Lauric acid (C12),0.0001927045100144816,3,,,
-solar_fraction,pcm,Paraffin/HDPE PCM3,0.00018144969661657942,6,,,
-solar_fraction,pcm,Paraffin/HDPE PCM6,0.00015054750416731988,6,,,
-solar_fraction,pcm,RT45HC,0.0007063262335281761,3,,,
-solar_fraction,pcm,RT50,0.00035793215279611434,3,,,
-solar_fraction,pcm,savE® OM50,0.0007016535803133958,6,,,
-solar_fraction,regime_pcm_arrangement,0|Lauric acid (C12)|radial,0.00013074408567392837,1,0.0,Lauric acid (C12),radial
-solar_fraction,regime_pcm_arrangement,0|Lauric acid (C12)|single-layer,0.00025397428572748737,1,0.0,Lauric acid (C12),single-layer
-solar_fraction,regime_pcm_arrangement,0|Lauric acid (C12)|staggered,0.00019339515864202905,1,0.0,Lauric acid (C12),staggered
-solar_fraction,regime_pcm_arrangement,0|RT45HC|radial,0.00019342545924172505,1,0.0,RT45HC,radial
-solar_fraction,regime_pcm_arrangement,0|RT45HC|single-layer,0.0004091684471325685,1,0.0,RT45HC,single-layer
-solar_fraction,regime_pcm_arrangement,0|RT45HC|staggered,0.0015163847942102349,1,0.0,RT45HC,staggered
-solar_fraction,regime_pcm_arrangement,0|RT50|radial,0.00028394947687215844,1,0.0,RT50,radial
-solar_fraction,regime_pcm_arrangement,0|RT50|single-layer,0.0004877016994445649,1,0.0,RT50,single-layer
-solar_fraction,regime_pcm_arrangement,0|RT50|staggered,0.0003021452820716197,1,0.0,RT50,staggered
-solar_fraction,regime_pcm_arrangement,1|Paraffin/HDPE PCM3|radial,0.0001295741238869219,1,1.0,Paraffin/HDPE PCM3,radial
-solar_fraction,regime_pcm_arrangement,1|Paraffin/HDPE PCM3|single-layer,1.1096533712784407e-05,1,1.0,Paraffin/HDPE PCM3,single-layer
-solar_fraction,regime_pcm_arrangement,1|Paraffin/HDPE PCM3|staggered,0.00016513843315357768,1,1.0,Paraffin/HDPE PCM3,staggered
-solar_fraction,regime_pcm_arrangement,1|Paraffin/HDPE PCM6|radial,0.0001470115055308696,1,1.0,Paraffin/HDPE PCM6,radial
-solar_fraction,regime_pcm_arrangement,1|Paraffin/HDPE PCM6|single-layer,0.0003831756866728986,1,1.0,Paraffin/HDPE PCM6,single-layer
-solar_fraction,regime_pcm_arrangement,1|Paraffin/HDPE PCM6|staggered,5.424490655647762e-05,1,1.0,Paraffin/HDPE PCM6,staggered
-solar_fraction,regime_pcm_arrangement,1|savE® OM50|radial,0.0002514164151592446,1,1.0,savE® OM50,radial
-solar_fraction,regime_pcm_arrangement,1|savE® OM50|single-layer,0.002367986880196349,1,1.0,savE® OM50,single-layer
-solar_fraction,regime_pcm_arrangement,1|savE® OM50|staggered,0.0010289477577412054,1,1.0,savE® OM50,staggered
-solar_fraction,regime_pcm_arrangement,2|Paraffin/HDPE PCM3|radial,0.0002959785451382979,1,2.0,Paraffin/HDPE PCM3,radial
-solar_fraction,regime_pcm_arrangement,2|Paraffin/HDPE PCM3|single-layer,0.0002349435231338015,1,2.0,Paraffin/HDPE PCM3,single-layer
-solar_fraction,regime_pcm_arrangement,2|Paraffin/HDPE PCM3|staggered,0.00025196702067409316,1,2.0,Paraffin/HDPE PCM3,staggered
-solar_fraction,regime_pcm_arrangement,2|Paraffin/HDPE PCM6|radial,0.00018516787532041334,1,2.0,Paraffin/HDPE PCM6,radial
-solar_fraction,regime_pcm_arrangement,2|Paraffin/HDPE PCM6|single-layer,3.076232602583495e-05,1,2.0,Paraffin/HDPE PCM6,single-layer
-solar_fraction,regime_pcm_arrangement,2|Paraffin/HDPE PCM6|staggered,0.00010292272489742516,1,2.0,Paraffin/HDPE PCM6,staggered
-solar_fraction,regime_pcm_arrangement,2|savE® OM50|radial,0.00020476155971071996,1,2.0,savE® OM50,radial
-solar_fraction,regime_pcm_arrangement,2|savE® OM50|single-layer,0.0003460040814691201,1,2.0,savE® OM50,single-layer
-solar_fraction,regime_pcm_arrangement,2|savE® OM50|staggered,1.0804787603735377e-05,1,2.0,savE® OM50,staggered
-unmet_energy_kWh,regime,0,1.0560598303929458,9,,,
-unmet_energy_kWh,regime,1,1.2597705740632692,9,,,
-unmet_energy_kWh,regime,2,0.4805859166080811,9,,,
-unmet_energy_kWh,pcm,Lauric acid (C12),0.6053972451409209,3,,,
-unmet_energy_kWh,pcm,Paraffin/HDPE PCM3,0.49809901224030756,6,,,
-unmet_energy_kWh,pcm,Paraffin/HDPE PCM6,0.40724234924236197,6,,,
-unmet_energy_kWh,pcm,RT45HC,1.6396372213685027,3,,,
-unmet_energy_kWh,pcm,RT50,0.9231450246694143,3,,,
-unmet_energy_kWh,pcm,savE® OM50,1.705193374524356,6,,,
-unmet_energy_kWh,regime_pcm_arrangement,0|Lauric acid (C12)|radial,0.29673755750900455,1,0.0,Lauric acid (C12),radial
-unmet_energy_kWh,regime_pcm_arrangement,0|Lauric acid (C12)|single-layer,0.9032118852162512,1,0.0,Lauric acid (C12),single-layer
-unmet_energy_kWh,regime_pcm_arrangement,0|Lauric acid (C12)|staggered,0.6162422926975069,1,0.0,Lauric acid (C12),staggered
-unmet_energy_kWh,regime_pcm_arrangement,0|RT45HC|radial,0.639842312793462,1,0.0,RT45HC,radial
-unmet_energy_kWh,regime_pcm_arrangement,0|RT45HC|single-layer,0.35622819393961436,1,0.0,RT45HC,single-layer
-unmet_energy_kWh,regime_pcm_arrangement,0|RT45HC|staggered,3.9228411573724316,1,0.0,RT45HC,staggered
-unmet_energy_kWh,regime_pcm_arrangement,0|RT50|radial,0.7313818616682966,1,0.0,RT50,radial
-unmet_energy_kWh,regime_pcm_arrangement,0|RT50|single-layer,1.224955820955529,1,0.0,RT50,single-layer
-unmet_energy_kWh,regime_pcm_arrangement,0|RT50|staggered,0.8130973913844173,1,0.0,RT50,staggered
-unmet_energy_kWh,regime_pcm_arrangement,1|Paraffin/HDPE PCM3|radial,0.39558894869946926,1,1.0,Paraffin/HDPE PCM3,radial
-unmet_energy_kWh,regime_pcm_arrangement,1|Paraffin/HDPE PCM3|single-layer,0.012243770355439665,1,1.0,Paraffin/HDPE PCM3,single-layer
-unmet_energy_kWh,regime_pcm_arrangement,1|Paraffin/HDPE PCM3|staggered,0.4685483614169925,1,1.0,Paraffin/HDPE PCM3,staggered
-unmet_energy_kWh,regime_pcm_arrangement,1|Paraffin/HDPE PCM6|radial,0.41108859172459233,1,1.0,Paraffin/HDPE PCM6,radial
-unmet_energy_kWh,regime_pcm_arrangement,1|Paraffin/HDPE PCM6|single-layer,1.0060687944840083,1,1.0,Paraffin/HDPE PCM6,single-layer
-unmet_energy_kWh,regime_pcm_arrangement,1|Paraffin/HDPE PCM6|staggered,0.2705696015777903,1,1.0,Paraffin/HDPE PCM6,staggered
-unmet_energy_kWh,regime_pcm_arrangement,1|savE® OM50|radial,0.5844947208315716,1,1.0,savE® OM50,radial
-unmet_energy_kWh,regime_pcm_arrangement,1|savE® OM50|single-layer,5.749947862024442,1,1.0,savE® OM50,single-layer
-unmet_energy_kWh,regime_pcm_arrangement,1|savE® OM50|staggered,2.4393845154551173,1,1.0,savE® OM50,staggered
-unmet_energy_kWh,regime_pcm_arrangement,2|Paraffin/HDPE PCM3|radial,0.7680288790786562,1,2.0,Paraffin/HDPE PCM3,radial
-unmet_energy_kWh,regime_pcm_arrangement,2|Paraffin/HDPE PCM3|single-layer,0.648153314975616,1,2.0,Paraffin/HDPE PCM3,single-layer
-unmet_energy_kWh,regime_pcm_arrangement,2|Paraffin/HDPE PCM3|staggered,0.6960307989156718,1,2.0,Paraffin/HDPE PCM3,staggered
-unmet_energy_kWh,regime_pcm_arrangement,2|Paraffin/HDPE PCM6|radial,0.4681752221304123,1,2.0,Paraffin/HDPE PCM6,radial
-unmet_energy_kWh,regime_pcm_arrangement,2|Paraffin/HDPE PCM6|single-layer,0.08050254455793038,1,2.0,Paraffin/HDPE PCM6,single-layer
-unmet_energy_kWh,regime_pcm_arrangement,2|Paraffin/HDPE PCM6|staggered,0.20704934097943806,1,2.0,Paraffin/HDPE PCM6,staggered
-unmet_energy_kWh,regime_pcm_arrangement,2|savE® OM50|radial,0.4828436794005029,1,2.0,savE® OM50,radial
-unmet_energy_kWh,regime_pcm_arrangement,2|savE® OM50|single-layer,0.9251052172246546,1,2.0,savE® OM50,single-layer
-unmet_energy_kWh,regime_pcm_arrangement,2|savE® OM50|staggered,0.049384252209847546,1,2.0,savE® OM50,staggered
-pump_energy_kWh,regime,0,1.6193541727286823e-08,9,,,
-pump_energy_kWh,regime,1,1.0580441495095716e-07,9,,,
-pump_energy_kWh,regime,2,5.18790321339738e-09,9,,,
-pump_energy_kWh,pcm,Lauric acid (C12),7.782269272520894e-09,3,,,
-pump_energy_kWh,pcm,Paraffin/HDPE PCM3,7.59113927524097e-09,6,,,
-pump_energy_kWh,pcm,Paraffin/HDPE PCM6,2.3243079999792504e-08,6,,,
-pump_energy_kWh,pcm,RT45HC,1.9315728407943526e-08,3,,,
-pump_energy_kWh,pcm,RT50,2.148262750139605e-08,3,,,
-pump_energy_kWh,pcm,savE® OM50,1.3565425797149834e-07,6,,,
-pump_energy_kWh,regime_pcm_arrangement,0|Lauric acid (C12)|radial,1.069135118417687e-08,1,0.0,Lauric acid (C12),radial
-pump_energy_kWh,regime_pcm_arrangement,0|Lauric acid (C12)|single-layer,8.31614937486673e-09,1,0.0,Lauric acid (C12),single-layer
-pump_energy_kWh,regime_pcm_arrangement,0|Lauric acid (C12)|staggered,4.339307258519086e-09,1,0.0,Lauric acid (C12),staggered
-pump_energy_kWh,regime_pcm_arrangement,0|RT45HC|radial,1.0685169294445779e-08,1,0.0,RT45HC,radial
-pump_energy_kWh,regime_pcm_arrangement,0|RT45HC|single-layer,3.889045280494703e-09,1,0.0,RT45HC,single-layer
-pump_energy_kWh,regime_pcm_arrangement,0|RT45HC|staggered,4.33729706488901e-08,1,0.0,RT45HC,staggered
-pump_energy_kWh,regime_pcm_arrangement,0|RT50|radial,9.368579273170472e-10,1,0.0,RT50,radial
-pump_energy_kWh,regime_pcm_arrangement,0|RT50|single-layer,1.4473692446877448e-08,1,0.0,RT50,single-layer
-pump_energy_kWh,regime_pcm_arrangement,0|RT50|staggered,4.903733212999365e-08,1,0.0,RT50,staggered
-pump_energy_kWh,regime_pcm_arrangement,1|Paraffin/HDPE PCM3|radial,1.0713441918090779e-08,1,1.0,Paraffin/HDPE PCM3,radial
-pump_energy_kWh,regime_pcm_arrangement,1|Paraffin/HDPE PCM3|single-layer,1.6951578468098262e-08,1,1.0,Paraffin/HDPE PCM3,single-layer
-pump_energy_kWh,regime_pcm_arrangement,1|Paraffin/HDPE PCM3|staggered,6.71114343240921e-10,1,1.0,Paraffin/HDPE PCM3,staggered
-pump_energy_kWh,regime_pcm_arrangement,1|Paraffin/HDPE PCM6|radial,1.0712797360866996e-08,1,1.0,Paraffin/HDPE PCM6,radial
-pump_energy_kWh,regime_pcm_arrangement,1|Paraffin/HDPE PCM6|single-layer,1.1212750539298103e-07,1,1.0,Paraffin/HDPE PCM6,single-layer
-pump_energy_kWh,regime_pcm_arrangement,1|Paraffin/HDPE PCM6|staggered,2.173439532952171e-09,1,1.0,Paraffin/HDPE PCM6,staggered
-pump_energy_kWh,regime_pcm_arrangement,1|savE® OM50|radial,1.0702689531685056e-08,1,1.0,savE® OM50,radial
-pump_energy_kWh,regime_pcm_arrangement,1|savE® OM50|single-layer,9.745370304207192e-08,1,1.0,savE® OM50,single-layer
-pump_energy_kWh,regime_pcm_arrangement,1|savE® OM50|staggered,6.907334649686273e-07,1,1.0,savE® OM50,staggered
-pump_energy_kWh,regime_pcm_arrangement,2|Paraffin/HDPE PCM3|radial,1.0601552643756696e-08,1,2.0,Paraffin/HDPE PCM3,radial
-pump_energy_kWh,regime_pcm_arrangement,2|Paraffin/HDPE PCM3|single-layer,4.733448680208879e-09,1,2.0,Paraffin/HDPE PCM3,single-layer
-pump_energy_kWh,regime_pcm_arrangement,2|Paraffin/HDPE PCM3|staggered,1.8756995980502823e-09,1,2.0,Paraffin/HDPE PCM3,staggered
-pump_energy_kWh,regime_pcm_arrangement,2|Paraffin/HDPE PCM6|radial,1.0599648270141999e-08,1,2.0,Paraffin/HDPE PCM6,radial
-pump_energy_kWh,regime_pcm_arrangement,2|Paraffin/HDPE PCM6|single-layer,1.960487754964852e-09,1,2.0,Paraffin/HDPE PCM6,single-layer
-pump_energy_kWh,regime_pcm_arrangement,2|Paraffin/HDPE PCM6|staggered,1.8846016868479875e-09,1,2.0,Paraffin/HDPE PCM6,staggered
-pump_energy_kWh,regime_pcm_arrangement,2|savE® OM50|radial,8.996387892195008e-09,1,2.0,savE® OM50,radial
-pump_energy_kWh,regime_pcm_arrangement,2|savE® OM50|single-layer,4.176887451967396e-09,1,2.0,savE® OM50,single-layer
-pump_energy_kWh,regime_pcm_arrangement,2|savE® OM50|staggered,1.8624149424433208e-09,1,2.0,savE® OM50,staggered
-pcm_mass_kg,regime,0,0.0934356546455225,9,,,
-pcm_mass_kg,regime,1,0.3883376591325008,9,,,
-pcm_mass_kg,regime,2,0.009790095750958214,9,,,
-pcm_mass_kg,pcm,Lauric acid (C12),0.009332238007881003,3,,,
-pcm_mass_kg,pcm,Paraffin/HDPE PCM3,0.012577699670225448,6,,,
-pcm_mass_kg,pcm,Paraffin/HDPE PCM6,0.4475926002624804,6,,,
-pcm_mass_kg,pcm,RT45HC,0.08703012439083328,3,,,
-pcm_mass_kg,pcm,RT50,0.18394460153785322,3,,,
-pcm_mass_kg,pcm,savE® OM50,0.1370213323924827,6,,,
-pcm_mass_kg,regime_pcm_arrangement,0|Lauric acid (C12)|radial,0.0005716052307720432,1,0.0,Lauric acid (C12),radial
-pcm_mass_kg,regime_pcm_arrangement,0|Lauric acid (C12)|single-layer,2.1316282072803006e-14,1,0.0,Lauric acid (C12),single-layer
-pcm_mass_kg,regime_pcm_arrangement,0|Lauric acid (C12)|staggered,0.02742510879284965,1,0.0,Lauric acid (C12),staggered
-pcm_mass_kg,regime_pcm_arrangement,0|RT45HC|radial,0.0020751852092848466,1,0.0,RT45HC,radial
-pcm_mass_kg,regime_pcm_arrangement,0|RT45HC|single-layer,0.1090691752791586,1,0.0,RT45HC,single-layer
-pcm_mass_kg,regime_pcm_arrangement,0|RT45HC|staggered,0.14994601268405638,1,0.0,RT45HC,staggered
-pcm_mass_kg,regime_pcm_arrangement,0|RT50|radial,0.12278696076383933,1,0.0,RT50,radial
-pcm_mass_kg,regime_pcm_arrangement,0|RT50|single-layer,0.3688790880003081,1,0.0,RT50,single-layer
-pcm_mass_kg,regime_pcm_arrangement,0|RT50|staggered,0.06016775584941225,1,0.0,RT50,staggered
-pcm_mass_kg,regime_pcm_arrangement,1|Paraffin/HDPE PCM3|radial,0.004796749011760859,1,1.0,Paraffin/HDPE PCM3,radial
-pcm_mass_kg,regime_pcm_arrangement,1|Paraffin/HDPE PCM3|single-layer,2.3092638912203256e-14,1,1.0,Paraffin/HDPE PCM3,single-layer
-pcm_mass_kg,regime_pcm_arrangement,1|Paraffin/HDPE PCM3|staggered,0.07031558001299931,1,1.0,Paraffin/HDPE PCM3,staggered
-pcm_mass_kg,regime_pcm_arrangement,1|Paraffin/HDPE PCM6|radial,0.00473777084564464,1,1.0,Paraffin/HDPE PCM6,radial
-pcm_mass_kg,regime_pcm_arrangement,1|Paraffin/HDPE PCM6|single-layer,2.5869588890183586,1,1.0,Paraffin/HDPE PCM6,single-layer
-pcm_mass_kg,regime_pcm_arrangement,1|Paraffin/HDPE PCM6|staggered,0.06736908572401057,1,1.0,Paraffin/HDPE PCM6,staggered
-pcm_mass_kg,regime_pcm_arrangement,1|savE® OM50|radial,0.0037868931546585216,1,1.0,savE® OM50,radial
-pcm_mass_kg,regime_pcm_arrangement,1|savE® OM50|single-layer,0.2790211286765327,1,1.0,savE® OM50,single-layer
-pcm_mass_kg,regime_pcm_arrangement,1|savE® OM50|staggered,0.4780528357485192,1,1.0,savE® OM50,staggered
-pcm_mass_kg,regime_pcm_arrangement,2|Paraffin/HDPE PCM3|radial,0.0003538689965232322,1,2.0,Paraffin/HDPE PCM3,radial
-pcm_mass_kg,regime_pcm_arrangement,2|Paraffin/HDPE PCM3|single-layer,2.3092638912203256e-14,1,2.0,Paraffin/HDPE PCM3,single-layer
-pcm_mass_kg,regime_pcm_arrangement,2|Paraffin/HDPE PCM3|staggered,2.3092638912203256e-14,1,2.0,Paraffin/HDPE PCM3,staggered
-pcm_mass_kg,regime_pcm_arrangement,2|Paraffin/HDPE PCM6|radial,0.0003145502191017613,1,2.0,Paraffin/HDPE PCM6,radial
-pcm_mass_kg,regime_pcm_arrangement,2|Paraffin/HDPE PCM6|single-layer,0.026175305767757173,1,2.0,Paraffin/HDPE PCM6,single-layer
-pcm_mass_kg,regime_pcm_arrangement,2|Paraffin/HDPE PCM6|staggered,9.769962616701378e-15,1,2.0,Paraffin/HDPE PCM6,staggered
-pcm_mass_kg,regime_pcm_arrangement,2|savE® OM50|radial,3.4638958368304884e-14,1,2.0,savE® OM50,radial
-pcm_mass_kg,regime_pcm_arrangement,2|savE® OM50|single-layer,0.061267136775116526,1,2.0,savE® OM50,single-layer
-pcm_mass_kg,regime_pcm_arrangement,2|savE® OM50|staggered,3.4638958368304884e-14,1,2.0,savE® OM50,staggered
+useful_energy_kWh,regime,0,0.3144464904419364,18,,,
+useful_energy_kWh,regime,1,0.2096101266980794,18,,,
+useful_energy_kWh,regime,2,0.1379166958263593,18,,,
+useful_energy_kWh,pcm,Lauric acid (C12),0.14370252804762154,6,,,
+useful_energy_kWh,pcm,RT44HC,0.12468060490819728,6,,,
+useful_energy_kWh,pcm,RT45HC,0.19525880413209507,12,,,
+useful_energy_kWh,pcm,RT47,0.14984820495931217,6,,,
+useful_energy_kWh,pcm,n-Docosane (C22),0.10029041181500513,6,,,
+useful_energy_kWh,pcm,n-Tricosane (C23),0.20292619708952012,6,,,
+useful_energy_kWh,pcm,savE® OM42,0.6688106614582997,6,,,
+useful_energy_kWh,pcm,savE® OM49,0.2051437223569792,6,,,
+useful_energy_kWh,regime_pcm_arrangement,0|RT44HC|radial,0.18384950670065336,2,0.0,RT44HC,radial
+useful_energy_kWh,regime_pcm_arrangement,0|RT44HC|single-layer,0.10429932740714776,2,0.0,RT44HC,single-layer
+useful_energy_kWh,regime_pcm_arrangement,0|RT44HC|staggered,0.08589298061679074,2,0.0,RT44HC,staggered
+useful_energy_kWh,regime_pcm_arrangement,0|RT47|radial,0.22398330291412094,2,0.0,RT47,radial
+useful_energy_kWh,regime_pcm_arrangement,0|RT47|single-layer,0.07864488623522448,2,0.0,RT47,single-layer
+useful_energy_kWh,regime_pcm_arrangement,0|RT47|staggered,0.1469164257285911,2,0.0,RT47,staggered
+useful_energy_kWh,regime_pcm_arrangement,0|savE® OM42|radial,0.8539837601108502,2,0.0,savE® OM42,radial
+useful_energy_kWh,regime_pcm_arrangement,0|savE® OM42|single-layer,0.9344977849716543,2,0.0,savE® OM42,single-layer
+useful_energy_kWh,regime_pcm_arrangement,0|savE® OM42|staggered,0.21795043929239455,2,0.0,savE® OM42,staggered
+useful_energy_kWh,regime_pcm_arrangement,1|RT45HC|radial,0.16370048509713797,2,1.0,RT45HC,radial
+useful_energy_kWh,regime_pcm_arrangement,1|RT45HC|single-layer,0.2345574478248409,2,1.0,RT45HC,single-layer
+useful_energy_kWh,regime_pcm_arrangement,1|RT45HC|staggered,0.26402344902123787,2,1.0,RT45HC,staggered
+useful_energy_kWh,regime_pcm_arrangement,1|n-Tricosane (C23)|radial,0.12496454921438271,2,1.0,n-Tricosane (C23),radial
+useful_energy_kWh,regime_pcm_arrangement,1|n-Tricosane (C23)|single-layer,0.10345674691961904,2,1.0,n-Tricosane (C23),single-layer
+useful_energy_kWh,regime_pcm_arrangement,1|n-Tricosane (C23)|staggered,0.3803572951345586,2,1.0,n-Tricosane (C23),staggered
+useful_energy_kWh,regime_pcm_arrangement,1|savE® OM49|radial,0.21763346669126804,2,1.0,savE® OM49,radial
+useful_energy_kWh,regime_pcm_arrangement,1|savE® OM49|single-layer,0.2326241322130045,2,1.0,savE® OM49,single-layer
+useful_energy_kWh,regime_pcm_arrangement,1|savE® OM49|staggered,0.16517356816666506,2,1.0,savE® OM49,staggered
+useful_energy_kWh,regime_pcm_arrangement,2|Lauric acid (C12)|radial,0.04268735365633347,2,2.0,Lauric acid (C12),radial
+useful_energy_kWh,regime_pcm_arrangement,2|Lauric acid (C12)|single-layer,0.1336849602134862,2,2.0,Lauric acid (C12),single-layer
+useful_energy_kWh,regime_pcm_arrangement,2|Lauric acid (C12)|staggered,0.254735270273045,2,2.0,Lauric acid (C12),staggered
+useful_energy_kWh,regime_pcm_arrangement,2|RT45HC|radial,0.09063817325204582,2,2.0,RT45HC,radial
+useful_energy_kWh,regime_pcm_arrangement,2|RT45HC|single-layer,0.3937560246238263,2,2.0,RT45HC,single-layer
+useful_energy_kWh,regime_pcm_arrangement,2|RT45HC|staggered,0.024877244973481538,2,2.0,RT45HC,staggered
+useful_energy_kWh,regime_pcm_arrangement,2|n-Docosane (C22)|radial,0.14001074893769783,2,2.0,n-Docosane (C22),radial
+useful_energy_kWh,regime_pcm_arrangement,2|n-Docosane (C22)|single-layer,0.027078152437411518,2,2.0,n-Docosane (C22),single-layer
+useful_energy_kWh,regime_pcm_arrangement,2|n-Docosane (C22)|staggered,0.13378233406990603,2,2.0,n-Docosane (C22),staggered
+solar_fraction,regime,0,0.0004454642670051899,18,,,
+solar_fraction,regime,1,0.0004704929667853692,18,,,
+solar_fraction,regime,2,0.0002482347289092246,18,,,
+solar_fraction,pcm,Lauric acid (C12),0.00025483839937974945,6,,,
+solar_fraction,pcm,RT44HC,0.0002985475457814209,6,,,
+solar_fraction,pcm,RT45HC,0.0006047959771584566,12,,,
+solar_fraction,pcm,RT47,0.00028092190955995394,6,,,
+solar_fraction,pcm,n-Docosane (C22),0.00016660532298616118,6,,,
+solar_fraction,pcm,n-Tricosane (C23),0.0001625257860998023,6,,,
+solar_fraction,pcm,savE® OM42,0.000756923345674195,6,,,
+solar_fraction,pcm,savE® OM49,0.00036262162430115524,6,,,
+solar_fraction,regime_pcm_arrangement,0|RT44HC|radial,0.0005057881934710795,2,0.0,RT44HC,radial
+solar_fraction,regime_pcm_arrangement,0|RT44HC|single-layer,0.0002092042616319567,2,0.0,RT44HC,single-layer
+solar_fraction,regime_pcm_arrangement,0|RT44HC|staggered,0.00018065018224122653,2,0.0,RT44HC,staggered
+solar_fraction,regime_pcm_arrangement,0|RT47|radial,0.0003538782231817805,2,0.0,RT47,radial
+solar_fraction,regime_pcm_arrangement,0|RT47|single-layer,0.0002708085928644355,2,0.0,RT47,single-layer
+solar_fraction,regime_pcm_arrangement,0|RT47|staggered,0.00021807891263364576,2,0.0,RT47,staggered
+solar_fraction,regime_pcm_arrangement,0|savE® OM42|radial,0.0012076239187502336,2,0.0,savE® OM42,radial
+solar_fraction,regime_pcm_arrangement,0|savE® OM42|single-layer,0.0009559241665241247,2,0.0,savE® OM42,single-layer
+solar_fraction,regime_pcm_arrangement,0|savE® OM42|staggered,0.00010722195174822646,2,0.0,savE® OM42,staggered
+solar_fraction,regime_pcm_arrangement,1|RT45HC|radial,0.0011364211871663366,2,1.0,RT45HC,radial
+solar_fraction,regime_pcm_arrangement,1|RT45HC|single-layer,0.0007373377062113717,2,1.0,RT45HC,single-layer
+solar_fraction,regime_pcm_arrangement,1|RT45HC|staggered,0.0007852355764877417,2,1.0,RT45HC,staggered
+solar_fraction,regime_pcm_arrangement,1|n-Tricosane (C23)|radial,0.00027034510357487607,2,1.0,n-Tricosane (C23),radial
+solar_fraction,regime_pcm_arrangement,1|n-Tricosane (C23)|single-layer,2.1017033855597056e-05,2,1.0,n-Tricosane (C23),single-layer
+solar_fraction,regime_pcm_arrangement,1|n-Tricosane (C23)|staggered,0.00019621522086893384,2,1.0,n-Tricosane (C23),staggered
+solar_fraction,regime_pcm_arrangement,1|savE® OM49|radial,0.00024549180028915485,2,1.0,savE® OM49,radial
+solar_fraction,regime_pcm_arrangement,1|savE® OM49|single-layer,0.0004104344316898656,2,1.0,savE® OM49,single-layer
+solar_fraction,regime_pcm_arrangement,1|savE® OM49|staggered,0.00043193864092444523,2,1.0,savE® OM49,staggered
+solar_fraction,regime_pcm_arrangement,2|Lauric acid (C12)|radial,0.00010027442264964881,2,2.0,Lauric acid (C12),radial
+solar_fraction,regime_pcm_arrangement,2|Lauric acid (C12)|single-layer,0.00024567398910063654,2,2.0,Lauric acid (C12),single-layer
+solar_fraction,regime_pcm_arrangement,2|Lauric acid (C12)|staggered,0.00041856678638896305,2,2.0,Lauric acid (C12),staggered
+solar_fraction,regime_pcm_arrangement,2|RT45HC|radial,0.00023329142209405074,2,2.0,RT45HC,radial
+solar_fraction,regime_pcm_arrangement,2|RT45HC|single-layer,0.0005399222322016728,2,2.0,RT45HC,single-layer
+solar_fraction,regime_pcm_arrangement,2|RT45HC|staggered,0.0001965677387895659,2,2.0,RT45HC,staggered
+solar_fraction,regime_pcm_arrangement,2|n-Docosane (C22)|radial,7.178990284401054e-05,2,2.0,n-Docosane (C22),radial
+solar_fraction,regime_pcm_arrangement,2|n-Docosane (C22)|single-layer,0.0002021921426437201,2,2.0,n-Docosane (C22),single-layer
+solar_fraction,regime_pcm_arrangement,2|n-Docosane (C22)|staggered,0.00022583392347075293,2,2.0,n-Docosane (C22),staggered
+unmet_energy_kWh,regime,0,1.0779957180413173,18,,,
+unmet_energy_kWh,regime,1,1.0305882418684922,18,,,
+unmet_energy_kWh,regime,2,0.7332578296849432,18,,,
+unmet_energy_kWh,pcm,Lauric acid (C12),0.594842174237859,6,,,
+unmet_energy_kWh,pcm,RT44HC,0.7143231946142427,6,,,
+unmet_energy_kWh,pcm,RT45HC,1.6058112955707695,12,,,
+unmet_energy_kWh,pcm,RT47,0.7655858736012154,6,,,
+unmet_energy_kWh,pcm,n-Docosane (C22),0.4936778951385274,6,,,
+unmet_energy_kWh,pcm,n-Tricosane (C23),0.24150554270784141,6,,,
+unmet_energy_kWh,pcm,savE® OM42,1.7540780859084937,6,,,
+unmet_energy_kWh,pcm,savE® OM49,0.7498900114345398,6,,,
+unmet_energy_kWh,regime_pcm_arrangement,0|RT44HC|radial,1.1276014510341383,2,0.0,RT44HC,radial
+unmet_energy_kWh,regime_pcm_arrangement,0|RT44HC|single-layer,0.5509986416334414,2,0.0,RT44HC,single-layer
+unmet_energy_kWh,regime_pcm_arrangement,0|RT44HC|staggered,0.46436949117514814,2,0.0,RT44HC,staggered
+unmet_energy_kWh,regime_pcm_arrangement,0|RT47|radial,0.8803366539405033,2,0.0,RT47,radial
+unmet_energy_kWh,regime_pcm_arrangement,0|RT47|single-layer,0.7045368274423254,2,0.0,RT47,single-layer
+unmet_energy_kWh,regime_pcm_arrangement,0|RT47|staggered,0.7118841394208175,2,0.0,RT47,staggered
+unmet_energy_kWh,regime_pcm_arrangement,0|savE® OM42|radial,2.7819748143363086,2,0.0,savE® OM42,radial
+unmet_energy_kWh,regime_pcm_arrangement,0|savE® OM42|single-layer,2.084111486989059,2,0.0,savE® OM42,single-layer
+unmet_energy_kWh,regime_pcm_arrangement,0|savE® OM42|staggered,0.3961479564001138,2,0.0,savE® OM42,staggered
+unmet_energy_kWh,regime_pcm_arrangement,1|RT45HC|radial,2.359407711877168,2,1.0,RT45HC,radial
+unmet_energy_kWh,regime_pcm_arrangement,1|RT45HC|single-layer,1.8742323351245886,2,1.0,RT45HC,single-layer
+unmet_energy_kWh,regime_pcm_arrangement,1|RT45HC|staggered,2.06746746738753,2,1.0,RT45HC,staggered
+unmet_energy_kWh,regime_pcm_arrangement,1|n-Tricosane (C23)|radial,0.40945955697958425,2,1.0,n-Tricosane (C23),radial
+unmet_energy_kWh,regime_pcm_arrangement,1|n-Tricosane (C23)|single-layer,0.0563435203371796,2,1.0,n-Tricosane (C23),single-layer
+unmet_energy_kWh,regime_pcm_arrangement,1|n-Tricosane (C23)|staggered,0.2587135508067604,2,1.0,n-Tricosane (C23),staggered
+unmet_energy_kWh,regime_pcm_arrangement,1|savE® OM49|radial,0.5892410360901863,2,1.0,savE® OM49,radial
+unmet_energy_kWh,regime_pcm_arrangement,1|savE® OM49|single-layer,0.8676753930525933,2,1.0,savE® OM49,single-layer
+unmet_energy_kWh,regime_pcm_arrangement,1|savE® OM49|staggered,0.7927536051608399,2,1.0,savE® OM49,staggered
+unmet_energy_kWh,regime_pcm_arrangement,2|Lauric acid (C12)|radial,0.20625572415372062,2,2.0,Lauric acid (C12),radial
+unmet_energy_kWh,regime_pcm_arrangement,2|Lauric acid (C12)|single-layer,0.5023799011293022,2,2.0,Lauric acid (C12),single-layer
+unmet_energy_kWh,regime_pcm_arrangement,2|Lauric acid (C12)|staggered,1.075890897430554,2,2.0,Lauric acid (C12),staggered
+unmet_energy_kWh,regime_pcm_arrangement,2|RT45HC|radial,1.0066158126938944,2,2.0,RT45HC,radial
+unmet_energy_kWh,regime_pcm_arrangement,2|RT45HC|single-layer,1.5952535174369586,2,2.0,RT45HC,single-layer
+unmet_energy_kWh,regime_pcm_arrangement,2|RT45HC|staggered,0.7318909289044768,2,2.0,RT45HC,staggered
+unmet_energy_kWh,regime_pcm_arrangement,2|n-Docosane (C22)|radial,0.1518387141244375,2,2.0,n-Docosane (C22),radial
+unmet_energy_kWh,regime_pcm_arrangement,2|n-Docosane (C22)|single-layer,0.8616387396058371,2,2.0,n-Docosane (C22),single-layer
+unmet_energy_kWh,regime_pcm_arrangement,2|n-Docosane (C22)|staggered,0.46755623168530747,2,2.0,n-Docosane (C22),staggered
+pump_energy_kWh,regime,0,4.212808718456025e-09,18,,,
+pump_energy_kWh,regime,1,1.0936058883787282e-08,18,,,
+pump_energy_kWh,regime,2,5.1406237335845035e-09,18,,,
+pump_energy_kWh,pcm,Lauric acid (C12),1.1467500692735988e-08,6,,,
+pump_energy_kWh,pcm,RT44HC,6.725947038567211e-09,6,,,
+pump_energy_kWh,pcm,RT45HC,1.1217415017906126e-08,12,,,
+pump_energy_kWh,pcm,RT47,2.0700606288670834e-09,6,,,
+pump_energy_kWh,pcm,n-Docosane (C22),2.165701426556831e-09,6,,,
+pump_energy_kWh,pcm,n-Tricosane (C23),3.074018836416848e-09,6,,,
+pump_energy_kWh,pcm,savE® OM42,3.842418487933782e-09,6,,,
+pump_energy_kWh,pcm,savE® OM49,9.087996860593436e-09,6,,,
+pump_energy_kWh,regime_pcm_arrangement,0|RT44HC|radial,2.348504823050411e-09,2,0.0,RT44HC,radial
+pump_energy_kWh,regime_pcm_arrangement,0|RT44HC|single-layer,1.5271853322029475e-08,2,0.0,RT44HC,single-layer
+pump_energy_kWh,regime_pcm_arrangement,0|RT44HC|staggered,2.557482970621747e-09,2,0.0,RT44HC,staggered
+pump_energy_kWh,regime_pcm_arrangement,0|RT47|radial,3.3349259575726517e-09,2,0.0,RT47,radial
+pump_energy_kWh,regime_pcm_arrangement,0|RT47|single-layer,9.558030079520633e-10,2,0.0,RT47,single-layer
+pump_energy_kWh,regime_pcm_arrangement,0|RT47|staggered,1.919452921076535e-09,2,0.0,RT47,staggered
+pump_energy_kWh,regime_pcm_arrangement,0|savE® OM42|radial,2.004462466641917e-09,2,0.0,savE® OM42,radial
+pump_energy_kWh,regime_pcm_arrangement,0|savE® OM42|single-layer,6.297501998443168e-09,2,0.0,savE® OM42,single-layer
+pump_energy_kWh,regime_pcm_arrangement,0|savE® OM42|staggered,3.225290998716263e-09,2,0.0,savE® OM42,staggered
+pump_energy_kWh,regime_pcm_arrangement,1|RT45HC|radial,3.162079743433715e-10,2,1.0,RT45HC,radial
+pump_energy_kWh,regime_pcm_arrangement,1|RT45HC|single-layer,2.016148290710463e-09,2,1.0,RT45HC,single-layer
+pump_energy_kWh,regime_pcm_arrangement,1|RT45HC|staggered,5.960612659800086e-08,2,1.0,RT45HC,staggered
+pump_energy_kWh,regime_pcm_arrangement,1|n-Tricosane (C23)|radial,3.3556413121231386e-09,2,1.0,n-Tricosane (C23),radial
+pump_energy_kWh,regime_pcm_arrangement,1|n-Tricosane (C23)|single-layer,2.54906954190438e-09,2,1.0,n-Tricosane (C23),single-layer
+pump_energy_kWh,regime_pcm_arrangement,1|n-Tricosane (C23)|staggered,3.3173456552230245e-09,2,1.0,n-Tricosane (C23),staggered
+pump_energy_kWh,regime_pcm_arrangement,1|savE® OM49|radial,4.2547234849529596e-09,2,1.0,savE® OM49,radial
+pump_energy_kWh,regime_pcm_arrangement,1|savE® OM49|single-layer,1.6234363063681662e-08,2,1.0,savE® OM49,single-layer
+pump_energy_kWh,regime_pcm_arrangement,1|savE® OM49|staggered,6.774904033145685e-09,2,1.0,savE® OM49,staggered
+pump_energy_kWh,regime_pcm_arrangement,2|Lauric acid (C12)|radial,4.574998819512264e-09,2,2.0,Lauric acid (C12),radial
+pump_energy_kWh,regime_pcm_arrangement,2|Lauric acid (C12)|single-layer,3.3405146998751643e-09,2,2.0,Lauric acid (C12),single-layer
+pump_energy_kWh,regime_pcm_arrangement,2|Lauric acid (C12)|staggered,2.6486988558820538e-08,2,2.0,Lauric acid (C12),staggered
+pump_energy_kWh,regime_pcm_arrangement,2|RT45HC|radial,2.2380293370210343e-09,2,2.0,RT45HC,radial
+pump_energy_kWh,regime_pcm_arrangement,2|RT45HC|single-layer,1.5739067059216063e-09,2,2.0,RT45HC,single-layer
+pump_energy_kWh,regime_pcm_arrangement,2|RT45HC|staggered,1.5540712014394313e-09,2,2.0,RT45HC,staggered
+pump_energy_kWh,regime_pcm_arrangement,2|n-Docosane (C22)|radial,4.5380790015622904e-10,2,2.0,n-Docosane (C22),radial
+pump_energy_kWh,regime_pcm_arrangement,2|n-Docosane (C22)|single-layer,3.150955609316898e-09,2,2.0,n-Docosane (C22),single-layer
+pump_energy_kWh,regime_pcm_arrangement,2|n-Docosane (C22)|staggered,2.8923407701973656e-09,2,2.0,n-Docosane (C22),staggered
+pcm_mass_kg,regime,0,0.06937841862387864,18,,,
+pcm_mass_kg,regime,1,0.04097398505720006,18,,,
+pcm_mass_kg,regime,2,0.036598985527080075,18,,,
+pcm_mass_kg,pcm,Lauric acid (C12),0.03475424826105563,6,,,
+pcm_mass_kg,pcm,RT44HC,0.04904413200671096,6,,,
+pcm_mass_kg,pcm,RT45HC,0.04497395043100564,12,,,
+pcm_mass_kg,pcm,RT47,0.023065215498585607,6,,,
+pcm_mass_kg,pcm,n-Docosane (C22),0.04066491810887512,6,,,
+pcm_mass_kg,pcm,n-Tricosane (C23),0.021611412356560982,6,,,
+pcm_mass_kg,pcm,savE® OM42,0.13602590836633935,6,,,
+pcm_mass_kg,pcm,savE® OM49,0.04574043216433741,6,,,
+pcm_mass_kg,regime_pcm_arrangement,0|RT44HC|radial,0.017782696887573002,2,0.0,RT44HC,radial
+pcm_mass_kg,regime_pcm_arrangement,0|RT44HC|single-layer,0.0902299041080179,2,0.0,RT44HC,single-layer
+pcm_mass_kg,regime_pcm_arrangement,0|RT44HC|staggered,0.03911979502454199,2,0.0,RT44HC,staggered
+pcm_mass_kg,regime_pcm_arrangement,0|RT47|radial,0.013229859238710062,2,0.0,RT47,radial
+pcm_mass_kg,regime_pcm_arrangement,0|RT47|single-layer,0.03391621124536853,2,0.0,RT47,single-layer
+pcm_mass_kg,regime_pcm_arrangement,0|RT47|staggered,0.02204957601167823,2,0.0,RT47,staggered
+pcm_mass_kg,regime_pcm_arrangement,0|savE® OM42|radial,0.25625992145330345,2,0.0,savE® OM42,radial
+pcm_mass_kg,regime_pcm_arrangement,0|savE® OM42|single-layer,0.13646022859203022,2,0.0,savE® OM42,single-layer
+pcm_mass_kg,regime_pcm_arrangement,0|savE® OM42|staggered,0.015357575053684347,2,0.0,savE® OM42,staggered
+pcm_mass_kg,regime_pcm_arrangement,1|RT45HC|radial,0.12181062558671807,2,1.0,RT45HC,radial
+pcm_mass_kg,regime_pcm_arrangement,1|RT45HC|single-layer,0.009088189237650202,2,1.0,RT45HC,single-layer
+pcm_mass_kg,regime_pcm_arrangement,1|RT45HC|staggered,0.035811517127737114,2,1.0,RT45HC,staggered
+pcm_mass_kg,regime_pcm_arrangement,1|n-Tricosane (C23)|radial,0.004108289386620889,2,1.0,n-Tricosane (C23),radial
+pcm_mass_kg,regime_pcm_arrangement,1|n-Tricosane (C23)|single-layer,0.019710925859877326,2,1.0,n-Tricosane (C23),single-layer
+pcm_mass_kg,regime_pcm_arrangement,1|n-Tricosane (C23)|staggered,0.04101502182318473,2,1.0,n-Tricosane (C23),staggered
+pcm_mass_kg,regime_pcm_arrangement,1|savE® OM49|radial,0.09314639416589315,2,1.0,savE® OM49,radial
+pcm_mass_kg,regime_pcm_arrangement,1|savE® OM49|single-layer,0.034220451247292005,2,1.0,savE® OM49,single-layer
+pcm_mass_kg,regime_pcm_arrangement,1|savE® OM49|staggered,0.009854451079827076,2,1.0,savE® OM49,staggered
+pcm_mass_kg,regime_pcm_arrangement,2|Lauric acid (C12)|radial,0.022794335862683313,2,2.0,Lauric acid (C12),radial
+pcm_mass_kg,regime_pcm_arrangement,2|Lauric acid (C12)|single-layer,0.019185266906297294,2,2.0,Lauric acid (C12),single-layer
+pcm_mass_kg,regime_pcm_arrangement,2|Lauric acid (C12)|staggered,0.06228314201418628,2,2.0,Lauric acid (C12),staggered
+pcm_mass_kg,regime_pcm_arrangement,2|RT45HC|radial,0.011199576488554852,2,2.0,RT45HC,radial
+pcm_mass_kg,regime_pcm_arrangement,2|RT45HC|single-layer,0.09193379414536262,2,2.0,RT45HC,single-layer
+pcm_mass_kg,regime_pcm_arrangement,2|RT45HC|staggered,1.099120794378905e-14,2,2.0,RT45HC,staggered
+pcm_mass_kg,regime_pcm_arrangement,2|n-Docosane (C22)|radial,0.01376449084399009,2,2.0,n-Docosane (C22),radial
+pcm_mass_kg,regime_pcm_arrangement,2|n-Docosane (C22)|single-layer,0.01388239719890294,2,2.0,n-Docosane (C22),single-layer
+pcm_mass_kg,regime_pcm_arrangement,2|n-Docosane (C22)|staggered,0.09434786628373232,2,2.0,n-Docosane (C22),staggered
