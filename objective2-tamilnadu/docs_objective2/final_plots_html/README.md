@@ -1,14 +1,15 @@
 # Final Plots (Interactive HTML) — Objective 1 & Objective 2
 
 One folder with the headline/final-result plots from both objectives, so
-they don't have to be hunted down across `tamilnadu_pipeline/`'s many plot
-subfolders (`comprehensive/`, `raw_interactive/`, `post_preprocess_interactive/`,
-`processed/clustering/interactive/`, `tamilnadu_objective1/`, `outputs/`...)
+they don't have to be hunted down across `era5-tamilnadu/`'s many plot
+subfolders (`data/plots/comprehensive/`, `data/plots/raw_interactive/`,
+`data/plots/post_preprocess_interactive/`, `data/plots/clustering/interactive/`,
+`data/plots/objective1/`, `data/plots/qc/`...)
 or Objective 2's own `results/tamilnadu/plots/interactive/`.
 
 These are **copies**, not the source of truth — see "Source" under each
 plot below for where each one is actually generated and regenerated from.
-Objective 1's plots were copied from `tamilnadu_pipeline/` (read-only for
+Objective 1's plots were copied from `era5-tamilnadu/` (read-only for
 Objective 2 — that folder is never written to by this project); Objective
 2's plots are copied from this repo's own `results/tamilnadu/plots/interactive/`,
 which already holds the complete set of 17 interactive plots if you need
@@ -22,11 +23,11 @@ work from this folder regardless of where the original was generated.
 
 | File | What it shows | Source data |
 |---|---|---|
-| `objective1/02_climate_regime_map_interactive.html` | Spatial GMM clustering of Tamil Nadu into the **K=3 climate regimes** Objective 2 designs against | `tamilnadu_pipeline/data/processed/clustering/cluster_assignments_tamilnadu.csv` (lat/lon + `cluster_id` per grid point) |
-| `objective1/13_recommended_pcm_summary_interactive.html` | **The literal Objective 1 → Objective 2 handoff artifact**: Top-3 PCM per regime, ranked by 4-method MCDM consensus (TOPSIS+GRA+PROMETHEE II+VIKOR, Borda-combined) | `tamilnadu_pipeline/data/processed/pcm/mcdm_topk_by_cluster.csv`, filtered to `consensus_rank<=3` — this exact file is what `configs/states/tamilnadu.yaml`'s `pcm_shortlist` was copied from (see [18_OBJECTIVE1_SHORTLIST_RESTORED.md](../18_OBJECTIVE1_SHORTLIST_RESTORED.md)) |
+| `objective1/02_climate_regime_map_interactive.html` | Spatial GMM clustering of Tamil Nadu into the **K=3 climate regimes** Objective 2 designs against | `era5-tamilnadu/data/processed/clustering/cluster_assignments_tamilnadu.csv` (lat/lon + `cluster_id` per grid point) |
+| `objective1/13_recommended_pcm_summary_interactive.html` | **The literal Objective 1 → Objective 2 handoff artifact**: Top-3 PCM per regime, ranked by 4-method MCDM consensus (TOPSIS+GRA+PROMETHEE II+VIKOR, Borda-combined) | `era5-tamilnadu/data/processed/pcm/mcdm_topk_by_cluster.csv`, filtered to `consensus_rank<=3` — this exact file is what `configs/states/tamilnadu.yaml`'s `pcm_shortlist` was copied from (see [18_OBJECTIVE1_SHORTLIST_RESTORED.md](../18_OBJECTIVE1_SHORTLIST_RESTORED.md)) |
 | `objective1/14_mcdm_winner_map_interactive.html` | Geographic map of which PCM wins consensus rank 1 at each surveyed point, colored by winning PCM | Same `mcdm_topk_by_cluster.csv`, `consensus_rank==1`, merged onto `cluster_assignments_tamilnadu.csv`'s lat/lon |
 
-Regenerate from `tamilnadu_pipeline/plots/generate_tamilnadu_plots.py` (Objective 1's own script — not touched or run by Objective 2).
+Regenerate from `era5-tamilnadu/plots/generate_tamilnadu_plots.py` (Objective 1's own script — not touched or run by Objective 2).
 
 ## Objective 2 — physical design search + robustness
 

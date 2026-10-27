@@ -1,13 +1,13 @@
 """
 scripts/g15_issue6_anchor.py
 ===============================
-Issue 6 (progress log sections 18/21): the tank model places the PCM stack at the tank centre (configs/design_space_redesign_v2.yaml:23,
+Issue 6 (progress log sections 18/21): the tank model places the PCM stack at the tank centre (configs/design_space.yaml:23,
 read at src/optimize/evaluate.py:53; applied in src/simulation/tank_model_multinode.py:80). The stack of a chosen design is 3 layers, about 0.25 m of
 the 0.634 m tank height, so the position is not neutral. This script re-evaluates, with the stack anchored at the tank BOTTOM, CENTRE and TOP:
 the chosen design and the best design of every other O1 PCM of the regime (g10_selection_r<c>.json, frozen, not re-optimised), on the explore
 (2016-2020) and select (2021-2023) years, paired against the water-only tank at the same flow (which does not depend on the anchor: G11 control N1).
 No position is chosen; the output is for reporting the dependence and checking whether the PCM ranking and the sign of the gain survive it.
-Usage: python scripts/g15_issue6_anchor.py <cluster_id>  ->  results/redesign/g15_anchor_r<c>.csv
+Usage: python scripts/g15_issue6_anchor.py <cluster_id>  ->  results/g15_anchor_r<c>.csv
 """
 
 import json
@@ -24,7 +24,7 @@ from src.optimize.evaluate import _weather
 from src.simulation.run_case import run_case
 from src.weather import roles
 
-OUT = Path("results/redesign")
+OUT = Path("results")
 
 
 def main(cid):

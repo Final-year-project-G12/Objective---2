@@ -1,20 +1,21 @@
 """
 src/weather/roles.py
 =======================
-O2 redesign G5 / plan WP4 + decision D5 (2026-10-26) — enforce, in code, what each
+O2 G5 / plan WP4 + decision D5 (2026-10-26) — enforce, in code, what each
 weather year may be used for:
 
     2016-2020  "explore"  design exploration (DOE, surrogate training, optimisation)
     2021-2023  "select"   choosing the winner among explored designs
-    2024-2025  "test"     held-out test, run exactly ONCE
+    2011-2015  "test"     held-out test, run exactly ONCE (v3, cap 30 %; downloaded 2026-10-27 after the v1 test)
+    2024-2025  "used_test_v1"  the v1 (cap 20 %) held-out test years: already used, labelled so, accepted for NO purpose
 
 `load_point_year(..., purpose=...)` refuses a year whose role differs from the stated
-purpose. The test years additionally require `acquire_test_lock()`, which atomically
-creates results/redesign/held_out_test.lock and refuses if it already exists -- so the
+purpose. The test years (2011-2015) additionally require `acquire_test_lock()`, which atomically
+creates results/held_out_test.lock and refuses if it already exists -- so the
 held-out evaluation cannot be repeated or tuned against by accident. This is a guard
 rail inside the codebase, not a security boundary: the cached CSVs are ordinary files
 and anyone can open them directly. Deleting the lock to re-run is a deliberate,
-visible act that must be logged in docs/REDESIGN_PROGRESS.md.
+visible act that must be logged in docs/PROGRESS.md.
 """
 
 import json
@@ -26,13 +27,14 @@ import pandas as pd
 
 from src.io_utils import BASE_DIR, drop_leap_day
 
-WEATHER_REDESIGN_DIR = BASE_DIR / "data" / "weather_redesign"
-INVENTORY_PATH = WEATHER_REDESIGN_DIR / "weather_inventory.csv"
-TEST_LOCK_PATH = BASE_DIR / "results" / "redesign" / "held_out_test.lock"
+WEATHER_POINT_YEARS_DIR = BASE_DIR / "data" / "weather/point_years"
+INVENTORY_PATH = WEATHER_POINT_YEARS_DIR / "weather_inventory.csv"
+TEST_LOCK_PATH = BASE_DIR / "results" / "held_out_test.lock"
 
-YEAR_ROLES = {**{y: "explore" for y in range(2016, 2021)},
+YEAR_ROLES = {**{y: "test" for y in range(2011, 2016)},
+              **{y: "explore" for y in range(2016, 2021)},
               **{y: "select" for y in range(2021, 2024)},
-              **{y: "test" for y in (2024, 2025)}}
+              **{y: "used_test_v1" for y in (2024, 2025)}}
 PURPOSES = ("explore", "select", "test")
 
 
@@ -47,7 +49,7 @@ def role_of(year: int) -> str:
     try:
         return YEAR_ROLES[int(year)]
     except KeyError:
-        raise ValueError(f"year {year} is outside the 2016-2025 record") from None
+        raise ValueError(f"year {year} is outside the 2011-2025 record") from None
 
 
 def years_for(purpose: str):
@@ -75,7 +77,7 @@ def acquire_test_lock(run_id: str, selection_fingerprint: str) -> Path:
 
 
 def point_year_path(state: str, cluster_id: int, point_id: str, year: int) -> Path:
-    return WEATHER_REDESIGN_DIR / state / f"cluster{cluster_id}_{point_id}_{year}.csv"
+    return WEATHER_POINT_YEARS_DIR / state / f"cluster{cluster_id}_{point_id}_{year}.csv"
 
 
 def load_point_year(state: str, cluster_id: int, point_id: str, year: int, purpose: str) -> pd.DataFrame:

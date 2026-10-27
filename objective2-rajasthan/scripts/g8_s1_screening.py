@@ -4,9 +4,9 @@ scripts/g8_s1_screening.py
 G8 / S1 (plan WP5 5.4) - Taguchi L9 screening of the four approved variables for ONE (regime, O1 PCM) pair,
 replicated over the five explore years (2016-2020). Usage: python scripts/g8_s1_screening.py <cluster_id> <pcm_rank 1..3>
 
-Levels (approved space): inner radius 10/25/40 mm; PCM fraction 2/11/20 %; flow 0.010/0.030/0.050 kg/s;
+Levels (approved space): inner radius 10/25/40 mm; PCM fraction 2/16/30 %; flow 0.010/0.030/0.050 kg/s;
 arrangement single-layer/staggered/radial. Responses (paired vs water-only at the same flow): g_window, g_annual,
-d_overheat, t_pcm_max. Writes results/redesign/g8_s1_r<c>_p<rank>.csv (one row per run-year) and the ANOVA table.
+d_overheat, t_pcm_max. Writes results/g8_s1_r<c>_p<rank>.csv (one row per run-year) and the ANOVA table.
 """
 
 import sys
@@ -21,7 +21,7 @@ from src.optimize.anova import L9, anova
 from src.optimize.evaluate import evaluate_design
 
 R_LEVELS = (0.010, 0.025, 0.040)
-F_LEVELS = (0.02, 0.11, 0.20)
+F_LEVELS = (0.02, 0.16, 0.30)      # v3 box (cap 30 %); v1 used 0.02/0.11/0.20
 Q_LEVELS = (0.010, 0.030, 0.050)
 ARR = ("single-layer", "staggered", "radial")
 FACTORS = ["R_in_mm", "fraction", "flow", "arrangement"]
@@ -43,12 +43,12 @@ def main(cid, rank):
                          "arrangement": arr, "N": res["N"], "valid": True, "reason": "", **y})
         print(cid, rank, run, flush=True)
     df = pd.DataFrame(rows)
-    out = Path(f"results/redesign/g8_s1_r{cid}_p{rank}.csv")
+    out = Path(f"results/g8_s1_r{cid}_p{rank}.csv")
     df.to_csv(out, index=False)
     ok = df[df.valid]
     if len(ok) >= 20:
         tabs = [anova(ok, FACTORS, r) for r in RESP]
-        pd.concat(tabs).to_csv(f"results/redesign/g8_s1_anova_r{cid}_p{rank}.csv", index=False)
+        pd.concat(tabs).to_csv(f"results/g8_s1_anova_r{cid}_p{rank}.csv", index=False)
     print("written", out)
 
 

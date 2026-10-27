@@ -12,7 +12,7 @@ variant) the change in each objective is recorded for:
   latent    PCM latent heat +-10 %
   conduct   PCM conductivity +-20 %
 plus the weather-year spread (sd of the per-year paired gain / sqrt(5) = standard error of the 5-year mean).
-Writes results/redesign/g9_band_r<c>.csv (per design x variant x objective).
+Writes results/g9_band_r<c>.csv (per design x variant x objective).
 """
 
 import sys
@@ -56,7 +56,7 @@ def run_gains(cid, pcm, dv, years, n_nodes=10, sys_over=None, pcm_over=None, exa
 
 def main(cid):
     pcm = get_regime("rajasthan", cid)["pcm_shortlist"][0]
-    doe = pd.read_csv(f"results/redesign/g8_s2_r{cid}_p1.csv")
+    doe = pd.read_csv(f"results/g8_s2_r{cid}_p1.csv")
     doe = doe[(doe.status == "ok") & (doe.feasible == True)].sort_values("g_annual")  # noqa: E712
     picks = [doe.iloc[int(q * (len(doe) - 1))] for q in (0.2, 0.5, 0.8)] + [doe.iloc[-1]]
     years = roles.years_for("explore")
@@ -87,7 +87,7 @@ def main(cid):
                 rows.append({"regime": cid, "design": k, "variant": name, "objective": o, "value": v[o],
                              "delta": v[o] - base[o], "year_sd": sd[o]})
         print(cid, "design", k, "done", flush=True)
-        pd.DataFrame(rows).to_csv(f"results/redesign/g9_band_r{cid}.csv", index=False)
+        pd.DataFrame(rows).to_csv(f"results/g9_band_r{cid}.csv", index=False)
     print("written")
 
 

@@ -11,7 +11,7 @@ Blocks (all paired against the water-only tank at the same flow, same machinery 
   thickness_const_mass   R_in 10,15,20,25,30,40 mm with N = round(N_anchor * (25/R)^3), i.e. constant INNER PCM volume (= mass). The outer volume,
                          and so the displaced water volume, still changes with R: reported as `outer_fraction` (a confound, not removed)
   fraction        N x 0.5, x1, x2 (x2 = min(2 N, largest count inside the 20 % cap); a first run with N = 2 x 70 = 140 gave 20.1 % and was rejected by the cap, so the cap count is used and reported as such); positive control: the gain should change by more than the band
-Usage: python scripts/g14_issue5_controls.py <cluster_id>  ->  results/redesign/g14_controls_r<c>.csv
+Usage: python scripts/g14_issue5_controls.py <cluster_id>  ->  results/g14_controls_r<c>.csv
 """
 
 import importlib.util
@@ -28,7 +28,7 @@ g11 = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(g11)
 from src.design.space import capsule_outer_volume_m3, count_for_fraction, v_tank_m3
 
-OUT = Path("results/redesign")
+OUT = Path("results")
 R0, F0, Q0, ARR0 = 0.025, 0.10, 0.030, "staggered"
 
 

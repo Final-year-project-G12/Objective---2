@@ -1,7 +1,7 @@
 """
 src/optimize/anova.py
 ========================
-O2 redesign G8 / S1 - one-way-per-factor ANOVA for a balanced orthogonal array (Taguchi L9), after Chen et al. 2025
+O2 G8 / S1 - one-way-per-factor ANOVA for a balanced orthogonal array (Taguchi L9), after Chen et al. 2025
 (Tables 13/17). Contribution % = SS_factor / SS_total. The error term comes from the weather-year replicates of each
 run, so it is the year-to-year spread and NOT independent replication of the design: p-values are optimistic
 (Chen's own five "repeat" columns have the same property) and are reported as a screening aid only.

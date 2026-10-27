@@ -1,7 +1,7 @@
 """
 src/optimize/evaluate.py
 ===========================
-O2 redesign G8 - the ONE function that turns a design into paired objectives by running the real simulator
+O2 G8 - the ONE function that turns a design into paired objectives by running the real simulator
 (multi-node tank, N = 10, dt = 150 s) over the weather years of a role. Nothing here is a surrogate.
 
 Per weather year the gains are paired against the water-only tank at the same flow (baseline.plain_at):
@@ -104,6 +104,8 @@ def evaluate_night(cluster_id, pcm, r_in_m, fraction, flow, arrangement, purpose
                     "g_annual": ta["E_del45_annual_kWh"] - tb["E_del45_annual_kWh"],
                     "g_useful": ma["useful_energy_kWh"] - mb["useful_energy_kWh"],
                     "d_overheat": (ma["shield_water_h"] + ma["shield_pcm_h"]) - mb["shield_water_h"],
+                    "shield_water_h": ma["shield_water_h"], "shield_pcm_h": ma["shield_pcm_h"],        # issue 4: like-for-like split, reported beside f3
+                    "plain_shield_water_h": mb["shield_water_h"],
                     "t_pcm_max": ma["max_pcm_temp_C"], "t_water_max": ma["max_water_temp_C"],
                     "sf_pcm": ma["solar_fraction"], "sf_plain": mb["solar_fraction"],
                     "residual_pct": ma["residual_pct_of_collector"], "pcm_mass_kg": ma["pcm_mass_kg"], "N": dv.n_capsule})

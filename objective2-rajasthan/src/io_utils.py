@@ -104,11 +104,11 @@ def load_state_config(state: str):
     return _load_yaml(STATES_DIR / f"{state}.yaml")
 
 
-# O2 redesign G6 (decision D2, 2026-10-26): Objective 2 works on Objective 1's MCDM top-3 AS WRITTEN. The
+# O2 G6 (decision D2, 2026-10-26): Objective 2 works on Objective 1's MCDM top-3 AS WRITTEN. The
 # retargeted lists produced by src/design/retarget_tm.py (stored as `pcm_shortlist` in the state yaml) are retired
 # from the main pipeline: get_regime() now returns the O1 list as `pcm_shortlist` and keeps the retargeted one only
 # under `pcm_shortlist_retargeted` as a labelled comparison. Set SHORTLIST_SOURCE = "retargeted" to reproduce the
-# pre-redesign behaviour (legacy comparison only).
+# legacy behaviour (legacy comparison only).
 SHORTLIST_SOURCE = "o1"
 O1_TOPK_FILE = DATA_DIR / "objective1" / "mcdm_topk_by_cluster.csv"
 
@@ -170,7 +170,7 @@ def get_pcm_properties(state: str, pcm_name: str) -> dict:
 def drop_leap_day(df: pd.DataFrame) -> pd.DataFrame:
     """Remove 29 February (local date) so every simulated year is 8760 h.
     A leap year otherwise draws 0.27 % more water and collects 1/365 more sun,
-    which confounds year-to-year comparison (O2 redesign G2, 2026-10-26)."""
+    which confounds year-to-year comparison (O2 G2, 2026-10-26)."""
     if "local_date" in df.columns:
         is_leap_day = df["local_date"].astype(str).str.endswith("-02-29")
     else:

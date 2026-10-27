@@ -1,18 +1,18 @@
 """
 src/handoff/build_obj3_contract_v2.py
 =========================================
-G12 (O2 redesign, 2026-10-27) - regenerated Objective 3 environment contract. Writes
-results/redesign/obj3_environment_contract_rajasthan_v2.json and leaves the old contract untouched.
+G12 (O2, 2026-10-27) - regenerated Objective 3 environment contract. Writes
+results/obj3_environment_contract_rajasthan_v2.json and leaves the old contract untouched.
 
 It keeps the generic parts of the old contract (limits, action set, safety shield text, reward skeleton, acceptance tests),
-because those did not change, and replaces what the redesign changed:
+because those did not change, and replaces what the rework changed:
   * simulator: multi-node (N=10) tank, dt = 150 s, local-time demand, inner-volume PCM mass + wall mass, O1 top-3 PCMs
   * per regime: the CHOSEN design, the best design of each other O1 PCM, their water-only twins at the same flow,
     select-year and held-out-test results (all of them, including where PCM does not help), the WP6 band
   * weather: explore / select / test years are now real (src/weather/roles.py); O3 must respect the roles
   * state vector gains the stratification fields (top/bottom temperature)
   * reward terms follow the WP1 metrics instead of annual E_load
-Every number is read from a file under results/redesign/; nothing is computed here.
+Every number is read from a file under results/; nothing is computed here.
 """
 
 import hashlib
@@ -24,7 +24,7 @@ import pandas as pd
 from config import BASE_DIR, RESULTS_DIR
 from src.io_utils import load_system_config
 
-OUT = RESULTS_DIR / "redesign"
+OUT = RESULTS_DIR
 OLD = RESULTS_DIR / "obj3_environment_contract_rajasthan.json"
 NEW = OUT / "obj3_environment_contract_rajasthan_v2.json"
 
@@ -40,15 +40,15 @@ def build():
     sys_cfg = load_system_config()
 
     c["schema"] = "obj3_environment_contract_rajasthan_v2"
-    c["simulator_version"] = "sim_v3_rajasthan_redesign (multi-node N=10, dt=150 s)"
+    c["simulator_version"] = "sim_v3_rajasthan (multi-node N=10, dt=150 s)"
     c["time_step_s"] = 150
-    c["supersedes"] = ("results/obj3_environment_contract_rajasthan.json (built from the pre-redesign Phase-7 deployables, "
+    c["supersedes"] = ("results/obj3_environment_contract_rajasthan.json (built from the legacy Phase-7 deployables, "
                        "UTC-indexed demand, single-node tank, retargeted PCMs). Do not train against that file.")
     c["generated_from"] = {
         "selection_logs": {f"r{k}": _sha(OUT / f"g10_selection_r{k}.json") for k in range(3)},
         "wp6_band": _sha(OUT / "wp6_band.csv"),
         "heldout_results": _sha(OUT / "g10_heldout_results.csv") if held is not None else "not run",
-        "design_space": "configs/design_space_redesign_v2.yaml",
+        "design_space": "configs/design_space.yaml",
         "system_config": sys_cfg.get("version", "system_config_shared.yaml"),
     }
     sk = c["control_skeleton"]
@@ -58,7 +58,7 @@ def build():
     sk["observation_notes"] = ("The tank is stratified: delivery temperature is the TOP node, the collector inlet is the "
                                "BOTTOM node. recoverable_energy_above_45C_kWh is the WP1 E_rec,45 quantity and needs an "
                                "estimator (not a raw sensor). Loop flow sets stratification, not collector heat, in this model.")
-    sk["safety_shield"]["note_v2"] = ("Redesign finding: the existing PCM-side shield only blocks CHARGING at 62 C and is not "
+    sk["safety_shield"]["note_v2"] = ("Finding: the existing PCM-side shield only blocks CHARGING at 62 C and is not "
                                      "enough for PCMs already above their melt band; some designs exceed 65 C. A design is "
                                      "infeasible if its PCM peak exceeds 65 C in any simulated year.")
     fields = c["dynamic_state_schema"]["fields"]
@@ -70,14 +70,14 @@ def build():
     c["weather_sequences"] = {
         "training": {"years": [2016, 2017, 2018, 2019, 2020], "source": "src/weather/roles.py (explore)"},
         "validation": {"years": [2021, 2022, 2023], "source": "select"},
-        "held_out_test": {"years": [2024, 2025], "note": "O2's one-shot test is DONE and recorded; O3 must not tune against these "
-                                                       "years and these are the two lowest-GHI years (harsher than average)"},
+        "held_out_test": {"years": [2011, 2012, 2013, 2014, 2015], "note": "O2's v3 (cap 30 %) one-shot test is DONE and recorded; O3 must not tune against these years"},
+        "used_v1_test": {"years": [2024, 2025], "note": "the v1 (cap 20 %) held-out years, already used by O2 (archived in results/v1_cap20/); O3 must not tune against them either"},
         "points": {"0": "RJP_0132", "1": "RJP_0192", "2": "RJP_0083"},
     }
     sk["safety_shield"]["force_bypass_if"] = "T_water_top_C >= 72.0 (3.0 C guard band below the 75.0 C hard limit, to allow for sensor and control lag)"
-    sk["safety_shield"]["rationale"] = ("Hard requirement carried from the earlier contract. In the redesigned model the shield acts on the TOP "
+    sk["safety_shield"]["rationale"] = ("Hard requirement carried from the earlier contract. In the current model the shield acts on the TOP "
                                        "water node (start of sub-step) and on the PCM; plain-tank peaks reached 73.3 C in the multi-node model, "
-                                       "below the 75 C limit (docs/REDESIGN_PROGRESS.md section 6).")
+                                       "below the 75 C limit (docs/PROGRESS.md section 6).")
     c["reward_function"] = {
         "status": "suggested (v2), weights NOT chosen: built from the WP1 metrics; Objective 3 sets and justifies weights",
         "formula": "r_t = w1 * E_del45_t - w2 * overheat_step_t - w3 * safety_violation_t - w4 * bypass_switch_t, with E_del45_t the energy "
@@ -95,7 +95,7 @@ def build():
     c["time_step_s"] = 150
     cfg = BASE_DIR / "configs"
     c["config_hashes"] = {f"configs/{n}": {"sha256": _sha(cfg / n)} for n in
-                          ("system_config_shared.yaml", "design_bounds_shared.yaml", "design_space_redesign_v2.yaml",
+                          ("system_config_shared.yaml", "design_bounds_shared.yaml", "design_space.yaml",
                            "cfd_closure_v1.yaml")}
     c["config_hashes"]["states/rajasthan.yaml"] = {"sha256": _sha(cfg / "states" / "rajasthan.yaml")}
 
@@ -107,7 +107,7 @@ def build():
                  "water_only_twin": "same flow, weather year, demand, shield and tank model as each design (baseline convention)"}
         if held is not None:
             h = held[held.regime == k]
-            entry["held_out_2024_2025"] = h.drop(columns=[x for x in h.columns if x.startswith("plain_")], errors="ignore").round(4).to_dict("records")
+            entry["held_out_2011_2015"] = h.drop(columns=[x for x in h.columns if x.startswith("plain_")], errors="ignore").round(4).to_dict("records")
         regimes.append(entry)
     c["regimes"] = regimes
     c["deferred_future_work"] = c.get("deferred_future_work", []) + [

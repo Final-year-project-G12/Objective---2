@@ -1,7 +1,7 @@
 """
 src/simulation/capsule_mass.py
 =================================
-O2 redesign G2 (2026-10-26) — PCM and capsule-wall masses for a shell of outer
+O2 G2 (2026-10-26) — PCM and capsule-wall masses for a shell of outer
 diameter D and wall thickness t_w.
 
 The PCM fills only the INNER sphere, diameter D - 2*t_w; the aluminium wall is

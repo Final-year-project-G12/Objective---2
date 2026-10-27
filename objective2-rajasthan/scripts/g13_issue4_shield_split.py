@@ -7,7 +7,7 @@ which adds a PCM-side per-node throttle (62 C, no counterpart in a water-only ta
 two parts SEPARATELY for the chosen design and the best design of every other O1 PCM of a regime (g10_selection_r<c>.json), per weather year of
 the EXPLORE (2016-2020) and SELECT (2021-2023) roles. Nothing in the optimisation, the shield or the limits is changed; f3 stays d_overheat.
 The held-out years are not loaded (the held-out file has no shield breakdown and that test is already used).
-Usage: python scripts/g13_issue4_shield_split.py <cluster_id>   -> results/redesign/g13_shield_split_r<c>.csv
+Usage: python scripts/g13_issue4_shield_split.py <cluster_id>   -> results/g13_shield_split_r<c>.csv
 """
 
 import json
@@ -24,7 +24,7 @@ from src.optimize.evaluate import _weather
 from src.simulation.run_case import run_case
 from src.weather import roles
 
-OUT = Path("results/redesign")
+OUT = Path("results")
 
 
 def main(cid):

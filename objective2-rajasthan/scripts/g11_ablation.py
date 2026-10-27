@@ -11,10 +11,10 @@ Controls
             N2 the chosen design run twice -> identical (determinism)
             N3 capsule-wall conductivity x10 -> physically inert, expected change inside the band
   positive  P1 latent heat = 0 (PCM becomes sensible-only) -> g_window must fall by more than the band
-            P2 PCM fraction x2 (capped at 20 %) -> gain must change by more than the band
+            P2 PCM fraction x2 (capped at 30 %) -> gain must change by more than the band
             P3 Tm set to 45 C (a SYNTHETIC PCM matched to the delivery target; diagnostic, not an O1 PCM) -> night-window
                gain should respond: shows whether the metrics can see a PCM that is designed for this job
-Writes results/redesign/g11_ablation_r<c>.csv (rows: block, level, objective means over 5 years + year sd).
+Writes results/g11_ablation_r<c>.csv (rows: block, level, objective means over 5 years + year sd).
 """
 
 import json
@@ -34,7 +34,7 @@ from src.simulation.run_case import run_case
 from src.weather import roles
 from src.weather.inventory import CURRENT_MEDOIDS
 
-OUT = Path("results/redesign")
+OUT = Path("results")
 
 
 def design_from(r, n, q, arr):
@@ -90,8 +90,8 @@ def main(cid):
         n = max(1, round(n0 * (r0 / r) ** 3))
         add("thickness_const_mass", f"R{rmm}", run(cid, pcm, design_from(r, n, q0, arr0)), {"R_in_mm": rmm, "N": n})
     # --- count via fraction
-    for f in (0.02, 0.04, 0.07, 0.10, 0.14, 0.20):
-        n = max(1, min(round(f * v_tank_m3() / capsule_outer_volume_m3(r0)), int(0.2 * v_tank_m3() / capsule_outer_volume_m3(r0))))
+    for f in (0.02, 0.04, 0.07, 0.10, 0.14, 0.20, 0.25, 0.30):
+        n = max(1, min(round(f * v_tank_m3() / capsule_outer_volume_m3(r0)), int(0.3 * v_tank_m3() / capsule_outer_volume_m3(r0))))
         add("count", f"f{f:.2f}", run(cid, pcm, design_from(r0, n, q0, arr0)), {"fraction": n * capsule_outer_volume_m3(r0) / v_tank_m3(), "N": n})
     # --- flow
     for q in (0.010, 0.020, 0.030, 0.040, 0.050):
@@ -115,7 +115,7 @@ def main(cid):
     # --- positive controls
     rec = get_pcm_properties("rajasthan", pcm)
     add("pos_control_latent_zero", "L=0", run(cid, pcm, design_from(r0, n0, q0, arr0), pcm_over={"latent_heat_kJ_kg": 0.0}))
-    n2 = min(2 * n0, int(0.2 * v_tank_m3() / capsule_outer_volume_m3(r0)))
+    n2 = min(2 * n0, int(0.3 * v_tank_m3() / capsule_outer_volume_m3(r0)))
     add("pos_control_fraction_x2", f"N{n2}", run(cid, pcm, design_from(r0, n2, q0, arr0)), {"N": n2})
     add("pos_control_Tm45_synthetic", "Tm=45C", run(cid, pcm, design_from(r0, n0, q0, arr0), pcm_over={"Tm_C": 45.0}),
         {"note": "synthetic PCM matched to the 45 C delivery target - diagnostic only"})

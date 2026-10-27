@@ -1,7 +1,7 @@
 """
 src/weather/inventory.py
 ===========================
-O2 redesign G5 / plan WP4 (2026-10-26) — build the per point-year weather inventory
+O2 G5 / plan WP4 (2026-10-26) — build the per point-year weather inventory
 and the cleaned hourly files from Objective 1's raw NASA POWER cache.
 
 Representative points (decision D5): the CURRENT Objective 1 medoid of each cluster --
@@ -24,11 +24,12 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from src.weather.roles import INVENTORY_PATH, WEATHER_REDESIGN_DIR, point_year_path, role_of
+from src.weather.roles import INVENTORY_PATH, WEATHER_POINT_YEARS_DIR, point_year_path, role_of
 
 RAW_DIR = Path(__file__).resolve().parents[5] / "PCM-Selection-ML-model" / "era5-rajasthan" / "data" / "raw" / "nasapower"
 CURRENT_MEDOIDS = {0: "RJP_0132", 1: "RJP_0192", 2: "RJP_0083"}      # verified against cluster_assignments (G5 log)
-YEARS = range(2016, 2026)
+RAW_DIR_TEST = Path(__file__).resolve().parents[2] / "data" / "weather/raw_test_2011_2015"     # 2011-2015, g19_fetch_test2_weather.py
+YEARS = range(2011, 2026)
 MIN_VALID_FRACTION = 0.98
 MAX_FILLABLE_GAP_H = 3
 RENAME = {"ALLSKY_SFC_SW_DWN": "GHI_Wm2", "CLRSKY_SFC_SW_DWN": "GHI_clearsky_Wm2", "T2M": "T_amb_C",
@@ -124,14 +125,21 @@ def build_point_year(cluster_id: int, point_id: str, year: int, raw_dir: Path = 
     return row, out
 
 
-def build_inventory(write: bool = True) -> pd.DataFrame:
+def build_inventory(write: bool = True, years=None) -> pd.DataFrame:
+    """`years` limits the (re)build to those years; the other rows of the existing inventory are kept as they are
+    (and their hourly CSVs are not touched), so adding years never rewrites files that running jobs read."""
     rows = []
     for cid, pid in CURRENT_MEDOIDS.items():
-        for y in YEARS:
-            r, _ = build_point_year(cid, pid, y, write=write)
+        for y in (YEARS if years is None else years):
+            r, _ = build_point_year(cid, pid, y, raw_dir=RAW_DIR_TEST if y < 2016 else RAW_DIR, write=write)
             rows.append(r)
     inv = pd.DataFrame(rows)
+    if years is not None and INVENTORY_PATH.exists():
+        old = pd.read_csv(INVENTORY_PATH)
+        old["role"] = old["year"].map(role_of)                      # relabelling only (2024-2025 -> used_test_v1)
+        inv = pd.concat([old[~old["year"].isin(list(years))], inv], ignore_index=True)
+        inv = inv.sort_values(["cluster_id", "year"]).reset_index(drop=True)
     if write:
-        WEATHER_REDESIGN_DIR.mkdir(parents=True, exist_ok=True)
+        WEATHER_POINT_YEARS_DIR.mkdir(parents=True, exist_ok=True)
         inv.to_csv(INVENTORY_PATH, index=False)
     return inv

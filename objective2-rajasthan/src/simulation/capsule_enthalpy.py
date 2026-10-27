@@ -15,7 +15,7 @@ so we treat melting as a narrow band Tm +/- melting_half_width_K
 (system_config_shared.yaml, pcm_integration.melting_half_width_K) — a
 documented simplification, not a measured property.
 
-CAPSULE WALL (O2 redesign G2, 2026-10-26): the aluminium shell shares the PCM
+CAPSULE WALL (O2 G2, 2026-10-26): the aluminium shell shares the PCM
 node's temperature, so its sensible heat is carried in the same node as an
 extra specific heat per kg of PCM, `wall_cp_J_kgK` = m_wall*c_wall/m_pcm
 (0.0 = no wall, the legacy behaviour). The enthalpy is then

@@ -1,7 +1,7 @@
 """
 tests/test_demand_timing.py
 ==============================
-G1 (O2 redesign, 2026-10-26): the demand profile is defined in LOCAL clock
+G1 (O2, 2026-10-26): the demand profile is defined in LOCAL clock
 hours (07:00 / 19:00 peaks), but tank_model.py used to index it with the UTC
 hour of the weather timestamp -- which put the 46 L "evening" draw at ~00:30
 local. These tests pin the fix: the draw must follow the local clock, with the

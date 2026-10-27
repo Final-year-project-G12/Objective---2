@@ -13,7 +13,7 @@ S5  active learning, up to 5 rounds: from the union of the three seeds' Pareto s
 Final: each seed's last Pareto set (thinned to 25) is simulated; per-seed hypervolume of the SIMULATED front gives the
 seed spread (gate: spread inside the WP6 band, checked in g9_assess.py).
 Only the simulator's numbers are ever reported; surrogate values are used to propose candidates.
-Writes results/redesign/g9_al_log_r<c>_p<k>.csv, g9_points_r<c>_p<k>.csv (every simulated design, with its origin),
+Writes results/g9_al_log_r<c>_p<k>.csv, g9_points_r<c>_p<k>.csv (every simulated design, with its origin),
 g9_seed_front_r<c>_p<k>.csv.
 """
 
@@ -45,17 +45,17 @@ VERTICES = bool(os.environ.get("G9_VERTICES"))           # G9 follow-up 2: simul
 FROM_SUFFIX = os.environ.get("G9_FROM_SUFFIX", "")        # which saved state to continue from ("" original, "_ext" first extension)
 SUFFIX = ("_ext2" if VERTICES else "_ext") if WARM else ""
 THIN = 25
-if os.environ.get("G9_FAST"):                       # smoke test only: tiny budget, files go to results/redesign/_smoke
+if os.environ.get("G9_FAST"):                       # smoke test only: tiny budget, files go to results/_smoke
     N_POP, N_GEN, PER_ROUND, MAX_ROUNDS, THIN, SEEDS = 20, 5, 3, 1, 4, (1,)
-READDIR = Path("results/redesign")                  # saved states are always read from here
-OUTDIR = Path(os.environ.get("G9_OUTDIR") or ("results/redesign/_smoke" if os.environ.get("G9_FAST") else "results/redesign"))   # G9_OUTDIR: issue-1 diagnostic runs write elsewhere
+READDIR = Path("results")                  # saved states are always read from here
+OUTDIR = Path(os.environ.get("G9_OUTDIR") or ("results/_smoke" if os.environ.get("G9_FAST") else "results"))   # G9_OUTDIR: issue-1 diagnostic runs write elsewhere
 ARR = ("single-layer", "staggered", "radial")
 _geom_cache = {}
 
 
 def decode(u):
     r = 0.010 + 0.030 * u[0]
-    f = 0.02 + 0.18 * u[1]
+    f = 0.02 + 0.28 * u[1]       # v3 box: 2-30 %
     q = 0.010 + 0.040 * u[2]
     arr = ARR[min(int(u[3] * 3), 2)]
     n = count_for_fraction(r, f)
@@ -139,13 +139,13 @@ def main(cid, rank):
     t0 = time.time()
     pcm = get_regime("rajasthan", cid)["pcm_shortlist"][rank - 1]
     tag = f"r{cid}_p{rank}"
-    doe = pd.read_csv(f"results/redesign/g8_s2_{tag}.csv")
+    doe = pd.read_csv(f"results/g8_s2_{tag}.csv")
     doe = doe[doe.status == "ok"].copy()
     doe["origin"] = "doe"
     cols = ["R_in_m", "fraction", "flow", "arrangement", "N", "g_window", "g_annual", "g_useful", "d_overheat",
             "t_pcm_max", "pcm_mass_kg", "feasible", "origin"]
     train = doe[cols].reset_index(drop=True)
-    chosen = pd.read_csv("results/redesign/g8_s3_selection.csv").set_index("pair").loc[tag, "chosen"]
+    chosen = pd.read_csv("results/g8_s3_selection.csv").set_index("pair").loc[tag, "chosen"]
     F0 = objectives(train[train.feasible == True])  # noqa: E712
     span = F0.max(axis=0) - F0.min(axis=0)
     ref = F0.max(axis=0) + 0.05 * span                   # fixed for the whole pair
@@ -192,7 +192,7 @@ def main(cid, rank):
         unc = committee_uncertainty(train, cand)
         cand = cand.assign(unc=unc).sort_values("unc", ascending=False)
         chosen_rows, sel = [], []
-        z = np.column_stack([cand.R_in_m / 0.03, cand.fraction / 0.2, cand.flow / 0.04,
+        z = np.column_stack([cand.R_in_m / 0.03, cand.fraction / 0.3, cand.flow / 0.04,
                              cand.arrangement.map({a: i for i, a in enumerate(ARR)}) / 2.0])
         for i in range(len(cand)):
             if all(np.linalg.norm(z[i] - z[j]) > 0.05 for j in sel):

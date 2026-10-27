@@ -1,7 +1,7 @@
 """
 tests/test_level1_repairs.py
 ===============================
-G2 (O2 redesign, 2026-10-26) — WP2 Level 1 defect repairs: PCM mass from the
+G2 (O2, 2026-10-26) — WP2 Level 1 defect repairs: PCM mass from the
 inner volume, capsule-wall thermal mass, exact (invertible) enthalpy with wall,
 29-Feb removal, and always-on per-run summary outputs.
 """

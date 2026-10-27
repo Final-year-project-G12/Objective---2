@@ -3,15 +3,15 @@ scripts/g18_issue1_compare.py
 ================================
 Issue 1 (progress log sections 18/24): the box-vertex step added during G9 was not pre-declared. This script reports G9 for all nine (regime, O1 PCM)
 pairs under three states, using only saved files:
-  base    the original G9 run (5 active-learning rounds, no vertices)                      results/redesign/g9_*_<pair>.csv
+  base    the original G9 run (5 active-learning rounds, no vertices)                      results/g9_*_<pair>.csv
   novert  base + 3 more rounds WITHOUT the vertex step (G9_WARM=1 G9_MAX_ROUNDS=8; a first attempt without G9_MAX_ROUNDS added no rounds and is kept in
-          results/redesign/issue1_novert/_invalid_run1_rounds_not_extended/)
-                                                                                           results/redesign/issue1_novert/g9_*_<pair>_ext.csv
-  vert    base + the 24 box vertices + 3 more rounds (G9_WARM=1 G9_VERTICES=1)           results/redesign/g9_*_<pair>_ext2.csv
+          results/issue1_novert/_invalid_run1_rounds_not_extended/)
+                                                                                           results/issue1_novert/g9_*_<pair>_ext.csv
+  vert    base + the 24 box vertices + 3 more rounds (G9_WARM=1 G9_VERTICES=1)           results/g9_*_<pair>_ext2.csv
 Regime 0 PCM 1: its `novert` state is the historical 8-round no-vertex run (g9_*_r0_p1_ext.csv); its `vert` run continued from that state for 3 more rounds (11 rounds in total), unlike the other pairs, whose `vert` run continued from base (8 rounds in total).
 Per pair and state: number of simulated points and feasible share, hypervolume of the simulated non-dominated set on a common reference point, and (for the rank-1
 pairs, which have a dense 540-design grid) the additive-epsilon gap to the grid front against the WP6 band (the G9 criterion, `g9_assess.py`).
-Writes results/redesign/g18_issue1_with_without.csv.
+Writes results/g18_issue1_with_without.csv.
 """
 
 import sys
@@ -24,7 +24,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from src.optimize.nsga2 import additive_epsilon, hypervolume, non_dominated_mask
 
-OUT = Path("results/redesign")
+OUT = Path("results")
 NV = OUT / "issue1_novert"
 OBJ = ["g_window", "g_annual", "d_overheat"]
 

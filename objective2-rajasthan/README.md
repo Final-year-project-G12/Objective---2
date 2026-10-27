@@ -1,7 +1,7 @@
 # Objective 2 — Rajasthan
 
-> **Current state (2026-10-27): the Objective 2 Rajasthan pipeline was redesigned.** Start at
-> [`docs/redesign/README.md`](docs/redesign/README.md). The redesign fixed the demand-timing bug, repaired the PCM mass and wall model,
+> **Current state (2026-10-27): the Objective 2 Rajasthan pipeline was current.** Start at
+> [`docs/README.md`](docs/README.md). The rework fixed the demand-timing bug, repaired the PCM mass and wall model,
 > added a stratified multi-node tank and new thermal-storage metrics, switched to Objective 1's PCM top-3, used explore / select /
 > held-out weather years (2016-2020 / 2021-2023 / 2024-2025) and replaced the old DOE-surrogate-search chain by screening, a Sobol DOE,
 > surrogate comparison, NSGA-II with active learning, a dense-grid check, selection, a one-shot held-out test and ablations.
@@ -10,11 +10,11 @@
 >
 > Where things are now: code `src/` (new: `src/metrics/`, `src/weather/`, `src/design/space.py`, `src/optimize/{baseline,evaluate,anova,surrogates,nsga2}.py`,
 > `src/simulation/{tank_model_multinode,capsule_mass}.py`, `src/handoff/build_obj3_contract_v2.py`), step scripts `scripts/g*.py`, tests `tests/`
-> (79 pass), new configs `configs/design_space_redesign_v2.yaml` and `configs/cfd_closure_v1.yaml` (provisional, unapplied), new data
-> `data/weather_redesign/`, new results `results/redesign/`, log `docs/REDESIGN_PROGRESS.md`, archive proposal `docs/CLEANUP_PROPOSAL.md`.
-> **Entry points (2026-10-27):** `pipeline.py` and `run_all_rajasthan.py` now drive the redesigned chain (see `docs/redesign/README.md`);
-> the old versions are in `archive_pre_redesign/code/`. The stage list and CLI examples further down this file describe the OLD pipeline
-> and no longer work as written. Figures of the redesign are in `results/redesign/plots/` (made by `src/plots/make_plots_redesign.py`);
+> (79 pass), new configs `configs/design_space.yaml` and `configs/cfd_closure_v1.yaml` (provisional, unapplied), new data
+> `data/weather/point_years/`, new results `results/`, log `docs/PROGRESS.md`, archive proposal `docs/CLEANUP_PROPOSAL.md`.
+> **Entry points (2026-10-27):** `pipeline.py` and `run_all_rajasthan.py` now drive the current chain (see `docs/README.md`);
+> the old versions are in the deleted legacy archive. The stage list and CLI examples further down this file describe the OLD pipeline
+> and no longer work as written. Figures of the current version are in `results/plots/` (made by `src/plots/make_plots_results.py`);
 > `src/plots/make_plots.py` and `docs/plots/` belong to the old results.
 
 > **Update 2026-09-17:** capsule arrangement is now a searched variable

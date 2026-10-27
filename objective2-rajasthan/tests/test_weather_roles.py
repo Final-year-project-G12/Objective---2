@@ -1,7 +1,7 @@
 """
 tests/test_weather_roles.py
 ==============================
-G5 (O2 redesign, 2026-10-26) — year-role enforcement, the held-out-test lock, gap
+G5 (O2, 2026-10-26) — year-role enforcement, the held-out-test lock, gap
 handling of the weather inventory, and agreement with the existing regime weather files.
 """
 
@@ -24,9 +24,10 @@ from src.io_utils import load_hourly_weather
 def test_year_roles_split():
     assert roles.years_for("explore") == [2016, 2017, 2018, 2019, 2020]
     assert roles.years_for("select") == [2021, 2022, 2023]
-    assert roles.years_for("test") == [2024, 2025]
+    assert roles.years_for("test") == [2011, 2012, 2013, 2014, 2015]
+    assert roles.role_of(2024) == roles.role_of(2025) == "used_test_v1"      # v1 test years: used, accepted for no purpose
     with pytest.raises(ValueError):
-        roles.role_of(2015)
+        roles.role_of(2010)
     with pytest.raises(ValueError):
         roles.years_for("anything")
 
@@ -44,16 +45,19 @@ def test_test_years_need_the_lock_and_the_lock_is_single_use(tmp_path, monkeypat
     monkeypatch.setattr(roles, "TEST_LOCK_PATH", tmp_path / "held_out_test.lock")
     monkeypatch.setattr(roles, "_lock_held_by_this_process", False)
     with pytest.raises(roles.HeldOutLockError):
-        roles.load_point_year("rajasthan", 0, "RJP_0132", 2024, purpose="test")
+        roles.load_point_year("rajasthan", 0, "RJP_0132", 2013, purpose="test")
     roles.acquire_test_lock("run-001", "abc123")
     assert json.loads((tmp_path / "held_out_test.lock").read_text())["run_id"] == "run-001"
-    assert len(roles.load_point_year("rajasthan", 0, "RJP_0132", 2024, purpose="test")) == 8760
+    assert len(roles.load_point_year("rajasthan", 0, "RJP_0132", 2013, purpose="test")) == 8760
+    for p in ("test", "explore", "select"):                       # the used v1 test years can never be loaded again
+        with pytest.raises(PermissionError):
+            roles.load_point_year("rajasthan", 0, "RJP_0132", 2024, purpose=p)
     with pytest.raises(roles.HeldOutLockError):                  # second acquisition refused
         roles.acquire_test_lock("run-002", "abc123")
     # a fresh process (flag reset) still cannot load test years while the lock file exists unowned
     monkeypatch.setattr(roles, "_lock_held_by_this_process", False)
     with pytest.raises(roles.HeldOutLockError):
-        roles.load_point_year("rajasthan", 0, "RJP_0132", 2025, purpose="test")
+        roles.load_point_year("rajasthan", 0, "RJP_0132", 2014, purpose="test")
 
 
 def test_real_lock_records_the_single_held_out_run():
@@ -70,11 +74,11 @@ def test_real_lock_records_the_single_held_out_run():
 
 def test_inventory_meets_acceptance_rule():
     inv = pd.read_csv(roles.INVENTORY_PATH)
-    assert len(inv) == 30 and set(inv.cluster_id) == {0, 1, 2}
+    assert len(inv) == 45 and set(inv.cluster_id) == {0, 1, 2}
     assert inv["accepted"].all()
     assert (inv["pct_valid"] >= 98.0).all() and (inv["max_gap_h"] <= 3).all()
     assert inv["hourly_sequence_ok"].all() and (inv["n_hours_after_leap_drop"] == 8760).all()
-    assert set(inv.groupby("year").role.first()) == {"explore", "select", "test"}
+    assert set(inv.groupby("year").role.first()) == {"explore", "select", "test", "used_test_v1"}
     for _, r in inv.iterrows():
         assert roles.point_year_path("rajasthan", r.cluster_id, r.point_id, r.year).exists()
 

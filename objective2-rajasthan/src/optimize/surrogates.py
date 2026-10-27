@@ -1,7 +1,7 @@
 """
 src/optimize/surrogates.py
 =============================
-O2 redesign G8 / S3 (plan WP5 5.5) - the three surrogate families compared on the DOE of ONE (regime, O1 PCM) pair:
+O2 G8 / S3 (plan WP5 5.5) - the three surrogate families compared on the DOE of ONE (regime, O1 PCM) pair:
 
   nn_ensemble  5 small feed-forward networks (32, 32), bootstrap resamples, different seeds, scikit-learn
                MLPRegressor (no PyTorch, per the brief); mean = prediction, std across members = uncertainty

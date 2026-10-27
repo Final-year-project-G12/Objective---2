@@ -1,7 +1,7 @@
 """
 scripts/g7_sensitivity.py
 ============================
-G7 (O2 redesign, plan WP3, 2026-10-26) - bounded sensitivity study that precedes any optimisation.
+G7 (O2, plan WP3, 2026-10-26) - bounded sensitivity study that precedes any optimisation.
 One regime per invocation (run the three in parallel):  python scripts/g7_sensitivity.py <cluster_id>
 
 Weather: EXPLORE years only (2018, 2019) through src/weather/roles.py; no select/test year is touched.
@@ -18,7 +18,7 @@ Blocks B-D use the multi-node tank (decision D4); A also runs the single-node ta
 Geometry is checked by the real packing engine with PERMISSIVE bounds (the old 8-37 count / 40-80 mm diameter
 bounds are exactly what this study is asking whether to replace); fraction cap 20 % kept.
 
-Writes results/redesign/g7_sensitivity_r<cluster>.csv. Night scenarios use every 30th day (12 days).
+Writes results/g7_sensitivity_r<cluster>.csv. Night scenarios use every 30th day (12 days).
 """
 
 import math
@@ -125,7 +125,7 @@ def main(cid):
         for arr in ARRANGEMENTS:                                                # D arrangement
             log(one_run(cid, year, w, "multinode", pcm1, design(0.020, n5, 0.030, arr), bounds, "D_arrangement", 1,
                         arr))
-    out = Path(f"results/redesign/g7_sensitivity_r{cid}.csv")
+    out = Path(f"results/g7_sensitivity_r{cid}.csv")
     pd.DataFrame(rows).to_csv(out, index=False)
     print("written", out)
 

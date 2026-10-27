@@ -1,12 +1,12 @@
 """
 src/design/space.py
 ======================
-O2 redesign G8 (2026-10-26) - the APPROVED design space (configs/design_space_redesign_v2.yaml) as code.
+O2 G8 (2026-10-26) - the APPROVED design space (configs/design_space.yaml) as code.
 
 Four design variables: PCM thickness (= sphere inner radius), capsule count (set through the PCM outer volume
 fraction), flow rate, arrangement. `to_design()` turns a point of that space into a DesignVector and
 `geometry_bounds()` gives the permissive bounds dict the geometry engine needs (the legacy 8-37 count and
-40-80 mm diameter bounds are what this redesign replaced). Geometry feasibility is still checked EXACTLY by
+40-80 mm diameter bounds are what this rework replaced). Geometry feasibility is still checked EXACTLY by
 src/design/constraints.check_design, never learned.
 """
 
@@ -19,7 +19,7 @@ import yaml
 from src.design.schema import DesignVector
 from src.io_utils import load_design_bounds, load_system_config
 
-CONFIG_PATH = Path(__file__).resolve().parents[2] / "configs" / "design_space_redesign_v2.yaml"
+CONFIG_PATH = Path(__file__).resolve().parents[2] / "configs" / "design_space.yaml"
 ARRANGEMENTS = ("single-layer", "staggered", "radial")
 
 

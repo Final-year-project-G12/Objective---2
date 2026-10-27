@@ -1,7 +1,7 @@
 """
 tests/test_tes_metrics.py
 ============================
-G3 (O2 redesign, 2026-10-26) — WP1 metric unit tests: hand-calculated synthetic
+G3 (O2, 2026-10-26) — WP1 metric unit tests: hand-calculated synthetic
 days, closure on a real run, agreement of E_del,45 with solar_fraction, and an
 analytic no-draw cool-down for tau_hold,45.
 """

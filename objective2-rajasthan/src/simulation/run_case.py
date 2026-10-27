@@ -26,12 +26,12 @@ from src.simulation.tank_model import DesignRuntime, run_year
 
 J_PER_KWH = 3.6e6
 
-# O2 redesign G2 (2026-10-26): production time step. The frozen YAML says 300 s,
+# O2 G2 (2026-10-26): production time step. The frozen YAML says 300 s,
 # but at 300 s the plain-tank annual energy is still moving 0.07-0.09 % when dt
 # halves (limit 0.05 %) and the paired PCM gain is under-reported by ~0.1 pp.
 # Applied here, in code, so system_config_shared.yaml stays untouched; a caller's
 # own system_config_overrides still win (the convergence study relies on that).
-# Evidence: results/redesign/g2_timestep_convergence*.csv, docs/REDESIGN_PROGRESS.md.
+# Evidence: results/g2_timestep_convergence*.csv, docs/PROGRESS.md.
 PRODUCTION_SOLVER_OVERRIDE = {"solver": {"timestep_s": 150}}
 
 
@@ -79,7 +79,7 @@ def run_case(state: str, cluster_id: int, pcm_name: str, design: DesignVector,
     pcm_props = (pcm_props_from_record(pcm_record, system_config["pcm_integration"]["melting_half_width_K"])
                  if pcm_record is not None else None)
 
-    # `weather`: an hourly frame from src/weather/roles.load_point_year (multi-year redesign);
+    # `weather`: an hourly frame from src/weather/roles.load_point_year (multi-year rework);
     # None keeps the legacy one-year-per-regime file.
     weather = drop_leap_day(weather) if weather is not None else load_hourly_weather(state, cluster_id)
     if weather_perturbation:

@@ -1,14 +1,14 @@
 """
 scripts/g4_multinode_report.py
 =================================
-G4 (O2 redesign, 2026-10-26) — evidence for the multi-node tank.
+G4 (O2, 2026-10-26) — evidence for the multi-node tank.
 
  1. Timed simulated year, single-node vs multi-node (N = 10, 20), per regime, plain and PCM
-    (pre-redesign Phase-7 deployable designs -- illustrative, not O1 designs). JIT warm-up call excluded.
+    (legacy Phase-7 deployable designs -- illustrative, not O1 designs). JIT warm-up call excluded.
  2. The project-CFD stratified-draw case (openfoam_cfd/docs/COMPONENT_CFD_NOTES.md: 50 L tank, 30 L at 55 C over
     20 L at 25 C, 0.03 kg/s of 25 C mains): litres delivered at >= 45 C versus node count, and the mixed 43 C tank.
 
-Writes results/redesign/g4_multinode_report.csv and results/redesign/g4_cfd_draw_case.csv.
+Writes results/g4_multinode_report.csv and results/g4_cfd_draw_case.csv.
 """
 
 import sys
@@ -23,11 +23,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from src.design.schema import DesignVector
 from src.simulation import run_case as rc
 
-OUT = Path("results/redesign")
+OUT = Path("results")
 
 
 def timed_years():
-    designs = pd.read_csv("archive_pre_redesign/results/phase7_deployable_design_per_regime.csv")
+    designs = pd.read_csv("data/legacy/phase7_deployable_design_per_regime.csv")
     rc.run_case("rajasthan", 0, None, DesignVector(0.05, 16, 0.03, "staggered"), tank_model="multinode",
                 record_hourly=False)                                    # JIT warm-up
     rows = []

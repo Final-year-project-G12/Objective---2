@@ -1,17 +1,17 @@
 """
 scripts/g3_metrics_report.py
 ===============================
-G3 (O2 redesign, 2026-10-26) — evidence run for the WP1 metrics. Computes the full
+G3 (O2, 2026-10-26) — evidence run for the WP1 metrics. Computes the full
 metric set (in-run + night hold/serve scenarios on EVERY day) for the Phase-7
 deployable design per regime, plain tank and PCM, at the production dt = 150 s.
 
-ILLUSTRATIVE ONLY: these designs and PCMs are the pre-redesign (retargeted
+ILLUSTRATIVE ONLY: these designs and PCMs are the legacy (retargeted
 shortlist) ones; they are used here purely to exercise and report the metrics.
 They are not the O1-top-3 designs (G6) and not optimised under the new metrics.
 
 Writes
-  results/redesign/g3_metrics_report.csv           one row per (regime, case)
-  results/redesign/g3_night_daily_r{R}_{case}.csv  per-day hold/serve table
+  results/g3_metrics_report.csv           one row per (regime, case)
+  results/g3_night_daily_r{R}_{case}.csv  per-day hold/serve table
 """
 
 import sys
@@ -25,12 +25,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from src.design.schema import DesignVector
 from src.simulation.run_case import run_case
 
-OUT = Path("results/redesign")
+OUT = Path("results")
 
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    designs = pd.read_csv("archive_pre_redesign/results/phase7_deployable_design_per_regime.csv")
+    designs = pd.read_csv("data/legacy/phase7_deployable_design_per_regime.csv")
     rows = []
     for _, r in designs.iterrows():
         dv = DesignVector(capsule_diameter_m=r.capsule_diameter_m, n_capsule=int(r.n_capsule),

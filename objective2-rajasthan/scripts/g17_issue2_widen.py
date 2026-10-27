@@ -2,7 +2,7 @@
 scripts/g17_issue2_widen.py
 ==============================
 Issue 2 (progress log sections 18/23): WP6 boundary-artefact rule - widen each bound that the optimum sits on in a DIAGNOSTIC run and see whether the
-primary metric g_window moves by more than the band. Not a re-search and not an adoption of new bounds: the approved box (configs/design_space_redesign_v2.yaml)
+primary metric g_window moves by more than the band. Not a re-search and not an adoption of new bounds: the approved box (configs/design_space.yaml)
 is unchanged, the widened geometry bounds below exist only inside this script.
 Diagnostic points around the frozen chosen design of a regime (its PCM, arrangement and flow unless stated), stack centre, explore years 2016-2020:
   A  R_in in {20, 30, 40, 45, 50, 60} mm at the chosen outer fraction (capsule count follows)
@@ -12,7 +12,7 @@ Diagnostic points around the frozen chosen design of a regime (its PCM, arrangem
 Paired against exact water-only runs at the same flow (no flow grid, so flows above 0.050 are allowed). Geometry is still checked exactly; designs that
 fail the exact geometry check or the 65 C / 75 C peaks are recorded, not dropped. There is NO capsule-size source above 40 mm radius in the files read
 (vendor catalogue is on the papers-needed list): results for R_in > 40 mm are labelled 'no source' in the docs.
-Usage: python scripts/g17_issue2_widen.py <cluster_id>  ->  results/redesign/g17_widen_r<c>.csv
+Usage: python scripts/g17_issue2_widen.py <cluster_id>  ->  results/g17_widen_r<c>.csv
 """
 
 import json
@@ -31,7 +31,7 @@ from src.optimize.evaluate import _weather
 from src.simulation.run_case import run_case
 from src.weather import roles
 
-OUT = Path("results/redesign")
+OUT = Path("results")
 SP = load_space()
 
 

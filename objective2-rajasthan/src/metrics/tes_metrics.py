@@ -1,7 +1,7 @@
 """
 src/metrics/tes_metrics.py
 =============================
-O2 redesign G3 / plan WP1 (2026-10-26) — threshold-aware thermal-energy-storage
+O2 G3 / plan WP1 (2026-10-26) — threshold-aware thermal-energy-storage
 metrics, replacing "annual E_load" (which counts above-target and below-target
 heat alike and rewards overheating).
 

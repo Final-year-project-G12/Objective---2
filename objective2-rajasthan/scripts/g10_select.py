@@ -16,7 +16,7 @@ Rule (decisions D9/D10, plan section 6A):
   Everything left in S0 that cannot be told apart by the band is reported as INDISTINGUISHABLE, not as a win.
 Frozen for the one-shot held-out test (g10_test.py): the chosen design per regime plus the best g_window design of every
 other O1 PCM of that regime, so the test is not a one-design cherry pick. The selection log carries a SHA-256 fingerprint.
-Usage: python scripts/g10_select.py <cluster_id>      -> results/redesign/g10_selection_r<c>.json and _candidates.csv
+Usage: python scripts/g10_select.py <cluster_id>      -> results/g10_selection_r<c>.json and _candidates.csv
 """
 
 import hashlib
@@ -33,7 +33,7 @@ from src.io_utils import get_regime
 from src.optimize.evaluate import evaluate_design, evaluate_night
 from src.optimize.nsga2 import non_dominated_mask
 
-OUT = Path("results/redesign")
+OUT = Path("results")
 MAX_PER_PAIR = 30
 NIGHT_TOP = 12                  # tau_serve is computed for the best-g_window candidates only (cost)
 

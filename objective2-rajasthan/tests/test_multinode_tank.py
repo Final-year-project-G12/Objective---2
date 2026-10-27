@@ -1,7 +1,7 @@
 """
 tests/test_multinode_tank.py
 ===============================
-G4 (O2 redesign, 2026-10-26) — checks on the 1-D stratified multi-node tank
+G4 (O2, 2026-10-26) — checks on the 1-D stratified multi-node tank
 (src/simulation/tank_model_multinode.py): numba enthalpy equals the reference
 Python enthalpy, N=1 reproduces the single-node model, exact energy closure,
 buoyancy, capsule layout, and the project-CFD stratified-draw case.

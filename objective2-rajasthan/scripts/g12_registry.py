@@ -1,9 +1,9 @@
 """
 scripts/g12_registry.py
 ==========================
-G12 - results registry. Every headline number quoted in docs/redesign/ is a row here: quantity, value, unit, the saved file it
-was read from and the filter that selects it. The script only READS files under results/redesign/ and writes
-results/redesign/results_registry.csv; nothing is computed from memory, so a number that is not in this table has no saved source.
+G12 - results registry. Every headline number quoted in docs/ is a row here: quantity, value, unit, the saved file it
+was read from and the filter that selects it. The script only READS files under results/ and writes
+results/results_registry.csv; nothing is computed from memory, so a number that is not in this table has no saved source.
 Usage: python scripts/g12_registry.py
 """
 
@@ -15,12 +15,12 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-OUT = Path("results/redesign")
+OUT = Path("results")
 ROWS = []
 
 
 def add(rid, quantity, value, unit, source, flt=""):
-    ROWS.append({"id": rid, "quantity": quantity, "value": value, "unit": unit, "source_file": f"results/redesign/{source}",
+    ROWS.append({"id": rid, "quantity": quantity, "value": value, "unit": unit, "source_file": f"results/{source}",
                  "filter": flt})
 
 
@@ -118,6 +118,17 @@ def main():
             v = float(w[(w.block == blk) & (w.level == lv)].g_window.iloc[0]) - float(base)
             add(f"widen.r{c}.{blk}.{lv}", f"regime {c} widened-bound diagnostic: g_window change vs chosen (explore years), {blk} {lv}", round(v, 2),
                 "kWh/yr", f"g17_widen_r{c}.csv", f"block={blk}, level={lv}, minus chosen explore g_window")
+
+    # --- issue 1: G9 with and without the box-vertex step (scripts/g18_issue1_compare.py)
+    w1 = pd.read_csv(OUT / "g18_issue1_with_without.csv")
+    for r in w1[w1.eps_g_window.notna()].itertuples():
+        add(f"issue1.{r.pair}.{r.state}.eps_g_window", f"G9 grid check epsilon gap, g_window ({r.pair}, state {r.state})", round(float(r.eps_g_window), 3), "kWh",
+            "g18_issue1_with_without.csv", f"pair={r.pair}, state={r.state}")
+        add(f"issue1.{r.pair}.{r.state}.within_band", f"G9 grid check within band ({r.pair}, state {r.state})", bool(r.within_band), "",
+            "g18_issue1_with_without.csv", f"pair={r.pair}, state={r.state}")
+    for r in w1[w1.state != "base"].itertuples():
+        add(f"issue1.{r.pair}.{r.state}.hv_rel", f"hypervolume relative to the best state ({r.pair}, state {r.state})", round(float(r.hv_rel_to_best_state), 3),
+            "-", "g18_issue1_with_without.csv", f"pair={r.pair}, state={r.state}")
 
     # --- G9 checks
     gc = pd.read_csv(OUT / "g9_grid_check.csv")

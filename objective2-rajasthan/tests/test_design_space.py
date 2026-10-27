@@ -1,7 +1,7 @@
 """
 tests/test_design_space.py
 =============================
-G8 (O2 redesign, 2026-10-26) - the approved design space, the same-flow baseline interpolation and the
+G8 (O2, 2026-10-26) - the approved design space, the same-flow baseline interpolation and the
 evaluation function.
 """
 
@@ -24,7 +24,7 @@ from src.simulation.run_case import run_case
 def test_approved_ranges_are_what_the_user_approved():
     v = space.load_space()["variables"]
     assert v["inner_radius_m"] == {"min": 0.010, "max": 0.040}
-    assert v["pcm_volume_fraction"] == {"min": 0.02, "max": 0.20}
+    assert v["pcm_volume_fraction"] == {"min": 0.02, "max": 0.30}
     assert v["flow_rate_kg_s"] == {"min": 0.010, "max": 0.050}
     assert v["arrangement"] == ["single-layer", "staggered", "radial"]
     assert space.load_space()["constraints"]["pcm_peak_limit_C"] == 65.0
@@ -32,22 +32,22 @@ def test_approved_ranges_are_what_the_user_approved():
 
 
 @pytest.mark.parametrize("r", [0.010, 0.0175, 0.025, 0.040])
-@pytest.mark.parametrize("f", [0.02, 0.05, 0.12, 0.20])
-def test_count_rule_keeps_the_fraction_inside_2_to_20_percent(r, f):
+@pytest.mark.parametrize("f", [0.02, 0.05, 0.12, 0.20, 0.30])
+def test_count_rule_keeps_the_fraction_inside_2_to_30_percent(r, f):
     dv = space.to_design(r, f, 0.03, "staggered")
     frac = dv.n_capsule * space.capsule_outer_volume_m3(r) / space.v_tank_m3()
-    assert 0.02 - 1e-9 <= frac <= 0.20 + 1e-9
+    assert 0.02 - 1e-9 <= frac <= 0.30 + 1e-9
     assert dv.capsule_diameter_m == pytest.approx(2 * (r + 0.0008))
 
 
 def test_geometry_engine_is_still_the_judge_of_feasibility():
     cfg = load_system_config()
-    bad = [(r, f, a) for r in (0.010, 0.025, 0.030, 0.040) for f in (0.02, 0.20)
+    bad = [(r, f, a) for r in (0.010, 0.025, 0.030, 0.040) for f in (0.02, 0.30)
            for a in space.ARRANGEMENTS
            if not check_design(space.to_design(r, f, 0.03, a), cfg, space.geometry_bounds())["valid"]]
-    # radial packing cannot reach 20 % at the larger radii (G7: max feasible 15.4 % at R=30 mm); the engine must say so
+    # radial packing cannot reach 30 % at the larger radii (G7: max feasible 15.4 % at R=30 mm); the engine must say so
     assert ("radial" in {a for _, _, a in bad}) and all(a == "radial" for _, _, a in bad)
-    assert (0.030, 0.20, "radial") in bad
+    assert (0.030, 0.30, "radial") in bad
 
 
 @pytest.mark.parametrize("cid,year,flow", [(0, 2018, 0.0225), (1, 2019, 0.0375)])

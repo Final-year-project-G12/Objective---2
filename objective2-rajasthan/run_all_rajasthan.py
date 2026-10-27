@@ -1,15 +1,15 @@
 """
 run_all_rajasthan.py
 ========================
-Orchestrator for the redesigned Objective 2 chain for Rajasthan (gates G1-G12). It calls pipeline.py stage by stage and stops at the
-first failing stage. The pre-redesign orchestrator (Tm retargeting, Extra Trees, Monte Carlo robustness) is retired; its copy is in
-archive_pre_redesign/code/run_all_rajasthan.py.
+Orchestrator for the current Objective 2 chain for Rajasthan (gates G1-G12). It calls pipeline.py stage by stage and stops at the
+first failing stage. The legacy orchestrator (Tm retargeting, Extra Trees, Monte Carlo robustness) is retired; its copy is in
+the deleted legacy copy.
 
 Modes
   python run_all_rajasthan.py                  default: tests, then the cheap REPORTING stages from the saved results
                                                (report -> handoff -> plots). Minutes. Always safe, including after the held-out test.
   python run_all_rajasthan.py --full           the whole chain from the simulator up (verify ... plots). Many hours.
-                                               Refused while results/redesign/held_out_test.lock exists, because re-deciding the designs
+                                               Refused while results/held_out_test.lock exists, because re-deciding the designs
                                                would make the one held-out run meaningless; add --allow-invalidate to override knowingly.
   python run_all_rajasthan.py --full --dry-run print every command without running anything
 Options: --jobs N (parallel jobs inside a stage, default 3), --include-heldout (with --full; the lock still refuses a second run),
@@ -35,7 +35,7 @@ def _run(argv, label):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Run the redesigned Rajasthan Objective 2 chain")
+    ap = argparse.ArgumentParser(description="Run the current Rajasthan Objective 2 chain")
     ap.add_argument("--state", default="rajasthan")
     ap.add_argument("--full", action="store_true", help="run every stage from the simulator up (many hours)")
     ap.add_argument("--dry-run", action="store_true")

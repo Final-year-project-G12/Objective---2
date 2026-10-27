@@ -9,7 +9,7 @@ Two validations, both WITHIN a pair (never pooled across regimes, which is what 
 Reported per (pair, target, family): RMSE, RMSE / (mean year-to-year sd of that target = the repeatability scale),
 Spearman rho of predicted vs simulated ranking, and global R^2 (for contrast only; NOT used to choose).
 Selection rule: highest mean Spearman over targets and validations, ties (within 0.02) broken by lower relative RMSE.
-Writes results/redesign/g8_s3_comparison.csv and g8_s3_selection.csv.
+Writes results/g8_s3_comparison.csv and g8_s3_selection.csv.
 """
 
 import glob
@@ -80,18 +80,18 @@ def _job(f):
 
 def main():
     from concurrent.futures import ProcessPoolExecutor
-    files = sorted(glob.glob("results/redesign/g8_s2_r*_p*.csv"))
+    files = sorted(glob.glob("results/g8_s2_r*_p*.csv"))
     with ProcessPoolExecutor(max_workers=9) as ex:
         out = [o for o in ex.map(_job, files) if o is not None]
     comp = pd.concat(out)
-    comp.to_csv("results/redesign/g8_s3_comparison.csv", index=False)
+    comp.to_csv("results/g8_s3_comparison.csv", index=False)
     g = comp.groupby(["pair", "family"]).agg(spearman=("spearman", "mean"), rel_rmse=("rmse_over_year_sd", "mean")).reset_index()
     sel = []
     for pair, h in g.groupby("pair"):
         best = h.spearman.max()
         cand = h[h.spearman >= best - 0.02].sort_values("rel_rmse")
         sel.append({"pair": pair, "chosen": cand.iloc[0].family, **{r.family: r.spearman for r in h.itertuples()}})
-    pd.DataFrame(sel).to_csv("results/redesign/g8_s3_selection.csv", index=False)
+    pd.DataFrame(sel).to_csv("results/g8_s3_selection.csv", index=False)
     print(pd.DataFrame(sel).to_string())
 
 

@@ -1,7 +1,7 @@
 """
 src/optimize/nsga2.py
 ========================
-O2 redesign G9 / S4 - NSGA-II (Deb et al. 2002) in numpy, because pymoo and DEAP are not installed and the brief says to
+O2 G9 / S4 - NSGA-II (Deb et al. 2002) in numpy, because pymoo and DEAP are not installed and the brief says to
 ask before any pip install. All objectives are MINIMISED. Genes live in [0, 1]^n (the caller decodes them, including
 the categorical arrangement and the integer capsule count). Constraint handling is Deb's feasibility-first rule:
   feasible beats infeasible; two infeasible -> smaller violation wins; two feasible -> Pareto dominance.

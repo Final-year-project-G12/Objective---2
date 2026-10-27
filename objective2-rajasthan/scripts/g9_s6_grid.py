@@ -3,8 +3,8 @@ scripts/g9_s6_grid.py
 ========================
 G9 / S6 (plan WP5 5.4) - dense regular grid for ONE (regime, O1 PCM) pair, simulated for all five explore years, to
 check the NSGA-II front against the true front. Usage: python scripts/g9_s6_grid.py <cluster_id> [pcm_rank=1]
-Grid: 6 inner radii (10-40 mm) x 6 PCM fractions (2-20 %) x 5 flows (0.010-0.050) x 3 arrangements = 540 designs.
-Geometry-infeasible points are recorded as rejected and not simulated. Writes results/redesign/g9_s6_grid_r<c>_p<rank>.csv
+Grid: 6 inner radii (10-40 mm) x 8 PCM fractions (2-30 %) x 5 flows (0.010-0.050) x 3 arrangements = 720 designs.
+Geometry-infeasible points are recorded as rejected and not simulated. Writes results/g9_s6_grid_r<c>_p<rank>.csv
 (incrementally, every 20 designs).
 """
 
@@ -22,14 +22,14 @@ from src.io_utils import get_regime
 from src.optimize.evaluate import evaluate_design, flatten
 
 R_LEVELS = np.linspace(0.010, 0.040, 6)
-F_LEVELS = np.linspace(0.02, 0.20, 6)
+F_LEVELS = np.linspace(0.02, 0.30, 8)      # v3 box: 4 % steps (v1: 6 levels to 20 %)
 Q_LEVELS = np.linspace(0.010, 0.050, 5)
 ARR = ("single-layer", "staggered", "radial")
 
 
 def main(cid, rank):
     pcm = get_regime("rajasthan", cid)["pcm_shortlist"][rank - 1]
-    out = Path(f"results/redesign/g9_s6_grid_r{cid}_p{rank}.csv")
+    out = Path(f"results/g9_s6_grid_r{cid}_p{rank}.csv")
     rows = []
     for i, (r, f, q, a) in enumerate(itertools.product(R_LEVELS, F_LEVELS, Q_LEVELS, ARR)):
         t0 = time.time()

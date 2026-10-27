@@ -2,11 +2,11 @@
 scripts/g9_assess.py
 =======================
 G9 assessment (plan WP5 acceptance, WP6 band). Reads the S4/S5/S6 outputs and writes
-  results/redesign/wp6_band.csv           repeatability band per objective (and per regime)
-  results/redesign/g9_seed_stability.csv  per-pair hypervolume of each seed's SIMULATED front vs the band
-  results/redesign/g9_al_summary.csv      active-learning trajectory per pair
-  results/redesign/g9_grid_check.csv      NSGA-II/AL front vs the dense-grid front (epsilon indicator vs the band)
-  results/redesign/g9_boundary_check.csv  share of final-front designs sitting at a bound (boundary-artefact detector)
+  results/wp6_band.csv           repeatability band per objective (and per regime)
+  results/g9_seed_stability.csv  per-pair hypervolume of each seed's SIMULATED front vs the band
+  results/g9_al_summary.csv      active-learning trajectory per pair
+  results/g9_grid_check.csv      NSGA-II/AL front vs the dense-grid front (epsilon indicator vs the band)
+  results/g9_boundary_check.csv  share of final-front designs sitting at a bound (boundary-artefact detector)
 
 Band definition (documented choice): band_k = sqrt( (sd_year,k / sqrt(5))^2 + d_dt,k^2 + d_nodes,k^2 + d_prop,k^2 )
  sd_year  mean over measured designs of the per-year sd of the paired gain (standard error of a 5-year mean)
@@ -27,7 +27,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from src.optimize.nsga2 import additive_epsilon, hypervolume, non_dominated_mask
 
-OUT = Path("results/redesign")
+OUT = Path("results")
 OBJ = ["g_window", "g_annual", "d_overheat"]
 
 
@@ -100,7 +100,7 @@ def main():
         front = ok[non_dominated_mask(F_of(ok))]
         for name, mask in {
             "R_in at 10 mm end (<=11 mm)": front.R_in_m <= 0.011, "R_in at 40 mm end (>=39 mm)": front.R_in_m >= 0.039,
-            "fraction at 2 % floor (<=2.5 %)": front.fraction <= 0.025, "fraction at 20 % cap (>=19.5 %)": front.fraction >= 0.195,
+            "fraction at 2 % floor (<=2.5 %)": front.fraction <= 0.025, "fraction at 30 % cap (>=29.5 %)": front.fraction >= 0.295,
             "flow at 0.010 floor (<=0.0125)  [MODEL ARTEFACT]": front.flow <= 0.0125,
             "flow at 0.050 cap (>=0.0475)": front.flow >= 0.0475}.items():
             bound_rows.append({"pair": tag, "bound": name, "share_of_front": float(mask.mean()), "n_front": len(front)})

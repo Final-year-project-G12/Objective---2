@@ -1,10 +1,10 @@
 """
 scripts/g2_timestep_convergence.py
 =====================================
-G2 (O2 redesign, 2026-10-26) — time-step convergence of the Level-1-repaired
+G2 (O2, 2026-10-26) — time-step convergence of the Level-1-repaired
 simulator. Runs the Phase-7 deployable design per regime (plain tank and PCM)
 at dt (default 300/150/75 s; pass e.g. `150,75,37.5 out.csv`) via an in-memory solver override (frozen YAML
-untouched) and writes a CSV under results/redesign/.
+untouched) and writes a CSV under results/.
 
 Pass condition (plan WP2 acceptance): Gate-1 residual <= 0.1 % in every run and
 annual useful energy changes < 0.05 % each time dt is halved.
@@ -22,11 +22,11 @@ from src.design.schema import DesignVector
 from src.simulation.run_case import run_case
 
 DTS = tuple(float(x) if "." in x else int(x) for x in sys.argv[1].split(",")) if len(sys.argv) > 1 else (300, 150, 75)
-OUT = Path(sys.argv[2]) if len(sys.argv) > 2 else Path("results/redesign/g2_timestep_convergence.csv")
+OUT = Path(sys.argv[2]) if len(sys.argv) > 2 else Path("results/g2_timestep_convergence.csv")
 
 
 def main():
-    designs = pd.read_csv("archive_pre_redesign/results/phase7_deployable_design_per_regime.csv")
+    designs = pd.read_csv("data/legacy/phase7_deployable_design_per_regime.csv")
     rows = []
     for _, r in designs.iterrows():
         dv = DesignVector(capsule_diameter_m=r.capsule_diameter_m, n_capsule=int(r.n_capsule),

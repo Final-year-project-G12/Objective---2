@@ -1,7 +1,7 @@
 """
 tests/test_o1_shortlist.py
 =============================
-G6 (O2 redesign, decision D2): the main pipeline uses Objective 1's MCDM top-3 as written; the
+G6 (O2, decision D2): the main pipeline uses Objective 1's MCDM top-3 as written; the
 retargeted shortlist is kept only as a labelled comparison.
 """
 

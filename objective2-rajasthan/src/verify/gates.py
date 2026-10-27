@@ -87,7 +87,7 @@ def _direct_runtime(diameter_m, n_capsule, flow_rate_kg_s, system_config, arrang
 def _direct_run(state, cluster_id, diameter_m, n_capsule, flow_rate_kg_s, pcm_name=None,
                  system_config_overrides=None, volume_multiplier=1.0, mains_temp_C=None,
                  arrangement="staggered"):
-    system_config = _deep_merge(load_system_config(), PRODUCTION_SOLVER_OVERRIDE)   # redesign: dt = 150 s
+    system_config = _deep_merge(load_system_config(), PRODUCTION_SOLVER_OVERRIDE)   # rework: dt = 150 s
     if system_config_overrides:
         system_config = _deep_merge(system_config, system_config_overrides)
 
@@ -572,7 +572,7 @@ def gate_shield_confirmation_for_winners(state: str, log):
 # ─────────────────────────────────────────────────────────────────────────
 
 def gate_o1_pcm_roster(state: str, log):
-    """O2 redesign G6 (2026-10-26): every PCM of Objective 1's MCDM top-3, in the cluster it was ranked for,
+    """O2 G6 (2026-10-26): every PCM of Objective 1's MCDM top-3, in the cluster it was ranked for,
     through the repaired simulator (mid design, 14 capsules of 50 mm, 0.03 kg/s, staggered, vs the plain tank).
     Gating: Gate-1 residual < 0.1 % for every one. Informational: how far each PCM actually melts."""
     from src.io_utils import o1_top3, o1_rank_ties
@@ -609,7 +609,7 @@ def gate_o1_pcm_roster(state: str, log):
 
 
 def run_all_gates(state: str, report_path=None, include_stale_winners: bool = True, o1_roster: bool = False):
-    # Redesign: `report_path` lets the G6 re-run write beside, not over, the pre-redesign report;
+    # Rework: `report_path` lets the G6 re-run write beside, not over, the legacy report;
     # `include_stale_winners=False` skips the check against the retired Phase-7 winners.
     # objective2-rajasthan/ is already state-specific, so results/ is flat
     # (not nested per-state again) — matches the phaseN_ output-file scheme

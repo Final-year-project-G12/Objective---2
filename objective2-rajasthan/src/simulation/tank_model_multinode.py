@@ -1,7 +1,7 @@
 """
 src/simulation/tank_model_multinode.py
 =========================================
-O2 redesign G4 / plan WP2 Level 2 (decision D4, 2026-10-26) — 1-D stratified
+O2 G4 / plan WP2 Level 2 (decision D4, 2026-10-26) — 1-D stratified
 multi-node tank. A NEW module: src/simulation/tank_model.py (single node) is kept
 unchanged as the regression reference.
 

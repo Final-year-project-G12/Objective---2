@@ -1,12 +1,12 @@
 """
 scripts/g7_flow_baseline_and_packing.py
 ==========================================
-G7 supplement (O2 redesign, 2026-10-26):
+G7 supplement (O2, 2026-10-26):
  1. Plain-tank (water-only) flow sweep on the multi-node tank, explore years 2018/2019, so the flow block of
     g7_sensitivity can be read as PCM gain at the SAME flow (flow also changes the plain tank itself).
  2. Geometric packing limit: the largest capsule volume fraction the packing engine accepts per radius and
     arrangement, ignoring the 20 % cap (is the cap geometric or administrative?).
-Writes results/redesign/g7_plain_flow_baseline.csv and results/redesign/g7_max_packing_fraction.csv.
+Writes results/g7_plain_flow_baseline.csv and results/g7_max_packing_fraction.csv.
 """
 
 import sys
@@ -26,7 +26,7 @@ from src.weather.inventory import CURRENT_MEDOIDS
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import g7_sensitivity as g7
 
-OUT = Path("results/redesign")
+OUT = Path("results")
 
 
 def plain_flow_sweep():

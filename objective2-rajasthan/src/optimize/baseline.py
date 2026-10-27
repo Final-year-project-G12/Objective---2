@@ -1,7 +1,7 @@
 """
 src/optimize/baseline.py
 ===========================
-O2 redesign G8 - the paired baseline. Decision (user, 2026-10-26): every PCM design is compared with a
+O2 G8 - the paired baseline. Decision (user, 2026-10-26): every PCM design is compared with a
 WATER-ONLY tank at the SAME flow, weather year, demand, shield and tank model. Flow is continuous, so the
 plain tank is simulated on a flow grid per (regime, year) and interpolated (monotone PCHIP); the interpolation
 error is measured against exact plain runs in tests/test_design_space.py.
@@ -22,7 +22,7 @@ from src.simulation.run_case import run_case
 from src.weather import roles
 from src.weather.inventory import CURRENT_MEDOIDS
 
-OUT_DIR = Path(__file__).resolve().parents[2] / "results" / "redesign"
+OUT_DIR = Path(__file__).resolve().parents[2] / "results"
 FLOW_GRID = np.round(np.linspace(0.010, 0.050, 17), 6)
 METRICS = ["useful_energy_kWh", "E_del45_window_kWh", "E_del45_annual_kWh", "shield_water_h"]
 

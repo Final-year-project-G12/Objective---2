@@ -10,7 +10,7 @@ draw scenario, minimum outlet temperature) are reported for four cases:
   pcm_L0     the chosen design with the latent heat set to zero (PCM becomes sensible-only): separates the latent contribution
   plain_40L  DIAGNOSTIC ONLY, not a baseline: water-only tank with the water volume reduced by the capsule volume (tank volume x (1 - outer fraction)),
              to test whether volume displacement alone reproduces the PCM tank's serve numbers. The fixed 50 L tank is not changed anywhere else.
-Usage: python scripts/g16_issue3_serve.py <cluster_id>  ->  results/redesign/g16_serve_r<c>.csv
+Usage: python scripts/g16_issue3_serve.py <cluster_id>  ->  results/g16_serve_r<c>.csv
 """
 
 import json
@@ -27,7 +27,7 @@ from src.optimize.evaluate import _weather
 from src.simulation.run_case import run_case
 from src.weather import roles
 
-OUT = Path("results/redesign")
+OUT = Path("results")
 KEYS = ("tau_hold_mean_h", "tau_serve_mean_h", "serve_frac_45_mean", "serve_E_del45_mean_kWh", "serve_T_out_min_mean_C")
 
 

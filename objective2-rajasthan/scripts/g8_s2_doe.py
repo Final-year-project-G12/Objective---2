@@ -5,9 +5,9 @@ G8 / S2 (plan WP5 5.4) - scrambled-Sobol initial DOE over the approved space for
 simulated for all five explore years (2016-2020) with the real simulator. Same 128 Sobol points for every pair
 (seed 20261026) so pairs are comparable. Usage: python scripts/g8_s2_doe.py <cluster_id> <pcm_rank 1..3>
 
-Mapping u in [0,1)^4 -> inner radius 10-40 mm, PCM fraction 2-20 %, flow 0.010-0.050 kg/s, arrangement
+Mapping u in [0,1)^4 -> inner radius 10-40 mm, PCM fraction 2-30 %, flow 0.010-0.050 kg/s, arrangement
 floor(3u). Geometry-infeasible points (exact engine) are recorded as rejected and NOT simulated.
-Writes results/redesign/g8_s2_r<c>_p<rank>.csv (one row per design: means over years + per-year sd).
+Writes results/g8_s2_r<c>_p<rank>.csv (one row per design: means over years + per-year sd).
 """
 
 import sys
@@ -33,7 +33,7 @@ def sobol_points():
 
 def design_from_u(u):
     arr = ("single-layer", "staggered", "radial")[min(int(u[3] * 3), 2)]
-    return 0.010 + 0.030 * u[0], 0.02 + 0.18 * u[1], 0.010 + 0.040 * u[2], arr
+    return 0.010 + 0.030 * u[0], 0.02 + 0.28 * u[1], 0.010 + 0.040 * u[2], arr
 
 
 def main(cid, rank):
@@ -56,8 +56,8 @@ def main(cid, rank):
         rows.append(row)
         if i % 16 == 0:
             print(cid, rank, i, row["status"], flush=True)
-            pd.DataFrame(rows).to_csv(f"results/redesign/g8_s2_r{cid}_p{rank}.csv", index=False)
-    pd.DataFrame(rows).to_csv(f"results/redesign/g8_s2_r{cid}_p{rank}.csv", index=False)
+            pd.DataFrame(rows).to_csv(f"results/g8_s2_r{cid}_p{rank}.csv", index=False)
+    pd.DataFrame(rows).to_csv(f"results/g8_s2_r{cid}_p{rank}.csv", index=False)
     print("done", cid, rank)
 
 

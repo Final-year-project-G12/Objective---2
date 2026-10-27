@@ -1,15 +1,15 @@
 """
 scripts/g10_test.py
 ======================
-G10 / S8 - the HELD-OUT 2024-2025 test, run exactly ONCE. Usage: python scripts/g10_test.py --confirm-run-once
+G10 / S8 - the HELD-OUT test (v3: untouched years 2011-2015), run exactly ONCE. The v1 test on 2024-2025 is archived (results/v1_cap20/). Usage: python scripts/g10_test.py --confirm-run-once
 
-What is run: the frozen designs from the three selection logs (results/redesign/g10_selection_r{0,1,2}.json): per regime the
+What is run: the frozen designs from the three selection logs (results/g10_selection_r{0,1,2}.json): per regime the
 chosen design plus the best-g_window design of every other O1 PCM, each next to its water-only twin at the SAME flow
 (exact plain runs; no flow-grid baseline is built for the test years). Both test years, every metric, nothing dropped.
 Enforcement: the selection fingerprints are verified against the files on disk, then roles.acquire_test_lock() creates
-results/redesign/held_out_test.lock atomically. A second run refuses with HeldOutLockError. The lock is the first thing
+results/held_out_test.lock atomically. A second run refuses with HeldOutLockError. The lock is the first thing
 this script does after verification; if the run crashes afterwards the lock stays and the incident must be logged in
-docs/REDESIGN_PROGRESS.md (it is never deleted to retry silently).
+docs/PROGRESS.md (it is never deleted to retry silently).
 """
 
 import hashlib
@@ -24,7 +24,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from src.optimize.evaluate import evaluate_night
 from src.weather import roles
 
-OUT = Path("results/redesign")
+OUT = Path("results")
 
 
 def frozen_designs():

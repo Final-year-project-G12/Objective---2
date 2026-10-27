@@ -1,12 +1,12 @@
 """
 pipeline.py
 =============
-Objective 2 entry point for Rajasthan - the REDESIGNED chain (gates G1-G12 of OBJECTIVE2_REDESIGN_PROPOSED_PLAN.md).
-The pre-redesign chain (Extra Trees surrogate, 600 random candidates, medoid-plus-noise robustness, retargeted PCM list) is retired;
-a copy of the old entry point is kept in archive_pre_redesign/code/pipeline.py and is not wired to anything.
+Objective 2 entry point for Rajasthan - the current chain (gates G1-G12 of OBJECTIVE2_REDESIGN_PROPOSED_PLAN.md).
+The legacy chain (Extra Trees surrogate, 600 random candidates, medoid-plus-noise robustness, retargeted PCM list) is retired;
+a copy of the old entry point is kept in the deleted legacy copy and is not wired to anything.
 
 Every stage runs the script that produced the saved results (scripts/g*.py, src/...) with the same arguments, so this file is the
-single place that states the order of the chain. Stages that take hours say so below. Output goes to results/redesign/.
+single place that states the order of the chain. Stages that take hours say so below. Output goes to results/.
 
   verify       G6   Phase-4 verification battery on the repaired simulator with O1's top-3 PCMs            (minutes)
   sensitivity  G7   bounded sensitivity study (explore years 2018-2019), 3 regimes + flow/packing supplement (about 1 h)
@@ -18,22 +18,23 @@ single place that states the order of the chain. Stages that take hours say so b
   optimize     G9   S4/S5 NSGA-II + active learning for 9 pairs (5 rounds), then the box-vertex step + 3 more rounds
                     (G9_WARM=1 G9_VERTICES=1, files *_ext2), then S6 dense grid and the G9 assessment   (many hours)
   select       G10  final design per regime on the select years 2021-2023
-  heldout      G10  the one-shot held-out 2024-2025 test. REFUSES when results/redesign/held_out_test.lock exists (it does).
+  heldout      G10  the one-shot held-out test on the untouched years 2011-2015 (v3, cap 30 %). REFUSES when results/held_out_test.lock exists.
   ablation     G11  ablations and controls around the chosen design, explore years, 3 regimes
   report       G12  results registry, generated results document, document-reference check
   handoff      G12  Objective 3 environment contract v2
-  plots        G12  figures from the saved results (results/redesign/plots/)
+  plots        G12  figures from the saved results (results/plots/)
   simulate          one design, explore/select years, paired against the same-flow water-only tank (quick check, no files written)
   status            which stage outputs exist, and whether the held-out lock is set
 
 `--stage all` runs verify ... handoff, plots in that order and stops at the first failing stage. It never runs `heldout`
 unless `--include-heldout` is given (the lock still refuses a second run).
 
-SAFETY. The held-out test was run once (run id in results/redesign/held_out_test.lock). The stages that decide the frozen designs
+SAFETY. The v1 (cap 20 %) held-out test on 2024-2025 is archived in results/v1_cap20/ and those years are labelled used.
+The v3 held-out test runs once (run id in results/held_out_test.lock). The stages that decide the frozen designs
 (baseline, screening, doe, surrogate, band, optimize, select) would overwrite them and make that run meaningless, so they refuse
 while the lock exists unless `--allow-invalidate` is passed. The reporting stages (report, handoff, plots, status) are always safe.
 Re-deriving r0_p1 from scratch follows the general recipe (5 rounds, then vertices); the saved r0_p1 files took one extra step
-(an intermediate `_ext` run) first, see docs/redesign/03_OPTIMISATION_PIPELINE.md.
+(an intermediate `_ext` run) first, see docs/03_OPTIMISATION_PIPELINE.md.
 
 USAGE
   python pipeline.py --state rajasthan --stage status
@@ -54,7 +55,7 @@ import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-RD = ROOT / "results" / "redesign"
+RD = ROOT / "results"
 LOCK = RD / "held_out_test.lock"
 PY = sys.executable
 REGIMES = (0, 1, 2)
@@ -103,7 +104,7 @@ def commands(stage):
     if stage == "handoff":
         return [[cmd("-m", "src.handoff.build_obj3_contract_v2", env={"PYTHONPATH": "."})]]
     if stage == "plots":
-        return [[cmd("-m", "src.plots.make_plots_redesign")], [cmd("-m", "src.plots.make_plots_redesign_phases")]]
+        return [[cmd("-m", "src.plots.make_plots_results")], [cmd("-m", "src.plots.make_plots_phases")]]
     raise KeyError(stage)
 
 
@@ -147,7 +148,7 @@ def stage_status():
         "plots": "plots/fig1_front_vs_grid.png",
     }
     for k, f in checks.items():
-        print(f"  {k:12s} {'present' if (RD / f).exists() else 'MISSING':8s} results/redesign/{f}")
+        print(f"  {k:12s} {'present' if (RD / f).exists() else 'MISSING':8s} results/{f}")
 
 
 def stage_simulate(a):
@@ -161,8 +162,8 @@ def stage_simulate(a):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Objective 2 pipeline - Rajasthan (redesigned chain, G1-G12)")
-    ap.add_argument("--state", required=True, help="rajasthan (the redesign exists for Rajasthan only)")
+    ap = argparse.ArgumentParser(description="Objective 2 pipeline - Rajasthan (current chain, G1-G12)")
+    ap.add_argument("--state", required=True, help="rajasthan (the rework exists for Rajasthan only)")
     ap.add_argument("--stage", required=True, choices=ORDER + ["heldout", "simulate", "status", "all"])
     ap.add_argument("--dry-run", action="store_true", help="print the commands without running them")
     ap.add_argument("--jobs", type=int, default=3, help="parallel jobs inside a stage (9 parallel jobs ran out of memory once)")
@@ -178,7 +179,7 @@ def main():
     ap.add_argument("--purpose", default="explore", choices=["explore", "select"], help="held-out years are not reachable from here")
     a = ap.parse_args()
     if a.state != "rajasthan":
-        raise SystemExit("the redesigned chain exists for Rajasthan only; the other states still use their own frozen pipelines")
+        raise SystemExit("the current chain exists for Rajasthan only; the other states still use their own frozen pipelines")
 
     if a.stage == "status":
         return stage_status()
@@ -190,7 +191,7 @@ def main():
         stages = ORDER[:ORDER.index("ablation")] + ["heldout"] + ORDER[ORDER.index("ablation"):]
     blocked = [s for s in stages if s in DECIDING and LOCK.exists() and not a.allow_invalidate]
     if blocked and not a.dry_run:
-        raise SystemExit(f"refusing {blocked}: results/redesign/held_out_test.lock exists, so re-deciding the designs would make the held-out "
+        raise SystemExit(f"refusing {blocked}: results/held_out_test.lock exists, so re-deciding the designs would make the held-out "
                          "run meaningless. Pass --allow-invalidate if that is really intended (the held-out years can then no longer be "
                          "treated as untouched).")
     t0 = time.time()

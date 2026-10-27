@@ -21,7 +21,7 @@ from src.optimize.evaluate import evaluate_design, flatten  # noqa: E402
 
 def main():
     U = sobol_points()
-    for f in sorted(glob.glob("results/redesign/g8_s2_r*_p*.csv")):
+    for f in sorted(glob.glob("results/g8_s2_r*_p*.csv")):
         df = pd.read_csv(f)
         bad = df.index[df.status == "error"].tolist()
         if not bad:
