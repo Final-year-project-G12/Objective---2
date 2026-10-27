@@ -75,6 +75,7 @@ class SimulationResult:
     complete_melt_cycles: int
     initial_f_melt: float = 0.0
     n_clipped_steps: int = 0
+    n_shield_activations: int = 0
 
 
 def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: float,
@@ -111,6 +112,36 @@ def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: fl
     max_pcm_C = system_config["safety"]["max_pcm_temp_C"]
 
     has_pcm = design.n_capsule > 0
+
+    # Safety shield (added 2026-10-26): ported from the trigger logic
+    # src/handoff/build_obj3_contract.py specifies for Objective 3 (a hard
+    # override, not a learned behavior) into the simulator itself, so
+    # Phase 7/8's own numbers reflect a system that cannot silently
+    # overheat. Trips GUARD_BAND_C below each hard limit -- tripping
+    # exactly at the hard limit risks overshoot from the one-sub-step
+    # lag between a reading and the collector actually turning off.
+    #
+    # When a PCM is present, stopping the collector at water's OWN (75C)
+    # guard band is not enough: the tank's much larger water thermal mass
+    # keeps conducting heat into the PCM for a long time after the
+    # collector shuts off (slow tank losses are the only other sink), so a
+    # water temperature that is perfectly safe on its own (up to 75C) can
+    # still drag the PCM, which has a materially LOWER limit (65C), well
+    # past ITS ceiling before the tank cools back down. Direct
+    # encapsulation (system_config's pcm_integration.mode) means the PCM's
+    # lower limit is the real binding constraint whenever PCM is present,
+    # so the collector shutoff trip uses the TIGHTER of the two
+    # guard-banded limits in that case -- confirmed necessary empirically
+    # (an earlier version of this shield used water's own 72C trip
+    # unconditionally and still let PCM reach >70C from residual tank heat
+    # before the water trip itself was long enough).
+    shield_enabled = system_config["safety"].get("shield_enabled", False)
+    guard_band_C = system_config["safety"].get("shield_guard_band_C", 3.0)
+    water_trip_C = max_water_C - guard_band_C
+    pcm_trip_C = max_pcm_C - guard_band_C
+    if has_pcm:
+        water_trip_C = min(water_trip_C, pcm_trip_C)
+    n_shield_activations = 0
     m_pcm_total_kg = (design.n_capsule * design.capsule_volume_m3 * pcm_props.density_kg_m3
                        if has_pcm else 0.0)
     v_pcm_total_m3 = design.n_capsule * design.capsule_volume_m3 if has_pcm else 0.0
@@ -150,18 +181,29 @@ def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: fl
 
     rows = []
     n_hours = len(weather_hourly)
+    IST_OFFSET_HOURS = 5.5  # Bug-Fix 8 (2026-10-26): weather timestamps are UTC
+    # (NASA POWER); demand_profile_*.csv is built on LOCAL clock hours
+    # (build_demand_profile.py's 07:00/19:00 draw-window assumption), so the
+    # draw lookup must use local (IST) hour-of-day, not the raw UTC hour.
+    # draw_mass_kg_for_hour() already rounds a float hour, so no pre-rounding
+    # is needed here.
 
     for i in range(n_hours):
         row = weather_hourly.iloc[i]
         I_t = float(row["GHI_Wm2"])
         T_amb = float(row["T_amb_C"])
-        hour_of_day = int(row["timestamp_utc"].hour) if "timestamp_utc" in row else i % 24
+        hour_of_day = (
+            (row["timestamp_utc"].hour + IST_OFFSET_HOURS) % 24
+            if "timestamp_utc" in row
+            else i % 24
+        )
 
         draw_mass_hour_kg = demand.draw_mass_kg_for_hour(hour_of_day)
         draw_mass_per_substep_kg = draw_mass_hour_kg / n_substeps_per_hour
 
         hour_q_collector = hour_q_load = hour_q_pcm = hour_q_loss = 0.0
         hour_q_pump = hour_q_unmet = 0.0
+        hour_shield_activations = 0
 
         for sub in range(n_substeps_per_hour):
             in_band = has_pcm and (pcm_props.Ts_C - band_margin <= T_pcm <= pcm_props.Tl_C + band_margin)
@@ -192,6 +234,20 @@ def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: fl
                 m_draw_rate = draw_mass / dt_sub if dt_sub > 0 else 0.0
 
                 a_coll, b_coll, circulating = collector_linear_coeffs(I_t, T_amb, system_config)
+
+                # Safety shield: a hard override on top of the differential
+                # controller above, using the CURRENT (start-of-substep,
+                # i.e. "last measured") temperatures -- a real controller
+                # cannot act on the not-yet-solved T_w_new either. This is
+                # the same guard-banded trip Objective 3's contract
+                # specifies, now actually enforced here rather than only
+                # documented as a spec.
+                if shield_enabled and circulating:
+                    shield_trip = T_w >= water_trip_C or (has_pcm and T_pcm >= pcm_trip_C)
+                    if shield_trip:
+                        circulating = False
+                        n_shield_activations += 1
+                        hour_shield_activations += 1
 
                 if has_pcm:
                     ua_eff = ua_eff_total_w_k(design.n_capsule, design.capsule_diameter_m,
@@ -286,6 +342,7 @@ def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: fl
                 "Q_collector_Wh": hour_q_collector / 3600, "Q_load_Wh": hour_q_load / 3600,
                 "Q_pcm_Wh": hour_q_pcm / 3600, "Q_loss_Wh": hour_q_loss / 3600,
                 "Q_pump_Wh": hour_q_pump / 3600, "Q_unmet_Wh": hour_q_unmet / 3600,
+                "shield_activations": hour_shield_activations,
             })
 
     acc.E_final_J = m_w * cp_w * T_w + (m_pcm_total_kg * h_pcm if has_pcm else 0.0)
@@ -300,4 +357,5 @@ def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: fl
         n_safety_violations=n_safety, final_f_melt=f_melt,
         complete_melt_cycles=complete_cycles,
         initial_f_melt=initial_f_melt, n_clipped_steps=n_clipped_steps,
+        n_shield_activations=n_shield_activations,
     )

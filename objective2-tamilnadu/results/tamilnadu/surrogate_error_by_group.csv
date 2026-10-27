@@ -1,186 +1,186 @@
 target,group_type,group,MAE,n
-useful_energy_kWh,regime,0,0.5244728709421148,9
-useful_energy_kWh,regime,1,0.6689674550776393,9
-useful_energy_kWh,regime,2,0.41261532318814415,9
-useful_energy_kWh,pcm,PureTemp 58,0.31104114961923796,3
-useful_energy_kWh,pcm,RT57HC,0.6943980103957933,9
-useful_energy_kWh,pcm,n-Hexacosane (C26),0.5470586977459233,9
-useful_energy_kWh,pcm,n-Pentacosane (C25),0.3913778367896536,6
-useful_energy_kWh,arrangement,radial,0.5512825376858927,9
-useful_energy_kWh,arrangement,single-layer,0.4288323426329599,9
-useful_energy_kWh,arrangement,staggered,0.6259407688890456,9
-useful_energy_kWh,regime_pcm_arrangement,0/PureTemp 58/radial,0.2491076076612444,1
-useful_energy_kWh,regime_pcm_arrangement,0/PureTemp 58/single-layer,0.04264532537558807,1
-useful_energy_kWh,regime_pcm_arrangement,0/PureTemp 58/staggered,0.6413705158208813,1
-useful_energy_kWh,regime_pcm_arrangement,0/RT57HC/radial,0.7642173808765165,1
-useful_energy_kWh,regime_pcm_arrangement,0/RT57HC/single-layer,0.8899258360090698,1
-useful_energy_kWh,regime_pcm_arrangement,0/RT57HC/staggered,1.0111483396046879,1
-useful_energy_kWh,regime_pcm_arrangement,0/n-Hexacosane (C26)/radial,0.6584029610785365,1
-useful_energy_kWh,regime_pcm_arrangement,0/n-Hexacosane (C26)/single-layer,0.1334878451204986,1
-useful_energy_kWh,regime_pcm_arrangement,0/n-Hexacosane (C26)/staggered,0.3299500269320106,1
-useful_energy_kWh,regime_pcm_arrangement,1/RT57HC/radial,0.49083536062653366,1
-useful_energy_kWh,regime_pcm_arrangement,1/RT57HC/single-layer,1.6515883629567725,1
-useful_energy_kWh,regime_pcm_arrangement,1/RT57HC/staggered,0.008239292646749163,1
-useful_energy_kWh,regime_pcm_arrangement,1/n-Hexacosane (C26)/radial,0.49338096195924663,1
-useful_energy_kWh,regime_pcm_arrangement,1/n-Hexacosane (C26)/single-layer,0.052458393090091704,1
-useful_energy_kWh,regime_pcm_arrangement,1/n-Hexacosane (C26)/staggered,2.10723952342164,1
-useful_energy_kWh,regime_pcm_arrangement,1/n-Pentacosane (C25)/radial,1.0752974701329094,1
-useful_energy_kWh,regime_pcm_arrangement,1/n-Pentacosane (C25)/single-layer,1.1596057447604835e-11,1
-useful_energy_kWh,regime_pcm_arrangement,1/n-Pentacosane (C25)/staggered,0.14166773085321438,1
-useful_energy_kWh,regime_pcm_arrangement,2/RT57HC/radial,0.07543082223742203,1
-useful_energy_kWh,regime_pcm_arrangement,2/RT57HC/single-layer,0.6277980681757072,1
-useful_energy_kWh,regime_pcm_arrangement,2/RT57HC/staggered,0.7303986304286809,1
-useful_energy_kWh,regime_pcm_arrangement,2/n-Hexacosane (C26)/radial,0.47268489263615265,1
-useful_energy_kWh,regime_pcm_arrangement,2/n-Hexacosane (C26)/single-layer,0.23806838320456336,1
-useful_energy_kWh,regime_pcm_arrangement,2/n-Hexacosane (C26)/staggered,0.4378552922705694,1
-useful_energy_kWh,regime_pcm_arrangement,2/n-Pentacosane (C25)/radial,0.682185381964473,1
-useful_energy_kWh,regime_pcm_arrangement,2/n-Pentacosane (C25)/single-layer,0.22351886975275193,1
-useful_energy_kWh,regime_pcm_arrangement,2/n-Pentacosane (C25)/staggered,0.2255975680229767,1
-solar_fraction,regime,0,0.0002906025424743719,9
-solar_fraction,regime,1,0.0005015140197241289,9
-solar_fraction,regime,2,0.0004118921129836719,9
-solar_fraction,pcm,PureTemp 58,0.00011297058398503552,3
-solar_fraction,pcm,RT57HC,0.0004915518600244133,9
-solar_fraction,pcm,n-Hexacosane (C26),0.00035128665617392387,9
-solar_fraction,pcm,n-Pentacosane (C25),0.0004852699464832355,6
-solar_fraction,arrangement,radial,0.00045001296435413324,9
-solar_fraction,arrangement,single-layer,0.0003141462602899529,9
-solar_fraction,arrangement,staggered,0.0004398494505380866,9
-solar_fraction,regime_pcm_arrangement,0/PureTemp 58/radial,0.00014264377322670274,1
-solar_fraction,regime_pcm_arrangement,0/PureTemp 58/single-layer,0.0001189302633727296,1
-solar_fraction,regime_pcm_arrangement,0/PureTemp 58/staggered,7.733771535567424e-05,1
-solar_fraction,regime_pcm_arrangement,0/RT57HC/radial,0.00021697502802686675,1
-solar_fraction,regime_pcm_arrangement,0/RT57HC/single-layer,5.193184785923233e-05,1
-solar_fraction,regime_pcm_arrangement,0/RT57HC/staggered,0.0008089081571367451,1
-solar_fraction,regime_pcm_arrangement,0/n-Hexacosane (C26)/radial,0.00026188491725032126,1
-solar_fraction,regime_pcm_arrangement,0/n-Hexacosane (C26)/single-layer,7.071853279139173e-05,1
-solar_fraction,regime_pcm_arrangement,0/n-Hexacosane (C26)/staggered,0.0008660926472496833,1
-solar_fraction,regime_pcm_arrangement,1/RT57HC/radial,0.000129148054709316,1
-solar_fraction,regime_pcm_arrangement,1/RT57HC/single-layer,0.0015297383825949584,1
-solar_fraction,regime_pcm_arrangement,1/RT57HC/staggered,2.404729354643642e-06,1
-solar_fraction,regime_pcm_arrangement,1/n-Hexacosane (C26)/radial,0.0005151063538668677,1
-solar_fraction,regime_pcm_arrangement,1/n-Hexacosane (C26)/single-layer,3.9008056441081074e-05,1
-solar_fraction,regime_pcm_arrangement,1/n-Hexacosane (C26)/staggered,0.001185980131744091,1
-solar_fraction,regime_pcm_arrangement,1/n-Pentacosane (C25)/radial,0.0008284332722727772,1
-solar_fraction,regime_pcm_arrangement,1/n-Pentacosane (C25)/single-layer,3.3011876083288705e-05,1
-solar_fraction,regime_pcm_arrangement,1/n-Pentacosane (C25)/staggered,0.00025079532045013675,1
-solar_fraction,regime_pcm_arrangement,2/RT57HC/radial,0.0005813205574193292,1
-solar_fraction,regime_pcm_arrangement,2/RT57HC/single-layer,0.0005262050928654949,1
-solar_fraction,regime_pcm_arrangement,2/RT57HC/staggered,0.0005773348902531339,1
-solar_fraction,regime_pcm_arrangement,2/n-Hexacosane (C26)/radial,2.3113087186943382e-05,1
-solar_fraction,regime_pcm_arrangement,2/n-Hexacosane (C26)/single-layer,3.8772522160557266e-05,1
-solar_fraction,regime_pcm_arrangement,2/n-Hexacosane (C26)/staggered,0.00016090365687437824,1
-solar_fraction,regime_pcm_arrangement,2/n-Pentacosane (C25)/radial,0.0013514916352280748,1
-solar_fraction,regime_pcm_arrangement,2/n-Pentacosane (C25)/single-layer,0.00041899976844084197,1
-solar_fraction,regime_pcm_arrangement,2/n-Pentacosane (C25)/staggered,2.888780642429367e-05,1
-unmet_energy_kWh,regime,0,0.6355464530203866,9
-unmet_energy_kWh,regime,1,1.3415113996712635,9
-unmet_energy_kWh,regime,2,0.9135835331723506,9
-unmet_energy_kWh,pcm,PureTemp 58,0.2003911740601628,3
-unmet_energy_kWh,pcm,RT57HC,1.2112927314883057,9
-unmet_energy_kWh,pcm,n-Hexacosane (C26),0.8599032908000355,9
-unmet_energy_kWh,pcm,n-Pentacosane (C25),1.1289724583334078,6
-unmet_energy_kWh,arrangement,radial,1.0980392731216095,9
-unmet_energy_kWh,arrangement,single-layer,0.7965346546107841,9
-unmet_energy_kWh,arrangement,staggered,0.9960674581316071,9
-unmet_energy_kWh,regime_pcm_arrangement,0/PureTemp 58/radial,0.27421077827614226,1
-unmet_energy_kWh,regime_pcm_arrangement,0/PureTemp 58/single-layer,0.1720001058502021,1
-unmet_energy_kWh,regime_pcm_arrangement,0/PureTemp 58/staggered,0.154962638054144,1
-unmet_energy_kWh,regime_pcm_arrangement,0/RT57HC/radial,0.44423102418647886,1
-unmet_energy_kWh,regime_pcm_arrangement,0/RT57HC/single-layer,0.181259837549419,1
-unmet_energy_kWh,regime_pcm_arrangement,0/RT57HC/staggered,1.854171926295976,1
-unmet_energy_kWh,regime_pcm_arrangement,0/n-Hexacosane (C26)/radial,0.6630398510435498,1
-unmet_energy_kWh,regime_pcm_arrangement,0/n-Hexacosane (C26)/single-layer,0.07044558735356077,1
-unmet_energy_kWh,regime_pcm_arrangement,0/n-Hexacosane (C26)/staggered,1.9055963285740063,1
-unmet_energy_kWh,regime_pcm_arrangement,1/RT57HC/radial,0.31954437175977546,1
-unmet_energy_kWh,regime_pcm_arrangement,1/RT57HC/single-layer,4.405517770992219,1
-unmet_energy_kWh,regime_pcm_arrangement,1/RT57HC/staggered,0.009685375235221727,1
-unmet_energy_kWh,regime_pcm_arrangement,1/n-Hexacosane (C26)/radial,1.5656861975983247,1
-unmet_energy_kWh,regime_pcm_arrangement,1/n-Hexacosane (C26)/single-layer,0.06965934473828383,1
-unmet_energy_kWh,regime_pcm_arrangement,1/n-Hexacosane (C26)/staggered,2.8799379327685983,1
-unmet_energy_kWh,regime_pcm_arrangement,1/n-Pentacosane (C25)/radial,2.1750749406089653,1
-unmet_energy_kWh,regime_pcm_arrangement,1/n-Pentacosane (C25)/single-layer,0.08909913231786959,1
-unmet_energy_kWh,regime_pcm_arrangement,1/n-Pentacosane (C25)/staggered,0.559397531022114,1
-unmet_energy_kWh,regime_pcm_arrangement,2/RT57HC/radial,1.3485819610484668,1
-unmet_energy_kWh,regime_pcm_arrangement,2/RT57HC/single-layer,1.1315894507074518,1
-unmet_energy_kWh,regime_pcm_arrangement,2/RT57HC/staggered,1.207052865619744,1
-unmet_energy_kWh,regime_pcm_arrangement,2/n-Hexacosane (C26)/radial,0.16294329394986562,1
-unmet_energy_kWh,regime_pcm_arrangement,2/n-Hexacosane (C26)/single-layer,0.10984598955974434,1
-unmet_energy_kWh,regime_pcm_arrangement,2/n-Hexacosane (C26)/staggered,0.31197509161438575,1
-unmet_energy_kWh,regime_pcm_arrangement,2/n-Pentacosane (C25)/radial,2.9290410396229163,1
-unmet_energy_kWh,regime_pcm_arrangement,2/n-Pentacosane (C25)/single-layer,0.9393946724283069,1
-unmet_energy_kWh,regime_pcm_arrangement,2/n-Pentacosane (C25)/staggered,0.08182743400027448,1
-pump_energy_kWh,regime,0,2.4976070815690773e-08,9
-pump_energy_kWh,regime,1,2.8472156019592628e-08,9
-pump_energy_kWh,regime,2,2.392736288136616e-08,9
-pump_energy_kWh,pcm,PureTemp 58,2.4536364453681768e-08,3
-pump_energy_kWh,pcm,RT57HC,2.2271950884237804e-08,9
-pump_energy_kWh,pcm,n-Hexacosane (C26),3.875883108306368e-08,9
-pump_energy_kWh,pcm,n-Pentacosane (C25),1.2249029397181219e-08,6
-pump_energy_kWh,arrangement,radial,2.515539825412894e-08,9
-pump_energy_kWh,arrangement,single-layer,4.4462448839892925e-08,9
-pump_energy_kWh,arrangement,staggered,7.757742622627694e-09,9
-pump_energy_kWh,regime_pcm_arrangement,0/PureTemp 58/radial,3.035183664830858e-08,1
-pump_energy_kWh,regime_pcm_arrangement,0/PureTemp 58/single-layer,2.1300212918842323e-08,1
-pump_energy_kWh,regime_pcm_arrangement,0/PureTemp 58/staggered,2.19570437938944e-08,1
-pump_energy_kWh,regime_pcm_arrangement,0/RT57HC/radial,4.284521737535755e-08,1
-pump_energy_kWh,regime_pcm_arrangement,0/RT57HC/single-layer,1.4527996466858244e-08,1
-pump_energy_kWh,regime_pcm_arrangement,0/RT57HC/staggered,3.2835909732423518e-09,1
-pump_energy_kWh,regime_pcm_arrangement,0/n-Hexacosane (C26)/radial,1.8430885353787485e-08,1
-pump_energy_kWh,regime_pcm_arrangement,0/n-Hexacosane (C26)/single-layer,6.796113401456417e-08,1
-pump_energy_kWh,regime_pcm_arrangement,0/n-Hexacosane (C26)/staggered,4.126719796361882e-09,1
-pump_energy_kWh,regime_pcm_arrangement,1/RT57HC/radial,1.0045828088213632e-08,1
-pump_energy_kWh,regime_pcm_arrangement,1/RT57HC/single-layer,1.044656509437778e-07,1
-pump_energy_kWh,regime_pcm_arrangement,1/RT57HC/staggered,1.2009755992770813e-09,1
-pump_energy_kWh,regime_pcm_arrangement,1/n-Hexacosane (C26)/radial,1.766683088614926e-08,1
-pump_energy_kWh,regime_pcm_arrangement,1/n-Hexacosane (C26)/single-layer,8.536463076821175e-08,1
-pump_energy_kWh,regime_pcm_arrangement,1/n-Hexacosane (C26)/staggered,2.1274563672772528e-08,1
-pump_energy_kWh,regime_pcm_arrangement,1/n-Pentacosane (C25)/radial,1.9990404318439223e-09,1
-pump_energy_kWh,regime_pcm_arrangement,1/n-Pentacosane (C25)/single-layer,1.3631258173783375e-09,1
-pump_energy_kWh,regime_pcm_arrangement,1/n-Pentacosane (C25)/staggered,1.2868757968709336e-08,1
-pump_energy_kWh,regime_pcm_arrangement,2/RT57HC/radial,2.114369291818246e-08,1
-pump_energy_kWh,regime_pcm_arrangement,2/RT57HC/single-layer,1.4783152583404163e-09,1
-pump_energy_kWh,regime_pcm_arrangement,2/RT57HC/staggered,1.4562903348907312e-09,1
-pump_energy_kWh,regime_pcm_arrangement,2/n-Hexacosane (C26)/radial,4.9449454532538654e-08,1
-pump_energy_kWh,regime_pcm_arrangement,2/n-Hexacosane (C26)/single-layer,8.310621335951348e-08,1
-pump_energy_kWh,regime_pcm_arrangement,2/n-Hexacosane (C26)/staggered,1.4490473636739536e-09,1
-pump_energy_kWh,regime_pcm_arrangement,2/n-Pentacosane (C25)/radial,3.446579805277891e-08,1
-pump_energy_kWh,regime_pcm_arrangement,2/n-Pentacosane (C25)/single-layer,2.0594760011549833e-08,1
-pump_energy_kWh,regime_pcm_arrangement,2/n-Pentacosane (C25)/staggered,2.2026941008269755e-09,1
-pcm_mass_kg,regime,0,0.08323345752053284,9
-pcm_mass_kg,regime,1,0.10697047530735543,9
-pcm_mass_kg,regime,2,0.07851407713866962,9
-pcm_mass_kg,pcm,PureTemp 58,0.0354509532833156,3
-pcm_mass_kg,pcm,RT57HC,0.13528072806637642,9
-pcm_mass_kg,pcm,n-Hexacosane (C26),0.09117955937767214,9
-pcm_mass_kg,pcm,n-Pentacosane (C25),0.045661107142106215,6
-pcm_mass_kg,arrangement,radial,0.17756752838224585,9
-pcm_mass_kg,arrangement,single-layer,0.04319455698540706,9
-pcm_mass_kg,arrangement,staggered,0.04795592459890499,9
-pcm_mass_kg,regime_pcm_arrangement,0/PureTemp 58/radial,0.07273827416544898,1
-pcm_mass_kg,regime_pcm_arrangement,0/PureTemp 58/single-layer,3.552713678800501e-14,1
-pcm_mass_kg,regime_pcm_arrangement,0/PureTemp 58/staggered,0.033614585684462295,1
-pcm_mass_kg,regime_pcm_arrangement,0/RT57HC/radial,0.3159301872685898,1
-pcm_mass_kg,regime_pcm_arrangement,0/RT57HC/single-layer,0.024025181487875802,1
-pcm_mass_kg,regime_pcm_arrangement,0/RT57HC/staggered,0.17041906431277765,1
-pcm_mass_kg,regime_pcm_arrangement,0/n-Hexacosane (C26)/radial,0.11368147932762418,1
-pcm_mass_kg,regime_pcm_arrangement,0/n-Hexacosane (C26)/single-layer,6.217248937900877e-15,1
-pcm_mass_kg,regime_pcm_arrangement,0/n-Hexacosane (C26)/staggered,0.018692345437975044,1
-pcm_mass_kg,regime_pcm_arrangement,1/RT57HC/radial,0.11529698001185595,1
-pcm_mass_kg,regime_pcm_arrangement,1/RT57HC/single-layer,0.3194809129022276,1
-pcm_mass_kg,regime_pcm_arrangement,1/RT57HC/staggered,1.865174681370263e-14,1
-pcm_mass_kg,regime_pcm_arrangement,1/n-Hexacosane (C26)/radial,0.2658614292076389,1
+useful_energy_kWh,regime,0,4.227077831157759,9
+useful_energy_kWh,regime,1,1.1347835884394297,9
+useful_energy_kWh,regime,2,3.072091592852328,9
+useful_energy_kWh,pcm,PureTemp 58,3.3936159042925738,3
+useful_energy_kWh,pcm,RT57HC,2.2255944757833075,9
+useful_energy_kWh,pcm,n-Hexacosane (C26),3.6197526117080847,9
+useful_energy_kWh,pcm,n-Pentacosane (C25),2.1861009352909,6
+useful_energy_kWh,arrangement,radial,2.246835313627369,9
+useful_energy_kWh,arrangement,single-layer,3.017889270129773,9
+useful_energy_kWh,arrangement,staggered,3.169228428692375,9
+useful_energy_kWh,regime_pcm_arrangement,0/PureTemp 58/radial,0.41752381952073847,1
+useful_energy_kWh,regime_pcm_arrangement,0/PureTemp 58/single-layer,7.384680814367812,1
+useful_energy_kWh,regime_pcm_arrangement,0/PureTemp 58/staggered,2.378643078989171,1
+useful_energy_kWh,regime_pcm_arrangement,0/RT57HC/radial,0.003304431545757325,1
+useful_energy_kWh,regime_pcm_arrangement,0/RT57HC/single-layer,3.3240574823842053,1
+useful_energy_kWh,regime_pcm_arrangement,0/RT57HC/staggered,7.582936727711058,1
+useful_energy_kWh,regime_pcm_arrangement,0/n-Hexacosane (C26)/radial,9.577067997069435,1
+useful_energy_kWh,regime_pcm_arrangement,0/n-Hexacosane (C26)/single-layer,1.539069431603366,1
+useful_energy_kWh,regime_pcm_arrangement,0/n-Hexacosane (C26)/staggered,5.836416697228287,1
+useful_energy_kWh,regime_pcm_arrangement,1/RT57HC/radial,0.09056084463622938,1
+useful_energy_kWh,regime_pcm_arrangement,1/RT57HC/single-layer,0.29718861851597467,1
+useful_energy_kWh,regime_pcm_arrangement,1/RT57HC/staggered,0.9032655285882356,1
+useful_energy_kWh,regime_pcm_arrangement,1/n-Hexacosane (C26)/radial,0.5698297884498515,1
+useful_energy_kWh,regime_pcm_arrangement,1/n-Hexacosane (C26)/single-layer,0.341046396036063,1
+useful_energy_kWh,regime_pcm_arrangement,1/n-Hexacosane (C26)/staggered,1.868713781452925,1
+useful_energy_kWh,regime_pcm_arrangement,1/n-Pentacosane (C25)/radial,1.7991799639200963,1
+useful_energy_kWh,regime_pcm_arrangement,1/n-Pentacosane (C25)/single-layer,0.18474150513384302,1
+useful_energy_kWh,regime_pcm_arrangement,1/n-Pentacosane (C25)/staggered,4.1585258692216485,1
+useful_energy_kWh,regime_pcm_arrangement,2/RT57HC/radial,0.651681733425221,1
+useful_energy_kWh,regime_pcm_arrangement,2/RT57HC/single-layer,5.563178007574379,1
+useful_energy_kWh,regime_pcm_arrangement,2/RT57HC/staggered,1.614176907668707,1
+useful_energy_kWh,regime_pcm_arrangement,2/n-Hexacosane (C26)/radial,0.6053205089872336,1
+useful_energy_kWh,regime_pcm_arrangement,2/n-Hexacosane (C26)/single-layer,8.2554252090099,1
+useful_energy_kWh,regime_pcm_arrangement,2/n-Hexacosane (C26)/staggered,3.9848836955357,1
+useful_energy_kWh,regime_pcm_arrangement,2/n-Pentacosane (C25)/radial,6.507048735091757,1
+useful_energy_kWh,regime_pcm_arrangement,2/n-Pentacosane (C25)/single-layer,0.27161596654241293,1
+useful_energy_kWh,regime_pcm_arrangement,2/n-Pentacosane (C25)/staggered,0.19549357183564098,1
+solar_fraction,regime,0,0.001352083197706386,9
+solar_fraction,regime,1,0.00018085526970011855,9
+solar_fraction,regime,2,0.000804007558073219,9
+solar_fraction,pcm,PureTemp 58,0.0007680952250056864,3
+solar_fraction,pcm,RT57HC,0.00030558094267226404,9
+solar_fraction,pcm,n-Hexacosane (C26),0.0014161430984877604,9
+solar_fraction,pcm,n-Pentacosane (C25),0.0005387853639767052,6
+solar_fraction,arrangement,radial,0.0007456471868394857,9
+solar_fraction,arrangement,single-layer,0.0007309595175998767,9
+solar_fraction,arrangement,staggered,0.0008603393210403611,9
+solar_fraction,regime_pcm_arrangement,0/PureTemp 58/radial,0.00014031352871246572,1
+solar_fraction,regime_pcm_arrangement,0/PureTemp 58/single-layer,0.0020723530947229785,1
+solar_fraction,regime_pcm_arrangement,0/PureTemp 58/staggered,9.16190515816151e-05,1
+solar_fraction,regime_pcm_arrangement,0/RT57HC/radial,5.675415819705876e-05,1
+solar_fraction,regime_pcm_arrangement,0/RT57HC/single-layer,4.436815508568337e-05,1
+solar_fraction,regime_pcm_arrangement,0/RT57HC/staggered,0.001419310865189316,1
+solar_fraction,regime_pcm_arrangement,0/n-Hexacosane (C26)/radial,0.0033900476256955026,1
+solar_fraction,regime_pcm_arrangement,0/n-Hexacosane (C26)/single-layer,0.0007592563215330639,1
+solar_fraction,regime_pcm_arrangement,0/n-Hexacosane (C26)/staggered,0.004194725978639791,1
+solar_fraction,regime_pcm_arrangement,1/RT57HC/radial,7.323677858928068e-05,1
+solar_fraction,regime_pcm_arrangement,1/RT57HC/single-layer,8.986946555711306e-05,1
+solar_fraction,regime_pcm_arrangement,1/RT57HC/staggered,6.15047545685643e-05,1
+solar_fraction,regime_pcm_arrangement,1/n-Hexacosane (C26)/radial,3.363920669074982e-05,1
+solar_fraction,regime_pcm_arrangement,1/n-Hexacosane (C26)/single-layer,2.9056365174806587e-05,1
+solar_fraction,regime_pcm_arrangement,1/n-Hexacosane (C26)/staggered,0.0001911874785938128,1
+solar_fraction,regime_pcm_arrangement,1/n-Pentacosane (C25)/radial,0.00040922190075542986,1
+solar_fraction,regime_pcm_arrangement,1/n-Pentacosane (C25)/single-layer,4.4650884470698315e-05,1
+solar_fraction,regime_pcm_arrangement,1/n-Pentacosane (C25)/staggered,0.0006953305929006115,1
+solar_fraction,regime_pcm_arrangement,2/RT57HC/radial,0.00043840899849811876,1
+solar_fraction,regime_pcm_arrangement,2/RT57HC/single-layer,0.0002638354179949065,1
+solar_fraction,regime_pcm_arrangement,2/RT57HC/staggered,0.0003029398903703351,1
+solar_fraction,regime_pcm_arrangement,2/n-Hexacosane (C26)/radial,0.0003289461107003344,1
+solar_fraction,regime_pcm_arrangement,2/n-Hexacosane (C26)/single-layer,0.003147063804139094,1
+solar_fraction,regime_pcm_arrangement,2/n-Hexacosane (C26)/staggered,0.0006713649952226897,1
+solar_fraction,regime_pcm_arrangement,2/n-Pentacosane (C25)/radial,0.0018402563737164312,1
+solar_fraction,regime_pcm_arrangement,2/n-Pentacosane (C25)/single-layer,0.00012818214972054598,1
+solar_fraction,regime_pcm_arrangement,2/n-Pentacosane (C25)/staggered,0.00011507028229651439,1
+unmet_energy_kWh,regime,0,3.2896619153164135,9
+unmet_energy_kWh,regime,1,0.613755076590198,9
+unmet_energy_kWh,regime,2,2.038349689461193,9
+unmet_energy_kWh,pcm,PureTemp 58,1.7623713342735527,3
+unmet_energy_kWh,pcm,RT57HC,0.7909997870088622,9
+unmet_energy_kWh,pcm,n-Hexacosane (C26),3.5573096817189103,9
+unmet_energy_kWh,pcm,n-Pentacosane (C25),1.5090001518232725,6
+unmet_energy_kWh,arrangement,radial,1.9242235531855714,9
+unmet_energy_kWh,arrangement,single-layer,1.7214739078166683,9
+unmet_energy_kWh,arrangement,staggered,2.296069220365565,9
+unmet_energy_kWh,regime_pcm_arrangement,0/PureTemp 58/radial,0.21348889903117652,1
+unmet_energy_kWh,regime_pcm_arrangement,0/PureTemp 58/single-layer,4.842987600864262,1
+unmet_energy_kWh,regime_pcm_arrangement,0/PureTemp 58/staggered,0.23063750292521945,1
+unmet_energy_kWh,regime_pcm_arrangement,0/RT57HC/radial,0.0718959996436297,1
+unmet_energy_kWh,regime_pcm_arrangement,0/RT57HC/single-layer,0.1200135299275189,1
+unmet_energy_kWh,regime_pcm_arrangement,0/RT57HC/staggered,3.3649655936028466,1
+unmet_energy_kWh,regime_pcm_arrangement,0/n-Hexacosane (C26)/radial,8.483975398849566,1
+unmet_energy_kWh,regime_pcm_arrangement,0/n-Hexacosane (C26)/single-layer,1.7260732312793152,1
+unmet_energy_kWh,regime_pcm_arrangement,0/n-Hexacosane (C26)/staggered,10.552919481724189,1
+unmet_energy_kWh,regime_pcm_arrangement,1/RT57HC/radial,0.2562347793923436,1
+unmet_energy_kWh,regime_pcm_arrangement,1/RT57HC/single-layer,0.35261310274199786,1
+unmet_energy_kWh,regime_pcm_arrangement,1/RT57HC/staggered,0.5180839924612428,1
+unmet_energy_kWh,regime_pcm_arrangement,1/n-Hexacosane (C26)/radial,0.13303762383497997,1
+unmet_energy_kWh,regime_pcm_arrangement,1/n-Hexacosane (C26)/single-layer,0.17194842182539105,1
+unmet_energy_kWh,regime_pcm_arrangement,1/n-Hexacosane (C26)/staggered,0.6919087316114201,1
+unmet_energy_kWh,regime_pcm_arrangement,1/n-Pentacosane (C25)/radial,1.610681949264972,1
+unmet_energy_kWh,regime_pcm_arrangement,1/n-Pentacosane (C25)/single-layer,0.0574675253683381,1
+unmet_energy_kWh,regime_pcm_arrangement,1/n-Pentacosane (C25)/staggered,1.731819562811097,1
+unmet_energy_kWh,regime_pcm_arrangement,2/RT57HC/radial,1.3969005920413338,1
+unmet_energy_kWh,regime_pcm_arrangement,2/RT57HC/single-layer,0.7020908520689773,1
+unmet_energy_kWh,regime_pcm_arrangement,2/RT57HC/staggered,0.3361996411998689,1
+unmet_energy_kWh,regime_pcm_arrangement,2/n-Hexacosane (C26)/radial,1.0481194919973404,1
+unmet_energy_kWh,regime_pcm_arrangement,2/n-Hexacosane (C26)/single-layer,6.734076000606365,1
+unmet_energy_kWh,regime_pcm_arrangement,2/n-Hexacosane (C26)/staggered,2.473728753741625,1
+unmet_energy_kWh,regime_pcm_arrangement,2/n-Pentacosane (C25)/radial,4.103677244614801,1
+unmet_energy_kWh,regime_pcm_arrangement,2/n-Pentacosane (C25)/single-layer,0.7859949056678488,1
+unmet_energy_kWh,regime_pcm_arrangement,2/n-Pentacosane (C25)/staggered,0.7643597232125785,1
+pump_energy_kWh,regime,0,9.947130214793412e-09,9
+pump_energy_kWh,regime,1,1.2487467028769303e-08,9
+pump_energy_kWh,regime,2,7.240194214155781e-09,9
+pump_energy_kWh,pcm,PureTemp 58,1.0893394509493524e-08,3
+pump_energy_kWh,pcm,RT57HC,1.0696923296823274e-08,9
+pump_energy_kWh,pcm,n-Hexacosane (C26),8.961763193120744e-09,9
+pump_energy_kWh,pcm,n-Pentacosane (C25),9.577460196914957e-09,6
+pump_energy_kWh,arrangement,radial,7.0176846639311425e-09,9
+pump_energy_kWh,arrangement,single-layer,1.5421044056316342e-08,9
+pump_energy_kWh,arrangement,staggered,7.236062737471012e-09,9
+pump_energy_kWh,regime_pcm_arrangement,0/PureTemp 58/radial,8.922052393034587e-09,1
+pump_energy_kWh,regime_pcm_arrangement,0/PureTemp 58/single-layer,8.225694925808479e-09,1
+pump_energy_kWh,regime_pcm_arrangement,0/PureTemp 58/staggered,1.5532436209637508e-08,1
+pump_energy_kWh,regime_pcm_arrangement,0/RT57HC/radial,8.734104441051416e-09,1
+pump_energy_kWh,regime_pcm_arrangement,0/RT57HC/single-layer,1.009129943744689e-08,1
+pump_energy_kWh,regime_pcm_arrangement,0/RT57HC/staggered,1.8711812932895825e-08,1
+pump_energy_kWh,regime_pcm_arrangement,0/n-Hexacosane (C26)/radial,8.065790960942699e-09,1
+pump_energy_kWh,regime_pcm_arrangement,0/n-Hexacosane (C26)/single-layer,7.697079712775818e-09,1
+pump_energy_kWh,regime_pcm_arrangement,0/n-Hexacosane (C26)/staggered,3.543900919547494e-09,1
+pump_energy_kWh,regime_pcm_arrangement,1/RT57HC/radial,5.019470359047801e-09,1
+pump_energy_kWh,regime_pcm_arrangement,1/RT57HC/single-layer,3.74269452390945e-08,1
+pump_energy_kWh,regime_pcm_arrangement,1/RT57HC/staggered,7.575588634721335e-10,1
+pump_energy_kWh,regime_pcm_arrangement,1/n-Hexacosane (C26)/radial,7.132311895317642e-09,1
+pump_energy_kWh,regime_pcm_arrangement,1/n-Hexacosane (C26)/single-layer,3.8507909979412475e-08,1
+pump_energy_kWh,regime_pcm_arrangement,1/n-Hexacosane (C26)/staggered,5.1277729480054004e-09,1
+pump_energy_kWh,regime_pcm_arrangement,1/n-Pentacosane (C25)/radial,8.243999637227691e-09,1
+pump_energy_kWh,regime_pcm_arrangement,1/n-Pentacosane (C25)/single-layer,3.794329154476681e-09,1
+pump_energy_kWh,regime_pcm_arrangement,1/n-Pentacosane (C25)/staggered,6.376905182869408e-09,1
+pump_energy_kWh,regime_pcm_arrangement,2/RT57HC/radial,8.022912190704436e-09,1
+pump_energy_kWh,regime_pcm_arrangement,2/RT57HC/single-layer,1.9722568727001515e-09,1
+pump_energy_kWh,regime_pcm_arrangement,2/RT57HC/staggered,5.535949334996314e-09,1
+pump_energy_kWh,regime_pcm_arrangement,2/n-Hexacosane (C26)/radial,8.030822104512246e-09,1
+pump_energy_kWh,regime_pcm_arrangement,2/n-Hexacosane (C26)/single-layer,9.027052394084959e-10,1
+pump_energy_kWh,regime_pcm_arrangement,2/n-Hexacosane (C26)/staggered,1.6475749781644264e-09,1
+pump_energy_kWh,regime_pcm_arrangement,2/n-Pentacosane (C25)/radial,9.876979935417692e-10,1
+pump_energy_kWh,regime_pcm_arrangement,2/n-Pentacosane (C25)/single-layer,3.01711759457236e-08,1
+pump_energy_kWh,regime_pcm_arrangement,2/n-Pentacosane (C25)/staggered,7.890653267650592e-09,1
+pcm_mass_kg,regime,0,0.08295111168782282,9
+pcm_mass_kg,regime,1,0.01932520258907069,9
+pcm_mass_kg,regime,2,0.061822776813402834,9
+pcm_mass_kg,pcm,PureTemp 58,0.05747586765381948,3
+pcm_mass_kg,pcm,RT57HC,0.032367108272163,9
+pcm_mass_kg,pcm,n-Hexacosane (C26),0.10104263845656661,9
+pcm_mass_kg,pcm,n-Pentacosane (C25),0.017296082715440347,6
+pcm_mass_kg,arrangement,radial,0.028011209908233636,9
+pcm_mass_kg,arrangement,single-layer,0.07180036176227614,9
+pcm_mass_kg,arrangement,staggered,0.06428751941978655,9
+pcm_mass_kg,regime_pcm_arrangement,0/PureTemp 58/radial,3.552713678800501e-14,1
+pcm_mass_kg,regime_pcm_arrangement,0/PureTemp 58/single-layer,0.17242760296138737,1
+pcm_mass_kg,regime_pcm_arrangement,0/PureTemp 58/staggered,3.552713678800501e-14,1
+pcm_mass_kg,regime_pcm_arrangement,0/RT57HC/radial,1.865174681370263e-14,1
+pcm_mass_kg,regime_pcm_arrangement,0/RT57HC/single-layer,0.03226727182230582,1
+pcm_mass_kg,regime_pcm_arrangement,0/RT57HC/staggered,0.0940802533754257,1
+pcm_mass_kg,regime_pcm_arrangement,0/n-Hexacosane (C26)/radial,0.20315344125404905,1
+pcm_mass_kg,regime_pcm_arrangement,0/n-Hexacosane (C26)/single-layer,0.18001078818305438,1
+pcm_mass_kg,regime_pcm_arrangement,0/n-Hexacosane (C26)/staggered,0.06462064759409325,1
+pcm_mass_kg,regime_pcm_arrangement,1/RT57HC/radial,1.865174681370263e-14,1
+pcm_mass_kg,regime_pcm_arrangement,1/RT57HC/single-layer,1.865174681370263e-14,1
+pcm_mass_kg,regime_pcm_arrangement,1/RT57HC/staggered,0.019889731405207334,1
+pcm_mass_kg,regime_pcm_arrangement,1/n-Hexacosane (C26)/radial,6.217248937900877e-15,1
 pcm_mass_kg,regime_pcm_arrangement,1/n-Hexacosane (C26)/single-layer,6.217248937900877e-15,1
-pcm_mass_kg,regime_pcm_arrangement,1/n-Hexacosane (C26)/staggered,0.13594725969121413,1
-pcm_mass_kg,regime_pcm_arrangement,1/n-Pentacosane (C25)/radial,0.05321762968956523,1
+pcm_mass_kg,regime_pcm_arrangement,1/n-Hexacosane (C26)/staggered,0.05157738523841249,1
+pcm_mass_kg,regime_pcm_arrangement,1/n-Pentacosane (C25)/radial,0.04763065828532409,1
 pcm_mass_kg,regime_pcm_arrangement,1/n-Pentacosane (C25)/single-layer,2.4868995751603507e-14,1
-pcm_mass_kg,regime_pcm_arrangement,1/n-Pentacosane (C25)/staggered,0.0729300662636474,1
-pcm_mass_kg,regime_pcm_arrangement,2/RT57HC/radial,0.272374226614005,1
-pcm_mass_kg,regime_pcm_arrangement,2/RT57HC/single-layer,1.865174681370263e-14,1
-pcm_mass_kg,regime_pcm_arrangement,2/RT57HC/staggered,1.865174681370263e-14,1
-pcm_mass_kg,regime_pcm_arrangement,2/n-Hexacosane (C26)/radial,0.28643352073457207,1
-pcm_mass_kg,regime_pcm_arrangement,2/n-Hexacosane (C26)/single-layer,6.217248937900877e-15,1
-pcm_mass_kg,regime_pcm_arrangement,2/n-Hexacosane (C26)/staggered,6.217248937900877e-15,1
-pcm_mass_kg,regime_pcm_arrangement,2/n-Pentacosane (C25)/radial,0.10257402842091246,1
-pcm_mass_kg,regime_pcm_arrangement,2/n-Pentacosane (C25)/single-layer,0.04524491847846246,1
+pcm_mass_kg,regime_pcm_arrangement,1/n-Pentacosane (C25)/staggered,0.054829048372617706,1
+pcm_mass_kg,regime_pcm_arrangement,2/RT57HC/radial,1.865174681370263e-14,1
+pcm_mass_kg,regime_pcm_arrangement,2/RT57HC/single-layer,0.047444681413501666,1
+pcm_mass_kg,regime_pcm_arrangement,2/RT57HC/staggered,0.09762203643295186,1
+pcm_mass_kg,regime_pcm_arrangement,2/n-Hexacosane (C26)/radial,6.217248937900877e-15,1
+pcm_mass_kg,regime_pcm_arrangement,2/n-Hexacosane (C26)/single-layer,0.21405291148016137,1
+pcm_mass_kg,regime_pcm_arrangement,2/n-Hexacosane (C26)/staggered,0.1959685723593103,1
+pcm_mass_kg,regime_pcm_arrangement,2/n-Pentacosane (C25)/radial,0.0013167896346256702,1
+pcm_mass_kg,regime_pcm_arrangement,2/n-Pentacosane (C25)/single-layer,2.4868995751603507e-14,1
 pcm_mass_kg,regime_pcm_arrangement,2/n-Pentacosane (C25)/staggered,2.4868995751603507e-14,1

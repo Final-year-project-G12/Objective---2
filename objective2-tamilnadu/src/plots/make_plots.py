@@ -502,9 +502,14 @@ def phase6b_multifidelity(state, out_dir, speedup_report, efficiency_df):
 
 def phase7_safety_compliance(state, out_dir, optimized):
     counts = optimized.groupby(["regime_id", "meets_temperature_safety"]).size().unstack(fill_value=0)
+    # .get(True/False, 0) silently returns the bare scalar 0 (not a
+    # same-length array) when every candidate in every regime falls on one
+    # side (e.g. 2026-10-26: zero candidates meet safety anywhere) -- a bare
+    # int breaks go.Bar's y=. Fall back to an explicit zero Series instead.
+    zeros = pd.Series(0, index=counts.index)
     fig = go.Figure()
-    fig.add_trace(go.Bar(x=counts.index, y=counts.get(True, 0), name="meets safety", marker_color="#2ca02c"))
-    fig.add_trace(go.Bar(x=counts.index, y=counts.get(False, 0), name="violates safety", marker_color="#d62728"))
+    fig.add_trace(go.Bar(x=counts.index, y=counts.get(True, zeros), name="meets safety", marker_color="#2ca02c"))
+    fig.add_trace(go.Bar(x=counts.index, y=counts.get(False, zeros), name="violates safety", marker_color="#d62728"))
     fig.update_layout(barmode="stack", title=f"Phase 7 — temperature-safety compliance of confirmed candidates — {state}",
                        xaxis_title="regime_id", yaxis_title="# confirmed candidates")
     _save(fig, "phase7_safety_compliance", out_dir)

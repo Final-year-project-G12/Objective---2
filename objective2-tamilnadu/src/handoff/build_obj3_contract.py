@@ -122,22 +122,29 @@ def _action_space():
     }
 
 
-GUARD_BAND_C = 3.0   # precautionary margin below the hard safety limits (see docstring below)
+GUARD_BAND_C = 3.0   # fallback only -- real value comes from system_config["safety"]
+                      # ["shield_guard_band_C"] (added 2026-10-26), which
+                      # src/simulation/tank_model.py now actually enforces, not just
+                      # documents as a spec here.
 
 
 def _safety_shield(system_config):
     max_water = system_config["safety"]["max_water_temp_C"]
     max_pcm = system_config["safety"]["max_pcm_temp_C"]
-    water_bypass_trigger = max_water - GUARD_BAND_C
-    pcm_bypass_trigger = max_pcm - GUARD_BAND_C
+    guard_band = system_config["safety"].get("shield_guard_band_C", GUARD_BAND_C)
+    water_bypass_trigger = max_water - guard_band
+    pcm_bypass_trigger = max_pcm - guard_band
     return [
-        {"condition": f"T_water_t >= {water_bypass_trigger} C (precautionary, {GUARD_BAND_C} C below the "
+        {"condition": f"T_water_t >= {water_bypass_trigger} C (precautionary, {guard_band} C below the "
                        f"{max_water} C hard limit -- tripping exactly AT the hard limit risks overshoot from "
                        f"sensor/control lag, per Phase 8's own P(temp-safe) results showing this margin matters)",
-         "action": "force bypass, stop collector circulation"},
-        {"condition": f"T_pcm_t >= {pcm_bypass_trigger} C (PCM regimes only, {GUARD_BAND_C} C below the "
+         "action": "force bypass, stop collector circulation -- ENFORCED inside Objective 2's "
+                   "own simulator since 2026-10-26 (src/simulation/tank_model.py), not only "
+                   "specified here for Objective 3 to implement itself"},
+        {"condition": f"T_pcm_t >= {pcm_bypass_trigger} C (PCM regimes only, {guard_band} C below the "
                        f"{max_pcm} C hard limit)",
-         "action": "force bypass/discharge, stop charging"},
+         "action": "force bypass/discharge, stop charging -- ENFORCED inside Objective 2's own "
+                   "simulator since 2026-10-26 (src/simulation/tank_model.py)"},
         {"condition": "dp_t or estimated pressure > max_pressure_bar", "action": "force bypass, reduce flow to minimum"},
         {"condition": "commanded flow outside flow_envelope_kg_s", "action": "clip to nearest bound before executing"},
         {"condition": "dry-run (pump commanded on, flow sensor reads ~0)", "action": "stop pump, raise fault"},
@@ -203,8 +210,9 @@ def _reward_function_spec(system_config, deployable) -> dict:
     what a retune should look like."""
     max_water = system_config["safety"]["max_water_temp_C"]
     max_pcm = system_config["safety"]["max_pcm_temp_C"]
-    water_trigger = max_water - GUARD_BAND_C
-    pcm_trigger = max_pcm - GUARD_BAND_C
+    guard_band = system_config["safety"].get("shield_guard_band_C", GUARD_BAND_C)
+    water_trigger = max_water - guard_band
+    pcm_trigger = max_pcm - guard_band
 
     q_ref = float(deployable["sim_useful_energy_kWh"].mean()) / 8760.0
     unmet_ref = max(float(deployable["sim_unmet_energy_kWh"].mean()) / 8760.0, 1e-6)
@@ -260,7 +268,7 @@ def _reward_function_spec(system_config, deployable) -> dict:
         "penalty_term_definitions": {
             "Penalty_safety_t": f"1.0 if T_water_t >= {water_trigger} C OR (PCM regime) "
                                  f"T_pcm_t >= {pcm_trigger} C, else 0.0 -- the SAME "
-                                 f"{GUARD_BAND_C} C guard-band trigger as this contract's "
+                                 f"{guard_band} C guard-band trigger as this contract's "
                                  "safety_shield above, so the reward penalizes the policy for "
                                  "approaching the limit, not only for a hard violation the "
                                  "shield would already have blocked from occurring.",

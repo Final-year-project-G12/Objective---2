@@ -16,44 +16,44 @@ Simulator version: `sim_v2_tamilnadu` (2026-09-17 — arrangement restored + fre
 - Demand scenario: 300 L/day canonical dual-peak draw (`data/demand/demand_profile_tamilnadu.csv`)
 
 ### PCM shortlist (Objective 1's actual Top-3 MCDM consensus shortlist for this regime — Objective 2 searches geometry/arrangement/flow for these candidates only; see docs_objective2/18_OBJECTIVE1_SHORTLIST_RESTORED.md)
-  1. RT57HC <- SELECTED
-  2. n-Hexacosane (C26)
+  1. RT57HC
+  2. n-Hexacosane (C26) <- SELECTED
   3. PureTemp 58
 
 ### Selected design
-- PCM: **RT57HC** (Tm=56.5 C, latent heat=240.0 kJ/kg, conductivity=0.239 W/mK)
+- PCM: **n-Hexacosane (C26)** (Tm=56.5 C, latent heat=256.0 kJ/kg, conductivity=0.238 W/mK)
 - Capsule shape: sphere (frozen for all states)
 - **Selected arrangement: radial** (searched 2026-09-17 — single-layer/staggered/radial were all compared; previously frozen to staggered-only)
-- Arrangement rationale: arrangements tied within noise in this regime (margin -0.00% is inside the 0.03% surrogate-vs-sim noise band) -- arrangement not decisive here; next-best was single-layer
-- Capsule diameter: 0.0420 m (max PCM conduction distance = 0.0210 m)
-- Capsule count: 20
-- PCM mass: 0.700 kg
-- Flow rate: 0.0274 kg/s (permitted range 0.010-0.050 kg/s)
+- Arrangement rationale: arrangement radial won by -1.67% over next-best arrangement single-layer (surrogate-vs-sim noise band: 0.40%)
+- Capsule diameter: 0.0722 m (max PCM conduction distance = 0.0361 m)
+- Capsule count: 32
+- PCM mass: 4.859 kg
+- Flow rate: 0.0207 kg/s (permitted range 0.010-0.050 kg/s)
 
 ### Performance (simulator-confirmed, sim_v2_tamilnadu)
-- Useful annual energy: 1756.3 kWh/year
-- Solar fraction: 56.09%
-- Delivery-temperature hours (>= 45 C): 4606
-- Unmet energy: 927.1 kWh/year
-- Pump energy: 0.0002 Wh/year
-- Constraint margin (temperature): -6.86 C below the tightest safety limit
+- Useful annual energy: 1668.7 kWh/year
+- Solar fraction: 65.23%
+- Delivery-temperature hours (>= 45 C): 3166
+- Unmet energy: 734.2 kWh/year
+- Pump energy: 0.0001 Wh/year
+- Constraint margin (temperature): 2.70 C below the tightest safety limit
 
 ### Robustness (120 Monte Carlo draws — PCM latent heat, two-level weather noise [annual scale/offset + per-hour jitter], demand volume/timing, mains temperature)
 - P(meets annual demand, solar_fraction>=50%): 100.0%
 - P(meets delivery temperature, solar_fraction>=45%): 100.0%
-- P(any safety-temperature violation): 100.0%
-- P(exceeds max safe temperature limit): 100.0%
-- Useful energy 5th-50th-95th percentile: [1662.7, 1755.5, 1874.0] kWh
-- Solar fraction 5th-95th percentile: [51.2%, 66.1%]
-- Max water temperature 95th percentile: 79.6 C
-- **Framework rule (P(demand)>=75% and P(temp-safe)>=95%): NOT ROBUST BY THE FRAMEWORK RULE (report as caveat, not hidden)**
+- P(any safety-temperature violation): 0.0%
+- P(exceeds max safe temperature limit): 0.0%
+- Useful energy 5th-50th-95th percentile: [1536.5, 1659.4, 1790.3] kWh
+- Solar fraction 5th-95th percentile: [57.1%, 72.3%]
+- Max water temperature 95th percentile: 62.5 C
+- **Framework rule (P(demand)>=75% and P(temp-safe)>=95%): ROBUST**
 
 ### Surrogate QA
-- Hold-out RMSE (useful_energy_kWh, ExtraTrees, all regimes pooled): 0.726 kWh
-- Surrogate-vs-simulator error for this selected design: 0.017%
+- Hold-out RMSE (useful_energy_kWh, ExtraTrees, all regimes pooled): 4.052 kWh
+- Surrogate-vs-simulator error for this selected design: 0.496%
 
 ### Decision
-- This design reached the regime's own best useful-energy value (1756.4 kWh) outright.
+- This design (1668.7 kWh) is 1.84% below the regime's best-found candidate (1700.0 kWh, a different design within the selection rule's pre-declared tolerance band) — it was picked by the tie-break (safety first, then pump energy, then PCM mass, then capsule count) among candidates already within tolerance of the best, not because it had the highest useful energy in the regime.
 - Selection-rule pool size (candidates within 5% of best): 60
 
 ### Caveats
@@ -62,7 +62,7 @@ Simulator version: `sim_v2_tamilnadu` (2026-09-17 — arrangement restored + fre
 - Liquid natural convection inside the capsule is not resolved -- a fixed x2 effective-conductivity enhancement factor is assumed once liquid fraction >=50%.
 - No auxiliary/backup heater modeled -- solar fraction here is the fraction of ideal 45 C demand met by solar+PCM alone, stricter than a real installed system with backup heating.
 - No active high-temperature safety shield/bypass modeled -- see the robustness section's temperature-violation probability above.
-- RT57HC property provenance: check `any_property_imputed` in `data/objective1/pcm_database_tamilnadu.csv` for which fields are manufacturer-measured vs MICE/RF-imputed.
+- n-Hexacosane (C26) property provenance: check `any_property_imputed` in `data/objective1/pcm_database_tamilnadu.csv` for which fields are manufacturer-measured vs MICE/RF-imputed.
 
 
 ---
@@ -89,37 +89,37 @@ Simulator version: `sim_v2_tamilnadu` (2026-09-17 — arrangement restored + fre
 ### Selected design
 - PCM: **n-Hexacosane (C26)** (Tm=56.5 C, latent heat=256.0 kJ/kg, conductivity=0.238 W/mK)
 - Capsule shape: sphere (frozen for all states)
-- **Selected arrangement: single-layer** (searched 2026-09-17 — single-layer/staggered/radial were all compared; previously frozen to staggered-only)
-- Arrangement rationale: only arrangement=single-layer was simulator-confirmed for this regime/PCM pool -- no other arrangement to compare.
-- Capsule diameter: 0.0440 m (max PCM conduction distance = 0.0220 m)
-- Capsule count: 26
-- PCM mass: 0.895 kg
-- Flow rate: 0.0219 kg/s (permitted range 0.010-0.050 kg/s)
+- **Selected arrangement: radial** (searched 2026-09-17 — single-layer/staggered/radial were all compared; previously frozen to staggered-only)
+- Arrangement rationale: arrangement radial won by -1.17% over next-best arrangement single-layer (surrogate-vs-sim noise band: 0.40%)
+- Capsule diameter: 0.0753 m (max PCM conduction distance = 0.0377 m)
+- Capsule count: 33
+- PCM mass: 5.682 kg
+- Flow rate: 0.0108 kg/s (permitted range 0.010-0.050 kg/s)
 
 ### Performance (simulator-confirmed, sim_v2_tamilnadu)
-- Useful annual energy: 1623.2 kWh/year
-- Solar fraction: 50.86%
-- Delivery-temperature hours (>= 45 C): 3394
-- Unmet energy: 1319.5 kWh/year
-- Pump energy: 0.0001 Wh/year
-- Constraint margin (temperature): 0.12 C below the tightest safety limit
+- Useful annual energy: 1763.4 kWh/year
+- Solar fraction: 57.77%
+- Delivery-temperature hours (>= 45 C): 2820
+- Unmet energy: 1133.9 kWh/year
+- Pump energy: 0.0000 Wh/year
+- Constraint margin (temperature): 3.06 C below the tightest safety limit
 
 ### Robustness (120 Monte Carlo draws — PCM latent heat, two-level weather noise [annual scale/offset + per-hour jitter], demand volume/timing, mains temperature)
-- P(meets annual demand, solar_fraction>=50%): 71.7%
-- P(meets delivery temperature, solar_fraction>=45%): 99.2%
-- P(any safety-temperature violation): 80.8%
-- P(exceeds max safe temperature limit): 80.8%
-- Useful energy 5th-50th-95th percentile: [1524.6, 1632.0, 1732.4] kWh
-- Solar fraction 5th-95th percentile: [47.1%, 60.5%]
-- Max water temperature 95th percentile: 75.7 C
-- **Framework rule (P(demand)>=75% and P(temp-safe)>=95%): NOT ROBUST BY THE FRAMEWORK RULE (report as caveat, not hidden)**
+- P(meets annual demand, solar_fraction>=50%): 94.2%
+- P(meets delivery temperature, solar_fraction>=45%): 100.0%
+- P(any safety-temperature violation): 0.0%
+- P(exceeds max safe temperature limit): 0.0%
+- Useful energy 5th-50th-95th percentile: [1622.6, 1760.7, 1876.2] kWh
+- Solar fraction 5th-95th percentile: [49.8%, 65.5%]
+- Max water temperature 95th percentile: 62.3 C
+- **Framework rule (P(demand)>=75% and P(temp-safe)>=95%): ROBUST**
 
 ### Surrogate QA
-- Hold-out RMSE (useful_energy_kWh, ExtraTrees, all regimes pooled): 0.726 kWh
-- Surrogate-vs-simulator error for this selected design: 0.012%
+- Hold-out RMSE (useful_energy_kWh, ExtraTrees, all regimes pooled): 4.052 kWh
+- Surrogate-vs-simulator error for this selected design: 0.076%
 
 ### Decision
-- This design (1623.2 kWh) is 0.12% below the regime's best-found candidate (1625.2 kWh, a different design within the selection rule's pre-declared tolerance band) — it was picked by the tie-break (safety first, then pump energy, then PCM mass, then capsule count) among candidates already within tolerance of the best, not because it had the highest useful energy in the regime.
+- This design (1763.4 kWh) is 2.13% below the regime's best-found candidate (1801.8 kWh, a different design within the selection rule's pre-declared tolerance band) — it was picked by the tie-break (safety first, then pump energy, then PCM mass, then capsule count) among candidates already within tolerance of the best, not because it had the highest useful energy in the regime.
 - Selection-rule pool size (candidates within 5% of best): 60
 
 ### Caveats
@@ -156,36 +156,36 @@ Simulator version: `sim_v2_tamilnadu` (2026-09-17 — arrangement restored + fre
 - PCM: **n-Pentacosane (C25)** (Tm=54.0 C, latent heat=238.0 kJ/kg, conductivity=0.239 W/mK)
 - Capsule shape: sphere (frozen for all states)
 - **Selected arrangement: single-layer** (searched 2026-09-17 — single-layer/staggered/radial were all compared; previously frozen to staggered-only)
-- Arrangement rationale: arrangements tied within noise in this regime (margin -0.00% is inside the 0.03% surrogate-vs-sim noise band) -- arrangement not decisive here; next-best was radial
-- Capsule diameter: 0.0459 m (max PCM conduction distance = 0.0230 m)
-- Capsule count: 10
-- PCM mass: 0.406 kg
-- Flow rate: 0.0119 kg/s (permitted range 0.010-0.050 kg/s)
+- Arrangement rationale: arrangements tied within noise in this regime (margin -0.13% is inside the 0.40% surrogate-vs-sim noise band) -- arrangement not decisive here; next-best was radial
+- Capsule diameter: 0.0798 m (max PCM conduction distance = 0.0399 m)
+- Capsule count: 35
+- PCM mass: 7.449 kg
+- Flow rate: 0.0237 kg/s (permitted range 0.010-0.050 kg/s)
 
 ### Performance (simulator-confirmed, sim_v2_tamilnadu)
-- Useful annual energy: 1634.0 kWh/year
-- Solar fraction: 53.41%
-- Delivery-temperature hours (>= 45 C): 4085
-- Unmet energy: 1025.1 kWh/year
-- Pump energy: 0.0000 Wh/year
-- Constraint margin (temperature): -6.29 C below the tightest safety limit
+- Useful annual energy: 1679.4 kWh/year
+- Solar fraction: 64.66%
+- Delivery-temperature hours (>= 45 C): 3074
+- Unmet energy: 777.5 kWh/year
+- Pump energy: 0.0001 Wh/year
+- Constraint margin (temperature): 2.71 C below the tightest safety limit
 
 ### Robustness (120 Monte Carlo draws — PCM latent heat, two-level weather noise [annual scale/offset + per-hour jitter], demand volume/timing, mains temperature)
-- P(meets annual demand, solar_fraction>=50%): 95.0%
+- P(meets annual demand, solar_fraction>=50%): 100.0%
 - P(meets delivery temperature, solar_fraction>=45%): 100.0%
-- P(any safety-temperature violation): 100.0%
-- P(exceeds max safe temperature limit): 100.0%
-- Useful energy 5th-50th-95th percentile: [1516.8, 1628.1, 1726.0] kWh
-- Solar fraction 5th-95th percentile: [50.1%, 63.1%]
-- Max water temperature 95th percentile: 76.4 C
-- **Framework rule (P(demand)>=75% and P(temp-safe)>=95%): NOT ROBUST BY THE FRAMEWORK RULE (report as caveat, not hidden)**
+- P(any safety-temperature violation): 0.0%
+- P(exceeds max safe temperature limit): 0.0%
+- Useful energy 5th-50th-95th percentile: [1499.3, 1650.8, 1762.7] kWh
+- Solar fraction 5th-95th percentile: [56.4%, 72.8%]
+- Max water temperature 95th percentile: 62.6 C
+- **Framework rule (P(demand)>=75% and P(temp-safe)>=95%): ROBUST**
 
 ### Surrogate QA
-- Hold-out RMSE (useful_energy_kWh, ExtraTrees, all regimes pooled): 0.726 kWh
-- Surrogate-vs-simulator error for this selected design: 0.034%
+- Hold-out RMSE (useful_energy_kWh, ExtraTrees, all regimes pooled): 4.052 kWh
+- Surrogate-vs-simulator error for this selected design: 1.276%
 
 ### Decision
-- This design (1634.0 kWh) is 0.02% below the regime's best-found candidate (1634.3 kWh, a different design within the selection rule's pre-declared tolerance band) — it was picked by the tie-break (safety first, then pump energy, then PCM mass, then capsule count) among candidates already within tolerance of the best, not because it had the highest useful energy in the regime.
+- This design (1679.4 kWh) is 0.13% below the regime's best-found candidate (1681.5 kWh, a different design within the selection rule's pre-declared tolerance band) — it was picked by the tie-break (safety first, then pump energy, then PCM mass, then capsule count) among candidates already within tolerance of the best, not because it had the highest useful energy in the regime.
 - Selection-rule pool size (candidates within 5% of best): 60
 
 ### Caveats

@@ -57,7 +57,7 @@ Ikram Hossain, Mohamed Aly Saad Aly, Md Zaved Hossain Khan, et al. 2023.
 Energy Utilization: A Comprehensive Review." Solar Energy 264: 111998.
 https://www.sciencedirect.com/science/article/pii/S0038092X23006321
 **Used for**: general SWH system framing referenced in
-`00_MASTER_OVERVIEW.md`'s background — the same "storage-to-demand ratio
+`history/00_MASTER_OVERVIEW.md`'s background — the same "storage-to-demand ratio
 drives solar fraction" pattern this project's Gate 4 caveat (no auxiliary
 heater, smaller ratio than benchmark rigs) relies on.
 
@@ -178,7 +178,7 @@ Artificial Intelligence in Optimizing Thermal Energy Systems." Applied
 Energy 400: 126576.
 https://www.sciencedirect.com/science/article/pii/S0306261925013066
 **Used for**: general AI-for-thermal-systems framing referenced in
-`00_MASTER_OVERVIEW.md`.
+`history/00_MASTER_OVERVIEW.md`.
 
 ### Nemes2025
 Nemés, Artur et al. 2025. "A Review of Artificial Intelligence to
@@ -194,7 +194,7 @@ Heating Systems: A Review of Global Research Trends, Advances, and
 Future Perspectives." Energy Conversion and Management: X 28 (October):
 101378.
 https://www.sciencedirect.com/science/article/pii/S2590174525005100
-**Used for**: general AI-for-SWH review background, `00_MASTER_OVERVIEW.md`.
+**Used for**: general AI-for-SWH review background, `history/00_MASTER_OVERVIEW.md`.
 
 ---
 

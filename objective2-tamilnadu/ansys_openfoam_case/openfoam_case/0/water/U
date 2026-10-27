@@ -1,0 +1,47 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volVectorField;
+    object      U;
+}
+
+// Inlet velocity derived from real Regime-0 design data (deployable_design_per_regime.csv):
+//   total mass flow 0.02736 kg/s / 20 capsules = 0.001368 kg/s per unit cell
+//   water at ~70 C, rho=977 kg/m3 -> Q = 1.400e-6 m^3/s
+//   unit-cell inlet area = pi * R_OUTER^2 = pi * (1.7*0.021022)^2 = 4.012e-3 m^2
+//   U = Q / area = 3.49e-4 m/s
+dimensions      [0 1 -1 0 0 0 0];
+
+internalField   uniform (0 0 0);
+
+boundaryField
+{
+    inlet
+    {
+        type            fixedValue;
+        value           uniform (3.49e-4 0 0);
+    }
+    outlet
+    {
+        type            inletOutlet;
+        inletValue      uniform (0 0 0);
+        value           uniform (0 0 0);
+    }
+    wall_outer
+    {
+        type            noSlip;
+    }
+    axis
+    {
+        type            symmetryPlane;
+    }
+    frontAndBack
+    {
+        type            empty;
+    }
+    water_to_capsule
+    {
+        type            noSlip;
+    }
+}

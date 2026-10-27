@@ -1,0 +1,12 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       uniformDimensionedVectorField;
+    object      g;
+}
+
+// Gravity set to zero: this basic demo models forced convection from the
+// pump-driven inlet flow only (no buoyancy-driven natural convection).
+dimensions      [0 1 -2 0 0 0 0];
+value           (0 0 0);

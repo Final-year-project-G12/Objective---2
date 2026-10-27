@@ -1,10 +1,11 @@
 # ============================================================
-# Oversize intermediates (exceed GitHub's 50 MB recommendation)
+# Files above 50 MB (exceed GitHub's 50 MB recommendation)
 # Regenerate locally with the Objective-1/Objective-2 pipeline scripts.
 # ============================================================
 
 data/objective1/daily_aggregates_tamilnadu.csv
 data/objective1/suntimes.csv
+ansys_openfoam_case/openfoam_case/run.log
 
 # ============================================================
 # Caches / temp
@@ -17,3 +18,10 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 *.log
+
+# ============================================================
+# Local editor/assistant settings
+# ============================================================
+
+.claude/
+CLAUDE.md

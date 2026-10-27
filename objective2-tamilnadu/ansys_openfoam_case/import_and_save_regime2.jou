@@ -1,0 +1,8 @@
+; Regime 2 / n-Pentacosane (C25) -- planar mode (confirmed deliverable scope).
+
+/file/import/cgns/mesh
+regime2_capsule.cgns
+
+/file/write-case "regime2_mesh_only.cas.h5"
+exit
+yes

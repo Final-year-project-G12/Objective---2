@@ -1,4 +1,18 @@
-# How to Run — Phases 1–8 (Tamil Nadu) — Objective 2 complete, 2026-09-17
+# How to Run — Phases 1–8 + CFD (Tamil Nadu) — updated 2026-10-27
+
+**2026-10-26/27 updates**, in order: (1) a demand-timing bug
+(`tank_model.py` indexed the local-clock-hour demand profile by the
+weather file's raw UTC hour) found and fixed; (2) a real safety shield
+added to `tank_model.py` itself (`configs/system_config_shared.yaml`'s
+`safety.shield_enabled`/`shield_guard_band_C`); (3) the tank/collector
+resized from an undersized 50L/1.5m² to a standard domestic 100L/2.5m²
+(`configs/system_config_shared.yaml`'s `tank.volume_L`/
+`collector.area_m2`). The exact same commands below still apply after
+each of these — only the config file's frozen values changed, not any
+CLI flag or stage name. Treat `RESULTS.md` as the current numeric source
+of truth and this file as the command reference; the specific numbers
+quoted per-phase below are from the 2026-09-17 pre-fix batch and are
+stale pending a full rewrite of this file's per-phase example output.
 
 ## Do you need MATLAB or any other simulator? No.
 
@@ -180,7 +194,7 @@ Expected result: mean surrogate-vs-simulator error **0.05%** (0/240 large
 errors) — **radial arrangement won in all 3 regimes**, honestly qualified:
 regimes 0/1 "tied within noise" against single-layer (margin inside the
 0.05% noise band), regime 2 had no other arrangement confirmed to compare
-against at all. See `docs_objective2/tamilnadu_phase_docs/
+against at all. See `docs_objective2/history/tamilnadu_phase_docs/
 07_PROMPT_PHASE7_OPTIMIZE_TAMILNADU.md` for the full table. 2 of 3 regimes
 have **negative** nominal constraint margin (-6.93°C, -6.05°C) — flagged
 in `deployment_note`, not hidden; regime 1 is barely positive (+0.02°C).
@@ -213,7 +227,7 @@ Expected result: P(meets delivery temperature) = 100% for all 3 regimes;
 P(meets annual demand) = 100%/77%/95%; **P(temperature-safe) = 0%/18%/0%**
 — every regime fails the 95% safety bar, directly following from Phase
 7's negative/marginal nominal margins. Reported plainly, not hidden — see
-`docs_objective2/tamilnadu_phase_docs/08_PROMPT_PHASE8_HANDOFF_TAMILNADU.md`.
+`docs_objective2/history/tamilnadu_phase_docs/08_PROMPT_PHASE8_HANDOFF_TAMILNADU.md`.
 
 ## 9. Phase 8 — recommendation cards + Objective 3 hand-off contract
 
@@ -262,10 +276,127 @@ of this batch (see §7b) — it is no longer silently rendered from stale
 data.
 
 Runtime: ~1-2 minutes for kaleido's PNG export (18 figures... 17, since
-Phase 6b is skipped). `docs_objective2/plots/*.md` (per-figure
+Phase 6b is skipped). `docs_objective2/history/plots_narrative/*.md` (per-figure
 descriptions) still describe the OLD plot set's specific numbers/findings
 and have not been rewritten — the images themselves are current, but
 don't cite the *prose* in those docs for current numbers yet.
+
+## 11. CFD cross-verification — ANSYS Fluent
+
+This is an independent physics sanity check of the Phase 7 deployable
+designs above — it does not feed back into the optimizer and never
+changes the capsule count/diameter/flow rate Phases 5–8 already picked.
+Full methodology and findings: `CFD_VERIFICATION.md`. Working directory:
+`ansys_openfoam_case/` (run every command below from there).
+
+**Prerequisite**: ANSYS Fluent Student 2026 R1 (v26.1) and `ansys-fluent-core`
+(PyFluent) installed. Installation path on this machine:
+`C:\Program Files\ANSYS Inc\ANSYS Student\v261\fluent\ntbin\win64\fluent.exe`.
+
+### 11.1 Build the mesh (gmsh, one per regime)
+
+```
+python build_mesh_regime.py <R_CAPSULE_m> <output_basename>
+```
+`R_CAPSULE_m` = that regime's deployable `capsule_diameter_m` / 2, read
+directly from `results/tamilnadu/deployable_design_per_regime.csv` — never
+hand-typed from memory. Then convert the `.msh` to CGNS (Fluent's import
+format):
+```python
+import gmsh
+gmsh.initialize(); gmsh.open("<output_basename>.msh")
+gmsh.write("<output_basename>.cgns"); gmsh.finalize()
+```
+
+### 11.2 Import the mesh into Fluent (headless, NOT PyFluent)
+
+CGNS import through PyFluent's settings API has a real, reproducible crash
+(`CeetronSAM.dll` SIGSEGV) — route it through a plain Fluent TUI journal
+instead, run from a **local disk path** (`C:\fluent_work`, not the
+OneDrive-synced project folder — the sync latency was found to trip
+Fluent's own idle-connection timeout):
+```
+mkdir C:\fluent_work   # once
+copy <output_basename>.cgns C:\fluent_work\
+```
+Write a 4-line journal (`import_and_save_<regime>.jou`):
+```
+/file/import/cgns/mesh
+<output_basename>.cgns
+
+/file/write-case "<output_basename>_mesh_only.cas.h5"
+exit
+yes
+```
+Then, from `C:\fluent_work`:
+```
+"C:\Program Files\ANSYS Inc\ANSYS Student\v261\fluent\ntbin\win64\fluent.exe" 2ddp -g -i import_and_save_<regime>.jou
+```
+Copy the resulting `<output_basename>_mesh_only.cas.h5` back into
+`ansys_openfoam_case/`.
+
+### 11.3 Verify zone identities (ground truth, never assumed)
+
+Fluent's CGNS import assigns generic zone names (`3_s_1`, `2_l_7`, etc.)
+that are **not guaranteed to repeat** across meshes, even topologically
+identical ones re-run with a different radius — confirmed to differ in
+practice between some of this project's own mesh instances. Always check
+before writing boundary conditions:
+```
+python verify_zones.py <output_basename>_mesh_only.cas.h5
+```
+Reads the case file's own HDF5 face/cell adjacency data directly (no
+Fluent launch needed) and prints which zone touches which — identify
+water (the larger cell zone, touches wall/inlet/outlet), capsule (the
+cell zone that only touches its own axis segment), inlet/outlet (the
+zones whose face centroid `y_range` spans most of the annulus, not flat at
+`y=0`), the two water-side axis segments (flat at `y=0`, `x_mean` between
+inlet/outlet and the capsule), wall_outer (`y_range` pinned at the mesh's
+outer radius), and the capsule's own axis segment.
+
+### 11.4 Run the solve (PyFluent, material + BCs + transient + solve + save)
+
+```
+python pyfluent_v2_setup.py <mesh_only.cas.h5> <inlet_velocity_m_s> <dt_s> <n_steps> <save_basename>
+```
+`inlet_velocity_m_s` = `(flow_rate_kg_s / n_capsule) / 977 / (pi * (1.7 *
+R_CAPSULE)**2)` — the per-capsule unit-cell velocity, computed from that
+regime's real deployable flow rate and capsule count, never assumed.
+`n_steps * dt_s` should cover at least the advection travel time
+`(L_AXIAL/2 - R_CAPSULE) / inlet_velocity` so the hot-water front actually
+reaches the capsule before the run ends — a regime with a low real
+optimizer-selected flow rate needs a longer simulated window, which is
+physically correct, not a bug. The script hardcodes the proven stability
+fixes (planar 2D, 10 K-widened mushy zone, `prevent_reverse_flow` on the
+outlet, 343.15 K inlet/backflow temperature) — edit the material block
+inside it directly if a future regime uses a different PCM.
+
+### 11.5 Query results
+
+```
+python pyfluent_query_v2.py <save_basename>
+```
+Prints the capsule zone's volume-averaged liquid fraction and
+max/min temperature — the real, independently-computed numbers that go in
+`CFD_VERIFICATION.md`, never hand-estimated.
+
+### 11.6 Inspecting results in the GUI
+
+See `FLUENT_GUI_SETUP_CHECKLIST.md` to open a saved `.cas.h5`/`.dat.h5`
+pair in the Fluent GUI and view temperature/liquid-fraction contours
+directly, rather than only the volume-averaged numbers above.
+
+## OpenFOAM
+
+Regime 0 only, heating/conduction only (no phase-change model — see
+`CFD_VERIFICATION.md`'s OpenFOAM section for why). Case lives in
+`ansys_openfoam_case/openfoam_case/`; run with `chtMultiRegionFoam` from
+inside that folder (`blockMesh`/`gmshToFoam` already applied — rebuild
+only if the mesh changes). Regimes 1 and 2 were never attempted in
+OpenFOAM, and no OpenFOAM run has been repeated against the corrected
+(post-2026-10-26 demand-timing-fix) designs — ANSYS Fluent is this
+project's primary CFD cross-check; OpenFOAM is kept only as the original
+Regime-0 sensible-heating reference.
 
 ## Adding a second state later (Rajasthan / Assam / Uttarakhand)
 
