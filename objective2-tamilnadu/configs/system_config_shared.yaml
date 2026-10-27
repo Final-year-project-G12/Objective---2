@@ -12,17 +12,33 @@
 # state must re-run from DOE onward (framework doc, Phase 0 gate).
 # ============================================================================
 
-version: "config_v1.0_2026-09-05"
+version: "config_v2.0_2026-10-26"
 
+# --- 2026-10-26 resizing (supersedes v1.0's 50L/1.5m2) ---
+# The original 50L/1.5m2 pairing (33.3 L/m2) sits below IS 12976:2023's
+# 40-100 L/m2 guidance band and could not nominally reach a 50%
+# solar-fraction demand bar in any regime -- confirmed directly (a
+# PLAIN tank, zero PCM, under the same safety shield, reached only 37.1%
+# nominal solar fraction in Regime 1; raising the shield's guard band
+# down to 0.5C, effectively no margin at all, only moved this to 37.7%).
+# Tested a volume/area sweep (same ratio, same shield) before picking a
+# value: 75L/2.0m2 ~50.1%, 100L/2.5m2 ~61.1%, 150L/3.0m2 ~75.6% nominal.
+# 100L/2.5m2 (40 L/m2, at the low/conservative end of the IS 12976 band)
+# was chosen -- approved by the user 2026-10-26 -- as the smallest
+# resize giving real Monte Carlo margin above the 50%/75% bars, not just
+# a nominal pass. This is now the official size for every regime/state,
+# not a labelled what-if: re-run Phases 4-8 after this change (Phase 0
+# gate) -- Phase 2 (capsule/packing geometry) is tank-size-agnostic and
+# does not need re-running.
 collector:
   type: flat_plate
-  area_m2: 1.5                     # domestic SWH baseline [Singh et al. 2025, §3]
+  area_m2: 2.5                     # resized 2026-10-26 (was 1.5) -- see note above
   fr_tau_alpha: 0.75                # F_R*(τα), combined optical/removal efficiency [typical FPC]
   fr_ul_W_m2K: 4.5                  # F_R*U_L, typical flat-plate loss coefficient (3.5-6 W/m2K range)
   min_irradiance_cutoff_Wm2: 10.0   # below this, pump assumed off -> zero collector coupling (Gate 2)
 
 tank:
-  volume_L: 50.0                   # domestic standard [Chen et al. 2025, Table 1]
+  volume_L: 100.0                  # resized 2026-10-26 (was 50.0) -- see note above
   height_to_diameter_ratio: 2.0     # standard vertical domestic tank proportion (assumption)
   insulation_m: 0.05                # 5 cm foam
   U_tank_W_m2K: 0.8                 # tank-wall U-value [framework doc §3.1]
@@ -49,6 +65,20 @@ safety:
   max_water_temp_C: 75.0             # scald prevention
   max_pcm_temp_C: 65.0                # material-stability limit (Rubitherm datasheets)
   max_pressure_bar: 3.5
+  # --- added 2026-10-26, does not change any value above ---
+  # Phase 8 robustness showed every regime's nominal design running past
+  # both limits above with zero active control (negative constraint
+  # margin in every regime). This was previously only a SPEC handed to
+  # Objective 3 (src/handoff/build_obj3_contract.py's _safety_shield());
+  # it is now also enforced inside Objective 2's own simulator
+  # (src/simulation/tank_model.py), so Phase 7/8's own numbers reflect a
+  # system that cannot silently overheat, not just a spec saying it
+  # shouldn't. shield_enabled: false reproduces the old (unsafe) behavior
+  # for comparison -- never set false for a number reported as "the"
+  # deployable design.
+  shield_enabled: true
+  shield_guard_band_C: 3.0            # trip 3C below each hard limit (72C water / 62C PCM) --
+                                        # precautionary margin against sensor/control lag overshoot
 
 delivery:
   target_temp_C: 45.0                # usable hot water

@@ -104,14 +104,11 @@ data/objective1/*/suntimes.csv
 data/objective1/rajasthan/daily_aggregates_rajasthan.csv
 data/objective1/tamil_nadu/daily_aggregates_tamilnadu.csv
 
-# Objective 2 regeneratable outputs — these are what was blowing up .git size
-# and causing push timeouts (53 tracked interactive HTML files alone, ~4-5MB
-# each; one 14MB models.pkl). All are reproducible via `pipeline.py --stage
-# plots` / `--stage surrogate` and don't belong in source control.
-**/results/plots/interactive/*.html
-**/results/**/surrogate/models.pkl
-**/results/*_surrogate_models.pkl
-*.pkl
+# Files above 50 MB (exceed GitHub's 50 MB recommendation).
+# Regenerate locally with the Objective-1/Objective-2 pipeline scripts.
+objective2-tamilnadu/ansys_openfoam_case/openfoam_case/run.log
+objective2-tamilnadu/data/objective1/daily_aggregates_tamilnadu.csv
+objective2-tamilnadu/data/objective1/suntimes.csv
 
 # Accidental output path from an unexpanded `--state` CLI placeholder
 # (objective2-tamilnadu/results/--state/) — a script bug, not real data.
@@ -158,8 +155,9 @@ backups/
 *.tmp
 *.temp
 
-# Claude / AI coding assistant temporary files
+# Local editor/assistant settings
 .claude/
+CLAUDE.md
 
 data/objective1/rajasthan/objective1/daily_aggregates_rajasthan.csv
 data/objective1/rajasthan/objective1/suntimes.csv

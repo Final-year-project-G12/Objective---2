@@ -1,0 +1,8 @@
+; Regime 1, final (shield + resized tank) geometry -- planar mode.
+
+/file/import/cgns/mesh
+regime1_v3_capsule.cgns
+
+/file/write-case "regime1_v3_mesh_only.cas.h5"
+exit
+yes

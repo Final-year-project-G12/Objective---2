@@ -20,32 +20,32 @@
       "regime_id": 0,
       "regime_membership_rule": "GMM cluster 0 of K=3 (Objective 1, cluster_assignments_tamilnadu.csv, 2026-09-17 refresh -- was K=5 before this refresh); a new site is assigned to this regime by its max_membership_prob column",
       "selected_pcm": {
-        "pcm_id": "RT57HC",
+        "pcm_id": "n-Hexacosane (C26)",
         "Tm_C": 56.5,
-        "latent_heat_kJ_kg": 240.0,
-        "TC_W_mK": 0.239,
-        "density_solid_kg_m3": 900.0,
-        "density_liquid_kg_m3": 800.0,
-        "Cp_solid_kJ_kgK": 2.0,
-        "Cp_liquid_kJ_kgK": 2.0,
+        "latent_heat_kJ_kg": 256.0,
+        "TC_W_mK": 0.238,
+        "density_solid_kg_m3": 770.0,
+        "density_liquid_kg_m3": 770.0,
+        "Cp_solid_kJ_kgK": 2.2,
+        "Cp_liquid_kJ_kgK": 2.38,
         "any_property_imputed": true
       },
       "is_plain_tank_no_pcm": false,
       "capsule_shape": "sphere",
       "capsule_arrangement": "radial",
-      "arrangement_rationale": "arrangements tied within noise in this regime (margin -0.00% is inside the 0.03% surrogate-vs-sim noise band) -- arrangement not decisive here; next-best was single-layer",
-      "capsule_diameter_m": 0.042043793688977,
-      "max_pcm_conduction_distance_m": 0.0210218968444885,
-      "n_capsule": 20,
-      "pcm_mass_kg": 0.7004494786278717,
-      "tank_volume_L": 50.0,
+      "arrangement_rationale": "arrangement radial won by -1.67% over next-best arrangement single-layer (surrogate-vs-sim noise band: 0.40%)",
+      "capsule_diameter_m": 0.0722158151705964,
+      "max_pcm_conduction_distance_m": 0.0361079075852982,
+      "n_capsule": 32,
+      "pcm_mass_kg": 4.858881187657844,
+      "tank_volume_L": 100.0,
       "tank_insulation_m": 0.05,
       "tank_U_value_W_m2K": 0.8,
-      "collector_area_m2": 1.5,
+      "collector_area_m2": 2.5,
       "collector_fr_tau_alpha": 0.75,
       "collector_fr_ul_W_m2K": 4.5,
       "heat_exchanger": "none -- direct potable-tank encapsulation (system_config_shared.yaml, pcm_integration.mode)",
-      "nominal_flow_kg_s": 0.0273597912745455,
+      "nominal_flow_kg_s": 0.0206561407886155,
       "flow_envelope_kg_s": {
         "min": 0.01,
         "max": 0.05
@@ -58,10 +58,10 @@
       "mains_temp_est_C": 28.463,
       "validated_simulator_version": "sim_v2_tamilnadu",
       "performance_at_selection": {
-        "useful_energy_kWh": 1756.3332103159428,
-        "solar_fraction": 0.5609159159583526,
-        "unmet_energy_kWh": 927.0506970642014,
-        "constraint_margin_C": -6.855622263708497
+        "useful_energy_kWh": 1668.6523229019683,
+        "solar_fraction": 0.6522760796007463,
+        "unmet_energy_kWh": 734.1593888460076,
+        "constraint_margin_C": 2.7036628613866256
       }
     },
     {
@@ -80,20 +80,20 @@
       },
       "is_plain_tank_no_pcm": false,
       "capsule_shape": "sphere",
-      "capsule_arrangement": "single-layer",
-      "arrangement_rationale": "only arrangement=single-layer was simulator-confirmed for this regime/PCM pool -- no other arrangement to compare.",
-      "capsule_diameter_m": 0.0440384957668598,
-      "max_pcm_conduction_distance_m": 0.0220192478834299,
-      "n_capsule": 26,
-      "pcm_mass_kg": 0.8952825592800682,
-      "tank_volume_L": 50.0,
+      "capsule_arrangement": "radial",
+      "arrangement_rationale": "arrangement radial won by -1.17% over next-best arrangement single-layer (surrogate-vs-sim noise band: 0.40%)",
+      "capsule_diameter_m": 0.0753063480548141,
+      "max_pcm_conduction_distance_m": 0.03765317402740705,
+      "n_capsule": 33,
+      "pcm_mass_kg": 5.681958390099463,
+      "tank_volume_L": 100.0,
       "tank_insulation_m": 0.05,
       "tank_U_value_W_m2K": 0.8,
-      "collector_area_m2": 1.5,
+      "collector_area_m2": 2.5,
       "collector_fr_tau_alpha": 0.75,
       "collector_fr_ul_W_m2K": 4.5,
       "heat_exchanger": "none -- direct potable-tank encapsulation (system_config_shared.yaml, pcm_integration.mode)",
-      "nominal_flow_kg_s": 0.0218628966760364,
+      "nominal_flow_kg_s": 0.0108451542218442,
       "flow_envelope_kg_s": {
         "min": 0.01,
         "max": 0.05
@@ -106,10 +106,10 @@
       "mains_temp_est_C": 23.969,
       "validated_simulator_version": "sim_v2_tamilnadu",
       "performance_at_selection": {
-        "useful_energy_kWh": 1623.2152282678064,
-        "solar_fraction": 0.5086010751056365,
-        "unmet_energy_kWh": 1319.450763321879,
-        "constraint_margin_C": 0.1235868412443608
+        "useful_energy_kWh": 1763.4423319141113,
+        "solar_fraction": 0.5777174005960117,
+        "unmet_energy_kWh": 1133.8671492635383,
+        "constraint_margin_C": 3.062477497376811
       }
     },
     {
@@ -129,19 +129,19 @@
       "is_plain_tank_no_pcm": false,
       "capsule_shape": "sphere",
       "capsule_arrangement": "single-layer",
-      "arrangement_rationale": "arrangements tied within noise in this regime (margin -0.00% is inside the 0.03% surrogate-vs-sim noise band) -- arrangement not decisive here; next-best was radial",
-      "capsule_diameter_m": 0.045923615483401,
-      "max_pcm_conduction_distance_m": 0.0229618077417005,
-      "n_capsule": 10,
-      "pcm_mass_kg": 0.4061994717343265,
-      "tank_volume_L": 50.0,
+      "arrangement_rationale": "arrangements tied within noise in this regime (margin -0.13% is inside the 0.40% surrogate-vs-sim noise band) -- arrangement not decisive here; next-best was radial",
+      "capsule_diameter_m": 0.0797642366854426,
+      "max_pcm_conduction_distance_m": 0.0398821183427213,
+      "n_capsule": 35,
+      "pcm_mass_kg": 7.44944337419284,
+      "tank_volume_L": 100.0,
       "tank_insulation_m": 0.05,
       "tank_U_value_W_m2K": 0.8,
-      "collector_area_m2": 1.5,
+      "collector_area_m2": 2.5,
       "collector_fr_tau_alpha": 0.75,
       "collector_fr_ul_W_m2K": 4.5,
       "heat_exchanger": "none -- direct potable-tank encapsulation (system_config_shared.yaml, pcm_integration.mode)",
-      "nominal_flow_kg_s": 0.0118672875348801,
+      "nominal_flow_kg_s": 0.0237109987105602,
       "flow_envelope_kg_s": {
         "min": 0.01,
         "max": 0.05
@@ -154,10 +154,10 @@
       "mains_temp_est_C": 27.768,
       "validated_simulator_version": "sim_v2_tamilnadu",
       "performance_at_selection": {
-        "useful_energy_kWh": 1633.981208321207,
-        "solar_fraction": 0.5340595138149673,
-        "unmet_energy_kWh": 1025.097555344635,
-        "constraint_margin_C": -6.289485776118639
+        "useful_energy_kWh": 1679.397100390985,
+        "solar_fraction": 0.6465797082649811,
+        "unmet_energy_kWh": 777.5462485199972,
+        "constraint_margin_C": 2.705144337443471
       }
     }
   ],
@@ -282,11 +282,11 @@
   "safety_shield": [
     {
       "condition": "T_water_t >= 72.0 C (precautionary, 3.0 C below the 75.0 C hard limit -- tripping exactly AT the hard limit risks overshoot from sensor/control lag, per Phase 8's own P(temp-safe) results showing this margin matters)",
-      "action": "force bypass, stop collector circulation"
+      "action": "force bypass, stop collector circulation -- ENFORCED inside Objective 2's own simulator since 2026-10-26 (src/simulation/tank_model.py), not only specified here for Objective 3 to implement itself"
     },
     {
       "condition": "T_pcm_t >= 62.0 C (PCM regimes only, 3.0 C below the 65.0 C hard limit)",
-      "action": "force bypass/discharge, stop charging"
+      "action": "force bypass/discharge, stop charging -- ENFORCED inside Objective 2's own simulator since 2026-10-26 (src/simulation/tank_model.py)"
     },
     {
       "condition": "dp_t or estimated pressure > max_pressure_bar",
@@ -335,8 +335,8 @@
     "formula": "r_t = w1*(Q_delivered_t/Q_delivered_ref) - w2*(E_unmet_t/E_unmet_ref) - w3*(E_pump_t/E_pump_ref) - w4*Penalty_safety_t - w5*Penalty_bypass_t",
     "normalization_references": {
       "note": "each energy term is divided by a per-hour nominal reference magnitude (this state's 5 Phase-7-selected designs' own simulator-confirmed annual output / 8760h) so terms of very different natural size (kWh of heat vs. a 0/1 penalty flag) contribute comparably before weights are applied -- the same normalize-then-weight pattern used by Xu et al. (2024), \"Multi-objective deep reinforcement learning for a water heating system with solar energy and heat recovery\", Applied Energy (https://www.sciencedirect.com/science/article/abs/pii/S0360544224000677), for combining heterogeneous reward terms in a closely related system.",
-      "Q_delivered_ref_kWh_per_hour": 0.1908,
-      "E_unmet_ref_kWh_per_hour": 0.1245,
+      "Q_delivered_ref_kWh_per_hour": 0.1945,
+      "E_unmet_ref_kWh_per_hour": 0.1007,
       "E_pump_ref_kWh_per_hour": 1e-06,
       "pump_energy_note": "pump energy at this project's selected designs is ~1e-11 kWh/yr (essentially zero at these flow rates/pressure drops -- consistent with Phase 7's own finding that pump energy is negligible relative to thermal energy in this design space), so E_pump_ref falls back to the 1e-6 floor above rather than a division-by-near-zero blowup; w3's practical effect on training will be minimal until a design with non-negligible pumping cost is in play."
     },

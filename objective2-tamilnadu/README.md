@@ -1,110 +1,118 @@
-# Objective 2 — Input Data Reference
+# Objective 2 — PCM Capsule / Tank Design Optimization
 
-> For methodology, current results, and the full Phases 1-8 record, see
-> `docs_objective2/00_MASTER_OVERVIEW.md` and
-> `docs_objective2/tamilnadu_phase_docs/*.md`. This file only
-> documents the `data/` folder's file layout (still accurate as of the
-> 2026-09-17 Objective 1 refresh, with per-file notes below where a
-> filename changed).
+Determines the optimal PCM thickness, capsule arrangement, number of
+capsules, and flow rate to maximize thermal energy storage in a
+solar-water-heater tank, for each climate regime of a given state —
+using Objective 1's own shortlisted PCMs (never re-deriving material
+choice). Built as a state-agnostic pipeline: `src/` doesn't know which
+state it's running for, only `configs/states/<state>.yaml` does.
 
-This describes every file that lands in `objective2_design_optimization/data/`
-after running, **in this order**:
+**Status: complete for Tamil Nadu** — all 8 phases run, verified, and
+independently cross-checked against real CFD physics (ANSYS Fluent +
+OpenFOAM). Rajasthan, Assam, and Uttarakhand have not been started yet
+(see `docs_objective2/other_states_prompts/`).
+
+**2026-10-26/27: three real, sequential corrections** — a demand-timing
+bug fix, an actual (not just specified) safety shield, then a tank/
+collector resize from an undersized 50L/1.5m² to a standard 100L/2.5m²
+domestic pairing. **All 3 Phase 8 robustness bars (delivery, demand,
+temperature-safety) are now met in every regime** — see
+`docs_objective2/RESULTS.md` for the full account and
+`docs_objective2/TAMILNADU_REDESIGN_PLAN.md` for which algorithms this
+project uses (and why, vs. the alternatives considered). ANSYS Fluent's
+cross-check is currently stale/pending a license-error retry — Python
+results are unaffected and are the authoritative numbers.
+
+## How this fits the bigger project
+
+| Objective | What it does | Status |
+|---|---|---|
+| 1 | Climate clustering + MCDM → Top-2/3 PCM shortlist per regime | Done (Tamil Nadu) |
+| **2 (this folder)** | **PCM thickness/arrangement/count/flow optimization** | **Done (Tamil Nadu)** |
+| 3 | DRL controller for real-time charge/discharge/bypass | Not started |
+| 4 | Hardware validation against a physical lab rig | Not started |
+
+Objective 1 selects *which material*. Objective 2 selects the *physical
+hardware design* for that material. Objective 3 selects the *real-time
+action*. Each stays in its own lane — see
+`docs_objective2/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md` for the formal
+boundary and Objective 3's actual starting point.
+
+## Current result (Tamil Nadu, 3 climate regimes) — final, 2026-10-27
+
+Tank/collector: **100 L / 2.5 m²** (a standard domestic SWH size, resized
+2026-10-27 from an undersized 50 L / 1.5 m² — see `RESULTS.md`).
+
+| Regime | PCM (from Objective 1) | Capsules | Diameter | Flow rate | Arrangement | vs. plain tank |
+|---|---|---|---|---|---|---|
+| 0 | n-Hexacosane (C26) | 32 | 72.22 mm | 0.02066 kg/s | radial | −14.78% |
+| 1 | n-Hexacosane (C26) | 33 | 75.31 mm | 0.01085 kg/s | radial | −13.02% |
+| 2 | n-Pentacosane (C25) | 35 | 79.76 mm | 0.02371 kg/s | single-layer | −12.46% |
+
+These are real, trained-model outputs (DOE → surrogate → optimizer →
+simulator-confirmed) — not hand-picked, and the product of three real,
+sequential corrections: a demand-timing bug fix, an actual (not just
+specified) safety shield, then a tank/collector resize to a realistic
+domestic size. See `docs_objective2/RESULTS.md` for the full
+before/after/final progression and `docs_objective2/TAMILNADU_REDESIGN_
+PLAN.md` §5 for the complete account.
+
+**Key honest finding**: **every regime now meets all three Phase 8
+robustness bars at once** — P(meets delivery)=100%, P(meets annual
+demand)=100%/94.2%/100%, P(temperature-safe)=100%, all confirmed under
+120-draw Monte Carlo weather/demand/property uncertainty, not just
+nominally. The cost: **PCM still loses to a plain tank in every regime**
+(−12.5% to −14.8%, wider than before the resize) — a bigger tank's own
+water thermal mass buffers temperature swings well enough on its own that
+PCM's relative contribution shrinks, not grows, as the tank gets bigger.
+This is a real, disclosed finding (Gate 3's own capability check shows the
+same thing independently), not a defect. See `RESULTS.md`.
+
+## How to run it
 
 ```
-python build_input_package.py     # copies/hashes Obj1 outputs -> data/objective1/
-python build_regime_weather.py    # builds per-regime weather   -> data/weather/
-python build_demand_profile.py    # builds the canonical draw   -> data/demand/
+python build_input_package.py      # pull Objective 1's output in
+python build_regime_weather.py     # per-regime representative weather
+python build_demand_profile.py     # canonical hot-water draw profile
+python pipeline.py --state tamilnadu --stage <geometry|simulate|verify|doe|surrogate|optimize|robustness>
+```
+Full details, flags, and troubleshooting: `docs_objective2/HOW_TO_RUN.md`.
+Input `data/` folder layout: `docs_objective2/DATA_REFERENCE.md`.
+
+## Repository map
+
+```
+README.md                      <- you are here
+pipeline.py, config.py          <- state-agnostic Objective 2 pipeline
+build_*.py                      <- Objective-1-output ingestion scripts
+src/                            <- design/simulation/surrogate/robustness code
+configs/                        <- shared + per-state design bounds/config
+data/, results/                 <- inputs and outputs (see DATA_REFERENCE.md)
+ansys_openfoam_case/             <- CFD cross-verification (Fluent + OpenFOAM)
+docs_objective2/
+  RESULTS.md                    <- consolidated current results (start here)
+  TAMILNADU_REDESIGN_PLAN.md    <- Tamil Nadu/ANSYS adaptation of the
+                                    teammate's Rajasthan/OpenFOAM redesign
+                                    plan; algorithms used vs. not used
+  HOW_TO_RUN.md                 <- commands and flags (incl. ANSYS Fluent)
+  DATA_REFERENCE.md             <- data/ folder file-by-file reference
+  CFD_VERIFICATION.md           <- Fluent/OpenFOAM methodology + results
+  OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md  <- Objective 3 hand-off
+  REFERENCES.md                 <- literature citations
+  other_states_prompts/          <- how to replicate this for Rajasthan/Assam/Uttarakhand
+  reference/                     <- governing framework specs
+  presentation/                  <- slides
+  final_plots_html/              <- headline interactive plots
+  history/                       <- full phase-by-phase methodology/evolution record
+                                     (not required reading — kept for provenance)
 ```
 
-All three scripts have a `STATE = "tamilnadu"` variable near the top.
-**If you are doing a different state, change only that one line** (and
-`OBJ1_ROOT` in `config.py` if your Objective 1 folder isn't named
-`tamilnadu_pipeline`) — everything else, including every filename below,
-follows automatically. This is the point of naming files
-`{thing}_{state}.csv`: every state's teammate produces an identically
-structured `data/` folder, so Objective 2's design/simulation/surrogate
-code never needs to know which state it's looking at.
+## Why there's a `history/` folder
 
-**Naming convention — please follow this exactly when you add your state:**
-`{content}_{state}.csv`, all lowercase, state name with no spaces
-(`tamilnadu`, `rajasthan`, `assam`, `uttarakhand`). Per-cluster files add
-`_cluster{k}` before the extension, e.g. `weather_regime_rajasthan_cluster2_hourly.csv`.
-
----
-
-## `data/objective1/` — frozen copies of Objective 1 outputs
-
-| File | Produced by (Obj1 script) | Grain | What it contains |
-|---|---|---|---|
-| `population_grid_points.csv` | `00a_build_population_grid.py` | 1 row/point | Sampling locations: `point_id, lat, lon, population, weight`. `weight` is that point's share of total state population covered. |
-| `suntimes.csv` | `00b_build_suntimes.py` | 1 row/point/date/event | Exact UTC sunrise/solar-noon/sunset timestamps, 2016–2025. |
-| `daily_aggregates_{state}.csv` | `02b_build_daily_aggregates.py` | 1 row/point/date | **Daily-resolution** weather from the full NASA POWER hourly cache: `GHI_daily_kWh, GHIcs_daily_kWh, kt_daily, Ta_mean_true, Ta_max_true, Ta_min_true, DTR_true, RH_mean_true, wind_mean_true`. This is the real daily integral, not a proxy. |
-| `tier2_signature_{state}.csv` | `02b_build_daily_aggregates.py` | 1 row/point | Point-level rollup of the daily table above (annual means, HDD18/CDD24, cloudy-day run length CCI, etc.) — feeds into the climate signature below. |
-| `era5_power_agreement_{state}.csv` | `03b_agreement_analysis.py` | varies | Cross-source validation stats (MBE/RMSE/Pearson r) between ERA5 and NASA POWER, per season/event — evidence the underlying weather data is trustworthy, not itself a modeling input. |
-| `climate_signature_{state}.csv` | `04b_climate_signature.py` | **1 row/point** | **The main climate input for Obj2 geometry/constraint setup.** Every point's ~18-index climate fingerprint: `Ta_mean, Ta_p95, Ta_p05, DTR, GHI_daily_kWh, kt_mean, kt_std, SAI, CCI, cloudy_frac, HDD18, CDD24, RH_mean, HSI, wind_mean, seasonality, monsoon_index, elev_proxy`, plus `Tm_target_C` (constant, delivery-anchored) and `L_required_kJ_per_kg` (derived from the 300 L/day draw assumption — see `demand_profile_{state}.csv` below), plus PCA components and z-scored (`_z`) columns used only for clustering. |
-| `pca_loadings.csv` | `04b_climate_signature.py` | 1 row/feature | How the PCA components in the signature file are built (diagnostic, not usually needed downstream). |
-| `cluster_assignments_{state}.csv` | `05_cluster_tamilnadu.py` (or `05_cluster_tamilnadu.py` for multi-state) | **1 row/point** | Which climate regime (cluster) each point belongs to: `cluster_id` (hard label) plus `prob_cluster0...N` (soft GMM membership) and `max_membership_prob`. **This is the "Level A" assignment table** — the requested `_levelA` suffix isn't in the filename, but this *is* that file; rename it if your team wants the suffix for clarity. |
-| `cluster_profiles_{state}.csv` | `05_cluster_tamilnadu.py` | **1 row/cluster** | Population-weighted mean of every signature column, per regime — `n_points`, `total_population_covered`, plus mean `Tm_target_C`, `L_required_kJ_per_kg`, `HSI`, `GHI_daily_kWh`, etc. **This is what Obj2's DOE reads to get each regime's design target.** |
-| `bic_selection_{state}.csv`, `kmeans_comparison_{state}.csv` | `05_cluster_tamilnadu.py` | 1 row/K | Model-selection diagnostics (why K was chosen) — reference material, not a modeling input. |
-| `pcm_database_{state}.csv` | `06_build_pcm_database.py` | 1 row/PCM | **Full property records for every candidate PCM** (not just the shortlisted ones): `name, family, Tm_C, latent_heat_kJ_kg, density_*, Cp_*, TC_W_mK, cycles_tested, supercooling_K, rho_H_MJ_m3, corrosion_class`, plus `any_property_imputed` flagging which values came from MICE/RF imputation vs. a real datasheet/paper. |
-| `feasibility_survivors_by_cluster.csv` | `07_feasibility_filter.py` | 1 row/cluster/PCM | Every PCM checked against every cluster's `Tm_target`/`L_required`, with a pass/fail column per filter (melting window, latent-heat floor, cycling, supercooling, corrosion, safety) and `passes_all`. **2026-09-17: filter columns renamed to a `c1`-`c8` string scheme** (`"pass"`/`"fail"`/`"flag_..."`), see `docs_objective2/16_OBJECTIVE1_DATA_REFRESH.md`. |
-| `feasibility_survivors_by_cluster_kappa_calibrated.csv` *(new, 2026-09-17)* | `07_feasibility_filter.py` | 1 row/cluster/PCM | Same as above, but with a calibrated (`calibrated_kappa`) relaxation of the strict latent-heat floor — **use this file, not the plain one**, for any downstream eligibility check: the plain file's strict floor rejects every candidate given the refreshed (higher) `L_required_kJ_per_kg`, this is the pool `mcdm_topk_by_cluster.csv` itself is actually built from. |
-| `mcdm_topk_by_cluster.csv` | `08_mcdm_ranking.py` | 1 row/cluster/top-3 | **The Top-3 PCM recommendation per regime** — `consensus_rank`, `name`, `Tm_C`, `latent_heat_kJ_kg`, plus each method's score (`topsis_score`, `gra_grade`, `promethee_flow`, `vikor_Q`) and `top3_inclusion_probability` from the Monte Carlo stability check. **This is what tells Obj2 which PCM(s) to design hardware for.** |
-| `mcdm_full_rankings.csv` *(renamed 2026-09-17, was `mcdm_full_scores_by_cluster.csv`)* | `08_mcdm_ranking.py` | 1 row/cluster/survivor | Same as `mcdm_topk_by_cluster.csv` but every feasibility survivor, not just the top 3 — useful if Obj2's DOE wants to simulate more than 3 candidates per regime. |
-| `mcdm_method_agreement.csv` *(new, 2026-09-17)* | `08_mcdm_ranking.py` | 1 row/cluster | How often TOPSIS/GRA/PROMETHEE II/VIKOR agree on the Top-3 for that cluster — a consensus-quality diagnostic. |
-| `monte_carlo_stability.csv` | `08_mcdm_ranking.py` | 1 row/cluster/PCM | Standalone version of the Monte Carlo columns above (inclusion probability, rank-reversal rate). |
-| `physics_validation_results.csv` *(optional)* | `10_physics_validation.py` | 1 row/cluster/PCM | Simulated annual solar fraction from Obj1's own grey-box check — **only present if you've run that script.** Useful as a sanity baseline before Obj2 builds its own (higher-fidelity, geometry-aware) simulator. |
-| `physics_validation_spearman.csv` *(optional)* | `10_physics_validation.py` | 1 row/cluster | Correlation between MCDM rank and simulated performance, per regime. |
-| `seasonal_pcm_sensitivity_topk.csv`, `seasonal_pcm_sensitivity_summary.md` *(renamed 2026-09-17, was `level_b_seasonal_topk.csv`/`level_b_seasonal_summary.md`; script rewritten to `11_seasonal_pcm_sensitivity.py`)* | 1 row/cluster/season | Whether the Top-1 PCM changes by season within a regime. |
-| `cluster_assignments_{state}_levelB.csv`, `bic_selection_{state}_levelB.csv`, `level_b_feature_importance_{state}.csv` *(new, 2026-09-17)* | `05a_level_b_regime_shift_tamilnadu.py` | varies | A separate, rewritten Level-B seasonal-regime-shift GMM analysis — distinct from the seasonal PCM sensitivity table above. |
-| `recommendation_cards.md` | `09_recommendation_cards.py` | — | Human-readable summary of everything above, one card per cluster — Obj1's results section. Good for a quick sanity read, not meant to be parsed programmatically. |
-| `manifest.json` | `build_input_package.py` (this project) | — | SHA-256 hash + source path of every file above, plus which files were too large to copy (hashed only — see below) and which points are each cluster's medoid. **Re-generate this any time Objective 1 is re-run**, so a stale copy is never silently used. |
-| `raw_weather/power_{point_id}_{year}.json` | `01b_download_nasapower.py` (copied selectively) | full hourly | Real, unmodified NASA POWER hourly records — **only for each cluster's medoid point**, all available years. This is the raw material `build_regime_weather.py` turns into the per-regime files below. |
-
-**Referenced-but-not-copied** (too large — hashed in `manifest.json`, read
-directly from `era5_tamilnadu/data/...` if you ever need row-level access):
-`climate_tamilnadu_points.csv` (every point × sun-event × ERA5+POWER
-columns), `tamilnadu_cleaned_physical.csv` / `tamilnadu_cleaned_scaled.csv`
-(the same, post-QC).
-
----
-
-## `data/weather/` — per-regime representative weather (NEW, built here)
-
-Not produced anywhere in Objective 1 — Obj1 only has per-*point* weather.
-`build_regime_weather.py` picks each cluster's medoid point and produces:
-
-| File | Grain | Columns |
-|---|---|---|
-| `weather_regime_{state}_cluster{k}_hourly.csv` | 1 row/hour, 1 representative year | `timestamp_utc, GHI_Wm2, GHI_clearsky_Wm2, T_amb_C, RH_pct, wind_ms, point_id, cluster_id, year`. **Real** hourly data (not a reconstructed sinusoid) from the medoid's raw NASA POWER cache — the best-covered year is picked automatically. |
-| `weather_regime_{state}_cluster{k}_daily.csv` | 1 row/day, all available years | Same variables at daily resolution, straight from `daily_aggregates_{state}.csv` — use this for multi-year/multi-season DOE runs where hourly detail isn't needed. |
-
-## `data/demand/` — canonical hot-water draw profile (NEW, built here)
-
-| File | Grain | Columns |
-|---|---|---|
-| `demand_profile_{state}.csv` | 1 row/hour (0–23) | `hour, draw_fraction, draw_volume_L, draw_mass_kg`. **300 L/day total**, dual morning/evening peak — chosen specifically to match `climate_signature_{state}.csv`'s own `L_required_kJ_per_kg` assumption (Avargani et al. 2021, 300 L/day), which the existing `10_physics_validation.py` script does **not** currently match (it only draws 150 kg/day — see the script's own docstring for the full explanation). **Use this file, not a hand-picked number, wherever Obj2 needs a draw schedule**, so every regime/PCM/geometry combination is evaluated against the same household. |
-
-This is currently **one file for the whole state, applied to every
-cluster/season identically** — a stated simplification, not measured
-per-regime demand data. If your team gets real Indian household draw data
-later, replace `build_profile()` in `build_demand_profile.py` and keep the
-same output columns so nothing downstream has to change.
-
----
-
-## Quick checklist for a teammate starting a new state
-
-1. Run that state's Objective 1 pipeline (00a → 11), producing
-   `data/processed/...` under their own `era5_{state}/` folder — same
-   scripts, same phase order, already state-parameterized.
-2. Create their own `objective2_design_optimization/` folder as a sibling
-   to `era5_{state}/`.
-3. Copy in `config.py`, `build_input_package.py`, `build_regime_weather.py`,
-   `build_demand_profile.py` from this project unchanged.
-4. Edit `OBJ1_ROOT` in `config.py` and `STATE` at the top of each build
-   script to their state name.
-5. Run all three build scripts in order. They'll now have a `data/`
-   folder with exactly the structure documented above, ready for the
-   shared Obj2 `src/design`, `src/simulation`, `src/surrogate` code to
-   consume identically regardless of which state it is.
+Objective 2's methodology went through several real corrections while
+being built (bounds widening, a selection-rule scope fix, a PCM-shortlist
+restoration after a scope violation was found and fixed). Every one of
+those is real, documented engineering history — kept, not deleted — but
+it's not what a new reader needs first. `RESULTS.md` and this README give
+the current, authoritative picture; `history/` is there if you want the
+full story of how it was reached.

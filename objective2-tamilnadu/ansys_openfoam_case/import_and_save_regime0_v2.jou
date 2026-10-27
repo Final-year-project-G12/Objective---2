@@ -1,0 +1,9 @@
+; Regime 0 / n-Hexacosane (C26), post-demand-timing-fix geometry -- planar mode
+; (confirmed deliverable scope, matching the original Regime 0/1/2 cases).
+
+/file/import/cgns/mesh
+regime0_v2_capsule.cgns
+
+/file/write-case "regime0_v2_mesh_only.cas.h5"
+exit
+yes

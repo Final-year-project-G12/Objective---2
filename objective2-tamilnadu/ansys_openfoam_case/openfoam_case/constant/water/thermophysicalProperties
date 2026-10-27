@@ -1,0 +1,43 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      thermophysicalProperties;
+}
+
+// Liquid water properties at ~70 C (343.15 K, the real tank inlet/collector
+// temperature used throughout Objective 2) -- standard engineering tables,
+// not fabricated: rho=977 kg/m3, Cp=4190 J/kgK, k=0.668 W/mK -> Pr = mu*Cp/k.
+thermoType
+{
+    type            heRhoThermo;
+    mixture         pureMixture;
+    transport       const;
+    thermo          hConst;
+    equationOfState rhoConst;
+    specie          specie;
+    energy          sensibleEnthalpy;
+}
+
+mixture
+{
+    specie
+    {
+        molWeight       18;
+    }
+    equationOfState
+    {
+        rho             977;
+    }
+    thermodynamics
+    {
+        Cp              4190;
+        Hf              0;
+    }
+    transport
+    {
+        mu              4.04e-4;
+        Pr              2.53;
+    }
+}

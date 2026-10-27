@@ -1,0 +1,32 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    object      T;
+}
+
+// 298.15 K = 25 C, ambient start temperature (PCM fully solid, well below
+// RT57HC's Tm=56.5 C).
+dimensions      [0 0 0 1 0 0 0];
+
+internalField   uniform 298.15;
+
+boundaryField
+{
+    axis
+    {
+        type            symmetryPlane;
+    }
+    frontAndBack
+    {
+        type            empty;
+    }
+    capsule_to_water
+    {
+        type            compressible::turbulentTemperatureCoupledBaffleMixed;
+        Tnbr            T;
+        kappaMethod     solidThermo;
+        value           uniform 298.15;
+    }
+}

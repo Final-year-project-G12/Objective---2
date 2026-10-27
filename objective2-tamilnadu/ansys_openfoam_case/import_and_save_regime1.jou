@@ -1,0 +1,9 @@
+; Regime 1 / n-Hexacosane (C26) -- planar mode (confirmed deliverable scope,
+; matching Regime 0 and the OpenFOAM case's deliberate simplification).
+
+/file/import/cgns/mesh
+regime1_capsule.cgns
+
+/file/write-case "regime1_mesh_only.cas.h5"
+exit
+yes

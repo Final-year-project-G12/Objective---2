@@ -1,0 +1,8 @@
+; Regime 1 / n-Hexacosane (C26), post-demand-timing-fix geometry -- planar mode.
+
+/file/import/cgns/mesh
+regime1_v2_capsule.cgns
+
+/file/write-case "regime1_v2_mesh_only.cas.h5"
+exit
+yes

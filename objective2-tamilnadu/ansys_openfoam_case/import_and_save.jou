@@ -1,0 +1,21 @@
+; Imports the verified mesh via the proven working route (raw TUI, same as
+; import_mesh.jou) and saves it as a plain case file, so PyFluent can load
+; an ordinary .cas file instead of re-triggering the CGNS reader crash seen
+; when importing CGNS through PyFluent's settings API (SIGSEGV in
+; CeetronSAM.dll specifically on that code path).
+
+/file/import/cgns/mesh
+regime0_capsule.cgns
+
+; Set axisymmetric BEFORE saving: a later PyFluent attempt to switch
+; two_dim_space on an already-loaded (planar-saved) case caused an
+; immediate iteration-1 divergence (x/y-momentum and pressure all
+; blowing up at the very first solve), independent of timestep size --
+; consistent with stale planar-computed cell-volume/geometry metrics
+; being reused under an axisymmetric interpretation. Baking this in at
+; mesh-creation time instead.
+/define/models/axisymmetric yes
+
+/file/write-case "regime0_mesh_only.cas.h5"
+exit
+yes

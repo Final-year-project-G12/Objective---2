@@ -1,0 +1,48 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      thermophysicalProperties;
+}
+
+// RT57HC (real Objective 2 Regime-0 PCM), SOLID-phase properties from
+// pcm_database_tamilnadu.csv: rho=900 kg/m3, Cp=2.0 kJ/kgK, k=0.239 W/mK.
+// NOTE (scope of this basic demo): this models SENSIBLE heating of the
+// solid PCM only -- it does not include the Tm=56.5 C / 240 kJ/kg latent
+// heat of fusion. chtMultiRegionFoam has no native melting model; the
+// latent-heat/phase-change physics is covered by ANSYS Fluent's native
+// Solidification & Melting model instead (see FLUENT_GUI_SETUP_CHECKLIST.md).
+// This OpenFOAM case demonstrates the conjugate heat transfer (hot water
+// flow -> capsule wall -> PCM interior) coupling and mesh/case setup.
+thermoType
+{
+    type            heSolidThermo;
+    mixture         pureMixture;
+    transport       constIso;
+    thermo          hConst;
+    equationOfState rhoConst;
+    specie          specie;
+    energy          sensibleEnthalpy;
+}
+
+mixture
+{
+    specie
+    {
+        molWeight   50;
+    }
+    transport
+    {
+        kappa   0.239;
+    }
+    thermodynamics
+    {
+        Hf      0;
+        Cp      2000;
+    }
+    equationOfState
+    {
+        rho     900;
+    }
+}
