@@ -1,3 +1,5 @@
+> **SUPERSEDED (2026-10-27).** This document describes the pre-redesign Objective 2 pipeline for Rajasthan (UTC-indexed demand, single-node tank, retargeted PCM shortlist, outer-volume PCM mass). Its numbers are not valid for the current model. Current documentation: [`docs/redesign/README.md`](redesign/README.md); log: [`docs/REDESIGN_PROGRESS.md`](REDESIGN_PROGRESS.md). The text below is kept unchanged for the record.
+
 # 01 — Phase 1 Audit: Frozen Configuration & State Setup (Rajasthan)
 
 Files: `configs/system_config_shared.yaml`, `configs/design_bounds_shared.yaml`,

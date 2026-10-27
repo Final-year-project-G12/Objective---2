@@ -1,0 +1,15 @@
+{
+ "F_R_tau_alpha_cfd": 0.7117898340686382,
+ "F_R_U_L_cfd": 4.448686471500194,
+ "frozen": {
+  "fr_tau_alpha": 0.75,
+  "fr_ul": 4.5
+ },
+ "assumed": {
+  "tau_alpha": 0.8,
+  "U_L": 5.0
+ },
+ "note": "tau*alpha and U_L are INPUTS (assumed) here; CFD returns F_R: F_R_cfd = F_R_tau_alpha / tau_alpha = 0.890",
+ "n_points": 5,
+ "residual_rms": 1.884020950063438e-08
+}

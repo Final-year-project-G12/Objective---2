@@ -1,0 +1,17 @@
+/* collector_make_case.py (Objective 2, Rajasthan) -- edit the generator */
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system/copper";
+    object      fvSchemes;
+}
+
+
+ddtSchemes { default Euler; }
+gradSchemes { default Gauss linear; }
+divSchemes { default none; }
+laplacianSchemes { default none; laplacian(alpha,h) Gauss linear corrected; }
+interpolationSchemes { default linear; }
+snGradSchemes { default corrected; }

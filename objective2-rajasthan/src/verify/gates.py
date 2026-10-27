@@ -47,7 +47,7 @@ from src.io_utils import load_system_config, load_design_bounds, get_pcm_propert
 from src.simulation.capsule_enthalpy import pcm_props_from_record, PCMThermalProps
 from src.simulation.demand_profile import load_demand_model
 from src.simulation.tank_model import DesignRuntime, run_year
-from src.simulation.run_case import run_case
+from src.simulation.run_case import run_case, PRODUCTION_SOLVER_OVERRIDE
 
 # Rajasthan Objective 1 MCDM rank-1 PCM per Level-A cluster
 # (configs/states/rajasthan.yaml -> regimes[*].pcm_shortlist[0]).
@@ -87,7 +87,7 @@ def _direct_runtime(diameter_m, n_capsule, flow_rate_kg_s, system_config, arrang
 def _direct_run(state, cluster_id, diameter_m, n_capsule, flow_rate_kg_s, pcm_name=None,
                  system_config_overrides=None, volume_multiplier=1.0, mains_temp_C=None,
                  arrangement="staggered"):
-    system_config = load_system_config()
+    system_config = _deep_merge(load_system_config(), PRODUCTION_SOLVER_OVERRIDE)   # redesign: dt = 150 s
     if system_config_overrides:
         system_config = _deep_merge(system_config, system_config_overrides)
 
@@ -571,12 +571,51 @@ def gate_shield_confirmation_for_winners(state: str, log):
 # Runner
 # ─────────────────────────────────────────────────────────────────────────
 
-def run_all_gates(state: str):
+def gate_o1_pcm_roster(state: str, log):
+    """O2 redesign G6 (2026-10-26): every PCM of Objective 1's MCDM top-3, in the cluster it was ranked for,
+    through the repaired simulator (mid design, 14 capsules of 50 mm, 0.03 kg/s, staggered, vs the plain tank).
+    Gating: Gate-1 residual < 0.1 % for every one. Informational: how far each PCM actually melts."""
+    from src.io_utils import o1_top3, o1_rank_ties
+    log("\n" + "=" * 72)
+    log("O1 PCM ROSTER - Objective 1 MCDM top-3 per cluster (decision D2), repaired simulator, dt=150 s")
+    log("=" * 72)
+    pass_pct = load_system_config()["verification"]["gate1_residual_pass_pct"]
+    design = DesignVector(0.05, 14, 0.030, capsule_arrangement="staggered")
+    rows, worst = [], 0.0
+    for cid, names in o1_top3(state).items():
+        tied = o1_rank_ties(state)[cid]
+        plain = run_case(state, cid, None, design, record_hourly=False)["metrics"]
+        log(f"  cluster {cid}: plain tank useful={plain['useful_energy_kWh']:.1f} kWh SF={plain['solar_fraction']:.3f}"
+            f"   (O1 rank-1 tie: {tied if len(tied) > 1 else 'none'})")
+        for rank, pcm in enumerate(names, start=1):
+            rec = get_pcm_properties(state, pcm)
+            out = run_case(state, cid, pcm, design, record_hourly=False)
+            if not out["valid"]:
+                log(f"    [{rank}] {pcm:42s} geometry rejected ({out['reason']})")
+                continue
+            m = out["metrics"]
+            worst = max(worst, m["residual_pct_of_collector"])
+            rows.append((cid, rank, pcm))
+            log(f"    [{rank}] {pcm:42s} Tm={rec['Tm_C']:5.1f}C L={rec['latent_heat_kJ_kg']:5.0f}kJ/kg "
+                f"residual={m['residual_pct_of_collector']:.5f}% useful={m['useful_energy_kWh']:.1f} kWh "
+                f"(vs plain {100 * (m['useful_energy_kWh'] / plain['useful_energy_kWh'] - 1):+.2f}%) "
+                f"mean_f_melt={m['mean_f_melt']:.3f} max_f_melt={m['max_f_melt']:.3f} "
+                f"cycles={m['complete_melt_cycles']} max_T_pcm={m['max_pcm_temp_C']:.1f}C "
+                f"shield_pcm_substeps={m['n_shield_pcm_activations']}")
+    verdict = "PASS" if rows and worst < pass_pct else "FAIL"
+    log(f"\n  O1 PCMs verified: {', '.join(f'c{c}#{r} {p}' for c, r, p in rows)}")
+    log(f"  worst Gate-1 residual over the roster = {worst:.5f} %   roster verdict: {verdict}")
+    return {"gate": "o1_roster", "verdict": verdict, "worst_residual_pct": worst, "n_verified": len(rows)}
+
+
+def run_all_gates(state: str, report_path=None, include_stale_winners: bool = True, o1_roster: bool = False):
+    # Redesign: `report_path` lets the G6 re-run write beside, not over, the pre-redesign report;
+    # `include_stale_winners=False` skips the check against the retired Phase-7 winners.
     # objective2-rajasthan/ is already state-specific, so results/ is flat
     # (not nested per-state again) — matches the phaseN_ output-file scheme
     # used by check_climate_signature.py and the Phase 2/3 result files.
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    report_path = RESULTS_DIR / "phase4_simulator_verification_report.txt"
+    report_path = report_path or (RESULTS_DIR / "phase4_simulator_verification_report.txt")
 
     lines = []
     def log(msg=""):
@@ -592,7 +631,9 @@ def run_all_gates(state: str):
     g3 = gate3_baseline_comparison(state, log)
     g4 = gate4_calibration(state, g3["optimized_metrics"], log)
     g5 = gate5_sensitivity(state, log)
-    gate_shield_confirmation_for_winners(state, log)
+    if include_stale_winners:
+        gate_shield_confirmation_for_winners(state, log)
+    roster = gate_o1_pcm_roster(state, log) if o1_roster else None
 
     gates = [g1, g2, g3, g4, g5]
     n_clean_pass = sum(1 for g in gates if g["verdict"] == "PASS")
@@ -604,6 +645,8 @@ def run_all_gates(state: str):
         log(f"  Gate {g['gate']}: {g['verdict']}")
     log(f"\n  Gates passing cleanly: {n_clean_pass}/5")
 
+    if roster is not None:
+        log(f"  O1 PCM roster: {roster['verdict']} ({roster['n_verified']} PCMs)")
     go_no_go = "GO" if (g1["max_residual_pct"] < 0.5 and n_clean_pass >= 3) else "NO-GO"
     log(f"\n  Go/No-Go (framework doc Phase 4 rule: residual<0.5% AND >=3/5 gates clean): {go_no_go}")
     if go_no_go == "GO":

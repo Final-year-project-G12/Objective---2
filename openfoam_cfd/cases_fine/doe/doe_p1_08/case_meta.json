@@ -1,0 +1,33 @@
+{
+  "pcm": "savE\u00ae OM49",
+  "Tm_C": 49.0,
+  "L_kJ_kg": 224.0,
+  "rho_s": 816.0,
+  "rho_l": 780.0,
+  "cp_avg": 2250.0,
+  "k": 0.30000000000000004,
+  "d_m": 0.04326724789492232,
+  "mdot_kg_s": 0.02118261667285877,
+  "dT_K": 21.287428721018017,
+  "T_init_C": 34.0,
+  "T_hot_C": 70.28742872101805,
+  "h_w_W_m2K": 175.84482683926313,
+  "Re_p": 17.835388268806888,
+  "u_sup_m_s": 0.0002685280393820588,
+  "tank_volume_L": 50.0,
+  "conduction_only": false,
+  "assumed": {
+    "dyn_viscosity_Pa_s": 0.0035,
+    "thermal_expansion_1_K": 0.0007,
+    "mushy_Cu": 100000.0,
+    "mushy_q": 0.01
+  },
+  "t_end_s": 36000.0,
+  "bc_mode": "convective",
+  "wedge_deg": 5.0,
+  "n_cells_est": 784,
+  "cell_size_m": 0.0008,
+  "Bi": 12.680536189823476,
+  "Ste": 0.21382461884951132,
+  "config_version": "o2_cfd_v1.0_2026-10-15"
+}

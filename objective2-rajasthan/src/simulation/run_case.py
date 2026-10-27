@@ -12,11 +12,13 @@ this module hard-codes "tamilnadu" — pass a different `state` string and it
 runs identically for any other state's frozen inputs.
 """
 
+import pandas as pd
+
 from src.design.schema import DesignVector
 from src.design.constraints import check_design
 from src.io_utils import (
     load_system_config, load_design_bounds, get_regime, get_pcm_properties,
-    load_hourly_weather, load_demand_profile,
+    load_hourly_weather, load_demand_profile, drop_leap_day,
 )
 from src.simulation.capsule_enthalpy import pcm_props_from_record
 from src.simulation.demand_profile import load_demand_model
@@ -24,13 +26,24 @@ from src.simulation.tank_model import DesignRuntime, run_year
 
 J_PER_KWH = 3.6e6
 
+# O2 redesign G2 (2026-10-26): production time step. The frozen YAML says 300 s,
+# but at 300 s the plain-tank annual energy is still moving 0.07-0.09 % when dt
+# halves (limit 0.05 %) and the paired PCM gain is under-reported by ~0.1 pp.
+# Applied here, in code, so system_config_shared.yaml stays untouched; a caller's
+# own system_config_overrides still win (the convergence study relies on that).
+# Evidence: results/redesign/g2_timestep_convergence*.csv, docs/REDESIGN_PROGRESS.md.
+PRODUCTION_SOLVER_OVERRIDE = {"solver": {"timestep_s": 150}}
+
 
 def run_case(state: str, cluster_id: int, pcm_name: str, design: DesignVector,
              system_config: dict = None, design_bounds: dict = None,
              volume_multiplier: float = 1.0, timing_shift_hours: float = 0.0,
              mains_temp_override_C: float = None, system_config_overrides: dict = None,
              pcm_record_overrides: dict = None, weather_perturbation: dict = None,
-             record_hourly: bool = True):
+             record_hourly: bool = True, initial_state: dict = None,
+             compute_tes_metrics: bool = False, night_day_stride: int = 1,
+             tank_model: str = "single", n_nodes: int = 10, stack_anchor: str = "center",
+             weather=None):
     """Returns a dict: {geometry, valid, reason, metrics, hourly (DataFrame)}.
 
     If the design is geometrically invalid, the simulator is never run
@@ -48,6 +61,7 @@ def run_case(state: str, cluster_id: int, pcm_name: str, design: DesignVector,
     two-level (annual + per-hour) noise model.
     """
     system_config = system_config or load_system_config()
+    system_config = _deep_merge(system_config, PRODUCTION_SOLVER_OVERRIDE)
     if system_config_overrides:
         system_config = _deep_merge(system_config, system_config_overrides)
     design_bounds = design_bounds or load_design_bounds()
@@ -65,7 +79,9 @@ def run_case(state: str, cluster_id: int, pcm_name: str, design: DesignVector,
     pcm_props = (pcm_props_from_record(pcm_record, system_config["pcm_integration"]["melting_half_width_K"])
                  if pcm_record is not None else None)
 
-    weather = load_hourly_weather(state, cluster_id)
+    # `weather`: an hourly frame from src/weather/roles.load_point_year (multi-year redesign);
+    # None keeps the legacy one-year-per-regime file.
+    weather = drop_leap_day(weather) if weather is not None else load_hourly_weather(state, cluster_id)
     if weather_perturbation:
         weather = weather.copy()
         ghi_mult = weather_perturbation.get("ghi_multiplier", 1.0)
@@ -87,6 +103,7 @@ def run_case(state: str, cluster_id: int, pcm_name: str, design: DesignVector,
         flow_rate_kg_s=geom["flow_rate_kg_s"],
         tank_volume_m3=geom["tank_volume_m3"],
         tank_surface_area_m2=geom["tank_surface_area_m2"],
+        capsule_wall_thickness_m=system_config["pcm_integration"]["capsule_wall_thickness_m"],
     )
 
     if pcm_props is None:
@@ -95,18 +112,31 @@ def run_case(state: str, cluster_id: int, pcm_name: str, design: DesignVector,
         pcm_props = PCMThermalProps(Tm_C=57.0, latent_heat_J_kg=0.0, cp_solid_J_kgK=2000.0,
                                      cp_liquid_J_kgK=2000.0, conductivity_W_mK=0.2, density_kg_m3=800.0)
 
-    result = run_year(weather, demand_model, mains_temp_C, runtime, pcm_props, system_config,
-                       record_hourly=record_hourly)
+    record_hourly = record_hourly or compute_tes_metrics
+    if tank_model == "multinode":
+        # G4: 1-D stratified tank (src/simulation/tank_model_multinode.py); the single-node
+        # model stays the default and the regression reference.
+        from functools import partial
+        from src.simulation.tank_model_multinode import run_year_multinode, layout_from_geometry
+        geom_for_layout = geom if pcm_name is not None else {**geom, "n_capsule": 0, "n_layers": 0}
+        layout = layout_from_geometry(geom_for_layout, n_nodes, stack_anchor)
+        runner = partial(run_year_multinode, layout=layout)
+    elif tank_model == "single":
+        runner = run_year
+    else:
+        raise ValueError(f"tank_model must be 'single' or 'multinode', got {tank_model!r}")
+    result = runner(weather, demand_model, mains_temp_C, runtime, pcm_props, system_config,
+                    record_hourly=record_hourly, initial_state=initial_state)
 
     target_temp_C = system_config["delivery"]["target_temp_C"]
     cp_w = system_config["water"]["cp_J_kgK"]
-    total_draw_kg = sum(demand_model.draw_mass_kg_for_hour(h % 24) for h in range(len(weather)))
+    total_draw_kg = result.summary["draw_kg_total"]   # what the solver actually drew (local-hour indexed)
     e_demand_ideal_kWh = total_draw_kg * cp_w * (target_temp_C - mains_temp_C) / J_PER_KWH
     e_unmet_kWh = result.energy["E_unmet_kWh"]
     solar_fraction = (1.0 - e_unmet_kWh / e_demand_ideal_kWh) if e_demand_ideal_kWh > 0 else None
     solar_fraction = min(max(solar_fraction, 0.0), 1.0) if solar_fraction is not None else None
 
-    delivery_hours = int((result.hourly["T_w_C"] >= target_temp_C).sum()) if record_hourly and len(result.hourly) else None
+    delivery_hours = result.summary["delivery_temp_hours"]
 
     metrics = {
         "state": state, "cluster_id": cluster_id, "pcm_name": pcm_name,
@@ -122,22 +152,43 @@ def run_case(state: str, cluster_id: int, pcm_name: str, design: DesignVector,
         "charge_energy_kWh": result.energy["E_charge_kWh"],
         "discharge_energy_kWh": result.energy["E_discharge_kWh"],
         "residual_pct_of_collector": result.energy["residual_pct_of_collector"],
-        "pcm_mass_kg": n_capsule_effective * geom["capsule_volume_m3"] * pcm_props.density_kg_m3,
+        "pcm_mass_kg": result.summary["m_pcm_kg"],     # inner-volume PCM only (G2)
+        "capsule_wall_mass_kg": result.summary["m_wall_kg"],
         "max_water_temp_C": result.max_water_temp_C,
         "max_pcm_temp_C": result.max_pcm_temp_C,
         "n_safety_violations": result.n_safety_violations,
         "final_f_melt": result.final_f_melt,
         "complete_melt_cycles": result.complete_melt_cycles,
         "n_hours_simulated": len(weather),
+        # Ergun pressure drop across the capsule bed only (1e-5..1e-2 Pa); the
+        # real collector/piping loop is not modelled, so pump energy cannot
+        # discriminate designs. Reported for completeness, never an objective.
+        "pump_energy_meaningful": False,
         "n_shield_water_activations": result.n_shield_water_activations,
         "n_shield_pcm_activations": result.n_shield_pcm_activations,
     }
-    if record_hourly and len(result.hourly):
-        metrics["mean_f_melt"] = float(result.hourly["f_melt"].mean())
-        metrics["min_f_melt"] = float(result.hourly["f_melt"].min())
-        metrics["max_f_melt"] = float(result.hourly["f_melt"].max())
+    # solver-measured exposure hours (multi-node model only; NaN for the single-node model)
+    for k in ("shield_water_h", "shield_pcm_h", "hours_over_limit"):
+        metrics[k] = result.summary.get(k, float("nan"))
+    metrics["mean_f_melt"] = result.summary["mean_f_melt"]
+    metrics["min_f_melt"] = result.summary["min_f_melt"]
+    metrics["max_f_melt"] = result.summary["max_f_melt"]
 
-    return {"geometry": geom, "valid": True, "reason": None, "metrics": metrics, "hourly": result.hourly}
+    out = {"geometry": geom, "valid": True, "reason": None, "metrics": metrics, "hourly": result.hourly}
+    if compute_tes_metrics:
+        # WP1 metrics (src/metrics/tes_metrics.py): in-run set always; night
+        # hold/serve scenarios restart the solver from each day's 18:00 state.
+        from src.metrics import tes_metrics
+        tes = tes_metrics.compute_all(result.hourly, result.summary, result.context)
+        if night_day_stride and night_day_stride > 0:
+            night = tes_metrics.night_scenarios(weather, demand_model, mains_temp_C, runtime, pcm_props,
+                                                system_config, result.hourly, result.context,
+                                                day_stride=night_day_stride, runner=runner)
+            tes.update(tes_metrics.summarise_night(night))
+        else:                                   # night_day_stride=0: skip the scenarios (DOE speed)
+            night = pd.DataFrame()
+        out["tes"], out["night_daily"] = tes, night
+    return out
 
 
 def _deep_merge(base: dict, overrides: dict) -> dict:

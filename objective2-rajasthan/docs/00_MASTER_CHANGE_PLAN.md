@@ -1,3 +1,5 @@
+> **SUPERSEDED (2026-10-27).** This document describes the pre-redesign Objective 2 pipeline for Rajasthan (UTC-indexed demand, single-node tank, retargeted PCM shortlist, outer-volume PCM mass). Its numbers are not valid for the current model. Current documentation: [`docs/redesign/README.md`](redesign/README.md); log: [`docs/REDESIGN_PROGRESS.md`](REDESIGN_PROGRESS.md). The text below is kept unchanged for the record.
+
 # 00 — Master Change Plan: Restoring Arrangement as a Searched Variable
 
 **Scope:** `objective2-rajasthan/` (and, once verified here, the identical edit ported to

@@ -1,0 +1,29 @@
+/* collector_make_case.py (Objective 2, Rajasthan) -- edit the generator */
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant/water";
+    object      thermophysicalProperties;
+}
+
+
+thermoType
+{
+    type            heRhoThermo;
+    mixture         pureMixture;
+    transport       const;
+    thermo          hConst;
+    equationOfState rhoConst;
+    specie          specie;
+    energy          sensibleEnthalpy;
+}
+pRef 100000;
+mixture
+{
+    specie          { molWeight 18.0; }
+    equationOfState { rho 1000; }
+    thermodynamics  { Cp 4186; Hf 0; }
+    transport       { mu 0.000647157; Pr 4.3; }
+}

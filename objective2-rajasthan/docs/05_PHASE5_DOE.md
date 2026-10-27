@@ -1,3 +1,5 @@
+> **SUPERSEDED (2026-10-27).** This document describes the pre-redesign Objective 2 pipeline for Rajasthan (UTC-indexed demand, single-node tank, retargeted PCM shortlist, outer-volume PCM mass). Its numbers are not valid for the current model. Current documentation: [`docs/redesign/README.md`](redesign/README.md); log: [`docs/REDESIGN_PROGRESS.md`](REDESIGN_PROGRESS.md). The text below is kept unchanged for the record.
+
 # 05 — Phase 5 Audit: Design-of-Experiments Dataset (Rajasthan)
 
 Files: `src/doe/generate_cases.py`, `src/doe/run_batch.py`, `src/doe/split_cases.py`.

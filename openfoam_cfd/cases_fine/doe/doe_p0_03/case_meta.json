@@ -1,0 +1,33 @@
+{
+  "pcm": "RT44HC",
+  "Tm_C": 42.5,
+  "L_kJ_kg": 250.0,
+  "rho_s": 800.0,
+  "rho_l": 750.0,
+  "cp_avg": 2000.0,
+  "k": 0.24,
+  "d_m": 0.07031395770315471,
+  "mdot_kg_s": 0.012707377069166059,
+  "dT_K": 11.771101009095196,
+  "T_init_C": 27.5,
+  "T_hot_C": 54.27110100909522,
+  "h_w_W_m2K": 106.83821142105627,
+  "Re_p": 17.387660409973076,
+  "u_sup_m_s": 0.00016108902421124624,
+  "tank_volume_L": 50.0,
+  "conduction_only": false,
+  "assumed": {
+    "dyn_viscosity_Pa_s": 0.0035,
+    "thermal_expansion_1_K": 0.0007,
+    "mushy_Cu": 100000.0,
+    "mushy_q": 0.01
+  },
+  "t_end_s": 36000.0,
+  "bc_mode": "convective",
+  "wedge_deg": 5.0,
+  "n_cells_est": 1936,
+  "cell_size_m": 0.0008,
+  "Bi": 15.650453081126773,
+  "Ste": 0.09416880807276155,
+  "config_version": "o2_cfd_v1.0_2026-10-15"
+}
