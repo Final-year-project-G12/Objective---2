@@ -6,6 +6,10 @@ results/phase6_surrogate_models.pkl
 data/objective1/suntimes.csv
 data/objective1/daily_aggregates_rajasthan.csv
 
+# Phase figures: the interactive HTML copies inline plotly.js (about 4.7 MB each, 80 MB for 17).
+# Regenerate with `python pipeline.py --state rajasthan --stage plots`; the static PNGs stay tracked.
+results/plots/interactive/
+
 # Python cache and local environments
 __pycache__/
 *.py[cod]

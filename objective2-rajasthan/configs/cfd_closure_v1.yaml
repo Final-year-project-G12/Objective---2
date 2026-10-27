@@ -1,0 +1,42 @@
+# cfd_closure_v1.yaml - PROVISIONAL, NOT RECALIBRATED.
+#
+# Built read-only from the EXISTING OpenFOAM findings in ../openfoam_cfd/docs/CFD_FINDINGS.md (sections 3 and 9) and
+# 00_INDEX.md. NO new CFD was run for this rework pass: ANSYS Fluent is not installed and WP2-C's new O1-PCM,
+# freezing and tank-draw cases were out of scope (progress log, section 1). Nothing reads this file yet: the simulator still
+# uses the frozen lumped closure R_pcm = r_in/(5 k) with liquid_convection_enhancement = 2.0 (system_config_shared.yaml).
+# Applying it is a deliberate later step; if applied, every simulation result must be re-run.
+#
+# What the numbers are, and are not:
+#   * phi = (true internal PCM resistance) / (lumped r/(5k) resistance). phi < 1 means the lumped model is TOO RESISTIVE.
+#   * Derived from melting-only single-capsule runs with the project's earlier (retargeted) PCMs - RT44HC, savE OM49,
+#     lauric acid, d = 40-80 mm, 0.010-0.050 kg/s, driving dT 5.2-24.3 K. NOT the O1 top-3 PCMs, NOT the 10-40 mm radius range.
+#   * Liquid viscosity and thermal expansion were ASSUMED in those cases (+-10-12 % on melt time, +-0.1 on phi).
+#   * No freezing (discharge) runs exist; supercooling and volume change are not modelled.
+#   * Not validated against any measurement (00_INDEX.md section 4).
+version: cfd_closure_v1_provisional_2026-10-27
+status: provisional_not_recalibrated
+applied_in_simulator: false
+source:
+  files: [openfoam_cfd/docs/CFD_FINDINGS.md, openfoam_cfd/docs/00_INDEX.md]
+  read_only: true
+phi_melting:
+  coarse_mesh_1p2mm: {median: 0.47, min: 0.30, max: 0.73}
+  fine_mesh_0p8mm:   {median: 0.52, min: 0.34, max: 0.77}
+  sensitivity_to_assumed_properties: {phi_range: [0.38, 0.55], note: "all sensitivity cases gave phi < 0.6"}
+  implied_correction: "lumped r/(5k) is about 2x too high for melting; equivalent to liquid_convection_enhancement ~ 2x more"
+melt_time_ratio_greybox_over_cfd: {min: 1.2, max: 2.5}
+natural_convection_speedup_t90: {median: 2.35, min: 1.8, max: 3.3}
+paired_annual_effect_of_applying_phi:
+  useful_energy_change_pct: [0.06, 0.16]
+  note: "measured on the OLD single-node model and OLD metric; not re-evaluated under the current metrics or the multi-node tank"
+tank_stratification_reference:
+  case: "50 L water-only tank, 30 L at 55 C over 20 L at 25 C, 0.03 kg/s mains at the bottom"
+  cfd_litres_at_or_above_45C: 27
+  mixed_single_node_litres: 0
+  multinode_reproduction: "tests/test_multinode_tank.py and results/g4_cfd_draw_case.csv (N=10: 22.5 L, N=40: 26.1 L)"
+open_for_recalibration:
+  - rerun on the O1 top-3 PCMs and the 10-40 mm inner-radius range
+  - freezing (night discharge) cases
+  - datasheet viscosity and expansion instead of assumed values
+  - Fluent cross-check (not installed)
+  - compatible measurements before the word "validated" may be used

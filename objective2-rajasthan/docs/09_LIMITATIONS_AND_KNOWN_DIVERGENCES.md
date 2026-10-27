@@ -1,3 +1,5 @@
+> **SUPERSEDED (2026-10-27).** This document describes the legacy Objective 2 pipeline for Rajasthan (UTC-indexed demand, single-node tank, retargeted PCM shortlist, outer-volume PCM mass). Its numbers are not valid for the current model. Current documentation: [`docs/README.md`](rework/README.md); log: [`docs/PROGRESS.md`](PROGRESS.md). The text below is kept unchanged for the record.
+
 # 09 — Limitations and Known Divergences (Rajasthan)
 
 Written 2026-09-13, after implementing `O2_Rajasthan_HighImpact_Fixes.md`

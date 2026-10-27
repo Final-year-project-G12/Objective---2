@@ -1,0 +1,29 @@
+/* collector_make_case.py (Objective 2, Rajasthan) -- edit the generator */
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+
+
+application     chtMultiRegionFoam;
+startFrom       startTime;
+startTime       0;
+stopAt          endTime;
+endTime         300;
+deltaT          0.05;
+adjustTimeStep  yes;
+maxCo           0.8;
+maxDi           1e6;      // implicit solid: the thin-plate diffusion number must not limit dt
+maxDeltaT       0.5;
+writeControl    adjustableRunTime;
+writeInterval   60;
+purgeWrite      0;
+writeFormat     ascii;
+writePrecision  8;
+timeFormat      general;
+timePrecision   8;
+runTimeModifiable true;

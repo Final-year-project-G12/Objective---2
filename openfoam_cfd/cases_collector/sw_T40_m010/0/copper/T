@@ -1,0 +1,27 @@
+/* collector_make_case.py (Objective 2, Rajasthan) -- edit the generator */
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    object      T;
+}
+
+
+dimensions [0 0 0 1 0 0 0];
+internalField uniform 313.15;
+boundaryField
+{
+    ".*"           { type zeroGradient; }
+    symCu          { type symmetryPlane; }
+    top
+    {
+        type            externalWallHeatFluxTemperature;
+        mode            coefficient;
+        Ta              constant 458.15;
+        h               constant 5.0;
+        kappaMethod     solidThermo;
+        value           uniform 313.15;
+    }
+    "copper_to_.*" { type compressible::turbulentTemperatureCoupledBaffleMixed; Tnbr T; kappaMethod solidThermo; value uniform 313.15; }
+}

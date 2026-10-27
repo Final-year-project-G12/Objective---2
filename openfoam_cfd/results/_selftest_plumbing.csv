@@ -1,0 +1,2 @@
+case,Cu,d_m,wall_dT_K,role,status,t50_cfd_s,t50_ref_s,t50_err_pct,t90_cfd_s,t90_ref_s,t90_err_pct,rmse_f,max_abs_f,pass_gate,qc_energy_ok,energy_residual_pct
+d060_dT10,100000.0,0.06,10.0,test,ok,835.7469740502576,835.7469740502576,0.0,1545.0180841640463,1545.0180841640463,0.0,0.0,0.0,True,True,2.6105427740267397

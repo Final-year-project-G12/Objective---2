@@ -86,6 +86,30 @@ from src.simulation.heat_transfer import ua_eff_total_w_k
 from src.simulation.hydraulic_model import pressure_drop_and_pump_power
 from src.simulation.energy_balance import EnergyAccumulator
 from src.simulation.demand_profile import DemandModel
+from src.simulation.capsule_mass import capsule_masses, wall_cp_per_kg_pcm
+from dataclasses import replace as _dc_replace
+
+
+J_PER_KWH_ = 3.6e6
+
+
+def _demand_hour_of_day(row, i: int) -> int:
+    """Local clock hour (0-23) used to index the demand profile.
+
+    The demand profile is defined in local clock hours (07:00 / 19:00 peaks,
+    build_demand_profile.py), so it must be indexed by the weather file's
+    `local_hour` column, never by the UTC hour of `timestamp_utc` (2026-10-26
+    fix: the UTC index put the "evening" draw at ~00:30 local). A frame with
+    a UTC timestamp but no `local_hour` is refused rather than silently
+    falling back to UTC. A frame with neither (synthetic gate inputs) keeps
+    the legacy row-index fallback.
+    """
+    if "local_hour" in row:
+        return int(row["local_hour"])
+    if "timestamp_utc" in row:
+        raise ValueError("weather frame has timestamp_utc but no local_hour; "
+                         "refusing to index the local-time demand profile by UTC hour")
+    return i % 24
 
 
 @dataclass
@@ -103,6 +127,7 @@ class DesignRuntime:
     flow_rate_kg_s: float
     tank_volume_m3: float
     tank_surface_area_m2: float
+    capsule_wall_thickness_m: float = None   # None -> system_config pcm_integration.capsule_wall_thickness_m
 
 
 @dataclass
@@ -118,14 +143,23 @@ class SimulationResult:
     n_clipped_steps: int = 0
     n_shield_water_activations: int = 0
     n_shield_pcm_activations: int = 0
+    summary: dict = field(default_factory=dict)   # always-on per-run outputs (no hourly recording needed)
+    context: dict = field(default_factory=dict)   # masses / effective PCM props, for src/metrics
 
 
 def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: float,
              design: DesignRuntime, pcm_props: PCMThermalProps, system_config: dict,
-             record_hourly: bool = True) -> SimulationResult:
+             record_hourly: bool = True, initial_state: dict = None,
+             stop_when_Tw_below_C: float = None) -> SimulationResult:
     """Runs the simulator across every hour in weather_hourly (repeats the
     24-hour demand curve every day). Returns per-hour summaries + the
-    annual energy accumulator."""
+    annual energy accumulator.
+
+    initial_state: optional {"T_w_C", "T_pcm_C"} overriding the cold-start
+    defaults (used by the WP1 night scenarios, which restart from a state taken
+    out of an annual run). stop_when_Tw_below_C: end the run after the first
+    hour whose end-of-hour water temperature is below this value (used by the
+    no-draw hold test)."""
     solver = system_config["solver"]
     dt_total_s = solver["timestep_s"]
     n_substeps_per_hour = int(round(3600 / dt_total_s))
@@ -155,19 +189,29 @@ def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: fl
     n_shield_pcm = 0
 
     has_pcm = design.n_capsule > 0
-    m_pcm_total_kg = (design.n_capsule * design.capsule_volume_m3 * pcm_props.density_kg_m3
-                       if has_pcm else 0.0)
-    v_pcm_total_m3 = design.n_capsule * design.capsule_volume_m3 if has_pcm else 0.0
-    m_w = max(design.tank_volume_m3 - v_pcm_total_m3, 1e-6) * rho_w
+    # G2: PCM fills the INNER sphere only; the wall's heat capacity rides in the
+    # PCM node (wall_cp); displaced water uses the OUTER capsule volume.
+    if has_pcm:
+        wall_m = (design.capsule_wall_thickness_m if design.capsule_wall_thickness_m is not None
+                  else system_config["pcm_integration"]["capsule_wall_thickness_m"])
+        masses = capsule_masses(design.n_capsule, design.capsule_diameter_m, wall_m, pcm_props.density_kg_m3)
+        m_pcm_total_kg = masses["m_pcm_kg"]
+        v_displaced_m3 = masses["v_outer_total_m3"]
+        pcm_props = _dc_replace(pcm_props, wall_cp_J_kgK=wall_cp_per_kg_pcm(masses))
+    else:
+        m_pcm_total_kg, v_displaced_m3 = 0.0, 0.0
+    m_w = max(design.tank_volume_m3 - v_displaced_m3, 1e-6) * rho_w
 
     superficial_velocity = (design.flow_rate_kg_s / rho_w / design.cross_section_area_m2
                              if design.cross_section_area_m2 > 0 else 0.0)
 
     # ---- initial state ---------------------------------------------------
-    T_w = solver["initial_water_temp_C"]
+    T_w = initial_state["T_w_C"] if initial_state else solver["initial_water_temp_C"]
     if has_pcm:
         init_state = solver["initial_pcm_state"]
-        if init_state == "solid":
+        if initial_state and "T_pcm_C" in initial_state:
+            T_pcm_init = initial_state["T_pcm_C"]
+        elif init_state == "solid":
             T_pcm_init = pcm_props.Ts_C - 5.0
         elif init_state == "liquid":
             T_pcm_init = pcm_props.Tl_C + 5.0
@@ -188,24 +232,41 @@ def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: fl
     last_f_melt, complete_cycles = f_melt, 0
     was_fully_liquid = f_melt >= 0.999
 
-    cp_min_J_kgK = min(pcm_props.cp_solid_J_kgK, pcm_props.cp_liquid_J_kgK) if has_pcm else None
+    cp_min_J_kgK = (min(pcm_props.cp_solid_J_kgK, pcm_props.cp_liquid_J_kgK) + pcm_props.wall_cp_J_kgK) if has_pcm else None
     STIFFNESS_SAFETY_FACTOR = 0.5   # require dt_sub <= 0.5 * (PCM thermal time constant)
     MAX_SUBSTEPS = 60               # hard cap: below this, cases are flagged via n_clipped_steps
 
     rows = []
     n_hours = len(weather_hourly)
+    # G2: always-on per-run outputs, so DOE/optimiser runs (record_hourly=False)
+    # carry the same summary fields as the recorded ones. Definitions match the
+    # hourly frame: end-of-hour state.
+    sum_f_melt, min_f_melt, max_f_melt = 0.0, 1.0, 0.0
+    n_delivery_hours = 0
+    sum_abs_df = 0.0                      # sum |change in liquid fraction| over every sub-step
+    tot_draw_kg = tot_vol_ge_target_kg = tot_edel_target_J = 0.0
+    # stored energy relative to the mains temperature (WP1 definition A)
+    h_ref_mains = enthalpy_of_temperature(mains_temp_C, pcm_props) if has_pcm else 0.0
+    def _e_stored_J(Tw, h):
+        return m_w * cp_w * (Tw - mains_temp_C) + (m_pcm_total_kg * (h - h_ref_mains) if has_pcm else 0.0)
+    e_stored_initial_J = _e_stored_J(T_w, h_pcm)
 
+    n_done = 0
     for i in range(n_hours):
+        n_done = i + 1
         row = weather_hourly.iloc[i]
         I_t = float(row["GHI_Wm2"])
         T_amb = float(row["T_amb_C"])
-        hour_of_day = int(row["timestamp_utc"].hour) if "timestamp_utc" in row else i % 24
+        hour_of_day = _demand_hour_of_day(row, i)
 
         draw_mass_hour_kg = demand.draw_mass_kg_for_hour(hour_of_day)
         draw_mass_per_substep_kg = draw_mass_hour_kg / n_substeps_per_hour
 
         hour_q_collector = hour_q_load = hour_q_pcm = hour_q_loss = 0.0
         hour_q_pump = hour_q_unmet = 0.0
+        hour_draw = hour_vol_ge_target = hour_edel_target = 0.0
+        hour_tw_min, hour_tw_max, hour_tpcm_max = float("inf"), float("-inf"), float("-inf")
+        hour_f_min, hour_f_max = float("inf"), float("-inf")
 
         for sub in range(n_substeps_per_hour):
             in_band = has_pcm and (pcm_props.Ts_C - band_margin <= T_pcm <= pcm_props.Tl_C + band_margin)
@@ -329,7 +390,15 @@ def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: fl
                 if T_w_new > max_water_C or (has_pcm and T_pcm_new > max_pcm_C):
                     n_safety += 1
 
+                if draw_mass > 0:
+                    hour_draw += draw_mass
+                    hour_vol_ge_target += draw_mass if T_w_new >= delivery_target_C else 0.0
+                    hour_edel_target += draw_mass * cp_w * max(min(T_w_new, delivery_target_C) - mains_temp_C, 0.0)
+                sum_abs_df += abs(f_melt_new - f_melt)
                 T_w, T_pcm, h_pcm, f_melt = T_w_new, T_pcm_new, h_pcm_new, f_melt_new
+                hour_tw_min, hour_tw_max = min(hour_tw_min, T_w), max(hour_tw_max, T_w)
+                hour_tpcm_max = max(hour_tpcm_max, T_pcm)
+                hour_f_min, hour_f_max = min(hour_f_min, f_melt), max(hour_f_max, f_melt)
                 max_water_temp = max(max_water_temp, T_w)
                 max_pcm_temp = max(max_pcm_temp, T_pcm)
 
@@ -340,6 +409,13 @@ def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: fl
                 complete_cycles += 1
                 was_fully_liquid = False
 
+        tot_draw_kg += hour_draw
+        tot_vol_ge_target_kg += hour_vol_ge_target
+        tot_edel_target_J += hour_edel_target
+        sum_f_melt += f_melt
+        min_f_melt, max_f_melt = min(min_f_melt, f_melt), max(max_f_melt, f_melt)
+        n_delivery_hours += int(T_w >= delivery_target_C)
+
         if record_hourly:
             rows.append({
                 "hour_index": i, "hour_of_day": hour_of_day, "I_t_Wm2": I_t, "T_amb_C": T_amb,
@@ -347,8 +423,16 @@ def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: fl
                 "Q_collector_Wh": hour_q_collector / 3600, "Q_load_Wh": hour_q_load / 3600,
                 "Q_pcm_Wh": hour_q_pcm / 3600, "Q_loss_Wh": hour_q_loss / 3600,
                 "Q_pump_Wh": hour_q_pump / 3600, "Q_unmet_Wh": hour_q_unmet / 3600,
+                "draw_kg": hour_draw, "vol_ge_target_kg": hour_vol_ge_target,
+                "Edel_target_Wh": hour_edel_target / 3600,
+                "T_w_min_C": hour_tw_min, "T_w_max_C": hour_tw_max, "T_pcm_max_C": hour_tpcm_max,
+                "f_melt_min": hour_f_min, "f_melt_max": hour_f_max,
             })
 
+        if stop_when_Tw_below_C is not None and T_w < stop_when_Tw_below_C:
+            break
+
+    e_stored_final_J = _e_stored_J(T_w, h_pcm)
     acc.E_final_J = m_w * cp_w * T_w + (m_pcm_total_kg * h_pcm if has_pcm else 0.0)
     acc.n_failed_steps = n_clipped_steps
 
@@ -362,4 +446,21 @@ def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: fl
         complete_melt_cycles=complete_cycles,
         initial_f_melt=initial_f_melt, n_clipped_steps=n_clipped_steps,
         n_shield_water_activations=n_shield_water, n_shield_pcm_activations=n_shield_pcm,
+        summary={
+            "mean_f_melt": sum_f_melt / n_done if n_done else 0.0,
+            "min_f_melt": min_f_melt, "max_f_melt": max_f_melt,
+            "delivery_temp_hours": n_delivery_hours,
+            "m_pcm_kg": m_pcm_total_kg,
+            "m_wall_kg": masses["m_wall_kg"] if has_pcm else 0.0,
+            "m_water_kg": m_w,
+            "sum_abs_df": sum_abs_df,
+            "E_del_target_kWh": tot_edel_target_J / J_PER_KWH_,
+            "draw_kg_total": tot_draw_kg, "vol_ge_target_kg": tot_vol_ge_target_kg,
+            "E_stored_initial_kWh": e_stored_initial_J / J_PER_KWH_,
+            "E_stored_final_kWh": e_stored_final_J / J_PER_KWH_,
+        },
+        context={"m_w_kg": m_w, "m_pcm_kg": m_pcm_total_kg, "pcm_props": pcm_props if has_pcm else None,
+                 "cp_w": cp_w, "mains_temp_C": mains_temp_C, "target_C": delivery_target_C,
+                 "has_pcm": has_pcm, "dt_s": dt_total_s,
+                 "ua_tank_W_K": u_tank * a_tank},
     )

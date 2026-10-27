@@ -1,3 +1,5 @@
+> **SUPERSEDED (2026-10-27).** This document describes the legacy Objective 2 pipeline for Rajasthan (UTC-indexed demand, single-node tank, retargeted PCM shortlist, outer-volume PCM mass). Its numbers are not valid for the current model. Current documentation: [`docs/README.md`](rework/README.md); log: [`docs/PROGRESS.md`](PROGRESS.md). The text below is kept unchanged for the record.
+
 # 03 — Phase 3 Audit: Grey-Box Enthalpy Simulator (Rajasthan)
 
 Files: `src/simulation/capsule_enthalpy.py`, `collector_model.py`,

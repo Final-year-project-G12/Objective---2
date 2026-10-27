@@ -1,0 +1,47 @@
+# ============================================================================
+# benchmark_template.yaml -- sphere-melting validation spec
+# Copy to e.g. turski2025.yaml and replace EVERY `null` with the value printed in
+# the paper. Do not estimate or use handbook values: cite the table/figure in
+# each `source` field. validate_sphere.py refuses to run while any null remains.
+# ============================================================================
+name: benchmark1                   # used for result file names
+citation: null                     # full reference
+gate_pct: 15                       # pre-declared acceptance: |t50|,|t90| error (%)
+cu_sweep: [1.0e+4, 1.0e+5, 1.0e+6, 1.0e+7]   # Darcy damping constants tried with --calibrate-cu
+
+pcm:
+  name: null                       # e.g. the paraffin named in the paper
+  source: null                     # paper table that lists these properties
+  Tm_C: null                       # melting temperature [C] (mean value used by the paper)
+  L_kJ_kg: null                    # latent heat [kJ/kg]
+  rho_s: null                      # solid density [kg/m3]
+  rho_l: null                      # liquid density [kg/m3]
+  cp_s_J_kgK: null
+  cp_l_J_kgK: null
+  k_W_mK: null                     # NB: if the paper gives solid and liquid k, the model uses ONE value
+  mu_Pa_s: null                    # liquid dynamic viscosity
+  beta_1_K: null                   # thermal expansion coefficient
+
+cases:                             # one entry per experiment/curve in the paper
+  - id: d040_dT10
+    role: calibrate                # calibrate | test   (held-out cases are never used to tune Cu)
+    d_m: null                      # inner diameter of the shell [m]
+    wall_dT_K: null                # wall temperature minus Tm [K]
+    T_init_C: null                 # initial PCM temperature [C]
+    t_end_s: null                  # run at least to complete melting in the paper
+    reference_csv: null            # file with columns: time_s,melt_fraction (digitised from the figure)
+    sample_every_s: 10
+  - id: d060_dT10
+    role: test
+    d_m: null
+    wall_dT_K: null
+    T_init_C: null
+    t_end_s: null
+    reference_csv: null
+  - id: d080_dT10
+    role: test
+    d_m: null
+    wall_dT_K: null
+    T_init_C: null
+    t_end_s: null
+    reference_csv: null

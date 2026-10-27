@@ -1,0 +1,19 @@
+/* collector_make_case.py (Objective 2, Rajasthan) -- edit the generator */
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volVectorField;
+    object      U;
+}
+
+
+dimensions [0 1 -1 0 0 0 0];
+internalField uniform (0.036359 0 0);
+boundaryField
+{
+    ".*"          { type noSlip; }
+    inlet         { type fixedValue; value uniform (0.036359 0 0); }
+    outlet        { type inletOutlet; inletValue uniform (0 0 0); value uniform (0.036359 0 0); }
+    symWater      { type symmetryPlane; }
+}

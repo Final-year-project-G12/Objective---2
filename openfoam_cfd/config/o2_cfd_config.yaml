@@ -1,0 +1,87 @@
+# ============================================================================
+# o2_cfd_config.yaml  --  OpenFOAM capsule-scale CFD for Objective 2 (Rajasthan)
+# ============================================================================
+# Every value is tagged with its provenance:
+#   [FROZEN]   copied from configs/system_config_shared.yaml or
+#              configs/design_bounds_shared.yaml (do NOT change here; change
+#              the frozen file through the project's governance process).
+#   [O1-DB]    read from data/objective1/pcm_database_rajasthan.csv.
+#   [CORR]     same correlation the Python grey-box uses (heat_transfer.py).
+#   [ASSUMED]  NOT in any project source. Typical literature-order value used
+#              only so the CFD can run. MUST be cited or replaced before the
+#              paper uses a CFD number. Sensitivity runs are provided
+#              (scripts/run_doe.py --sensitivity).
+# ============================================================================
+
+version: "o2_cfd_v1.0_2026-10-15"
+
+# ---- tank / hydraulics (needed only to turn a flow rate into a wall h) -------
+tank:
+  volume_L: 50.0                 # [FROZEN] system_config_shared.yaml tank.volume_L
+  height_to_diameter_ratio: 2.0  # [FROZEN]
+  # IS 12976:2023 reference sizing (docs/09 Sec 7). Set tank.volume_L to 112.5
+  # to run the "Case A" standards-compliant tank WITHOUT editing frozen YAML.
+  alt_volume_L_is12976: 112.5
+
+collector_area_m2: 1.5           # [FROZEN]
+
+water:
+  cp_J_kgK: 4186.0              # [FROZEN]
+  density_kg_m3: 1000.0         # [FROZEN]
+  conductivity_W_mK: 0.63       # [FROZEN]
+  prandtl: 4.3                  # [FROZEN]
+  dyn_viscosity_Pa_s_at_40C: 6.53e-4   # [CORR] same Vogel fit as heat_transfer.py
+
+capsule_wall:
+  material: aluminium
+  thickness_m: 0.0008           # [FROZEN] pcm_integration.capsule_wall_thickness_m
+  conductivity_W_mK: 205.0      # [FROZEN]
+
+# ---- the design space the CFD DOE samples (copied from design_bounds) --------
+design_space:
+  capsule_diameter_m: {min: 0.04, max: 0.08}   # [FROZEN] design_bounds_shared.yaml
+  capsule_count:      {min: 8,    max: 37}     # [FROZEN]
+  flow_rate_kg_s:     {min: 0.010, max: 0.050} # [FROZEN] (= pump.flow_min/max)
+  arrangement: [single-layer, staggered, radial]  # [FROZEN]
+  # CFD-only driving temperature difference (hot water above melting point).
+  # The grey-box tank sees roughly 5-25 K above Tm on a sunny day.
+  dT_drive_K:         {min: 5.0, max: 25.0}
+
+# ---- PCM shortlist: Phase-7 deployable picks for Rajasthan -------------------
+# Thermophysical values are read from the O1 database at run time (name key).
+pcm_shortlist:
+  - RT44HC            # regime 0 deployable design (phase7_deployable_design_per_regime.csv)
+  - savE® OM49        # regime 1
+  - Lauric acid (C12) # regime 2
+pcm_database_csv: ../../data/objective1/rajasthan/pcm_database_rajasthan.csv
+
+# ---- properties the O1 database does NOT contain  [ASSUMED] ------------------
+# Liquid-phase dynamic viscosity and volumetric expansion are needed to resolve
+# natural convection. They are typical paraffin/fatty-acid magnitudes, NOT
+# project-sourced values. Replace with datasheet numbers when available.
+assumed_liquid_properties:
+  dyn_viscosity_Pa_s: 3.5e-3
+  thermal_expansion_1_K: 7.0e-4
+  mushy_Cu: 1.0e+5              # Darcy damping constant of solidificationMeltingSource
+  mushy_q: 1.0e-2
+
+# ---- scenario ----------------------------------------------------------------
+scenario:
+  T_init_C_below_Tm_K: 15.0     # PCM starts this far below Tm (night-cooled tank)
+  charge_window_h: 6.0          # useful sunshine window the capsule must melt in
+  t_end_h: 10.0                 # simulate beyond the window to see the full melt
+  sample_every_s: 10.0
+
+# ---- numerics ----------------------------------------------------------------
+numerics:
+  cell_size_m: 0.0012           # target mesh size; make_case.py derives block counts
+  wedge_angle_deg: 5.0
+  max_co: 0.5
+  max_delta_t_s: 5.0
+  initial_delta_t_s: 0.05
+  radial_grading: 0.4           # last/first cell ratio toward the wall
+
+# ---- objective weights used by the tank-level optimiser ----------------------
+optimiser:
+  noise_band_pct: 0.04          # pipeline noise band (docs/04)
+  pareto_tolerance_pct: 5.0     # [FROZEN] selection.pareto_tolerance_pct

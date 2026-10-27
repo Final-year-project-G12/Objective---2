@@ -1,3 +1,5 @@
+> **SUPERSEDED (2026-10-27).** This document describes the legacy Objective 2 pipeline for Rajasthan (UTC-indexed demand, single-node tank, retargeted PCM shortlist, outer-volume PCM mass). Its numbers are not valid for the current model. Current documentation: [`docs/README.md`](rework/README.md); log: [`docs/PROGRESS.md`](PROGRESS.md). The text below is kept unchanged for the record.
+
 # 00 — Objective 2 Master Overview (Rajasthan, Phases 0–8 — COMPLETE)
 
 ## What this covers
@@ -45,9 +47,7 @@ turn folded back one of Tamil Nadu's later improvements (`run_case()`'s
 clean `weather_perturbation` keyword).
 
 **Net effect:** Rajasthan is now the reference implementation for the
-corrected 4-variable design vector — Tamil Nadu, Assam, and Uttarakhand
-must each receive the identical `design_bounds_shared.yaml` edit and
-Phase 2–8 rerun before any four-state comparison is valid (per
+corrected 4-variable design vector — Tamil Nadu, Assam, and Uttarakhand must each receive the identical `design_bounds_shared.yaml` edit and Phase 2–8 rerun before any four-state comparison is valid (per
 `00_MASTER_CHANGE_PLAN.md`'s cross-cutting rule and
 `Objective2 Consolidated plan.md` §8's cross-state validity checks).
 

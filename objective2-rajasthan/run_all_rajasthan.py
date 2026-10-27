@@ -1,101 +1,64 @@
 """
 run_all_rajasthan.py
 ========================
-Step 6.3 of the 2026-09-20 fix plan ("Objective2 rajasthan fix plan.md") --
-a single orchestrator running Phases 0/2 through 8 in order, stopping at
-the first gate failure rather than silently continuing on to a later
-phase built on a broken one.
+Orchestrator for the current Objective 2 chain for Rajasthan (gates G1-G12). It calls pipeline.py stage by stage and stops at the
+first failing stage. The legacy orchestrator (Tm retargeting, Extra Trees, Monte Carlo robustness) is retired; its copy is in
+the deleted legacy copy.
 
-NOTE: the fix plan names objective2-tamilnadu/run_all_tamilnadu.py and
-build_input_package.py's sha256 manifest as the reference for this step.
-Neither file actually exists in this repo's objective2-tamilnadu/ copy as
-of 2026-09-20 (checked directly) -- Tamil Nadu has no single orchestrator
-script either, only its own pipeline.py's per-stage CLI. This script is
-therefore written fresh against Rajasthan's own pipeline.py stage
-functions (step 7's flowchart: config+Tm retarget -> geometry -> 5 gates
--> DOE -> surrogate -> search+select -> robustness+contract), not ported
-from a file that doesn't exist.
-
-Usage:
-  python run_all_rajasthan.py [--skip-retarget] [--mc-draws N]
-
---skip-retarget: skip src/design/retarget_tm.py's Tm re-targeting step
-(step 4). Off by default because retarget_all() rewrites
-configs/states/rajasthan.yaml in place -- running it twice in a row would
-re-target against an already-re-targeted config. Pass --skip-retarget on
-any re-run after the first one in a session.
+Modes
+  python run_all_rajasthan.py                  default: tests, then the cheap REPORTING stages from the saved results
+                                               (report -> handoff -> plots). Minutes. Always safe, including after the held-out test.
+  python run_all_rajasthan.py --full           the whole chain from the simulator up (verify ... plots). Many hours.
+                                               Refused while results/held_out_test.lock exists, because re-deciding the designs
+                                               would make the one held-out run meaningless; add --allow-invalidate to override knowingly.
+  python run_all_rajasthan.py --full --dry-run print every command without running anything
+Options: --jobs N (parallel jobs inside a stage, default 3), --include-heldout (with --full; the lock still refuses a second run),
+         --skip-tests.
 """
 
 import argparse
+import subprocess
 import sys
 import time
+from pathlib import Path
 
-from src.design.constraints import run_boundary_self_test, report_max_reachable_pcm_fraction
-from src.verify.gates import run_all_gates
-from src.doe.run_batch import run_batch
-from src.doe.split_cases import run_split
-from src.surrogate.train import train_surrogate
-from src.surrogate.evaluate import evaluate_by_group
-from src.optimize.select_deployable import run_phase7
-from src.robustness.monte_carlo import run_all as run_robustness, N_DRAWS as N_DRAWS_DEFAULT
-from src.handoff.build_recommendation_cards import run as build_recommendation_cards
-from src.handoff.build_obj3_contract import run as build_obj3_contract
+ROOT = Path(__file__).resolve().parent
+PY = sys.executable
 
 
-def _step(name):
-    print("\n" + "#" * 72)
-    print(f"# {name}")
-    print("#" * 72)
+def _run(argv, label):
+    print("\n" + "#" * 72 + f"\n# {label}\n" + "#" * 72, flush=True)
+    rc = subprocess.call(argv, cwd=ROOT)
+    if rc != 0:
+        print(f"\nFAILED at: {label} (exit {rc}). Stopping.")
+        sys.exit(rc)
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Run the full Rajasthan Objective 2 pipeline, phase by phase")
+    ap = argparse.ArgumentParser(description="Run the current Rajasthan Objective 2 chain")
     ap.add_argument("--state", default="rajasthan")
-    ap.add_argument("--skip-retarget", action="store_true",
-                     help="skip Phase 0's Tm re-targeting step (see module docstring)")
-    ap.add_argument("--mc-draws", type=int, default=N_DRAWS_DEFAULT)
-    args = ap.parse_args()
-    state = args.state
-    t_start = time.time()
+    ap.add_argument("--full", action="store_true", help="run every stage from the simulator up (many hours)")
+    ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--jobs", type=int, default=3)
+    ap.add_argument("--allow-invalidate", action="store_true")
+    ap.add_argument("--include-heldout", action="store_true")
+    ap.add_argument("--skip-tests", action="store_true")
+    a = ap.parse_args()
+    t0 = time.time()
+    pipe = [PY, "pipeline.py", "--state", a.state, "--jobs", str(a.jobs)]
+    if a.dry_run:
+        pipe.append("--dry-run")
 
-    if not args.skip_retarget:
-        _step("Phase 0 — Tm re-targeting (step 4, decision D2)")
-        from src.design.retarget_tm import retarget_all
-        retarget_all(state)
-
-    _step("Phase 2 — geometry & constraint boundary self-test")
-    _rows, all_deterministic = run_boundary_self_test()
-    report_max_reachable_pcm_fraction()
-    if not all_deterministic:
-        print("\nFAILED at Phase 2 — boundary self-test is not deterministic. Stopping.")
-        sys.exit(1)
-
-    _step(f"Phase 4 — verification gates 1-5, state={state}")
-    _gates, go_no_go = run_all_gates(state)
-    if go_no_go != "GO":
-        print(f"\nFAILED at Phase 4 — gate verdict={go_no_go}. Stopping before DOE (framework doc Phase 0 gate).")
-        sys.exit(1)
-
-    _step(f"Phase 5 — DOE generation, batch run, train/hold-out split, state={state}")
-    run_batch(state)
-    run_split(state)
-
-    _step(f"Phase 6 — surrogate training + hold-out evaluation, state={state}")
-    train_surrogate(state)
-    evaluate_by_group(state)
-
-    _step(f"Phase 7 — optimization pass + simulator confirmation + selection, state={state}")
-    run_phase7(state)
-
-    _step(f"Phase 8a — Monte Carlo robustness, state={state}")
-    run_robustness(state, args.mc_draws)
-
-    _step(f"Phase 8b — recommendation cards + Objective 3 contract, state={state}")
-    build_recommendation_cards(state)
-    build_obj3_contract(state)
-
-    elapsed = time.time() - t_start
-    print(f"\nDONE — full pipeline for state={state} completed in {elapsed/60:.1f} min.")
+    if not a.skip_tests and not a.dry_run:
+        _run([PY, "-m", "pytest", "-q", "tests"], "unit tests")
+    if a.full:
+        flags = (["--allow-invalidate"] if a.allow_invalidate else []) + (["--include-heldout"] if a.include_heldout else [])
+        _run(pipe + ["--stage", "all"] + flags, "full chain (verify ... plots)")
+    else:
+        for stage in ("report", "handoff", "plots"):
+            _run(pipe + ["--stage", stage], f"stage {stage}")
+    _run(pipe + ["--stage", "status"], "status")
+    print(f"\nDONE in {(time.time() - t0) / 60:.1f} min.")
 
 
 if __name__ == "__main__":

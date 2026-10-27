@@ -1,0 +1,27 @@
+/* tank_make_case.py (Objective 2, Rajasthan) -- edit the generator, not this file */
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    object      T;
+}
+
+dimensions [0 0 0 1 0 0 0];
+internalField uniform 298.15;
+boundaryField
+{
+    wall
+    {
+        type            externalWallHeatFluxTemperature;
+        mode            coefficient;
+        Ta              constant 298.15;
+        h               constant 0.8;
+        kappaMethod     fluidThermo;
+        value           uniform 298.15;
+    }
+    portTop { type fixedValue; value uniform 333.15; }
+    portBottom { type inletOutlet; inletValue uniform 333.15; value uniform 298.15; }
+    front { type wedge; }
+    back { type wedge; }
+}

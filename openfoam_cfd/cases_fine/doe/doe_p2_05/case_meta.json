@@ -1,0 +1,33 @@
+{
+  "pcm": "Lauric acid (C12)",
+  "Tm_C": 44.8,
+  "L_kJ_kg": 184.0,
+  "rho_s": 960.0,
+  "rho_l": 870.0,
+  "cp_avg": 1800.0,
+  "k": 0.16399999999999998,
+  "d_m": 0.04372470457451642,
+  "mdot_kg_s": 0.040153475321922,
+  "dT_K": 19.832523798651863,
+  "T_init_C": 29.80000000000001,
+  "T_hot_C": 64.63252379865185,
+  "h_w_W_m2K": 243.2630466260854,
+  "Re_p": 34.16596666899951,
+  "u_sup_m_s": 0.0005090180391352204,
+  "tank_volume_L": 50.0,
+  "conduction_only": false,
+  "assumed": {
+    "dyn_viscosity_Pa_s": 0.0035,
+    "thermal_expansion_1_K": 0.0007,
+    "mushy_Cu": 100000.0,
+    "mushy_q": 0.01
+  },
+  "t_end_s": 36000.0,
+  "bc_mode": "convective",
+  "wedge_deg": 5.0,
+  "n_cells_est": 784,
+  "cell_size_m": 0.0008,
+  "Bi": 32.42867331592195,
+  "Ste": 0.1940138197694204,
+  "config_version": "o2_cfd_v1.0_2026-10-15"
+}
