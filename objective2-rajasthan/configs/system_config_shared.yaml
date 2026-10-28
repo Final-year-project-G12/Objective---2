@@ -25,6 +25,14 @@ collector:
   fr_tau_alpha: 0.75                # F_R*(τα), combined optical/removal efficiency [typical FPC]
   fr_ul_W_m2K: 4.5                  # F_R*U_L, typical flat-plate loss coefficient (3.5-6 W/m2K range)
   min_irradiance_cutoff_Wm2: 10.0   # below this, pump assumed off -> zero collector coupling (Gate 2)
+  flow_dependent_fr:                # OFF by default: F_R and F_R*U_L above are then independent of flow
+    enabled: false
+    # When enabled, fr_tau_alpha and fr_ul_W_m2K are scaled by F_R(flow) / F_R(reference_flow), with the heat removal factor of
+    #   F_R(m) = m*cp*(1 - exp(-A*U_L*F'/(m*cp))) / (A*U_L)        [Eldokaishi 2022 "Modeling of water-PCM solar thermal storage system", Eq. 2]
+    # F' = 0.84 and U_L = 5.0 W/m2K are the values that paper uses in its collector table (it also uses tau*alpha 0.8, 50-240 L tanks).
+    efficiency_factor_Fprime: 0.84
+    UL_for_flow_factor_W_m2K: 5.0
+    reference_flow_kg_s: 0.030      # ASSUMPTION: the flow at which the project's F_R values (0.75, 4.5) are taken to hold; not stated in any source read
 
 tank:
   volume_L: 50.0                   # domestic standard [Chen et al. 2025, Table 1]

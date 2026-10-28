@@ -22,6 +22,7 @@ from src.io_utils import (
 )
 from src.simulation.capsule_enthalpy import pcm_props_from_record
 from src.simulation.demand_profile import load_demand_model
+from src.simulation.collector_model import apply_flow_dependent_fr
 from src.simulation.tank_model import DesignRuntime, run_year
 
 J_PER_KWH = 3.6e6
@@ -54,6 +55,7 @@ def run_case(state: str, cluster_id: int, pcm_name: str, design: DesignVector,
     system_config = system_config or load_system_config()
     if system_config_overrides:
         system_config = _deep_merge(system_config, system_config_overrides)
+    system_config = apply_flow_dependent_fr(system_config, design.flow_rate_kg_s)   # no-op unless collector.flow_dependent_fr.enabled
     design_bounds = design_bounds or load_design_bounds()
 
     geom = check_design(design, system_config, design_bounds)

@@ -46,6 +46,16 @@
 9. **Weather.** One medoid point per cluster, 10 years; the held-out years are the two lowest-GHI years, so the held-out gain is a harsher case.
 10. **No measurements.** The model has not been validated against any hardware or field data; the CFD agreement is model-to-model.
 
+## Supplementary studies run on 2026-10-28 (explore years only; details in `docs/PROGRESS.md` section 31)
+
+- Widened bounds on the v3 designs: the 30 % PCM-fraction cap is still limiting (+38 to +47 kWh at 40 %); the radius and upper-flow bounds are not.
+- Tank size: with the frozen designs the PCM gain falls as the tank grows and is negative at 150 L (100 L/m2).
+- Extra sensitivities: only a cold mains temperature (18 C) and a PCM-density change of 10 % move `g_window` beyond the band.
+- The low-flow preference of the plain tank persists with a flow-dependent collector factor (option off by default, reference flow assumed).
+- An independent Gaussian-process Bayesian search finds the same corner of the design box as NSGA-II.
+- A trend check against Chen 2025 gives the same sign and order of magnitude for the retention gain.
+- Not done: a monthly mains series (the tank kernels take one value per run; the 18-30 C range is used as a bracket), PCM supercooling and volume change.
+
 ## Deviations from the plan and from the first runs (all disclosed in the progress log)
 
 - Time step 150 s (`solver.timestep_s` in `configs/system_config_shared.yaml`) because 300 s failed the convergence gate.

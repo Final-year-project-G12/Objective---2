@@ -41,7 +41,7 @@ def main():
              "18:00-09:00 window and `g_annual` for the whole year. `d_overheat` is shield-hours of the PCM tank minus the water-only tank.\n")
 
     s.append("**Version.** Sections 1-4 are the v3 results (PCM fraction cap 30 %, `docs/PROGRESS.md` section 26; tested once on the untouched years "
-             "2011-2015). Sections 1b and 5b-5f are the diagnostics of the six issues, run on the v1 (cap 20 %) designs and years; they describe the v1 "
+             "2011-2015). Sections 1b and 5b-5f are the diagnostics of the six issues, run on the v1 (cap 20 %) designs and years (5e was re-run on the v3 designs); they describe the v1 "
              "result, their source files are unchanged in `results/`,. "
              "They have not been re-run on the v3 designs." + "\n")
     s.append("## 1. Chosen design per regime (select years 2021-2023)\n")
@@ -232,7 +232,7 @@ def main():
              "with PCM than with the 50 L water-only tank in every regime and select year, and the sensible-only (L = 0) case is lower than the water-only tank, "
              "so that energy gain comes from the latent heat. What remains true and is reported: the volume of water delivered at 45 C or above in the evening "
              "(serve fraction) and the time to the first drop below 45 C are NOT improved relative to the same fixed 50 L tank, because the capsules take water volume.\n")
-    s.append("## 5e. Widened-bound diagnostic [v1 diagnostic, cap 20 %] (issue 2)\n")
+    s.append("## 5e. Widened-bound diagnostic [v3 designs, cap 30 %] (issue 2)\n")
     s.append("Source: `results/g17_widen_r{0,1,2}.csv` (script `scripts/g17_issue2_widen.py`). WP6 boundary-artefact rule: relax each bound the optimum sits on "
              "inside a diagnostic run and see whether `g_window` moves by more than the band. The approved box is NOT changed; the wider geometry bounds exist only "
              "inside the script. Frozen chosen design of each regime, explore years 2016-2020, stack centre, exact water-only run at the same flow; "
@@ -251,11 +251,11 @@ def main():
         row["all feasible (65 C / 75 C)"] = bool(w.feasible_65_75.all())
         rows.append(row)
     s.append(md(pd.DataFrame(rows)) + "\n")
-    s.append("Reading: the inner-radius edge is NOT limiting: at the chosen fraction a larger radius is worse (R 45 mm and R 50 mm below the chosen design in every regime), so "
-             "40 mm sits at or near an interior optimum (the sampling is coarse: 30, 40, 45 mm). The upper flow bound is not limiting either (0.080 kg/s gains 3-4 kWh, inside the band). "
-             "The 20 % PCM-fraction cap IS limiting: the gain keeps rising by about 4-5 kWh per percentage point up to 40 %, beyond the band in every regime, with the PCM and water "
-             "peaks still inside 65 C and 75 C. The chosen designs are therefore labelled boundary-limited on the fraction cap. The cap is administrative (the packing engine accepts "
-             "28-48 % at R 40 mm) and its only literature support in the files read is the 10-20 % range of Chen 2025; whether to raise it is a decision for the guide, not taken here.\n")
+    s.append("Reading (v3 designs): the inner-radius edge is NOT limiting: R 45 mm and R 50 mm are below the chosen design in every regime (R 60 mm much lower), so 40 mm sits at or near an interior optimum "
+             "(the sampling is coarse: 20, 30, 40, 45, 50, 60 mm). The upper flow bound is not limiting either: 0.080 kg/s changes `g_window` by less than the band in every regime. "
+             "The 30 % PCM-fraction cap IS limiting: at 40 % the gain is higher by more than the band in every regime, with the PCM and water peaks still inside 65 C and 75 C. The chosen designs "
+             "are therefore still labelled boundary-limited on the fraction cap. The cap is administrative (the packing engine accepts 28-48 % at R 40 mm) and the only literature support in the "
+             "files read for fractions above 20 % is none (Chen 2025 gives 10-20 %); a 40 % test is planned, not run (`docs/PROGRESS.md` section 27). Radii above 40 mm have no capsule-size source in the files read.\n")
     s.append("## 5f. G9 with and without the box-vertex step [v1 diagnostic, cap 20 %] (issue 1)\n")
     s.append("Source: `results/g18_issue1_with_without.csv` (script `scripts/g18_issue1_compare.py`). The step (simulate the 24 corners of the design box "
              "before three more active-learning rounds) was added after regime 0 PCM 1 failed the dense-grid check twice, so it was not pre-declared; it is now a "
