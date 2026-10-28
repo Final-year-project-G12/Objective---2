@@ -31,7 +31,7 @@ OBJ1_FROZEN_WEATHER_DIR = OBJ1_FROZEN_DIR / "raw_weather"   # medoid points' hou
 PCM_DIR = DATA_DIR / "pcm"
 PROCESSED_DIR = DATA_DIR / "processed"               # Obj2's own DOE/surrogate/optimizer output
 
-CONFIGS_DIR = BASE_DIR / "configs"                    # system_config.yaml, design_bounds.yaml
+CONFIGS_DIR = BASE_DIR / "configs"                    # system_config_shared.yaml, design_space.yaml, states/uttarakhand.yaml
 RESULTS_DIR = BASE_DIR / "results"
 
 MANIFEST_FILE = OBJ1_FROZEN_DIR / "manifest.json"

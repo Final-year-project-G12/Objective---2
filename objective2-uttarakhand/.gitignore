@@ -1,11 +1,14 @@
 # Archives and generated artifacts too large or unnecessary for source control
+# (this repo is already state-specific, so results/ is flat — no results/<state>/ nesting)
 data.zip
-results/uttarakhand/surrogate/models.pkl
-results/uttarakhand/plots/interactive/
-
+results/phase6_surrogate_models.pkl
 # Large regenerated Objective 1 input files
 data/objective1/suntimes.csv
 data/objective1/daily_aggregates_uttarakhand.csv
+
+# Phase figures: the interactive HTML copies inline plotly.js (about 4.7 MB each, 80 MB for 17).
+# Regenerate with `python pipeline.py --state uttarakhand --stage plots`; the static PNGs stay tracked.
+results/plots/interactive/
 
 # Python cache and local environments
 __pycache__/

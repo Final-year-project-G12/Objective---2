@@ -12,7 +12,12 @@
 # state must re-run from DOE onward (framework doc, Phase 0 gate).
 # ============================================================================
 
-version: "config_v1.0_2026-09-05"
+version: "config_v1.1_2026-09-13-safety-shield_uttarakhand-delivery50"
+# Bumped from v1.0_2026-09-05: the safety_shield block (below) was added on
+# 2026-09-13 (docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md §6/§7) without a
+# version bump at the time, so a run pinned to v1.0 could not be told apart
+# from one that predates the shield. Step 1 of the 2026-09-20 fix plan
+# ("Objective2 rajasthan fix plan.md") closes that gap.
 
 collector:
   type: flat_plate
@@ -50,17 +55,32 @@ safety:
   max_pcm_temp_C: 65.0                # material-stability limit (Rubitherm datasheets)
   max_pressure_bar: 3.5
 
+# ADOPTED AS THE PIPELINE DEFAULT 2026-09-13 (was: disabled by default, only
+# turned on ad hoc at Phase 8's Monte Carlo call site and via a separate
+# fix2_shielded_phase7_confirmation.py supplementary check -- see
+# docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md §6 for that history). Decision
+# reversed: the shield is now the SINGLE official method for Rajasthan --
+# Phases 5-8 all read this default (via load_system_config() with no
+# override), so there is one unified set of results, not a parallel
+# shielded/unshielded pair. IS 12976:2023 Sec 8.2 independently validates
+# this exact mechanism ("stop circulation in the collector loop until the
+# storage temperature decreases") as the standard method for overheat
+# protection -- see src/simulation/tank_model.py's module docstring and
+# docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md §7.
+safety_shield:
+  enabled: true
+  bypass_water_C: 72.0                # max_water_temp_C - 3.0 C guard band
+  bypass_pcm_C: 62.0                  # max_pcm_temp_C - 3.0 C guard band
+
 delivery:
-  # Was 45.0 ("usable hot water", framework doc §3.1's own independent
-  # round-number choice) -- did not match Objective 1's 04b_climate_signature.py
-  # T_DELIVERY_C=50.0, which derived Tm_target_C=57.0 (the number the entire
-  # MCDM PCM shortlist was actually selected against). Changed to 50.0 so
-  # Objective 2's simulator judges success against the SAME delivery
-  # temperature Objective 1 sized the PCM for -- same reasoning as the
-  # 300 L/day vs 150 kg/day demand-profile fix already documented in
-  # build_demand_profile.py's docstring. This is a FROZEN, shared-across-
-  # all-states value (system_config_shared.yaml) -- changing it means
-  # Phases 3-8 must be re-run for this state (framework doc Phase 0 gate).
+  # UTTARAKHAND: 50.0, not the 45.0 of the other states (kept from this state's
+  # earlier config). Objective 1's 04b_climate_signature.py uses T_DELIVERY_C=50.0
+  # for Uttarakhand, which derives the Tm_target_C=57.0 that the whole MCDM PCM
+  # shortlist is ranked against, so Objective 2 judges delivery against the SAME
+  # temperature. Every metric named "45" in the code (E_del,45, E_rec,45,
+  # tau_hold,45, serve_frac_45, ...) reads this value, i.e. it is a 50 C metric here.
+  # Everything else in this file is byte-identical to objective2-rajasthan's copy
+  # (safety_shield block adopted 2026-10-28 with the current-chain port).
   target_temp_C: 50.0                # usable hot water, matches Obj1's T_DELIVERY_C
 
 water:
@@ -74,7 +94,7 @@ water:
 solver:
   method: backward_euler_lagged_pcm  # linear-implicit water node, PCM temperature
                                        # lagged one sub-step (see src/simulation/tank_model.py docstring)
-  timestep_s: 300                     # 5 min nominal
+  timestep_s: 150                     # production step; 300 s failed the dt-halving convergence check (results/g2_timestep_convergence_*.csv)
   substeps_in_melt_band: 6            # extra sub-stepping when T_pcm is within the melt band
   melt_band_margin_K: 2.0             # how far outside [Ts,Tl] still counts as "fast-changing"
   abs_tol: 1.0e-6
