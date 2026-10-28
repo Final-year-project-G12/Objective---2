@@ -22,6 +22,7 @@ from src.simulation.capsule_enthalpy import (
     PCMThermalProps, enthalpy_of_temperature, temperature_and_liquid_fraction_of_enthalpy,
 )
 from src.simulation.capsule_mass import capsule_masses, wall_cp_per_kg_pcm, AL_DENSITY_KG_M3
+from src.weather.inventory import REGIMES
 
 
 def test_pcm_mass_uses_inner_volume_exactly():
@@ -77,7 +78,7 @@ def test_wall_cp_per_kg_pcm():
 
 
 def test_no_29_feb_and_8760_hours_every_regime():
-    for c in range(3):
+    for c in REGIMES:
         w = load_hourly_weather("uttarakhand", c)
         assert len(w) == 8760
         assert not w["local_date"].astype(str).str.endswith("-02-29").any()

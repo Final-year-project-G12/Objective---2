@@ -23,6 +23,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from src.optimize.nsga2 import additive_epsilon, hypervolume, non_dominated_mask
+from src.weather.inventory import REGIMES
 
 OUT = Path("results")
 NV = OUT / "issue1_novert"
@@ -43,7 +44,7 @@ def main():
     band = pd.read_csv(OUT / "wp6_band.csv")
     bv = band[band.scope == "all"].set_index("objective").band.reindex(OBJ).to_numpy()
     rows = []
-    for r in range(3):
+    for r in REGIMES:
         for k in (1, 2, 3):
             tag = f"r{r}_p{k}"
             states = {s: pd.read_csv(path(s, tag)) for s in ("base", "novert", "vert") if path(s, tag).exists()}
