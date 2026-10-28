@@ -43,6 +43,19 @@ Reproduction of the existing OpenFOAM draw case (30 L at 55 C over 20 L at 25 C,
 This is agreement with another model, not validation. **The annual result is not converged in N**: N = 10 to 20 adds 0.7-1.0 % to useful
 energy and 0.15-0.25 percentage points to the paired PCM gain; this is inside the repeatability band, not removed (section 05).
 
+## 3b. Solver safeguards and the overheat shield (both tank models)
+
+Carried over from the original simulator and still in the code (`src/simulation/tank_model.py` and the numba kernel in `src/simulation/tank_model_multinode.py`):
+
+| Mechanism | What it does | Why it exists |
+|---|---|---|
+| Differential-controller re-solve | each sub-step is solved with the collector circulating; if that solve implies reverse collector flow (`a - b T < 0`) it is re-solved with the collector off | the first Gate 1 run had a 1.6 % energy residual because the solve used the negative collector term while the log clipped it to zero; the re-solve brought it to about 2e-5 % |
+| Adaptive stiffness sub-stepping | sub-step length is forced below 0.5 x the PCM time constant m cp_min / UA (at most 60 sub-steps); a `T_pcm` clip to [-50, 500] C is counted in `n_clipped_steps` | the PCM node lags the water node by one sub-step; with a very high conductivity (Gate 2, k x 200) the old rule diverged to about 1e300 C |
+| Water-side bypass | collector circulation stops while the (top-node) water is at or above `bypass_water_C` = 72 C (3 C below the 75 C limit) | IS 12976:2023 §8.2: "stop circulation in the collector loop until the storage temperature decreases" |
+| PCM-side charge block | capsule UA is set to zero while the PCM is at or above `bypass_pcm_C` = 62 C **and** the water is hotter than the PCM; discharging is never blocked | keeps the PCM under its 65 C material limit; these are the PCM-side shield hours in `d_overheat` |
+
+Values from `configs/system_config_shared.yaml` (`safety_shield`, `safety`).
+
 ## 4. Metrics (`src/metrics/tes_metrics.py`)
 
 | Metric | Definition (in short) |
@@ -53,6 +66,7 @@ energy and 0.15-0.25 percentage points to the paired PCM gain; this is inside th
 | E_del,45 | sum of m_dot cp (min(T_out, 45 C) - T_mains) over the draws: energy delivered up to the 45 C target, annual and in the **18:00-09:00 window** (`g_window` in the results is the PCM tank minus the water-only tank) |
 | peak temperatures, latent utilisation, cycles per day | from the hourly record |
 | closure residual | annual energy balance, a criterion below 0.1 % (largest observed 0.0698 %) |
+| solar fraction | 1 - E_unmet / E_demand_ideal, where E_demand_ideal heats the full 300 L/day draw from mains to 45 C (`src/simulation/run_case.py`). With no backup heater this is stricter than an installed system's figure; cross-tool solar-fraction comparisons can differ by up to 16 percentage points from definitions alone ([N'tsoukpoe 2026](https://consensus.app/papers/details/45814dd6d8315185abddf6a269d479d8/), found by web search, not yet extracted to the project's sources folder), so the Gate 4 band comparison (section 05) is indicative only |
 
 Hand-calculated synthetic-day checks are in `tests/test_tes_metrics.py`. Night scenarios restart from the design's own 18:00 state.
 
@@ -73,3 +87,14 @@ The held-out years use exact plain runs instead of the grid (`evaluate_night` in
 No supercooling, no volume change on melting, no backup heater, no pump energy, a flow-independent collector F_R, a single lumped
 PCM resistance r/(5k) with the project's liquid-convection factor (the CFD-derived correction in `configs/cfd_closure_v1.yaml` is
 **provisional and not applied**: `applied_in_simulator: false`).
+
+Further simplifications to state in the report:
+
+- Melting is a narrow band Tm +/- 1 K (`melting_half_width_K`), because the PCM database gives one Tm, not a solidus/liquidus pair.
+- Natural convection in the liquid PCM is not resolved: conductivity is multiplied by 2.0 (`liquid_convection_enhancement`) once
+  the melt fraction reaches 0.5. This factor is assumed, not measured.
+- Hourly weather is held constant over the sub-steps of each hour, and each hour's draw is spread evenly across it (both inputs are hourly).
+- Hydraulics cover only the packed capsule bed (Ergun 1952); pipe and valve losses are out of scope.
+- All capsules in a node are identical and see that node's water temperature.
+- No backup heater. IS 12976:2023 §5 says auxiliary heating is not required in hot or tropical regions but is needed in cold,
+  low-radiation ones, so this holds for Rajasthan but should be revisited for Uttarakhand.

@@ -55,6 +55,33 @@ Model settings: multi-node N = 10, stack anchor centre, dt 150 s. Fixed and not 
 the O1 shortlist. The legacy `configs/design_bounds_shared.yaml` (8-37 capsules, 40-80 mm diameter) is unchanged and describes the old
 pipeline.
 
+## 4b. Geometry engine (`src/design/geometry.py`, `src/design/constraints.py`)
+
+Every design passes an exact geometry check before it is simulated; feasibility is never learned by a surrogate.
+
+- **Tank:** vertical cylinder whose diameter and height come from the fixed 50 L volume with height = 2 x diameter
+  (`tank.height_to_diameter_ratio`, an assumed proportion): about 0.317 m by 0.634 m.
+- **Packing,** one model per arrangement, layers stacked up the tank height in the same way:
+  - `staggered`: hexagonal lattice, footprint (sqrt 3 / 2) pitch^2 per capsule;
+  - `single-layer`: square grid, footprint pitch^2, so fewer capsules per layer by construction;
+  - `radial`: a centre capsule plus rings, ring k holding floor(2 pi r_k / pitch).
+  
+  The void fraction comes from each lattice's footprint, so it differs by arrangement. The PCM volume fraction
+  (N V_capsule / V_tank) depends only on count and size.
+- **Hydraulics:** Ergun (1952) pressure drop over the capsule bed, using the arrangement's void fraction. It is Pascal-scale, so pump
+  energy is not a design driver (`docs/plots/10_PLOTS.md`).
+- **Rejection codes** (each rejected design gets exactly one; `src/design/constraints.py` checks the raw bounds before calling the geometry engine):
+
+| Code | Meaning |
+|---|---|
+| `bounds_violation` | a variable or the derived thickness is outside the bounds from `space.geometry_bounds()` |
+| `overlap` | not even one capsule fits per layer at the 3 mm minimum spacing |
+| `volume_exceeded` | PCM volume fraction above the cap (30 % in v3) |
+| `passage_blocked` | the stack is taller than the tank, or the void fraction is below the minimum free-flow fraction |
+| `below_min_pcm_fraction` | PCM fraction below the loading floor |
+| `pressure_drop_limit` | pressure drop above 3.5 bar |
+| `flow_out_of_range` | flow outside 0.010-0.050 kg/s |
+
 ## 5. Evidence behind the ranges (G7 sensitivity study, explore years 2018-2019)
 
 - PCM amount: every metric rises monotonically with the fraction over the whole range, so the optimum sits at the cap

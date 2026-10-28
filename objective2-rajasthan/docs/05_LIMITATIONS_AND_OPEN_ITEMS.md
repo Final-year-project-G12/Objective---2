@@ -66,6 +66,13 @@
    Palmitic-stearic/EG 0.452 vs 0.16; PureTemp 60 0.208 vs 0.20; n-Heptacosane 0.210 vs 0.2415). The simulator reads the database.
 2. **Sizing:** 33.3 L per m2 of collector is below the 40-100 L/m2 range of IS 12976:2023 (decision D8). The compact-tank case is the
    fixed condition of this work; the standards-compliant resizing study (older pipeline) has not been repeated on the new model.
+   The standard (`PCM-Selection-ML-model/Sources/pdfs/IS12976_2023.pdf`): §4.2 "tank capacities are generally chosen between 40 l/m²
+   to 100 l/m² of collector area"; §7.1 gives 50-100 L/m² for f-chart design, with 75 L/m² as the no-correction reference and the
+   correction term defined only between 37.5 and 300 L/m². The 50 L tank and 1.5 m² collector come from two different papers
+   (Chen 2025 Table 1 and Singh 2025 §3); no source supports the ratio. On the legacy model (single-node tank, UTC demand, old
+   shortlist, run 2026-09-13), resizing the tank to 112.5 L (75 L/m²) made all 9 PCM cases pass the 65 C limit with no shield and raised the
+   plain-tank solar fraction from 54-58 % to 60-65 %; shrinking the collector to 0.667 m² also passed but cut solar fraction to 31-35 %.
+   Only the direction of that result is usable here; its numbers are from the old model.
 3. **Collector F_R(flow):** adding a cited flow-dependent collector correction would remove the flow artefact.
 4. **Cap on the PCM fraction:** raise to 30 % or keep 20 % for comparability with Chen 2025.
 5. **Safety:** several O1 PCMs exceed 65 C at some designs (Palmitic-stearic/EG and PureTemp 58 at the mid design, log section 8). The 65 C
@@ -74,3 +81,14 @@
    benchmark band; this is reported, not tuned (50 L tank for 300 L/day, no backup heater).
 7. **O3 motivation:** since O1's selection is stable per region, O3's case rests on hour-by-hour operation under weather and demand
    variability, plus the nulls above (no tau_serve gain, the PCM-side throttle hours) that a controller could address.
+8. **Delivery temperature differs between O1 and O2.** O1 sizes PCMs for 60 C delivery (`T_DELIVERY_C`); O2's frozen shared config
+   uses 45 C (`delivery.target_temp_C`), which every metric here is built on (E_del,45, tau_serve, solar fraction). The target changes only the
+   scoring, not the simulated temperatures. On the legacy model, re-scoring at 60 C cut solar fraction by about 19-20 points in every regime,
+   below the Gate 4 band (`check_delivery_temp_reconciliation.py`, run 2026-09-18 on the old shortlist). Aligning them means changing the shared config for
+   all four states and re-running; not done.
+9. **No feedback from O2 to O1.** O1 ranks PCMs from climate data and MCDM only; the achievable tank temperatures and PCM loading are
+   first computed here. Suggested sentence for the paper: "Objective 1's PCM selection does not currently incorporate Objective 2's
+   achievable-temperature and loading constraints; a future iteration would feed them back into the MCDM criteria."
+   A related negative result from the legacy model: two 75-85 C PCMs (Rubitherm RT80HC and RT82, from the manufacturer's 21.01.2026
+   datasheets, kept in `data/pcm/rajasthan_overheat_track_candidates.csv`; `check_overheat_track_pcm.py`) never melted (melt fraction 0)
+   yet still passed 65 C by sensible heating, so "pick a higher Tm" does not avoid the PCM limit. Not re-run on the current model.
