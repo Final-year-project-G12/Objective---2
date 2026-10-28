@@ -71,7 +71,7 @@ def build():
         "training": {"years": [2016, 2017, 2018, 2019, 2020], "source": "src/weather/roles.py (explore)"},
         "validation": {"years": [2021, 2022, 2023], "source": "select"},
         "held_out_test": {"years": [2011, 2012, 2013, 2014, 2015], "note": "O2's v3 (cap 30 %) one-shot test is DONE and recorded; O3 must not tune against these years"},
-        "used_v1_test": {"years": [2024, 2025], "note": "the v1 (cap 20 %) held-out years, already used by O2 (archived in results/v1_cap20/); O3 must not tune against them either"},
+        "used_v1_test": {"years": [2024, 2025], "note": "the v1 (cap 20 %) held-out years, already used by O2; O3 must not tune against them either"},
         "points": {"0": "RJP_0132", "1": "RJP_0192", "2": "RJP_0083"},
     }
     sk["safety_shield"]["force_bypass_if"] = "T_water_top_C >= 72.0 (3.0 C guard band below the 75.0 C hard limit, to allow for sensor and control lag)"
@@ -95,8 +95,7 @@ def build():
     c["time_step_s"] = 150
     cfg = BASE_DIR / "configs"
     c["config_hashes"] = {f"configs/{n}": {"sha256": _sha(cfg / n)} for n in
-                          ("system_config_shared.yaml", "design_bounds_shared.yaml", "design_space.yaml",
-                           "cfd_closure_v1.yaml")}
+                          ("system_config_shared.yaml", "design_space.yaml")}
     c["config_hashes"]["states/rajasthan.yaml"] = {"sha256": _sha(cfg / "states" / "rajasthan.yaml")}
 
     regimes = []
@@ -112,7 +111,7 @@ def build():
     c["regimes"] = regimes
     c["deferred_future_work"] = c.get("deferred_future_work", []) + [
         "collector F_R(flow) correction: the model's F_R is flow-independent, so any flow optimum at 0.010 kg/s is a model artefact",
-        "CFD closure phi (configs/cfd_closure_v1.yaml) is provisional and NOT applied",
+        "CFD-derived PCM resistance correction is NOT applied (lumped r/(5k) with liquid-convection factor 2.0)",
         "node-count (N=10 vs 20) uncertainty is inside the WP6 band, not removed",
         "O1 conductivity discrepancy between the ranking table and the PCM database is unresolved",
     ]

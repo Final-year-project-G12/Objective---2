@@ -42,7 +42,7 @@ def main():
 
     s.append("**Version.** Sections 1-4 are the v3 results (PCM fraction cap 30 %, `docs/PROGRESS.md` section 26; tested once on the untouched years "
              "2011-2015). Sections 1b and 5b-5f are the diagnostics of the six issues, run on the v1 (cap 20 %) designs and years; they describe the v1 "
-             "result, their source files are unchanged in `results/`, and the v1 results they refer to are archived in `results/v1_cap20/`. "
+             "result, their source files are unchanged in `results/`,. "
              "They have not been re-run on the v3 designs." + "\n")
     s.append("## 1. Chosen design per regime (select years 2021-2023)\n")
     s.append("Source: `results/g10_selection_r{0,1,2}.json`.\n")
@@ -88,7 +88,7 @@ def main():
 
     s.append("## 2. Held-out test, untouched years 2011-2015 (v3, run once)\n")
     s.append(f"Source: `results/g10_heldout_results.csv`, run id `{lock['run_id']}`, lock `results/held_out_test.lock`. "
-             "Chosen design and the best design of every other O1 PCM of the regime, all five years, nothing dropped. The v1 test on 2024-2025 (cap 20 %) is archived in `results/v1_cap20/g10_heldout_results.csv` and those years are labelled used.\n")
+             "Chosen design and the best design of every other O1 PCM of the regime, all five years, nothing dropped. The v1 test on 2024-2025 (cap 20 %) used those years, which are labelled used.\n")
     t = held[["regime", "role", "pcm", "year", "g_window", "g_annual", "d_overheat", "t_pcm_max", "t_water_max", "gain_tau_serve_mean_h"]].copy()
     for col, nd in (("g_window", 1), ("g_annual", 1), ("d_overheat", 0), ("t_pcm_max", 1), ("t_water_max", 1), ("gain_tau_serve_mean_h", 3)):
         t[col] = t[col].round(nd)

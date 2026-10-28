@@ -4,19 +4,13 @@
  "simulator_version": "sim_v3_rajasthan (multi-node N=10, dt=150 s)",
  "config_hashes": {
   "configs/system_config_shared.yaml": {
-   "sha256": "bfbb3e392b73f31c548e73be904b21964bbea6afb91c8a928664b14fc254b636"
-  },
-  "configs/design_bounds_shared.yaml": {
-   "sha256": "7e2e40e5048c008f698ded3717c5bf6bc135a9dda61799119845967c641269a4"
+   "sha256": "ae74e39885add8ed13e31de9a4d289fc52a0e9d40f2003268de0dc5c03177535"
   },
   "configs/design_space.yaml": {
-   "sha256": "c756e7d0fe1662301cc850a2b0cbd6cc328d7f99ba17806f2c86bb535a72250a"
-  },
-  "configs/cfd_closure_v1.yaml": {
-   "sha256": "cc1b85838ea24ef071f05f471b075457006941e58ac20fda5d4e2fce9981a747"
+   "sha256": "c50a7520d6d94a3fd4d75b91224e3c7018819db52c1f2a502a3e14b17f165c00"
   },
   "states/rajasthan.yaml": {
-   "sha256": "6ff5dc6c868f1a12de20afaf7b006913f4540aef218c58eebc0b25712894e3d8"
+   "sha256": "c36df287ab5100f9608102f4ce076b8ecbdd3696906d3bc3342f786f08151095"
   }
  },
  "generated_from": {
@@ -216,7 +210,7 @@
     2024,
     2025
    ],
-   "note": "the v1 (cap 20 %) held-out years, already used by O2 (archived in results/v1_cap20/); O3 must not tune against them either"
+   "note": "the v1 (cap 20 %) held-out years, already used by O2; O3 must not tune against them either"
   },
   "points": {
    "0": "RJP_0132",
@@ -2053,7 +2047,7 @@
   "widened design bounds to reach 15-20% PCM volume fraction (Phase-0-gate decision)",
   "experimental (hardware) validation of the simulator against a physical lab rig (Objective 4 scope)",
   "collector F_R(flow) correction: the model's F_R is flow-independent, so any flow optimum at 0.010 kg/s is a model artefact",
-  "CFD closure phi (configs/cfd_closure_v1.yaml) is provisional and NOT applied",
+  "CFD-derived PCM resistance correction is NOT applied (lumped r/(5k) with liquid-convection factor 2.0)",
   "node-count (N=10 vs 20) uncertainty is inside the WP6 band, not removed",
   "O1 conductivity discrepancy between the ranking table and the PCM database is unresolved"
  ],

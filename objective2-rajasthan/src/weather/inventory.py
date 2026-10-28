@@ -4,9 +4,8 @@ src/weather/inventory.py
 O2 G5 / plan WP4 (2026-10-26) — build the per point-year weather inventory
 and the cleaned hourly files from Objective 1's raw NASA POWER cache.
 
-Representative points (decision D5): the CURRENT Objective 1 medoid of each cluster --
-the highest-membership point recorded in cluster_assignments / rajasthan.yaml -- NOT the
-stale data/objective1/medoid_points_rajasthan.csv. Read-only access to the raw JSON.
+Representative points (decision D5): the CURRENT Objective 1 medoid of each cluster, the highest-membership point recorded
+in configs/states/rajasthan.yaml (CURRENT_MEDOIDS below). Read-only access to the raw JSON.
 
 Acceptance rule (decision D6): a point-year is accepted if >= 98 % of its hours are valid
 (GHI and T2M present, not the -999 fill) AND no gap exceeds 3 consecutive hours; gaps of up

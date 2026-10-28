@@ -1,18 +1,14 @@
-# Objective 2 - Rajasthan: current pipeline (2026-10-27)
+# Objective 2 - Rajasthan: pipeline documentation (v3, 2026-10-28)
 
-**Status: current.** These documents describe what is actually in the code and the saved results after the rework
-(`docs/PROGRESS.md` is the day-by-day log with every gate). The documents of the legacy pipeline (UTC-indexed demand,
-single-node tank, retargeted PCMs, 327-case DOE: the old 00_* ... 09_* phase documents, OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md
-and the plots/00_INDEX.md and 02..08 plot walkthroughs) were deleted on 2026-10-28 and remain in git history. What still applies from them
-(solver safeguards, simplifications, geometry engine, IS 12976 sizing, the O1/O2 delivery-temperature gap) was moved into `01`, `02` and `05`.
+These documents describe what is in the code and the saved results (`docs/PROGRESS.md` is the day-by-day log with every gate).
 
 > **Current version: v3 (PCM fraction cap 30 %), completed 2026-10-28** (`docs/PROGRESS.md` section 26). The cap was raised from 20 % as a declared change;
-> G8-G11 were re-run, the designs re-selected on 2021-2023 and tested once on the untouched years 2011-2015. The v1 (cap 20 %) results, including its held-out test on
-> 2024-2025 (now labelled used), are archived unchanged in `results/v1_cap20/`. Planned next (not started): a 40 % cap test, `docs/PROGRESS.md` section 27. Sections 1b and 5b-5f of `04_RESULTS.md` are the six-issue diagnostics, run on
+> G8-G11 were re-run, the designs re-selected on 2021-2023 and tested once on the untouched years 2011-2015. The v1 (cap 20 %) held-out test used 2024-2025
+> (now labelled used). Planned next (not started): a 40 % cap test, `docs/PROGRESS.md` section 27. Sections 1b and 5b-5f of `04_RESULTS.md` are the six-issue diagnostics, run on
 > the v1 designs and not re-run on v3.
 
 Scope: this folder only (Rajasthan). Fixed and not optimised: 50 L tank, 1.5 m2 collector, 300 L/day demand, the O1 PCM top-3
-(`configs/system_config_shared.yaml` is frozen and unchanged). Nothing is committed to git by this work.
+(`configs/system_config_shared.yaml`).
 
 ## Contents
 
@@ -24,8 +20,7 @@ Scope: this folder only (Rajasthan). Fixed and not optimised: 50 L tank, 1.5 m2 
 | [`04_RESULTS.md`](04_RESULTS.md) | generated tables of the results (chosen designs, held-out test, optimiser checks, ablations) |
 | [`05_LIMITATIONS_AND_OPEN_ITEMS.md`](05_LIMITATIONS_AND_OPEN_ITEMS.md) | what the results do not support, deviations, items for Dr. Deepika |
 | [`06_OBJECTIVE3_HANDOFF.md`](06_OBJECTIVE3_HANDOFF.md) | the regenerated environment contract for Objective 3 |
-| `CLEANUP_PROPOSAL.md` | proposal for archiving stale files (nothing moved yet) |
-| `PROGRESS.md` | the single progress log, gates G1-G11 with evidence |
+| `PROGRESS.md` | the progress log, gates G1-G19 with evidence |
 | `../results/results_registry.csv` | every headline number with its source file (`scripts/g12_registry.py`) |
 
 ## Headline findings (all in `04_RESULTS.md`, with the files they come from)
@@ -42,7 +37,7 @@ Scope: this folder only (Rajasthan). Fixed and not optimised: 50 L tank, 1.5 m2 
 
 ## Entry points
 
-`pipeline.py` and `run_all_rajasthan.py` run the chain described here (the old ones are in the deleted legacy archive).
+`pipeline.py` and `run_all_rajasthan.py` run the chain described here.
 
 ```
 python pipeline.py --state rajasthan --stage status                 # which outputs exist, is the held-out lock set
@@ -61,7 +56,7 @@ Figures: see the table below and `docs/plots/10_PLOTS.md`.
 
 | File | Shows |
 |---|---|
-| `fig1_front_vs_grid.png` | optimiser points against the 540-design grid, selected design starred (grid exists for the rank-1 PCM only) |
+| `fig1_front_vs_grid.png` | optimiser points against the 720-design grid, selected design starred (grid exists for the rank-1 PCM only) |
 | `fig2_g9_grid_check.png` | G9 epsilon gap as a share of the band, 9 pairs |
 | `fig3_gain_by_year_role.png` | chosen design g_window on explore / select / held-out years with the band |
 | `fig4_heldout_pcm_comparison.png` | held-out g_window of the chosen and the other O1 PCMs |
@@ -71,12 +66,12 @@ Figures: see the table below and `docs/plots/10_PLOTS.md`.
 | `fig8_fraction_response.png` | G7 gain against PCM fraction |
 | `fig9_boundary_share.png` | fronts sitting at a bound of the design box |
 
-## How to reproduce (Python 3.10, from this folder)
+## How to reproduce (from this folder)
 
 The individual scripts behind each stage:
 
 ```
-python -m pytest tests                                              # 79 tests
+python -m pytest tests                                              # 80 tests
 python scripts/g2_timestep_convergence.py 150,75,37.5 out.csv       # G2 time step (arguments: dt list, output file)
 python scripts/g3_metrics_report.py                                 # G3 metrics
 python scripts/g4_multinode_report.py                               # G4 multi-node tank

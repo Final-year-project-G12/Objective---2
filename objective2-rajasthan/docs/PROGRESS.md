@@ -485,22 +485,20 @@ spread, so p-values are optimistic - a screening aid only, as with Chen 2025):
 
 | Response | inner radius | PCM fraction | flow | arrangement |
 |---|---|---|---|---|
-| g_window (night+morning E_del,45 gain) | 34.1 | 45.4 | 5.0 | 14.8 |
-| g_annual (annual E_del,45 gain) | 31.6 | 48.2 | 4.8 | 14.7 |
-| d_overheat (shield hours vs plain) | 84.8 | 0.7 | 11.0 | 1.5 |
-| t_pcm_max | 79.3 | 5.8 | 12.0 | 2.6 |
+| g_window (night+morning E_del,45 gain) | 29.1 | 45.1 | 7.2 | 17.9 |
+| g_annual (annual E_del,45 gain) | 26.7 | 48.0 | 7.0 | 17.6 |
+| d_overheat (shield hours vs plain) | 88.9 | 0.9 | 6.6 | 1.1 |
+| t_pcm_max | 78.1 | 4.7 | 14.9 | 1.8 |
 
 **No variable can be fixed:** each explains at least ~5 % of one response, and radius governs overheating and PCM peak temperature
-(the 65 C rule). **Arrangement is not a null over the whole space** (about 15 % of the gain variance; pairs in regime 1 reach 24-28 %),
+(the 65 C rule). **Arrangement is not a null over the whole space** (about 18 % of the gain variance),
 unlike the single-point test in G7 (R = 20 mm, 5 %). L9 aliases interactions with the main effects, so this is a screening result; the
 arrangement ablation (G11) tests it properly. Files: `g8_s1_r*_p*.csv`, `g8_s1_anova_r*_p*.csv`.
 
 ### S2 - scrambled-Sobol DOE (`scripts/g8_s2_doe.py`, 128 points, seed 20261026, same points for every pair, 5 explore years each)
-1,152 designs (9 pairs): **1,143 simulated, 9 geometry-rejected by the exact engine, 0 errors -> 100 % complete** (gate >= 95 %).
-The nine rejections are the same single radial design (R = 31.5 mm, 18.4 %, `passage_blocked`). Four designs first failed with
-`MemoryError` (nine parallel jobs plus a large git command); they were re-run with the same Sobol points
-(`scripts/g8_s2_repair.py`). Largest energy-balance residual 0.0000 %. Share of simulated designs within the 65 C limit
-(rest are infeasible): r0: 119 / 119 / 125 of 127; r1: 127 / 126 / 124; r2: 127 / 111 / 101 (per PCM rank 1 / 2 / 3).
+1,152 designs (9 pairs x 128 points): **1,089 valid, 63 geometry-rejected by the exact engine** (7 per pair, all `passage_blocked`; counted from the `valid` and `reason` columns of `g8_s2_r*_p*.csv`).
+Share of valid designs within the 65 C limit (rest are infeasible): r0: 115 / 113 / 119 of 121; r1: 121 / 121 / 121; r2: 121 / 108 / 95 (per PCM rank 1 / 2 / 3).
+Largest energy-balance residual of the v3 DOE: TBD (not re-derived from the saved files).
 Files: `g8_s2_r*_p*.csv` (means, per-year sd, and per-year columns).
 
 ### S3 - surrogate comparison (`scripts/g8_s3_compare.py`, `src/optimize/surrogates.py`; `g8_s3_comparison.csv`, `g8_s3_selection.csv`)
@@ -509,25 +507,25 @@ inside each pair only: 5-fold over designs and leave-one-year-out x design folds
 
 | Target | Spearman NN / RSM / XGB (designs) | RMSE / year-sd NN / RSM / XGB | global R2 NN / RSM / XGB |
 |---|---|---|---|
-| g_window | 0.987 / 0.993 / 0.989 | 1.70 / 1.38 / 1.80 | 0.979 / 0.984 / 0.977 |
-| g_annual | 0.988 / 0.993 / 0.989 | 1.76 / 1.40 / 1.87 | 0.979 / 0.985 / 0.977 |
-| d_overheat | 0.946 / 0.970 / 0.967 | 1.82 / 1.26 / 1.47 | 0.884 / 0.946 / 0.923 |
-| t_pcm_max | 0.844 / 0.886 / 0.928 | 7.48 / 7.19 / 5.47 | 0.681 / 0.720 / 0.862 |
+| g_window | 0.984 / 0.992 / 0.986 | 1.75 / 1.40 / 1.86 | 0.974 / 0.979 / 0.973 |
+| g_annual | 0.984 / 0.992 / 0.986 | 1.83 / 1.43 / 1.94 | 0.974 / 0.980 / 0.973 |
+| d_overheat | 0.955 / 0.971 / 0.966 | 1.59 / 1.21 / 1.37 | 0.903 / 0.945 / 0.930 |
+| t_pcm_max | 0.824 / 0.874 / 0.924 | 7.56 / 7.32 / 5.62 | 0.640 / 0.701 / 0.843 |
 
-Leave-one-year-out gives the same order (RMSE/year-sd 1.9-2.2 for the gains). Best Spearman per pair x target x validation:
-RSM 26 + 27, XGBoost 10 + 9, **NN ensemble 0 + 0**. Per-pair choice (highest mean Spearman, ties within 0.02 broken by relative RMSE):
-XGBoost for r0_p1, r0_p2, r0_p3, r1_p1, r2_p2, r2_p3; quadratic RSM for r1_p2, r1_p3, r2_p1.
+Leave-one-year-out gives the same order (RMSE/year-sd 1.5-3.3 for the gains across families and pairs). Best Spearman per pair x target x validation:
+RSM 26 + 24, XGBoost 10 + 12, **NN ensemble 0 + 0**. Per-pair choice (highest mean Spearman, ties within 0.02 broken by relative RMSE):
+XGBoost for r0_p1, r0_p3, r1_p1, r1_p2, r2_p2, r2_p3; quadratic RSM for r0_p2, r1_p3, r2_p1.
 
 **Reading (reported as is):**
-1. The surrogates **rank** designs very well for the gain objectives (Spearman ~0.99), less well for overheating (0.95-0.97) and worst for the
-   PCM peak temperature (0.84-0.93), which is the 65 C feasibility constraint; XGBoost is best on that one.
-2. **Their absolute error is larger than the weather-year scale:** RMSE is 1.4-1.9 x the year-to-year sd for the gains (and 5-7 x for
-   t_pcm_max, i.e. about 1 C). Plan acceptance (i) ("within-regime RMSE below the repeatability band, or the surrogate is declared unfit and
+1. The surrogates **rank** designs very well for the gain objectives (Spearman ~0.99), less well for overheating (0.96-0.97) and worst for the
+   PCM peak temperature (0.82-0.92), which is the 65 C feasibility constraint; XGBoost is best on that one.
+2. **Their absolute error is larger than the weather-year scale:** RMSE is 1.4-1.9 x the year-to-year sd for the gains (and 5.6-7.6 x for
+   t_pcm_max). Plan acceptance (i) ("within-regime RMSE below the repeatability band, or the surrogate is declared unfit and
    the grid is used") is **not met** for absolute values. Surrogates are therefore used only to rank and propose candidates; every
    reported number is a simulator run, and the dense-grid check (S6) carries more weight.
 3. **The NN ensemble did not win anywhere** (option B as specified). By the plan's own rule this is reported, and for G9 it stays only as a
    committee member (its spread is the uncertainty signal for active learning) alongside XGBoost and RSM; ranking and the PCM-peak
-   constraint use the per-pair winner. Global R2 (0.96-0.98 for gains) looks good and is not what decides this.
+   constraint use the per-pair winner. Global R2 (0.97-0.98 for gains) looks good and is not what decides this.
 
 **Gate G8: PASS** - surrogate chosen on within-pair RMSE and Spearman rank, not global R2; with finding 2 carried into G9.
 `pytest tests` was last run before the S1-S3 scripts (56 passed); these scripts have no unit tests beyond the ANOVA ones.
@@ -972,3 +970,17 @@ Caveat: the test years 2011-2015 are different (higher-GHI) years from 2024-2025
 - Content still true for the current code, checked against it before moving: solver safeguards (differential-controller re-solve, stiffness sub-stepping, the two shield levels) and the further simplifications -> `01_MODEL_AND_METRICS.md` sections 3b, 4 (solar-fraction definition) and 6; geometry engine and rejection codes (including `below_min_pcm_fraction`) -> `02_WEATHER_AND_DESIGN_SPACE.md` section 4b; IS 12976:2023 quotes and the legacy resizing result, the 45 C vs 60 C delivery-temperature gap, the missing O2->O1 feedback and the RT80HC/RT82 track -> `05_LIMITATIONS_AND_OPEN_ITEMS.md` items for Dr. Deepika 2, 8 and 9. Legacy numbers are labelled as such.
 - Not carried over: phase-by-phase results of the old chain (DOE, surrogate, Phase 7/8 selections, robustness), the stale Phase 0 climate-signature table, and the change plans; all describe outputs that no longer exist.
 - The project `README.md` was rewritten as a short pointer to `docs/README.md`; its old body described the legacy pipeline.
+
+## 30. Old-pipeline remnants removed, configs aligned (2026-10-28, user request, branch o2-cleanup-v3, not committed)
+- Deleted (all in git history): the six root `check_*.py` scripts, `build_regime_weather.py`, `scripts/sweep_pcm_loading.py`; `src/doe/`, `src/surrogate/`, `src/robustness/`,
+  `src/optimize/search.py`, `select_deployable.py`, `src/handoff/build_obj3_contract.py`, `build_recommendation_cards.py`, `src/design/retarget_tm.py`, `src/plots/make_plots.py`, `make_plots_phases.py`;
+  `tests/test_reproducibility.py`; `configs/design_bounds_shared.yaml`, `configs/cfd_closure_v1.yaml`; `results/plots/static`, `results/plots/interactive`, `results/plots_data/`;
+  `results/phase0_*`, `phase2_*`, `obj3_environment_contract_rajasthan.json` (v1 contract); `docs/CLEANUP_PROPOSAL.md`, `docs/legacy_result_hashes.sha256`;
+  `data/objective1/medoid_points_rajasthan.csv`, `data/objective1/raw_weather/` and 20 `data/objective1/*` files that nothing reads.
+- Code: `PRODUCTION_SOLVER_OVERRIDE` removed, `solver.timestep_s` is 150 in `configs/system_config_shared.yaml` (a `run_case` and a single-design `pipeline.py --stage simulate` run give bit-identical output before and after);
+  `SHORTLIST_SOURCE` and the retargeted-shortlist branch removed from `io_utils.py`; `load_design_bounds()` now builds the geometry bounds from the new `geometry_engine` block of `configs/design_space.yaml`;
+  the Phase-2 boundary self-test functions in `constraints.py` and `get_max_reachable_pcm_fraction` in `geometry.py` removed.
+- `configs/states/rajasthan.yaml`: `pcm_shortlist` is the O1 top-3 (equal to `mcdm_topk_by_cluster.csv`, checked by `tests/test_o1_shortlist.py`); the retargeted `Tm_target_C` values are removed.
+- Tests: 80 pass (was 83: two reproducibility tests of the deleted DOE/search modules and two retargeted-shortlist tests removed, one yaml-equals-O1-file test added).
+- `results/v1_cap20/` (the v1 archive: v1 results, v1 held-out file and lock, docs snapshot) deleted at the user's request; it is in git history.
+- Sections 1-29 above are the chronological log and keep the wording and file names of their day; paths and modules they name may since have been removed.

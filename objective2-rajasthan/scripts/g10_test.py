@@ -1,7 +1,7 @@
 """
 scripts/g10_test.py
 ======================
-G10 / S8 - the HELD-OUT test (v3: untouched years 2011-2015), run exactly ONCE. The v1 test on 2024-2025 is archived (results/v1_cap20/). Usage: python scripts/g10_test.py --confirm-run-once
+G10 / S8 - the HELD-OUT test (v3: untouched years 2011-2015), run exactly ONCE. The v1 test used 2024-2025. Usage: python scripts/g10_test.py --confirm-run-once
 
 What is run: the frozen designs from the three selection logs (results/g10_selection_r{0,1,2}.json): per regime the
 chosen design plus the best-g_window design of every other O1 PCM, each next to its water-only twin at the SAME flow

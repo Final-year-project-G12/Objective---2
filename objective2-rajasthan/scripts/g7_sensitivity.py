@@ -52,9 +52,7 @@ TES = ["E_del45_annual_kWh", "E_del45_window_kWh", "E_rec45_mean_kWh", "E_rec45_
 
 def permissive_bounds():
     b = load_design_bounds()
-    b = {**b, "pcm_thickness_m": {"min": 0.004, "max": 0.2}, "capsule_diameter_m": {"min": 0.01, "max": 0.2},
-         "capsule_count": {"min": 1, "max": 5000, "step": 1}, "pcm_volume_fraction": {"min": 0.0, "max": 0.20}}
-    return b
+    return {**b, "pcm_volume_fraction": {"min": 0.0, "max": 0.20}}   # G7 ran with the 20 % cap
 
 
 def design(r_in_m, n, flow, arrangement):

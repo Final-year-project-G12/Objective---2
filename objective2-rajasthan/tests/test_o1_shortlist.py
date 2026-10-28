@@ -1,8 +1,8 @@
 """
 tests/test_o1_shortlist.py
 =============================
-G6 (O2, decision D2): the main pipeline uses Objective 1's MCDM top-3 as written; the
-retargeted shortlist is kept only as a labelled comparison.
+The pipeline uses Objective 1's MCDM top-3 as written (data/objective1/mcdm_topk_by_cluster.csv); the
+shortlist in configs/states/rajasthan.yaml must agree with it.
 """
 
 import sys
@@ -22,21 +22,17 @@ EXPECTED = {
     1: ["PureTemp 60", "CrodaTherm 60", "n-Heptacosane (C27)"],
     2: ["n-Heptacosane (C27)", "PureTemp 58", "PlusICE A58"],
 }
-RETIRED = {0: ["savE® OM42", "RT44HC", "RT47"], 1: ["n-Tricosane (C23)", "savE® OM49", "RT45HC"],
-           2: ["RT45HC", "Lauric acid (C12)", "n-Docosane (C22)"]}
 
 
 def test_pcm_shortlist_is_the_o1_top3_as_written():
     for cid in list_regimes("rajasthan"):
         r = get_regime("rajasthan", cid)
         assert r["pcm_shortlist"] == EXPECTED[cid]
-        assert r["pcm_shortlist_source"] == "o1_mcdm_topk_by_cluster.csv"
 
 
-def test_retargeted_shortlist_only_survives_as_labelled_comparison():
-    for cid in list_regimes("rajasthan"):
-        assert get_regime("rajasthan", cid)["pcm_shortlist_retargeted"] == RETIRED[cid]
-    assert not set(RETIRED[0]) & set(EXPECTED[0])
+def test_state_yaml_shortlist_equals_the_o1_file():
+    for r in io_utils.load_state_config("rajasthan")["regimes"]:
+        assert r["pcm_shortlist"] == o1_top3("rajasthan")[int(r["cluster_id"])]
 
 
 def test_matches_o1_file_and_every_pcm_is_in_the_database():
@@ -51,8 +47,3 @@ def test_matches_o1_file_and_every_pcm_is_in_the_database():
 def test_cluster0_rank1_tie_is_visible_not_hidden():
     ties = o1_rank_ties("rajasthan")
     assert len(ties[0]) == 2 and len(ties[1]) == 1 and len(ties[2]) == 1
-
-
-def test_legacy_switch_reproduces_old_behaviour(monkeypatch):
-    monkeypatch.setattr(io_utils, "SHORTLIST_SOURCE", "retargeted")
-    assert get_regime("rajasthan", 0)["pcm_shortlist"] == RETIRED[0]

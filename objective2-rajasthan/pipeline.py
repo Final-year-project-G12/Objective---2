@@ -29,7 +29,7 @@ single place that states the order of the chain. Stages that take hours say so b
 `--stage all` runs verify ... handoff, plots in that order and stops at the first failing stage. It never runs `heldout`
 unless `--include-heldout` is given (the lock still refuses a second run).
 
-SAFETY. The v1 (cap 20 %) held-out test on 2024-2025 is archived in results/v1_cap20/ and those years are labelled used.
+SAFETY. The v1 (cap 20 %) held-out test used 2024-2025 and those years are labelled used.
 The v3 held-out test runs once (run id in results/held_out_test.lock). The stages that decide the frozen designs
 (baseline, screening, doe, surrogate, band, optimize, select) would overwrite them and make that run meaningless, so they refuse
 while the lock exists unless `--allow-invalidate` is passed. The reporting stages (report, handoff, plots, status) are always safe.
@@ -104,7 +104,7 @@ def commands(stage):
     if stage == "handoff":
         return [[cmd("-m", "src.handoff.build_obj3_contract_v2", env={"PYTHONPATH": "."})]]
     if stage == "plots":
-        return [[cmd("-m", "src.plots.make_plots_results")], [cmd("-m", "src.plots.make_plots_phases")]]
+        return [[cmd("-m", "src.plots.make_plots_results")]]
     raise KeyError(stage)
 
 

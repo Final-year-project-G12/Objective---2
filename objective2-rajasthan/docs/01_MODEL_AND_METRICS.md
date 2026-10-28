@@ -15,8 +15,7 @@ Evidence for every statement is in `docs/PROGRESS.md` (section numbers in bracke
 | `compute_tes_metrics=True`, `night_day_stride=k` | add the WP1 metrics and night scenarios every k-th day (`0` skips the scenarios) |
 | `initial_state`, `stop_when_Tw_below_C` | used by the night scenarios |
 
-The production time step is **150 s**, set in code by `PRODUCTION_SOLVER_OVERRIDE` in `src/simulation/run_case.py`; the frozen YAML still says 300 s
-and was not edited. The 300 s step failed the convergence criterion (plain tank changed 0.073-0.091 % on halving); 150 s passes
+The production time step is **150 s** (`solver.timestep_s` in `configs/system_config_shared.yaml`). The 300 s step failed the convergence criterion (plain tank changed 0.073-0.091 % on halving); 150 s passes
 (largest change 0.0453 % on any halving, [section 4]).
 
 ## 2. Repairs to the model (Level 1) and what they changed
@@ -85,8 +84,7 @@ The held-out years use exact plain runs instead of the grid (`evaluate_night` in
 ## 6. What is not modelled
 
 No supercooling, no volume change on melting, no backup heater, no pump energy, a flow-independent collector F_R, a single lumped
-PCM resistance r/(5k) with the project's liquid-convection factor (the CFD-derived correction in `configs/cfd_closure_v1.yaml` is
-**provisional and not applied**: `applied_in_simulator: false`).
+PCM resistance r/(5k) with the project's liquid-convection factor (no CFD-derived correction is applied).
 
 Further simplifications to state in the report:
 

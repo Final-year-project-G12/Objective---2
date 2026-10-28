@@ -1,11 +1,10 @@
 # 06 - Objective 3 hand-off (contract v2)
 
 **File:** `results/obj3_environment_contract_rajasthan_v2.json`, written by `src/handoff/build_obj3_contract_v2.py`
-(`PYTHONPATH=. python -m src.handoff.build_obj3_contract_v2`). It **supersedes** `results/obj3_environment_contract_rajasthan.json`, which was
-built from the legacy deployables (UTC-indexed demand, single-node tank, retargeted PCMs) and must not be used for training.
-The document that described that old contract (OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md) was deleted on 2026-10-28; it is in git history.
+(`PYTHONPATH=. python -m src.handoff.build_obj3_contract_v2`).
+`results/obj3_environment_contract_rajasthan.json` is not a contract to train on: it is the template the builder copies the generic parts from (limits, action set, reward skeleton, reset scenarios, acceptance tests).
 
-## What changed in the contract
+## Contents of the contract
 
 | Item | v2 |
 |---|---|

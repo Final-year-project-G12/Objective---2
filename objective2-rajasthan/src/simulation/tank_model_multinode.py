@@ -38,8 +38,8 @@ night scenarios. Pump energy is not modelled (flagged meaningless, G2).
 Simplifications (documented, not hidden): first-order upwind adds numerical
 diffusion, so the node count N is a modelling parameter (compared against the
 project CFD draw case in tests/test_multinode_tank.py); no PCM supercooling or
-volume change; the capsule closure is still the lumped r/(5k) one -- the CFD
-phi calibration (configs/cfd_closure_v1.yaml) is not applied in this pass.
+volume change; the capsule closure is still the lumped r/(5k) one; no CFD-derived
+resistance correction is applied.
 """
 
 from dataclasses import dataclass, replace as _dc_replace
