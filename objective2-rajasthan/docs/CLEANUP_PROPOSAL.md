@@ -49,6 +49,8 @@ energy metric and the 8-37 capsule / 40-80 mm diameter bounds. None is cited by 
 
 `docs/00_*` ... `docs/09_*`, `docs/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md`: superseded by `docs/` (G12). Each gets a one-line
 "superseded" banner at the top; the original text is not rewritten.
+**Update 2026-10-28:** these, plus the legacy plot walkthroughs `docs/plots/00_INDEX.md` and `02..08_*_plots.md`, were deleted at the
+user's request after their still-valid content was moved into `01`, `02` and `05`. They remain in git history.
 
 ## E. Data
 

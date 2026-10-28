@@ -13,7 +13,7 @@ Output, same layout as the legacy set:
 - `results/plots_data/` - cached simulation and refit results behind six figures. `--refresh` rebuilds them (about 10 min).
 
 The nine earlier figures (`results/plots/fig1..fig9_*.png`, from `make_plots_results.py`) are separate and unchanged.
-The legacy set is described in `00_INDEX.md` and `02..08_*_plots.md`; those files describe the retired chain.
+The walkthroughs of the legacy set (`00_INDEX.md`, `02..08_*_plots.md`) were deleted on 2026-10-28 with the rest of the legacy docs; they are in git history.
 
 Held-out years: no figure simulates them. Held-out numbers are read from `results/g10_heldout_results.csv`, produced by the single permitted run.
 

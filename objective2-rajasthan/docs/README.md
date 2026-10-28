@@ -1,9 +1,10 @@
 # Objective 2 - Rajasthan: current pipeline (2026-10-27)
 
 **Status: current.** These documents describe what is actually in the code and the saved results after the rework
-(`docs/PROGRESS.md` is the day-by-day log with every gate). The older `docs/00_*` ... `docs/09_*`,
-`docs/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md` and the legacy results README (deleted) describe the legacy pipeline (UTC-indexed demand,
-single-node tank, retargeted PCMs, 327-case DOE) and carry a banner saying so. Their numbers are **not** valid for the current model.
+(`docs/PROGRESS.md` is the day-by-day log with every gate). The documents of the legacy pipeline (UTC-indexed demand,
+single-node tank, retargeted PCMs, 327-case DOE: the old 00_* ... 09_* phase documents, OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md
+and the plots/00_INDEX.md and 02..08 plot walkthroughs) were deleted on 2026-10-28 and remain in git history. What still applies from them
+(solver safeguards, simplifications, geometry engine, IS 12976 sizing, the O1/O2 delivery-temperature gap) was moved into `01`, `02` and `05`.
 
 > **Current version: v3 (PCM fraction cap 30 %), completed 2026-10-28** (`docs/PROGRESS.md` section 26). The cap was raised from 20 % as a declared change;
 > G8-G11 were re-run, the designs re-selected on 2021-2023 and tested once on the untouched years 2011-2015. The v1 (cap 20 %) results, including its held-out test on
@@ -54,8 +55,7 @@ python run_all_rajasthan.py --full --dry-run                        # print the 
 
 Stages that would re-decide the frozen designs (baseline ... select) refuse while `results/held_out_test.lock` exists unless
 `--allow-invalidate` is passed, because a re-run would make the one held-out evaluation meaningless. Details at the top of `pipeline.py`.
-Figures: see the table below.
-note below.
+Figures: see the table below and `docs/plots/10_PLOTS.md`.
 
 ## Figures (`results/plots/`, code `src/plots/make_plots_results.py`)
 

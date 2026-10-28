@@ -3,7 +3,7 @@
 **File:** `results/obj3_environment_contract_rajasthan_v2.json`, written by `src/handoff/build_obj3_contract_v2.py`
 (`PYTHONPATH=. python -m src.handoff.build_obj3_contract_v2`). It **supersedes** `results/obj3_environment_contract_rajasthan.json`, which was
 built from the legacy deployables (UTC-indexed demand, single-node tank, retargeted PCMs) and must not be used for training.
-The older `docs/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md` describes that old contract and carries a banner.
+The document that described that old contract (OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md) was deleted on 2026-10-28; it is in git history.
 
 ## What changed in the contract
 
