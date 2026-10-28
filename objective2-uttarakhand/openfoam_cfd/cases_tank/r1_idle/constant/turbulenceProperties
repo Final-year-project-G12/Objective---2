@@ -1,0 +1,10 @@
+/* tank_make_case.py (Objective 2, Uttarakhand) -- edit the generator, not this file */
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      turbulenceProperties;
+}
+
+simulationType laminar;

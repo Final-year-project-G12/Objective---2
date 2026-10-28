@@ -1,0 +1,33 @@
+{
+  "pcm": "PureTemp 58",
+  "Tm_C": 58.0,
+  "L_kJ_kg": 225.0,
+  "rho_s": 890.0,
+  "rho_l": 810.0,
+  "cp_avg": 2590.0,
+  "k": 0.2,
+  "d_m": 0.0791315712214182,
+  "mdot_kg_s": 0.05,
+  "dT_K": 12.0,
+  "T_init_C": 43.0,
+  "T_hot_C": 70.0,
+  "h_w_W_m2K": 208.8608103227691,
+  "Re_p": 76.99517006677277,
+  "u_sup_m_s": 0.0006338405767549084,
+  "tank_volume_L": 50.0,
+  "conduction_only": false,
+  "assumed": {
+    "dyn_viscosity_Pa_s": 0.0035,
+    "thermal_expansion_1_K": 0.0007,
+    "mushy_Cu": 100000.0,
+    "mushy_q": 0.01
+  },
+  "t_end_s": 36000.0,
+  "bc_mode": "convective",
+  "wedge_deg": 5.0,
+  "n_cells_est": 1024,
+  "cell_size_m": 0.0012,
+  "Bi": 41.3187102185483,
+  "Ste": 0.13813333333333333,
+  "config_version": "o2_cfd_uttarakhand_v1.0_2026-10-28"
+}

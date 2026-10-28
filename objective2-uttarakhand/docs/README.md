@@ -19,6 +19,7 @@ Scope: this folder only. Fixed and not optimised: 50 L tank, collector area, the
 | [`06_OBJECTIVE3_HANDOFF.md`](06_OBJECTIVE3_HANDOFF.md) | the Objective 3 environment contract v2 |
 | [`plots/10_PLOTS.md`](plots/10_PLOTS.md) | the nine result figures |
 | `PROGRESS.md` | the progress log, gates G1-G12 |
+| [`../openfoam_cfd/README.md`](../openfoam_cfd/README.md) | Uttarakhand OpenFOAM capsule and tank cases, ParaView scripts (case files written, not run) |
 | `../results/results_registry.csv` | every headline number with its source file (`scripts/g12_registry.py`) |
 
 ## Headline findings (all in `04_RESULTS.md`, with the files they come from)

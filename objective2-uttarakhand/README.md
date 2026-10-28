@@ -34,7 +34,8 @@ objective2-uttarakhand/
 ├── tests/                    # python -m pytest tests
 ├── data/                     # objective1/ inputs, weather/point_years/, demand/, legacy/ (tables read by g2-g4)
 ├── results/                  # all outputs; results_registry.csv lists every headline number with its source
-└── docs/                     # documentation (start at docs/README.md)
+├── docs/                     # documentation (start at docs/README.md)
+└── openfoam_cfd/             # Uttarakhand OpenFOAM capsule / tank cases and ParaView scripts (written, not run; see its README)
 ```
 
 ## Quick start (from this folder)

@@ -1,0 +1,11 @@
+case,kind,regime,pcm,status
+cases/r0_chosen_puretemp_58,capsule_chosen,0,PureTemp 58,not run
+cases/r0_chosen_puretemp_58_cond,capsule_conduction,0,PureTemp 58,not run
+cases/r0_alt_plusice_a58,capsule_runner_up,0,PlusICE A58,not run
+cases/r1_chosen_puretemp_58,capsule_chosen,1,PureTemp 58,not run
+cases/r1_chosen_puretemp_58_cond,capsule_conduction,1,PureTemp 58,not run
+cases/r1_alt_plusice_a58,capsule_runner_up,1,PlusICE A58,not run
+cases/r2_chosen_save_om55,capsule_chosen,2,savE® OM55,not run
+cases/r2_chosen_save_om55_cond,capsule_conduction,2,savE® OM55,not run
+cases/r2_alt_puretemp_58,capsule_runner_up,2,PureTemp 58,not run
+cases/r3_chosen_n_hexacosane_c26,capsule_chosen,3,n-Hexacosane (C26),not run

@@ -113,3 +113,14 @@ re-running the chosen designs of regimes 0 and 3 on the select years reproduces 
   `scripts/sweep_pcm_loading.py`, `scripts/g19_fetch_test2_weather.py`, and the 17 phase figures with their script and cache (Rajasthan keeps only
   `fig1`-`fig9`). The files were moved out of the repository rather than deleted on disk.
 - Tests: 81 pass (the removed reproducibility test and the retargeted-shortlist checks account for the difference from 84).
+
+## 15. OpenFOAM cases for Uttarakhand (2026-10-28)
+
+New folder `openfoam_cfd/` (inside `objective2-uttarakhand/`): the project's shared OpenFOAM set-up (`../openfoam_cfd/`) adapted to
+Uttarakhand. `scripts/make_uttarakhand_cases.py` writes 26 cases from the saved results (`results/g10_selection_r*.json`,
+`results/g10_heldout_results.csv`, the state yaml): per regime the chosen capsule (KPI case and a ParaView animation case), for
+regimes 0-2 a conduction-only twin and the runner-up PCM, and the 50 L tank (charge, draw, idle) at the regime's mains temperature,
+judged at 50 C. Script changes against the shared copies: Uttarakhand project and PCM database, regime mains temperature in the tank
+draw case (shared: fixed 25 C), 50 C target in the tank metrics, 12 K capsule drive (shared quick-start 15 K would exceed the 72 C
+shield for PureTemp 58), configurable WSL distribution, LF line endings for the bash scripts. **Not run:** OpenFOAM and ParaView
+are not installed on this machine; `scripts/run_all_cases.ps1` runs everything where they are.

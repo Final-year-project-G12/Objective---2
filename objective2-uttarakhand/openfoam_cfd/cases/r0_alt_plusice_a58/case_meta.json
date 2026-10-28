@@ -1,0 +1,33 @@
+{
+  "pcm": "PlusICE A58",
+  "Tm_C": 58.0,
+  "L_kJ_kg": 215.0,
+  "rho_s": 910.0,
+  "rho_l": 910.0,
+  "cp_avg": 2220.0,
+  "k": 0.22,
+  "d_m": 0.0791449411136492,
+  "mdot_kg_s": 0.0365539793882315,
+  "dT_K": 12.0,
+  "T_init_C": 43.0,
+  "T_hot_C": 70.0,
+  "h_w_W_m2K": 175.79021674300307,
+  "Re_p": 56.2991077559763,
+  "u_sup_m_s": 0.0004633879075624738,
+  "tank_volume_L": 50.0,
+  "conduction_only": false,
+  "assumed": {
+    "dyn_viscosity_Pa_s": 0.0035,
+    "thermal_expansion_1_K": 0.0007,
+    "mushy_Cu": 100000.0,
+    "mushy_q": 0.01
+  },
+  "t_end_s": 36000.0,
+  "bc_mode": "convective",
+  "wedge_deg": 5.0,
+  "n_cells_est": 1024,
+  "cell_size_m": 0.0012,
+  "Bi": 31.6202417101832,
+  "Ste": 0.12390697674418605,
+  "config_version": "o2_cfd_uttarakhand_v1.0_2026-10-28"
+}
