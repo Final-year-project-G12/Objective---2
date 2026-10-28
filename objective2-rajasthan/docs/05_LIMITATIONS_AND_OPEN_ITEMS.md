@@ -24,9 +24,9 @@
    at the bottom another design of the same PCM is 22 kWh better than the chosen one. Quote absolute kWh only as "stack centred (model default),
    range over bottom / centre / top given beside it". The position is a mounting choice the model does not fix; no source read settles it.
 3. **Flow optima are not physical.** The collector F_R in the project model does not depend on flow, so low flow always helps the stratified
-   water tank. Flow at the 0.010 floor appears on up to 44 % of the Pareto sets (`g9_boundary_check.csv`) and is a model artefact.
-   The chosen flows (0.021-0.048 kg/s) are inside the S0 sets and should not be over-interpreted.
-4. **Night-serve duration is not improved against the fixed 50 L tank, and why (decomposed 2026-10-27).** tau_serve gain is -0.08 / -0.01 / -0.03 h
+   water tank. Flow at the 0.010 floor appears on up to 40 % of the Pareto sets (`g9_boundary_check.csv`) and is a model artefact.
+   The chosen flows (0.0155 / 0.0493 / 0.0236 kg/s for regimes 0 / 1 / 2, `g10_selection_r*.json`) are inside the S0 sets and should not be over-interpreted.
+4. **Night-serve duration is not improved against the fixed 50 L tank, and why (decomposed 2026-10-27).** tau_serve gain is -0.08 / -0.01 / -0.03 h on the v1 designs (v3 held-out: -0.12 / +0.03 / -0.01 h)
    and the serve fraction hits a floor (a 46 L evening draw on a 50 L tank cools the outlet below 45 C within about half an hour whatever is
    inside). The zero is the net of two effects (section 5d of `04_RESULTS.md`, `g16_serve_*.csv`): the capsules take about 20 % of the tank's water
    (a 40 L water-only tank serves 0.16-0.18 h less), and the PCM adds back +0.08 to +0.17 h against that displacement-matched tank. On energy the
@@ -48,17 +48,13 @@
 
 ## Deviations from the plan and from the first runs (all disclosed in the progress log)
 
-- Time step 150 s via a code-level override because 300 s failed the convergence gate.
+- Time step 150 s (`solver.timestep_s` in `configs/system_config_shared.yaml`) because 300 s failed the convergence gate.
 - Demand follows the floor of the local hour (`local_hour`), as instructed.
 - Surrogate comparison: the NN ensemble won nowhere; it is used only as a committee member for active learning.
 - G9 regime 0 needed a method change (box-vertex step, `03`) after failing the dense-grid check twice. It is now a declared step; the with/without comparison for all nine pairs (section 5f of `04_RESULTS.md`) shows it is what makes regime 0 pass and is not needed for regimes 1 and 2.
 - Positive control "PCM fraction x2" was uninformative from the chosen designs (cap); re-run from an interior anchor it passes (+31 to +44 kWh, section 5b of `04_RESULTS.md`, `scripts/g14_issue5_controls.py`).
-- The WP2-C CFD runs and the porting to the other three states were out of scope; `configs/cfd_closure_v1.yaml` is provisional and unapplied.
-- Legacy results (`results/phase*`, `fix*` and the old plots folder) were moved to an archive folder after approval and that folder was deleted on 2026-10-28 at the user's request (only the one input table the evidence scripts g2/g3/g4 read was kept, in `data/legacy/`)
-  (progress log section 16). `pipeline.py` and `run_all_rajasthan.py` were rewritten for this chain (section 17); the old copies are in
-  the deleted legacy archive. Still the old chain: the legacy modules under `src/{doe,surrogate,optimize/search.py,robustness}` and
-  `src/plots/make_plots.py`, which nothing in the entry points calls. `--stage all` has not been executed end to end (hours; refused
-  by the held-out lock); each stage's commands were printed with `--dry-run` and the reporting stages were run.
+- The WP2-C CFD runs and the porting to the other three states were out of scope; no CFD-derived correction is applied in the simulator.
+- `--stage all` of `pipeline.py` has not been executed end to end (hours; refused by the held-out lock); each stage's commands were printed with `--dry-run` and the stages were run individually.
 
 ## Items for Dr. Deepika / the O1 owner
 
@@ -84,11 +80,11 @@
 8. **Delivery temperature differs between O1 and O2.** O1 sizes PCMs for 60 C delivery (`T_DELIVERY_C`); O2's frozen shared config
    uses 45 C (`delivery.target_temp_C`), which every metric here is built on (E_del,45, tau_serve, solar fraction). The target changes only the
    scoring, not the simulated temperatures. On the legacy model, re-scoring at 60 C cut solar fraction by about 19-20 points in every regime,
-   below the Gate 4 band (`check_delivery_temp_reconciliation.py`, run 2026-09-18 on the old shortlist). Aligning them means changing the shared config for
+   below the Gate 4 band (legacy-model check run 2026-09-18 on the old shortlist; its script is no longer in the repository). Aligning them means changing the shared config for
    all four states and re-running; not done.
 9. **No feedback from O2 to O1.** O1 ranks PCMs from climate data and MCDM only; the achievable tank temperatures and PCM loading are
    first computed here. Suggested sentence for the paper: "Objective 1's PCM selection does not currently incorporate Objective 2's
    achievable-temperature and loading constraints; a future iteration would feed them back into the MCDM criteria."
    A related negative result from the legacy model: two 75-85 C PCMs (Rubitherm RT80HC and RT82, from the manufacturer's 21.01.2026
-   datasheets, kept in `data/pcm/rajasthan_overheat_track_candidates.csv`; `check_overheat_track_pcm.py`) never melted (melt fraction 0)
+   datasheets, kept in `data/legacy/pcm/rajasthan_overheat_track_candidates.csv`; legacy-model check) never melted (melt fraction 0)
    yet still passed 65 C by sensible heating, so "pick a higher Tm" does not avoid the PCM limit. Not re-run on the current model.

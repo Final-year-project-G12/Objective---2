@@ -60,16 +60,16 @@ def config_hashes(state: str) -> dict:
     stale (system_config_shared.yaml gained the safety_shield block on
     2026-09-13 without a version bump — see that file's own history)."""
     system_config_path = CONFIGS_DIR / "system_config_shared.yaml"
-    design_bounds_path = CONFIGS_DIR / "design_bounds_shared.yaml"
+    design_space_path = CONFIGS_DIR / "design_space.yaml"
     state_config_path = STATES_DIR / f"{state}.yaml"
     return {
         "system_config_shared.yaml": {
             "version": load_system_config().get("version"),
             "sha256": _sha256_of(system_config_path),
         },
-        "design_bounds_shared.yaml": {
+        "design_space.yaml": {
             "version": load_design_bounds().get("version"),
-            "sha256": _sha256_of(design_bounds_path),
+            "sha256": _sha256_of(design_space_path),
         },
         f"states/{state}.yaml": {
             "version": load_state_config(state).get("state_config_version"),
@@ -94,8 +94,21 @@ def load_system_config():
 
 @functools.lru_cache(maxsize=None)
 def load_design_bounds():
-    """FROZEN shared design-space bounds."""
-    return _load_yaml(CONFIGS_DIR / "design_bounds_shared.yaml")
+    """Bounds dict for the exact geometry check: the `geometry_engine` block of configs/design_space.yaml, with the
+    PCM fraction cap and the flow range taken from the approved variables."""
+    sp = _load_yaml(CONFIGS_DIR / "design_space.yaml")
+    ge, v = sp["geometry_engine"], sp["variables"]
+    return {
+        "version": sp["version"],
+        "capsule_shape": list(ge["capsule_shape"]),
+        "capsule_arrangement": list(v["arrangement"]),
+        "pcm_thickness_m": dict(ge["pcm_thickness_m"]),
+        "capsule_diameter_m": dict(ge["capsule_diameter_m"]),
+        "capsule_count": dict(ge["capsule_count"]),
+        "pcm_volume_fraction": {"min": ge["pcm_volume_fraction_min"], "max": v["pcm_volume_fraction"]["max"]},
+        "flow_rate_kg_s": dict(v["flow_rate_kg_s"]),
+        "geometry": {"spacing_min_m": ge["spacing_min_m"], "passage_min_fraction": ge["passage_min_fraction"]},
+    }
 
 
 @functools.lru_cache(maxsize=None)
@@ -104,12 +117,7 @@ def load_state_config(state: str):
     return _load_yaml(STATES_DIR / f"{state}.yaml")
 
 
-# O2 G6 (decision D2, 2026-10-26): Objective 2 works on Objective 1's MCDM top-3 AS WRITTEN. The
-# retargeted lists produced by src/design/retarget_tm.py (stored as `pcm_shortlist` in the state yaml) are retired
-# from the main pipeline: get_regime() now returns the O1 list as `pcm_shortlist` and keeps the retargeted one only
-# under `pcm_shortlist_retargeted` as a labelled comparison. Set SHORTLIST_SOURCE = "retargeted" to reproduce the
-# legacy behaviour (legacy comparison only).
-SHORTLIST_SOURCE = "o1"
+# Objective 2 works on Objective 1's MCDM top-3 as written (data/objective1/mcdm_topk_by_cluster.csv).
 O1_TOPK_FILE = DATA_DIR / "objective1" / "mcdm_topk_by_cluster.csv"
 
 
@@ -132,16 +140,12 @@ def o1_rank_ties(state: str = "rajasthan") -> dict:
 
 
 def get_regime(state: str, cluster_id: int) -> dict:
-    """One regime's entry from states/<state>.yaml (weather paths, Tm_target,
-    T_mains, PCM shortlist names). `pcm_shortlist` is Objective 1's top-3 (see SHORTLIST_SOURCE)."""
+    """One regime's entry from states/<state>.yaml (weather paths, T_mains, PCM shortlist names).
+    `pcm_shortlist` is Objective 1's top-3, in consensus-rank order."""
     cfg = load_state_config(state)
     for r in cfg["regimes"]:
         if int(r["cluster_id"]) == int(cluster_id):
-            if SHORTLIST_SOURCE == "o1":
-                return {**r, "pcm_shortlist": o1_top3(state)[int(cluster_id)],
-                        "pcm_shortlist_retargeted": list(r["pcm_shortlist"]),
-                        "pcm_shortlist_source": "o1_mcdm_topk_by_cluster.csv"}
-            return {**r, "pcm_shortlist_source": "retargeted (legacy)"}
+            return {**r, "pcm_shortlist": o1_top3(state)[int(cluster_id)]}
     raise KeyError(f"cluster_id {cluster_id} not found in states/{state}.yaml")
 
 

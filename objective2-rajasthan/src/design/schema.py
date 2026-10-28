@@ -2,15 +2,13 @@
 src/design/schema.py
 =====================
 The design vector Objective 2 searches over (D2.2 input). 40-hr scope:
-sphere capsules only (design_bounds_shared.yaml). Arrangement was also
-frozen (staggered-only) under that same scope cut but is restored as a
-searched variable as of 2026-09-17 — see
-docs/00_MASTER_CHANGE_PLAN.md / docs/01_PROMPT_PHASE1_CONFIG.md.
+sphere capsules only (configs/design_space.yaml, geometry_engine.capsule_shape).
+Arrangement is a searched variable (single-layer, staggered, radial).
 
 x = [capsule_diameter_m, n_capsule, flow_rate_kg_s, capsule_arrangement]
 
 PCM thickness (conduction distance) and PCM volume fraction are DERIVED,
-not independently sampled — see design_bounds_shared.yaml's note on why.
+not independently sampled.
 """
 
 from dataclasses import dataclass

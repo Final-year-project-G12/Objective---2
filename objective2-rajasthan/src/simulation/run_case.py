@@ -26,15 +26,6 @@ from src.simulation.tank_model import DesignRuntime, run_year
 
 J_PER_KWH = 3.6e6
 
-# O2 G2 (2026-10-26): production time step. The frozen YAML says 300 s,
-# but at 300 s the plain-tank annual energy is still moving 0.07-0.09 % when dt
-# halves (limit 0.05 %) and the paired PCM gain is under-reported by ~0.1 pp.
-# Applied here, in code, so system_config_shared.yaml stays untouched; a caller's
-# own system_config_overrides still win (the convergence study relies on that).
-# Evidence: results/g2_timestep_convergence*.csv, docs/PROGRESS.md.
-PRODUCTION_SOLVER_OVERRIDE = {"solver": {"timestep_s": 150}}
-
-
 def run_case(state: str, cluster_id: int, pcm_name: str, design: DesignVector,
              system_config: dict = None, design_bounds: dict = None,
              volume_multiplier: float = 1.0, timing_shift_hours: float = 0.0,
@@ -61,7 +52,6 @@ def run_case(state: str, cluster_id: int, pcm_name: str, design: DesignVector,
     two-level (annual + per-hour) noise model.
     """
     system_config = system_config or load_system_config()
-    system_config = _deep_merge(system_config, PRODUCTION_SOLVER_OVERRIDE)
     if system_config_overrides:
         system_config = _deep_merge(system_config, system_config_overrides)
     design_bounds = design_bounds or load_design_bounds()

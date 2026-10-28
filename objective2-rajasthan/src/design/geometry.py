@@ -1,7 +1,7 @@
 """
 src/design/geometry.py
 ========================
-Phase 2 / Deliverable D2.2 — Geometry & constraint engine.
+Geometry & constraint engine.
 
 Given a design vector (capsule diameter, capsule count, flow rate,
 arrangement), returns volume/area/spacing/pressure-drop and a valid/invalid
@@ -30,8 +30,7 @@ GEOMETRIC MODEL (documented simplification, appropriate for a 40-hr MVP):
     n_capsule*V_capsule/V_tank, unaffected by how capsules are arranged).
     The packing void fraction feeds the passage-blocked check and the Ergun
     hydraulics below, which is why arrangement changes pressure_drop_pa and
-    pump_power_w without any change to the simulator's physics code
-    (Phase 3 is pass-through only).
+    pump_power_w without any change to the simulator's physics code.
   - Pressure drop uses the Ergun equation for flow through a packed bed of
     spheres (Ergun, 1952) — a standard correlation, not derived from
     scratch, as required by the framework doc [1, Sec 3.2].
@@ -40,7 +39,7 @@ REASON CODES (constraints.py maps these to reject/accept):
   overlap           - capsule diameter too large for even one to fit in the
                        tank cross-section at the required spacing.
   volume_exceeded   - N_capsule*V_capsule exceeds the allocated PCM volume
-                       fraction bound (design_bounds: 0.10-0.20 of V_tank).
+                       fraction cap (pcm_volume_fraction.max of configs/design_space.yaml, 30 % of V_tank).
   passage_blocked   - the capsule stack does not fit within the tank height,
                        or the resulting packing void fraction is below the
                        minimum free-flow passage fraction.
@@ -55,7 +54,7 @@ codes above are just now computed from whichever packing model the
 arrangement dispatches to (see pack_capsules()).
 
 Determinism: pure functions of (design vector, frozen configs) -> same
-inputs always produce identical outputs (checked in Phase 2 exit test).
+inputs always produce identical outputs.
 """
 
 import math
@@ -221,24 +220,6 @@ def pack_capsules(arrangement: str, diameter_m: float, tank_diameter_m: float, t
         raise ValueError(f"unknown arrangement: {arrangement}")
 
 
-def get_max_reachable_pcm_fraction(arrangement: str, diameter_m: float = 0.08, count_max: int = 37,
-                                    system_config: dict = None, design_bounds: dict = None) -> dict:
-    """Sweeps capsule count up to count_max at diameter_m for one arrangement
-    and returns the largest volume_exceeded-passing (i.e. still
-    geometrically valid) fraction of tank volume reached. Used by the Phase
-    2 exit report's per-arrangement max-reachable-fraction table."""
-    system_config = system_config or load_system_config()
-    design_bounds = design_bounds or load_design_bounds()
-    best_n, best_fraction = 0, 0.0
-    for n in range(1, count_max + 1):
-        design = DesignVector(diameter_m, n, design_bounds["flow_rate_kg_s"]["min"],
-                               capsule_arrangement=arrangement)
-        result = compute_geometry(design, system_config, design_bounds)
-        if result["valid"]:
-            best_n, best_fraction = n, result["pcm_volume_fraction"]
-    return {"arrangement": arrangement, "max_n_feasible": best_n, "max_reachable_pcm_fraction": best_fraction}
-
-
 def compute_geometry(design: DesignVector, system_config: dict = None,
                       design_bounds: dict = None) -> dict:
     """Deterministic geometry + hydraulics for one design vector.
@@ -315,13 +296,7 @@ def compute_geometry(design: DesignVector, system_config: dict = None,
         result.update(valid=False, reason="passage_blocked")
         return result
     if pcm_volume_fraction < vf_bounds["min"] - 1e-9:
-        # Step 3.4 of the 2026-09-20 fix plan (decision D1): this used to be
-        # a soft flag only ("below the documented 10% floor, not a hard
-        # geometric failure"), which let DOE/search/selection silently keep
-        # designs the floor was supposed to filter out. Now a hard
-        # rejection, at a floor value grounded in scripts/sweep_pcm_loading.py
-        # rather than the old, never-run-against-the-simulator 10% figure —
-        # see design_bounds_shared.yaml's version note for the sweep result.
+        # Hard rejection below the loading floor (pcm_volume_fraction.min of the bounds dict).
         result["below_min_pcm_fraction"] = True
         result.update(valid=False, reason="below_min_pcm_fraction")
         return result

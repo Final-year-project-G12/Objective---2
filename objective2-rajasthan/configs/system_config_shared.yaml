@@ -86,7 +86,7 @@ water:
 solver:
   method: backward_euler_lagged_pcm  # linear-implicit water node, PCM temperature
                                        # lagged one sub-step (see src/simulation/tank_model.py docstring)
-  timestep_s: 300                     # 5 min nominal
+  timestep_s: 150                     # production step; 300 s failed the dt-halving convergence check (results/g2_timestep_convergence_*.csv)
   substeps_in_melt_band: 6            # extra sub-stepping when T_pcm is within the melt band
   melt_band_margin_K: 2.0             # how far outside [Ts,Tl] still counts as "fast-changing"
   abs_tol: 1.0e-6

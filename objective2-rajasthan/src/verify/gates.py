@@ -47,7 +47,7 @@ from src.io_utils import load_system_config, load_design_bounds, get_pcm_propert
 from src.simulation.capsule_enthalpy import pcm_props_from_record, PCMThermalProps
 from src.simulation.demand_profile import load_demand_model
 from src.simulation.tank_model import DesignRuntime, run_year
-from src.simulation.run_case import run_case, PRODUCTION_SOLVER_OVERRIDE
+from src.simulation.run_case import run_case
 
 # Rajasthan Objective 1 MCDM rank-1 PCM per Level-A cluster
 # (configs/states/rajasthan.yaml -> regimes[*].pcm_shortlist[0]).
@@ -87,7 +87,7 @@ def _direct_runtime(diameter_m, n_capsule, flow_rate_kg_s, system_config, arrang
 def _direct_run(state, cluster_id, diameter_m, n_capsule, flow_rate_kg_s, pcm_name=None,
                  system_config_overrides=None, volume_multiplier=1.0, mains_temp_C=None,
                  arrangement="staggered"):
-    system_config = _deep_merge(load_system_config(), PRODUCTION_SOLVER_OVERRIDE)   # rework: dt = 150 s
+    system_config = load_system_config()   # dt = 150 s from system_config_shared.yaml
     if system_config_overrides:
         system_config = _deep_merge(system_config, system_config_overrides)
 
@@ -289,24 +289,12 @@ def gate2_limiting_cases(state: str, log):
                     f"plain-tank max T_w={max_tw_c0:.1f} C vs {max_pcm_safe_C:.0f} C PCM limit "
                     f"-> {'EXCEEDS' if max_tw_c0 > max_pcm_safe_C else 'within'} on solar input alone"))
 
-    # "oversized diameter for tank" per arrangement is already covered by
-    # src/design/constraints.py::run_boundary_self_test() (Phase 2's 24-case
-    # boundary matrix runs this exact case once per arrangement through the
-    # same check_design() code path Gate 2 itself would call) — not
-    # duplicated here to avoid two gates asserting the same code path twice.
-    # See docs/02_PHASE2_GEOMETRY_CONSTRAINTS.md for that result (24/24
-    # deterministic, oversized_diameter_for_tank rejects bounds_violation
-    # in all three arrangements).
-    checks.append(("oversized_diameter_for_tank per arrangement -> see Phase 2 boundary matrix (informational)",
-                    True, "covered by run_boundary_self_test(), not re-run here"))
-
-    gating = checks[:-2]   # the informational Cluster-0 and oversized-diameter cross-reference checks never gate
+    gating = checks[:-1]   # the informational Cluster-0 overheat check never gates
     n_pass = sum(1 for _, ok, _ in gating if ok)
     for name, ok, detail in checks:
         log(f"  [{'PASS' if ok else 'FAIL'}] {name:58s} {detail}")
     log(f"\n  Gate 2: {n_pass}/{len(gating)} limiting cases passed "
-        f"(+2 informational: Cluster-0 overheat record and oversized-diameter "
-        f"cross-reference, both non-gating; {len(checks)} rows printed above in total).")
+        f"(+1 informational: Cluster-0 overheat record, non-gating; {len(checks)} rows printed above in total).")
     verdict = "PASS" if n_pass == len(gating) else ("PASS-WITH-CAVEAT" if n_pass >= len(gating) - 1 else "FAIL")
     log(f"  Gate 2 verdict: {verdict}")
     return {"gate": 2, "verdict": verdict, "n_pass": n_pass, "n_total": len(gating), "checks": checks}
@@ -324,19 +312,9 @@ def gate3_baseline_comparison(state: str, log):
     cid = 0
     pcm = PCM_C0   # Objective 1 MCDM rank-1 PCM for Rajasthan Cluster 0
     pcm_Tm_C = get_pcm_properties(state, pcm)["Tm_C"]
-    # NOTE on the designs below: design_bounds_shared.yaml bounds
-    # capsule_diameter_m to [0.02,0.08]. capsule_count's ceiling was widened
-    # 24->37 on 2026-09-17 when arrangement was restored (Phase 2), and
-    # Phase 2's max-reachable-fraction sweep found ALL THREE arrangements
-    # reach the same ~19.84% ceiling at d=0.08/n=37 (the shared 20% mass-based
-    # volume-fraction bound binds before any arrangement's own packing/
-    # passage constraint does at this diameter) — see
-    # docs/02_PHASE2_GEOMETRY_CONSTRAINTS.md. The per-arrangement
-    # "fixed_PCM_max_feasible" row below therefore uses n=37/d=0.08 for all
-    # three arrangements, not a single shared ~12.9%-style figure from the
-    # old 24-capsule ceiling.
-    bounds = load_design_bounds()
-    count_ceiling = bounds["capsule_count"]["max"]
+    # NOTE on the designs below: the per-arrangement "fixed_PCM_max_feasible" row uses n = 37 at d = 0.08 m for all three
+    # arrangements (all three reach about the same 19.84 % PCM fraction there).
+    count_ceiling = 37   # capsule count of the largest design used by this battery (staggered/radial/single-layer at d = 0.08 m)
     plain = run_case(state, cid, None, DesignVector(0.08, 14, 0.030, capsule_arrangement="staggered"), record_hourly=False)
     fixed_by_arrangement = {
         arrangement: run_case(state, cid, pcm, DesignVector(0.08, count_ceiling, 0.030, capsule_arrangement=arrangement),
@@ -609,11 +587,9 @@ def gate_o1_pcm_roster(state: str, log):
 
 
 def run_all_gates(state: str, report_path=None, include_stale_winners: bool = True, o1_roster: bool = False):
-    # Rework: `report_path` lets the G6 re-run write beside, not over, the legacy report;
+    # `report_path` lets the G6 re-run choose its output file;
     # `include_stale_winners=False` skips the check against the retired Phase-7 winners.
-    # objective2-rajasthan/ is already state-specific, so results/ is flat
-    # (not nested per-state again) — matches the phaseN_ output-file scheme
-    # used by check_climate_signature.py and the Phase 2/3 result files.
+    # results/ is flat because this folder is already specific to one state.
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     report_path = report_path or (RESULTS_DIR / "phase4_simulator_verification_report.txt")
 
@@ -649,12 +625,6 @@ def run_all_gates(state: str, report_path=None, include_stale_winners: bool = Tr
         log(f"  O1 PCM roster: {roster['verdict']} ({roster['n_verified']} PCMs)")
     go_no_go = "GO" if (g1["max_residual_pct"] < 0.5 and n_clean_pass >= 3) else "NO-GO"
     log(f"\n  Go/No-Go (framework doc Phase 4 rule: residual<0.5% AND >=3/5 gates clean): {go_no_go}")
-    if go_no_go == "GO":
-        log(f"  Simulator released as sim_v2_{state} (tag it at commit time — bumped from sim_v1_{state} "
-            f"2026-09-17 when arrangement was restored as a searched variable, docs/04_PHASE4_VERIFICATION_GATES.md).")
-    else:
-        log("  STOP — repair before generating any Phase 5 DOE cases.")
-
     report_path.write_text("\n".join(lines), encoding="utf-8")
     log(f"\nReport written to: {report_path}")
     return gates, go_no_go

@@ -5,8 +5,7 @@ O2 G8 (2026-10-26) - the APPROVED design space (configs/design_space.yaml) as co
 
 Four design variables: PCM thickness (= sphere inner radius), capsule count (set through the PCM outer volume
 fraction), flow rate, arrangement. `to_design()` turns a point of that space into a DesignVector and
-`geometry_bounds()` gives the permissive bounds dict the geometry engine needs (the legacy 8-37 count and
-40-80 mm diameter bounds are what this rework replaced). Geometry feasibility is still checked EXACTLY by
+`geometry_bounds()` gives the permissive bounds dict the geometry engine needs (configs/design_space.yaml, geometry_engine). Geometry feasibility is still checked EXACTLY by
 src/design/constraints.check_design, never learned.
 """
 
@@ -62,14 +61,7 @@ def to_design(r_in_m: float, fraction: float, flow_kg_s: float, arrangement: str
 def geometry_bounds() -> dict:
     """Bounds dict for check_design: wide enough not to bind (the space is enforced by to_design()),
     the fraction cap and flow range kept at the approved values."""
-    sp = load_space()["variables"]
-    b = load_design_bounds()
-    return {**b,
-            "pcm_thickness_m": {"min": 0.004, "max": 0.2},
-            "capsule_diameter_m": {"min": 0.01, "max": 0.2},
-            "capsule_count": {"min": 1, "max": 5000, "step": 1},
-            "pcm_volume_fraction": {"min": 0.0, "max": sp["pcm_volume_fraction"]["max"]},
-            "flow_rate_kg_s": dict(sp["flow_rate_kg_s"])}
+    return load_design_bounds()
 
 
 def in_space(r_in_m, fraction, flow, arrangement) -> bool:
