@@ -4,8 +4,8 @@ Uttarakhand's own CFD cases, built with the project's shared OpenFOAM set-up (`.
 **Uttarakhand designs and data**: the chosen capsule of each of the four regimes, the runner-up PCM where the PCM choice is
 not resolved, and the 50 L tank at each regime's mains temperature, judged at the **50 C** delivery target.
 
-**Status (2026-10-28): case files written, not run.** OpenFOAM and ParaView are not installed on the machine that wrote
-them, so there are no solver results, KPIs or images yet. Every case is complete and ready to run (section 3).
+**Status (2026-10-29): 1 of 10 capsule cases run** (`r0_chosen_puretemp_58`: t90 = 4242 s, energy residual 0.45 %, grey-box
+t90 is 2.05x the CFD value). The other capsule, viz and tank cases are written and ready to run (section 3).
 
 ## 1. What is here
 

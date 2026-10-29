@@ -1,11 +1,11 @@
-case,kind,regime,pcm,status
-cases/r0_chosen_puretemp_58,capsule_chosen,0,PureTemp 58,not run
-cases/r0_chosen_puretemp_58_cond,capsule_conduction,0,PureTemp 58,not run
-cases/r0_alt_plusice_a58,capsule_runner_up,0,PlusICE A58,not run
-cases/r1_chosen_puretemp_58,capsule_chosen,1,PureTemp 58,not run
-cases/r1_chosen_puretemp_58_cond,capsule_conduction,1,PureTemp 58,not run
-cases/r1_alt_plusice_a58,capsule_runner_up,1,PlusICE A58,not run
-cases/r2_chosen_save_om55,capsule_chosen,2,savE® OM55,not run
-cases/r2_chosen_save_om55_cond,capsule_conduction,2,savE® OM55,not run
-cases/r2_alt_puretemp_58,capsule_runner_up,2,PureTemp 58,not run
-cases/r3_chosen_n_hexacosane_c26,capsule_chosen,3,n-Hexacosane (C26),not run
+case,kind,regime,pcm,status,t_melt_50_s,t_melt_90_s,t_melt_99_s,E_window_kJ,E_full_kJ,f_melt_window,P_mean_window_W,energy_residual_pct,qc_energy_ok,greybox_t_melt_90_s_x2,greybox_over_cfd_t90,R_pcm_scale_equivalent
+cases/r0_chosen_puretemp_58,capsule_chosen,0,PureTemp 58,ok,2222.0617459176,4241.555672710187,5058.253862001465,61.985982329551696,62.364218444985596,1.0,10.95986742001066,0.4548266306288328,True,8708.0,2.0530203236577895,0.3564666003272932
+cases/r0_chosen_puretemp_58_cond,capsule_conduction,0,PureTemp 58,not run,,,,,,,,,,,,
+cases/r0_alt_plusice_a58,capsule_runner_up,0,PlusICE A58,not run,,,,,,,,,,,,
+cases/r1_chosen_puretemp_58,capsule_chosen,1,PureTemp 58,not run,,,,,,,,,,,,
+cases/r1_chosen_puretemp_58_cond,capsule_conduction,1,PureTemp 58,not run,,,,,,,,,,,,
+cases/r1_alt_plusice_a58,capsule_runner_up,1,PlusICE A58,not run,,,,,,,,,,,,
+cases/r2_chosen_save_om55,capsule_chosen,2,savE® OM55,not run,,,,,,,,,,,,
+cases/r2_chosen_save_om55_cond,capsule_conduction,2,savE® OM55,not run,,,,,,,,,,,,
+cases/r2_alt_puretemp_58,capsule_runner_up,2,PureTemp 58,not run,,,,,,,,,,,,
+cases/r3_chosen_n_hexacosane_c26,capsule_chosen,3,n-Hexacosane (C26),not run,,,,,,,,,,,,
