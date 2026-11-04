@@ -1,0 +1,8 @@
+; Refined regime 0 mesh for the C25 melt-front resolution test.
+
+/file/import/cgns/mesh
+regime0_fine_capsule.cgns
+
+/file/write-case "regime0_fine_mesh_only.cas.h5"
+exit
+yes

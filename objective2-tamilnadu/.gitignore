@@ -1,27 +1,28 @@
-# ============================================================
-# Files above 50 MB (exceed GitHub's 50 MB recommendation)
-# Regenerate locally with the Objective-1/Objective-2 pipeline scripts.
-# ============================================================
+# Objective 2 — Tamil Nadu
+#
+# Policy: push everything — code, docs, images, data, ANSYS cases and the
+# archive — EXCEPT files git cannot take. GitHub warns above 50 MB per file
+# and rejects above 100 MB, so only the oversized files below are excluded.
 
-data/objective1/daily_aggregates_tamilnadu.csv
-data/objective1/suntimes.csv
-ansys_openfoam_case/openfoam_case/run.log
+# ── files over 50 MB (git cannot take these) ─────────────────────────────
+# Measured, not guessed:
+#   archive/openfoam_legacy/openfoam_case/run.log   223 MB  (past the 100 MB hard reject)
+#   data/objective1/suntimes.csv                     80 MB  (past the 100 MB hard reject)
+#   data/objective1/daily_aggregates_tamilnadu.csv   62 MB
+#   ...and the archived copies of the same two files.
+# All regenerate: suntimes.csv and daily_aggregates from Objective 1's
+# 00b_build_suntimes.py and 02b_build_daily_aggregates.py; run.log is solver output.
+**/suntimes.csv
+**/daily_aggregates_tamilnadu.csv
+**/openfoam_case/run.log
 
-# ============================================================
-# Caches / temp
-# ============================================================
+# Safety net for anything that grows past the limit later.
+*.pkl
 
+# ── never useful in git ──────────────────────────────────────────────────
+tools/node_modules/
 __pycache__/
-*.py[cod]
-.ipynb_checkpoints/
+*.pyc
+*.pyo
 .pytest_cache/
-.mypy_cache/
-.ruff_cache/
-*.log
-
-# ============================================================
-# Local editor/assistant settings
-# ============================================================
-
-.claude/
-CLAUDE.md
+.ipynb_checkpoints/

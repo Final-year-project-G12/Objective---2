@@ -1,0 +1,151 @@
+parameter,block,regime,pcm,x,gain_window_kWh,gain_annual_kWh,capsules,pcm_mass_kg
+PCM volume fraction,B_count,0,PureTemp 58,0.0049002920771135,-3.0,-2.94,13,0.39
+PCM volume fraction,B_count,0,PureTemp 58,0.0101775296986203,0.86,0.99,27,0.81
+PCM volume fraction,B_count,0,PureTemp 58,0.0199781138528473,7.81,8.07,53,1.58
+PCM volume fraction,B_count,0,PureTemp 58,0.0350559356285812,16.84,17.31,93,2.77
+PCM volume fraction,B_count,0,PureTemp 58,0.0501337574043151,26.87,27.54,133,3.97
+PCM volume fraction,B_count,0,PureTemp 58,0.075012163334276,42.5,43.51,199,5.94
+PCM volume fraction,B_count,0,PureTemp 58,0.0998905692642369,56.57,57.92,265,7.9
+PCM volume fraction,B_count,0,PureTemp 58,0.1500243266685521,83.22,85.23,398,11.87
+PCM volume fraction,B_count,0,RT57HC,0.0049002920771135,-5.01,-4.96,13,0.39
+PCM volume fraction,B_count,0,RT57HC,0.0101775296986203,-0.9,-0.76,27,0.81
+PCM volume fraction,B_count,0,RT57HC,0.0199781138528473,6.58,6.87,53,1.6
+PCM volume fraction,B_count,0,RT57HC,0.0350559356285812,16.03,16.56,93,2.8
+PCM volume fraction,B_count,0,RT57HC,0.0501337574043151,26.83,27.59,133,4.01
+PCM volume fraction,B_count,0,RT57HC,0.075012163334276,43.79,44.94,199,6.0
+PCM volume fraction,B_count,0,RT57HC,0.0998905692642369,58.87,60.4,265,7.99
+PCM volume fraction,B_count,0,RT57HC,0.1500243266685521,88.8,91.09,398,12.0
+PCM volume fraction,B_count,0,n-Hexacosane (C26),0.0049002920771135,-6.21,-6.33,13,0.34
+PCM volume fraction,B_count,0,n-Hexacosane (C26),0.0101775296986203,-2.9,-2.94,27,0.7
+PCM volume fraction,B_count,0,n-Hexacosane (C26),0.0199781138528473,3.1,3.22,53,1.37
+PCM volume fraction,B_count,0,n-Hexacosane (C26),0.0350559356285812,10.54,10.91,93,2.4
+PCM volume fraction,B_count,0,n-Hexacosane (C26),0.0501337574043151,19.2,19.82,133,3.43
+PCM volume fraction,B_count,0,n-Hexacosane (C26),0.075012163334276,32.76,33.78,199,5.13
+PCM volume fraction,B_count,0,n-Hexacosane (C26),0.0998905692642369,44.85,46.27,265,6.84
+PCM volume fraction,B_count,0,n-Hexacosane (C26),0.1500243266685521,69.01,71.23,398,10.27
+PCM volume fraction,B_count,1,RT57HC,0.0049002920771135,-5.95,-5.82,13,0.39
+PCM volume fraction,B_count,1,RT57HC,0.0101775296986203,-2.51,-2.21,27,0.81
+PCM volume fraction,B_count,1,RT57HC,0.0199781138528473,3.63,4.25,53,1.6
+PCM volume fraction,B_count,1,RT57HC,0.0350559356285812,11.32,12.45,93,2.8
+PCM volume fraction,B_count,1,RT57HC,0.0501337574043151,20.19,21.82,133,4.01
+PCM volume fraction,B_count,1,RT57HC,0.075012163334276,33.92,36.4,199,6.0
+PCM volume fraction,B_count,1,RT57HC,0.0998905692642369,45.96,49.3,265,7.99
+PCM volume fraction,B_count,1,RT57HC,0.1500243266685521,69.72,74.79,398,12.0
+PCM volume fraction,B_count,1,n-Hexacosane (C26),0.0049002920771135,-7.01,-7.2,13,0.34
+PCM volume fraction,B_count,1,n-Hexacosane (C26),0.0101775296986203,-4.39,-4.4,27,0.7
+PCM volume fraction,B_count,1,n-Hexacosane (C26),0.0199781138528473,0.32,0.65,53,1.37
+PCM volume fraction,B_count,1,n-Hexacosane (C26),0.0350559356285812,6.04,6.9,93,2.4
+PCM volume fraction,B_count,1,n-Hexacosane (C26),0.0501337574043151,12.83,14.21,133,3.43
+PCM volume fraction,B_count,1,n-Hexacosane (C26),0.075012163334276,23.28,25.55,199,5.13
+PCM volume fraction,B_count,1,n-Hexacosane (C26),0.0998905692642369,32.43,35.6,265,6.84
+PCM volume fraction,B_count,1,n-Hexacosane (C26),0.1500243266685521,50.59,55.58,398,10.27
+PCM volume fraction,B_count,1,n-Pentacosane (C25),0.0049002920771135,-6.82,-7.0,13,0.35
+PCM volume fraction,B_count,1,n-Pentacosane (C25),0.0101775296986203,-3.88,-3.88,27,0.72
+PCM volume fraction,B_count,1,n-Pentacosane (C25),0.0199781138528473,1.48,1.82,53,1.42
+PCM volume fraction,B_count,1,n-Pentacosane (C25),0.0350559356285812,7.8,8.68,93,2.5
+PCM volume fraction,B_count,1,n-Pentacosane (C25),0.0501337574043151,15.7,17.12,133,3.57
+PCM volume fraction,B_count,1,n-Pentacosane (C25),0.075012163334276,28.11,30.43,199,5.34
+PCM volume fraction,B_count,1,n-Pentacosane (C25),0.0998905692642369,38.93,42.17,265,7.11
+PCM volume fraction,B_count,1,n-Pentacosane (C25),0.1500243266685521,60.94,66.03,398,10.68
+PCM volume fraction,B_count,2,RT57HC,0.0049002920771135,-5.34,-5.27,13,0.39
+PCM volume fraction,B_count,2,RT57HC,0.0101775296986203,-1.42,-1.26,27,0.81
+PCM volume fraction,B_count,2,RT57HC,0.0199781138528473,5.6,5.92,53,1.6
+PCM volume fraction,B_count,2,RT57HC,0.0350559356285812,14.5,15.1,93,2.8
+PCM volume fraction,B_count,2,RT57HC,0.0501337574043151,24.64,25.5,133,4.01
+PCM volume fraction,B_count,2,RT57HC,0.075012163334276,40.48,41.77,199,6.0
+PCM volume fraction,B_count,2,RT57HC,0.0998905692642369,54.54,56.27,265,7.99
+PCM volume fraction,B_count,2,RT57HC,0.1500243266685521,82.36,84.96,398,12.0
+PCM volume fraction,B_count,2,n-Hexacosane (C26),0.0049002920771135,-6.49,-6.62,13,0.34
+PCM volume fraction,B_count,2,n-Hexacosane (C26),0.0101775296986203,-3.38,-3.41,27,0.7
+PCM volume fraction,B_count,2,n-Hexacosane (C26),0.0199781138528473,2.22,2.37,53,1.37
+PCM volume fraction,B_count,2,n-Hexacosane (C26),0.0350559356285812,9.18,9.61,93,2.4
+PCM volume fraction,B_count,2,n-Hexacosane (C26),0.0501337574043151,17.24,17.95,133,3.43
+PCM volume fraction,B_count,2,n-Hexacosane (C26),0.075012163334276,29.85,31.0,199,5.13
+PCM volume fraction,B_count,2,n-Hexacosane (C26),0.0998905692642369,41.02,42.64,265,6.84
+PCM volume fraction,B_count,2,n-Hexacosane (C26),0.1500243266685521,63.36,65.88,398,10.27
+PCM volume fraction,B_count,2,n-Pentacosane (C25),0.0049002920771135,-6.26,-6.38,13,0.35
+PCM volume fraction,B_count,2,n-Pentacosane (C25),0.0101775296986203,-2.78,-2.8,27,0.72
+PCM volume fraction,B_count,2,n-Pentacosane (C25),0.0199781138528473,3.53,3.69,53,1.42
+PCM volume fraction,B_count,2,n-Pentacosane (C25),0.0350559356285812,11.2,11.64,93,2.5
+PCM volume fraction,B_count,2,n-Pentacosane (C25),0.0501337574043151,20.49,21.21,133,3.57
+PCM volume fraction,B_count,2,n-Pentacosane (C25),0.075012163334276,35.22,36.41,199,5.34
+PCM volume fraction,B_count,2,n-Pentacosane (C25),0.0998905692642369,48.16,49.81,265,7.11
+PCM volume fraction,B_count,2,n-Pentacosane (C25),0.1500243266685521,74.39,76.96,398,10.68
+Flow rate (kg/s),C_flow,0,RT57HC,0.01,129.08,143.02,149,4.49
+Flow rate (kg/s),C_flow,0,RT57HC,0.02,61.44,67.51,149,4.49
+Flow rate (kg/s),C_flow,0,RT57HC,0.03,31.02,31.88,149,4.49
+Flow rate (kg/s),C_flow,0,RT57HC,0.04,18.31,15.65,149,4.49
+Flow rate (kg/s),C_flow,0,RT57HC,0.05,11.72,6.73,149,4.49
+Flow rate (kg/s),C_flow,1,RT57HC,0.01,126.25,171.7,149,4.49
+Flow rate (kg/s),C_flow,1,RT57HC,0.02,50.55,64.33,149,4.49
+Flow rate (kg/s),C_flow,1,RT57HC,0.03,23.6,25.44,149,4.49
+Flow rate (kg/s),C_flow,1,RT57HC,0.04,12.57,7.99,149,4.49
+Flow rate (kg/s),C_flow,1,RT57HC,0.05,6.85,-1.47,149,4.49
+Flow rate (kg/s),C_flow,2,RT57HC,0.01,131.38,148.82,149,4.49
+Flow rate (kg/s),C_flow,2,RT57HC,0.02,59.0,65.71,149,4.49
+Flow rate (kg/s),C_flow,2,RT57HC,0.03,28.55,29.51,149,4.49
+Flow rate (kg/s),C_flow,2,RT57HC,0.04,15.89,13.24,149,4.49
+Flow rate (kg/s),C_flow,2,RT57HC,0.05,9.29,4.28,149,4.49
+Inner radius (mm),A_thickness,0,PureTemp 58,10.0,5.84,6.38,1194,4.45
+Inner radius (mm),A_thickness,0,PureTemp 58,14.999999999999998,17.72,18.29,354,4.45
+Inner radius (mm),A_thickness,0,PureTemp 58,20.0,30.72,31.48,149,4.44
+Inner radius (mm),A_thickness,0,PureTemp 58,25.0,39.16,39.95,76,4.43
+Inner radius (mm),A_thickness,0,PureTemp 58,30.0,43.54,44.39,44,4.43
+Inner radius (mm),A_thickness,0,PureTemp 58,40.0,48.55,49.66,19,4.53
+Inner radius (mm),A_thickness,0,RT57HC,10.0,7.62,8.26,1194,4.5
+Inner radius (mm),A_thickness,0,RT57HC,14.999999999999998,20.07,20.76,354,4.5
+Inner radius (mm),A_thickness,0,RT57HC,20.0,31.02,31.88,149,4.49
+Inner radius (mm),A_thickness,0,RT57HC,25.0,40.54,41.42,76,4.48
+Inner radius (mm),A_thickness,0,RT57HC,30.0,46.24,47.16,44,4.48
+Inner radius (mm),A_thickness,0,RT57HC,40.0,53.97,55.09,19,4.58
+Inner radius (mm),A_thickness,0,n-Hexacosane (C26),10.0,1.75,2.42,1194,3.85
+Inner radius (mm),A_thickness,0,n-Hexacosane (C26),14.999999999999998,13.17,13.89,354,3.85
+Inner radius (mm),A_thickness,0,n-Hexacosane (C26),20.0,22.53,23.24,149,3.84
+Inner radius (mm),A_thickness,0,n-Hexacosane (C26),25.0,32.14,33.04,76,3.83
+Inner radius (mm),A_thickness,0,n-Hexacosane (C26),30.0,37.85,38.78,44,3.83
+Inner radius (mm),A_thickness,0,n-Hexacosane (C26),40.0,46.07,47.16,19,3.92
+Inner radius (mm),A_thickness,1,RT57HC,10.0,1.9,3.39,1194,4.5
+Inner radius (mm),A_thickness,1,RT57HC,14.999999999999998,13.82,15.37,354,4.5
+Inner radius (mm),A_thickness,1,RT57HC,20.0,23.6,25.44,149,4.49
+Inner radius (mm),A_thickness,1,RT57HC,25.0,32.03,33.9,76,4.48
+Inner radius (mm),A_thickness,1,RT57HC,30.0,36.39,38.31,44,4.48
+Inner radius (mm),A_thickness,1,RT57HC,40.0,41.81,44.03,19,4.58
+Inner radius (mm),A_thickness,1,n-Hexacosane (C26),10.0,-4.12,-2.57,1194,3.85
+Inner radius (mm),A_thickness,1,n-Hexacosane (C26),14.999999999999998,6.95,8.57,354,3.85
+Inner radius (mm),A_thickness,1,n-Hexacosane (C26),20.0,15.43,17.03,149,3.84
+Inner radius (mm),A_thickness,1,n-Hexacosane (C26),25.0,24.03,25.95,76,3.83
+Inner radius (mm),A_thickness,1,n-Hexacosane (C26),30.0,28.49,30.46,44,3.83
+Inner radius (mm),A_thickness,1,n-Hexacosane (C26),40.0,34.67,36.88,19,3.92
+Inner radius (mm),A_thickness,1,n-Pentacosane (C25),10.0,-0.51,1.08,1194,4.01
+Inner radius (mm),A_thickness,1,n-Pentacosane (C25),14.999999999999998,10.62,12.28,354,4.01
+Inner radius (mm),A_thickness,1,n-Pentacosane (C25),20.0,18.75,20.39,149,4.0
+Inner radius (mm),A_thickness,1,n-Pentacosane (C25),25.0,25.99,27.95,76,3.98
+Inner radius (mm),A_thickness,1,n-Pentacosane (C25),30.0,30.01,32.02,44,3.99
+Inner radius (mm),A_thickness,1,n-Pentacosane (C25),40.0,37.45,39.72,19,4.08
+Inner radius (mm),A_thickness,2,RT57HC,10.0,5.98,6.72,1194,4.5
+Inner radius (mm),A_thickness,2,RT57HC,14.999999999999998,18.03,18.82,354,4.5
+Inner radius (mm),A_thickness,2,RT57HC,20.0,28.55,29.51,149,4.49
+Inner radius (mm),A_thickness,2,RT57HC,25.0,37.71,38.69,76,4.48
+Inner radius (mm),A_thickness,2,RT57HC,30.0,43.16,44.19,44,4.48
+Inner radius (mm),A_thickness,2,RT57HC,40.0,50.48,51.7,19,4.58
+Inner radius (mm),A_thickness,2,n-Hexacosane (C26),10.0,0.25,1.03,1194,3.85
+Inner radius (mm),A_thickness,2,n-Hexacosane (C26),14.999999999999998,11.34,12.16,354,3.85
+Inner radius (mm),A_thickness,2,n-Hexacosane (C26),20.0,20.35,21.17,149,3.84
+Inner radius (mm),A_thickness,2,n-Hexacosane (C26),25.0,29.65,30.66,76,3.83
+Inner radius (mm),A_thickness,2,n-Hexacosane (C26),30.0,35.11,36.15,44,3.83
+Inner radius (mm),A_thickness,2,n-Hexacosane (C26),40.0,42.92,44.12,19,3.92
+Inner radius (mm),A_thickness,2,n-Pentacosane (C25),10.0,4.22,5.02,1194,4.01
+Inner radius (mm),A_thickness,2,n-Pentacosane (C25),14.999999999999998,15.47,16.32,354,4.01
+Inner radius (mm),A_thickness,2,n-Pentacosane (C25),20.0,24.15,24.98,149,4.0
+Inner radius (mm),A_thickness,2,n-Pentacosane (C25),25.0,31.95,32.98,76,3.98
+Inner radius (mm),A_thickness,2,n-Pentacosane (C25),30.0,36.82,37.89,44,3.99
+Inner radius (mm),A_thickness,2,n-Pentacosane (C25),40.0,44.81,46.06,19,4.08
+Arrangement,D_arrangement,0,RT57HC,radial,31.19,32.05,149,4.49
+Arrangement,D_arrangement,0,RT57HC,single-layer,31.19,32.05,149,4.49
+Arrangement,D_arrangement,0,RT57HC,staggered,31.02,31.88,149,4.49
+Arrangement,D_arrangement,1,RT57HC,radial,23.73,25.56,149,4.49
+Arrangement,D_arrangement,1,RT57HC,single-layer,23.73,25.56,149,4.49
+Arrangement,D_arrangement,1,RT57HC,staggered,23.6,25.44,149,4.49
+Arrangement,D_arrangement,2,RT57HC,radial,28.72,29.68,149,4.49
+Arrangement,D_arrangement,2,RT57HC,single-layer,28.72,29.68,149,4.49
+Arrangement,D_arrangement,2,RT57HC,staggered,28.55,29.51,149,4.49

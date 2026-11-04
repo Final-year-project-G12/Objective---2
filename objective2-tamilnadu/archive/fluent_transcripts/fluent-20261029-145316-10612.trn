@@ -1,0 +1,149 @@
+Auto-Transcript Start Time:  14:53:16, 29 Oct 2026 India Standard Time 
+Current Directory: "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\ansys_openfoam_case"
+
+              Welcome to ANSYS Fluent 2026 R1
+
+              Copyright 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
+              Unauthorized use, distribution or duplication is prohibited.
+              This product is subject to U.S. laws governing export and re-export.
+              For full Legal Notice, see documentation.
+
+Build Time: Feb  2 2026 16:27:16 EST  Build Id: 10262  
+ 
+Connected License Server List:	<Non FlexNet Publisher License Server (FNPLS)>
+
+*********************************************
+Info: Your license enables 4-way parallel execution.
+For faster simulations, please start the application with the appropriate parallel options.
+*********************************************
+
+
+     --------------------------------------------------------------
+     This is a student version of ANSYS FLUENT. Usage of this product
+     license is limited to the terms and conditions specified in your ANSYS
+     license form, additional terms section.
+     --------------------------------------------------------------
+Host spawning Node 0 on machine "Jaswita" (win64).
+Host waiting for connection from Node 0 at 127.0.0.1:63795 
+
+Node 0 connecting to the Host ... connection established.
+
+----------------------------------------------------------------------------------
+ID    Hostname  Core  O.S.         PID    CPU Model Name                         
+----------------------------------------------------------------------------------
+n1    Jaswita   2/12  Windows-x64  11452  12th Gen Intel(R) Core(TM) i7-1255U    
+n0*   Jaswita   1/12  Windows-x64  32820  12th Gen Intel(R) Core(TM) i7-1255U    
+host  Jaswita         Windows-x64  30608  12th Gen Intel(R) Core(TM) i7-1255U    
+
+MPI Option Selected: intel
+Selected system interconnect: default
+----------------------------------------------------------------------------------
+
+Cleanup script file is C:\\Users\\jaswi\\OneDrive\\Desktop\\ALL\\SEM_7\\project\\jammalamadugu\\new_obj\\objective2_design_optimization\\ansys_openfoam_case\\cleanup-fluent-Jaswita-30608.bat
+
+Jaswita is already loaded (100).                       Process affinity not being set.
+
+Reading journal file tn_report_v3.jou...
+
+> ; tn_report_v3.jou
+; Reads each current (v3) solved melting case and reports what is actually in
+; it: zones, materials, and the PCM melt state. Read-only -- no solving, so it
+; cannot disturb the stored solution.
+
+/file/read-case-data "regime0_v3_c26_melting.cas.h5"Fast-loading "C:\PROGRA~1\ANSYSI~1\ANSYSS~1\v261\fluent\fluent26.1.0\\addons\afd\lib\hdfio.bin"
+Done.
+
+Reading from Jaswita:"\\JASWITA\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\ansys_openfoam_case\regime0_v3_c26_melting.cas.h5" in NODE0 mode ...
+  Reading mesh ...
+        2690 cells,     2 cell zones ...
+           1585 triangular cells,  zone id: 1
+           1105 triangular cells,  zone id: 2
+        4106 faces,     9 face zones ...
+           2298 2D interior faces,  zone id: 3
+             10 2D pressure-outlet faces,  zone id: 4
+             20 2D axis faces,  zone id: 5
+             48 2D wall faces,  zone id: 6
+             20 2D axis faces,  zone id: 7
+             51 2D interior faces,  zone id: 8
+             10 2D velocity-inlet faces,  zone id: 9
+           1615 2D interior faces,  zone id: 10
+             34 2D axis faces,  zone id: 11
+        1417 nodes,     1 node zone  ...
+  Done.
+
+
+Building...
+     mesh
+	distributing mesh
+		parts..,
+		faces..,
+		nodes..,
+		cells..,
+        bandwidth reduction using Reverse Cuthill-McKee: 772/23 = 33.5652
+     materials,
+     interface,
+     domains,
+	mixture
+     zones,
+	default_interior-9
+	interface-2_l_6
+	2_l_8
+	default_interior-8
+	2_l_7
+	2_l_9
+	2_l_10
+	2_l_11
+	2_l_5
+	3_s_2
+	3_s_1
+Warning: Face zone 8 of type interior is between cell zones with different materials.
+         Material of cell zone 2 is c26, while material of cell zone 1 is water-liquid.
+This will adversely affect the solution. It is recommended that you check and correct the cell zone materials, or convert the interior face zones noted above into coupled wall pairs using the following text command:
+         /mesh/modify-zones/slit-interior-between-diff-materials
+
+     parallel,
+Done.
+Warning: The use of axis boundary conditions is not appropriate for
+         a 2D/3D flow problem. Please consider changing the zone
+         type to symmetry or wall, or the problem to axisymmetric.
+
+Warning: The use of axis boundary conditions is not appropriate for
+         a 2D/3D flow problem. Please consider changing the zone
+         type to symmetry or wall, or the problem to axisymmetric.
+
+
+Reading from Jaswita:"\\JASWITA\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\ansys_openfoam_case\regime0_v3_c26_melting.dat.h5" in NODE0 mode ...
+
+
+  Reading results.
+Parallel variables...
+Done.
+
+
+> /define/models/addon-module
+Fluent Addon Modules:
+	0. None
+	1. MHD Model
+	2. Fiber Model
+	3. Fuel Cell and Electrolysis Model
+	4. SOFC Model with Unresolved Electrolyte
+	5. Population Balance Model
+	6. Adjoint Solver
+	7. Single-Potential Battery Model
+	8. MSMD Battery Model
+	9. PEM Fuel Cell Model
+	10. Macroscopic Particle Model
+	11. Reduced Order Model
+	12. PCB Model
+Enter Module Number: [0] (newline)
+
+Error: Invalid integer.
+Error Object: (newline)
+
+Warning: An error or interrupt occurred while reading the journal file.
+Some commands may not have been completed.
+
+
+> Halting due to end of file on input.
+Auto-Transcript Stop Time:  15:00:14, 29 Oct 2026 India Standard Time 
+Total Transcript Time: 6 Minute 57 Second.

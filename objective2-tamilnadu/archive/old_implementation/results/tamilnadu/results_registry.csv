@@ -1,0 +1,161 @@
+stage,source_file,source_sha,row,quantity,value
+config,configs/,,0,config.design_bounds_version,config_v3.0_2026-10-28
+config,configs/,,0,config.tank_volume_L,100.0
+config,configs/,,0,config.collector_area_m2,2.5
+config,configs/,,0,config.delivery_target_C,45.0
+config,configs/,,0,config.max_water_temp_C,75.0
+config,configs/,,0,config.max_pcm_temp_C,65.0
+config,configs/,,0,config.shield_guard_band_C,3.0
+config,configs/,,0,config.shield_predictive,True
+config,configs/,,0,config.solver_timestep_s,300
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,0,cluster_id,0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,0,dt_coarse_s,600.0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,0,dt_fine_s,300.0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,0,worst_metric_change_pct,12.74955029396151
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,0,converged_at_coarse,False
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,1,cluster_id,0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,1,dt_coarse_s,300.0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,1,dt_fine_s,150.0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,1,worst_metric_change_pct,3.5021910351080905
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,1,converged_at_coarse,False
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,2,cluster_id,0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,2,dt_coarse_s,150.0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,2,dt_fine_s,75.0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,2,worst_metric_change_pct,0.8877387855363338
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,2,converged_at_coarse,True
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,3,cluster_id,0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,3,dt_coarse_s,75.0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,3,dt_fine_s,37.5
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,3,worst_metric_change_pct,0.3584314646242349
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,3,converged_at_coarse,True
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,4,cluster_id,0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,4,dt_coarse_s,37.5
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,4,dt_fine_s,18.75
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,4,worst_metric_change_pct,0.2148855279564774
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,4,converged_at_coarse,True
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,5,cluster_id,0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,5,dt_coarse_s,18.75
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,5,dt_fine_s,9.375
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,5,worst_metric_change_pct,0.0941520340350263
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,5,converged_at_coarse,True
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,6,cluster_id,1
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,6,dt_coarse_s,600.0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,6,dt_fine_s,300.0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,6,worst_metric_change_pct,10.236640552723292
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,6,converged_at_coarse,False
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,7,cluster_id,1
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,7,dt_coarse_s,300.0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,7,dt_fine_s,150.0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,7,worst_metric_change_pct,2.9435033003604394
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,7,converged_at_coarse,False
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,8,cluster_id,1
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,8,dt_coarse_s,150.0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,8,dt_fine_s,75.0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,8,worst_metric_change_pct,0.8319597066147524
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,8,converged_at_coarse,True
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,9,cluster_id,1
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,9,dt_coarse_s,75.0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,9,dt_fine_s,37.5
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,9,worst_metric_change_pct,0.3859472041096657
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,9,converged_at_coarse,True
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,10,cluster_id,1
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,10,dt_coarse_s,37.5
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,10,dt_fine_s,18.75
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,10,worst_metric_change_pct,0.1820492372888358
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,10,converged_at_coarse,True
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,11,cluster_id,1
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,11,dt_coarse_s,18.75
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,11,dt_fine_s,9.375
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,11,worst_metric_change_pct,0.0923127841073892
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,11,converged_at_coarse,True
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,12,cluster_id,2
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,12,dt_coarse_s,600.0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,12,dt_fine_s,300.0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,12,worst_metric_change_pct,11.584291224875216
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,12,converged_at_coarse,False
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,13,cluster_id,2
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,13,dt_coarse_s,300.0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,13,dt_fine_s,150.0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,13,worst_metric_change_pct,2.9563287979446056
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,13,converged_at_coarse,False
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,14,cluster_id,2
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,14,dt_coarse_s,150.0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,14,dt_fine_s,75.0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,14,worst_metric_change_pct,0.8486448488503539
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,14,converged_at_coarse,True
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,15,cluster_id,2
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,15,dt_coarse_s,75.0
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,15,dt_fine_s,37.5
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,15,worst_metric_change_pct,0.3632704111623995
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,15,converged_at_coarse,True
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,16,cluster_id,2
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,16,dt_coarse_s,37.5
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,16,dt_fine_s,18.75
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,16,worst_metric_change_pct,0.1809445656746923
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,16,converged_at_coarse,True
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,17,cluster_id,2
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,17,dt_coarse_s,18.75
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,17,dt_fine_s,9.375
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,17,worst_metric_change_pct,0.080537868986116
+G2 dt convergence,dt_convergence_summary.csv,49b30e5c10898641,17,converged_at_coarse,True
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,0,cluster_id,0
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,0,metric,useful_energy_kWh
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,0,observed_order_p,1.189145189406508
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,0,extrapolated_limit,2347.813465546697
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,1,cluster_id,0
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,1,metric,max_water_temp_C
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,1,observed_order_p,-0.201124020936095
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,1,extrapolated_limit,
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,2,cluster_id,0
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,2,metric,max_pcm_temp_C
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,2,observed_order_p,2.8208792094880213
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,2,extrapolated_limit,61.99989835996656
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,3,cluster_id,0
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,3,metric,e_del_45_window_kWh
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,3,observed_order_p,0.9542708043572607
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,3,extrapolated_limit,973.4359070683648
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,4,cluster_id,1
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,4,metric,useful_energy_kWh
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,4,observed_order_p,0.978393928332104
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,4,extrapolated_limit,2399.6502205095026
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,5,cluster_id,1
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,5,metric,max_water_temp_C
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,5,observed_order_p,8.499922165718871
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,5,extrapolated_limit,71.99994547481393
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,6,cluster_id,1
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,6,metric,max_pcm_temp_C
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,6,observed_order_p,3.552158912314656
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,6,extrapolated_limit,62.00012422983606
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,7,cluster_id,1
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,7,metric,e_del_45_window_kWh
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,7,observed_order_p,1.135542086221468
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,7,extrapolated_limit,1002.7916602657532
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,8,cluster_id,2
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,8,metric,useful_energy_kWh
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,8,observed_order_p,1.1666461912643469
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,8,extrapolated_limit,2296.97559903805
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,9,cluster_id,2
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,9,metric,max_water_temp_C
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,9,observed_order_p,0.95660665657417
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,9,extrapolated_limit,72.0034516199849
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,10,cluster_id,2
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,10,metric,max_pcm_temp_C
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,10,observed_order_p,2.90836070757902
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,10,extrapolated_limit,61.99994474623799
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,11,cluster_id,2
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,11,metric,e_del_45_window_kWh
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,11,observed_order_p,1.0809507012302462
+G2 Richardson,dt_convergence_richardson.csv,5efd72ba417c8dfc,11,extrapolated_limit,966.7653483911918
+G8 Sobol DOE,sobol_doe_results.csv,,-1,STATUS,NOT RUN
+G8 surrogate bake-off,surrogate_bakeoff.csv,,-1,STATUS,NOT RUN
+G9 NSGA-II fronts,nsga2_fronts.csv,,-1,STATUS,NOT RUN
+G8 active learning,active_learning_rounds.csv,,-1,STATUS,NOT RUN
+repeatability band,repeatability_band.csv,,-1,STATUS,NOT RUN
+S0/S1/S2 funnel,selection_funnel_audit.csv,,-1,STATUS,NOT RUN
+chosen design,deployable_design_per_regime.csv,,-1,STATUS,NOT RUN
+G10 held-out test,held_out_test_results.csv,,-1,STATUS,NOT RUN
+G13 shield split,g13_shield_split.csv,,-1,STATUS,NOT RUN
+G14/G16 stack position,g14_g16_stack_position.csv,,-1,STATUS,NOT RUN
+G15 serve decomposition,g15_serve_decomposition.csv,,-1,STATUS,NOT RUN
+G17 widened bounds,g17_widened_bounds.csv,,-1,STATUS,NOT RUN
+G11 one-at-a-time,g11_one_at_a_time.csv,,-1,STATUS,NOT RUN

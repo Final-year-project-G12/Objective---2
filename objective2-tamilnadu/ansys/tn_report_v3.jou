@@ -1,0 +1,29 @@
+; tn_report_v3.jou
+; Reads each current (v3) solved melting case and reports what is actually in
+; it: zones, materials, and the PCM melt state. Read-only -- no solving, so it
+; cannot disturb the stored solution.
+
+/file/read-case-data "regime0_v3_c26_melting.cas.h5"
+/define/models/addon-module
+(newline)
+/mesh/size-info
+/define/boundary-conditions/list-zones
+/report/volume-integrals/volume-average liquid-fraction () quit
+/report/volume-integrals/volume-average temperature () quit
+/report/volume-integrals/maximum temperature () quit
+/report/volume-integrals/minimum temperature () quit
+
+/file/read-case-data "regime1_v3_c26_melting.cas.h5"
+/mesh/size-info
+/report/volume-integrals/volume-average liquid-fraction () quit
+/report/volume-integrals/volume-average temperature () quit
+/report/volume-integrals/maximum temperature () quit
+
+/file/read-case-data "regime2_v3_c25_melting.cas.h5"
+/mesh/size-info
+/report/volume-integrals/volume-average liquid-fraction () quit
+/report/volume-integrals/volume-average temperature () quit
+/report/volume-integrals/maximum temperature () quit
+
+exit
+yes

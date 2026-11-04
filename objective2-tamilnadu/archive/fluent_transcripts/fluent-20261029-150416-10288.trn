@@ -1,0 +1,63 @@
+Auto-Transcript Start Time:  15:04:16, 29 Oct 2026 India Standard Time 
+Current Directory: "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\ansys_openfoam_case"
+
+              Welcome to ANSYS Fluent 2026 R1
+
+              Copyright 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
+              Unauthorized use, distribution or duplication is prohibited.
+              This product is subject to U.S. laws governing export and re-export.
+              For full Legal Notice, see documentation.
+
+Build Time: Feb  2 2026 16:27:16 EST  Build Id: 10262  
+ 
+Connected License Server List:	<Non FlexNet Publisher License Server (FNPLS)>
+
+*********************************************
+Info: Your license enables 4-way parallel execution.
+For faster simulations, please start the application with the appropriate parallel options.
+*********************************************
+
+
+     --------------------------------------------------------------
+     This is a student version of ANSYS FLUENT. Usage of this product
+     license is limited to the terms and conditions specified in your ANSYS
+     license form, additional terms section.
+     --------------------------------------------------------------
+Host spawning Node 0 on machine "Jaswita" (win64).
+Host waiting for connection from Node 0 at 127.0.0.1:62973 
+
+Node 0 connecting to the Host ... connection established.
+
+----------------------------------------------------------------------------------
+ID    Hostname  Core  O.S.         PID    CPU Model Name                         
+----------------------------------------------------------------------------------
+n1    Jaswita   2/12  Windows-x64  18816  12th Gen Intel(R) Core(TM) i7-1255U    
+n0*   Jaswita   1/12  Windows-x64  23024  12th Gen Intel(R) Core(TM) i7-1255U    
+host  Jaswita         Windows-x64  10324  12th Gen Intel(R) Core(TM) i7-1255U    
+
+MPI Option Selected: intel
+Selected system interconnect: default
+----------------------------------------------------------------------------------
+
+Cleanup script file is C:\\Users\\jaswi\\OneDrive\\Desktop\\ALL\\SEM_7\\project\\jammalamadugu\\new_obj\\objective2_design_optimization\\ansys_openfoam_case\\cleanup-fluent-Jaswita-10324.bat
+
+Jaswita is already loaded (100).                       Process affinity not being set.
+
+Reading journal file tn_contours_v3.jou...
+
+> ; tn_contours_v3.jou
+; Reads each CURRENT (v3) solved PCM melting case and writes contour images of
+; the melt front and the temperature field. Read-only: no iterations, so the
+; stored solution cannot be disturbed.
+;
+; NOTE the earlier version of this journal failed because it contained
+; /define/models/addon-module followed by a blank line -- Fluent read the blank
+; as the addon menu's "Enter Module Number" and aborted the journal. There is
+; no addon call here.
+
+/file/set-batch-options no yes no no
+
+Error: invalid command
+Error Object: "no"
+Auto-Transcript Stop Time:  15:05:58, 29 Oct 2026 India Standard Time 
+Total Transcript Time: 1 Minute 41 Second.
