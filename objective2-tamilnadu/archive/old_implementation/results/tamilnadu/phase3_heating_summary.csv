@@ -1,4 +1,0 @@
-regime_id,pcm_id,arrangement,total_hours,heating_hours,idle_or_bypassed_hours,pct_time_heating,shield_trip_hours,total_shield_activations,mean_liquid_fraction,max_liquid_fraction,collector_energy_kWh,useful_energy_kWh,unmet_energy_kWh
-0,n-Hexacosane (C26),radial,8784,3756,5028,42.76,1813,76051,0.2139,1.0,1802.6,1668.7,734.2
-1,n-Hexacosane (C26),radial,8784,3719,5065,42.34,1339,55181,0.1449,1.0,1889.1,1763.4,1133.9
-2,n-Pentacosane (C25),single-layer,8784,3724,5060,42.4,1613,53429,0.2306,1.0,1809.6,1679.4,777.5

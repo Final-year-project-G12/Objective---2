@@ -26,3 +26,10 @@ __pycache__/
 *.pyo
 .pytest_cache/
 .ipynb_checkpoints/
+
+# ---- superseded work, kept on disk but out of git ----------------------
+# archive/ is retired material: the pre-restructure implementation, the
+# OpenFOAM legacy tree, superseded ANSYS cases and voided results. Nothing in
+# it is live and nothing was deleted -- it stays on disk for the record.
+# Keeping it out of git takes a clone from ~643 MB to ~315 MB.
+archive/
