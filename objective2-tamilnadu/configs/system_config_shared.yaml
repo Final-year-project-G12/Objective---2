@@ -12,33 +12,34 @@
 # state must re-run from DOE onward (framework doc, Phase 0 gate).
 # ============================================================================
 
-version: "config_v2.0_2026-10-26"
+version: "config_v1.1_2026-09-13-safety-shield"
+# Bumped from v1.0_2026-09-05: the safety_shield block (below) was added on
+# 2026-09-13 (docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md §6/§7) without a
+# version bump at the time, so a run pinned to v1.0 could not be told apart
+# from one that predates the shield. Step 1 of the 2026-09-20 fix plan
+# ("Objective2 rajasthan fix plan.md") closes that gap.
 
-# --- 2026-10-26 resizing (supersedes v1.0's 50L/1.5m2) ---
-# The original 50L/1.5m2 pairing (33.3 L/m2) sits below IS 12976:2023's
-# 40-100 L/m2 guidance band and could not nominally reach a 50%
-# solar-fraction demand bar in any regime -- confirmed directly (a
-# PLAIN tank, zero PCM, under the same safety shield, reached only 37.1%
-# nominal solar fraction in Regime 1; raising the shield's guard band
-# down to 0.5C, effectively no margin at all, only moved this to 37.7%).
-# Tested a volume/area sweep (same ratio, same shield) before picking a
-# value: 75L/2.0m2 ~50.1%, 100L/2.5m2 ~61.1%, 150L/3.0m2 ~75.6% nominal.
-# 100L/2.5m2 (40 L/m2, at the low/conservative end of the IS 12976 band)
-# was chosen -- approved by the user 2026-10-26 -- as the smallest
-# resize giving real Monte Carlo margin above the 50%/75% bars, not just
-# a nominal pass. This is now the official size for every regime/state,
-# not a labelled what-if: re-run Phases 4-8 after this change (Phase 0
-# gate) -- Phase 2 (capsule/packing geometry) is tank-size-agnostic and
-# does not need re-running.
 collector:
   type: flat_plate
-  area_m2: 2.5                     # resized 2026-10-26 (was 1.5) -- see note above
+  area_m2: 2.5                     # TAMIL NADU: scaled with the 100 L tank to hold
+                                    # 40 L/m2, the low end of IS 12976:2023 4.2 (40-100).
+                                    # Hers is 1.5 m2 on 50 L = 33.3 L/m2, which her own
+                                    # report flags as below that band (decision D8).
   fr_tau_alpha: 0.75                # F_R*(τα), combined optical/removal efficiency [typical FPC]
   fr_ul_W_m2K: 4.5                  # F_R*U_L, typical flat-plate loss coefficient (3.5-6 W/m2K range)
   min_irradiance_cutoff_Wm2: 10.0   # below this, pump assumed off -> zero collector coupling (Gate 2)
+  flow_dependent_fr:                # OFF by default: F_R and F_R*U_L above are then independent of flow
+    enabled: false
+    # When enabled, fr_tau_alpha and fr_ul_W_m2K are scaled by F_R(flow) / F_R(reference_flow), with the heat removal factor of
+    #   F_R(m) = m*cp*(1 - exp(-A*U_L*F'/(m*cp))) / (A*U_L)        [Eldokaishi 2022 "Modeling of water-PCM solar thermal storage system", Eq. 2]
+    # F' = 0.84 and U_L = 5.0 W/m2K are the values that paper uses in its collector table (it also uses tau*alpha 0.8, 50-240 L tanks).
+    efficiency_factor_Fprime: 0.84
+    UL_for_flow_factor_W_m2K: 5.0
+    reference_flow_kg_s: 0.030      # ASSUMPTION: the flow at which the project's F_R values (0.75, 4.5) are taken to hold; not stated in any source read
 
 tank:
-  volume_L: 100.0                  # resized 2026-10-26 (was 50.0) -- see note above
+  volume_L: 100.0                  # TAMIL NADU: project instruction (hers is 50 L).
+                                    # Keeps H/D = 2.0, so D = 0.399 m, H = 0.799 m.
   height_to_diameter_ratio: 2.0     # standard vertical domestic tank proportion (assumption)
   insulation_m: 0.05                # 5 cm foam
   U_tank_W_m2K: 0.8                 # tank-wall U-value [framework doc §3.1]
@@ -65,20 +66,23 @@ safety:
   max_water_temp_C: 75.0             # scald prevention
   max_pcm_temp_C: 65.0                # material-stability limit (Rubitherm datasheets)
   max_pressure_bar: 3.5
-  # --- added 2026-10-26, does not change any value above ---
-  # Phase 8 robustness showed every regime's nominal design running past
-  # both limits above with zero active control (negative constraint
-  # margin in every regime). This was previously only a SPEC handed to
-  # Objective 3 (src/handoff/build_obj3_contract.py's _safety_shield());
-  # it is now also enforced inside Objective 2's own simulator
-  # (src/simulation/tank_model.py), so Phase 7/8's own numbers reflect a
-  # system that cannot silently overheat, not just a spec saying it
-  # shouldn't. shield_enabled: false reproduces the old (unsafe) behavior
-  # for comparison -- never set false for a number reported as "the"
-  # deployable design.
-  shield_enabled: true
-  shield_guard_band_C: 3.0            # trip 3C below each hard limit (72C water / 62C PCM) --
-                                        # precautionary margin against sensor/control lag overshoot
+
+# ADOPTED AS THE PIPELINE DEFAULT 2026-09-13 (was: disabled by default, only
+# turned on ad hoc at Phase 8's Monte Carlo call site and via a separate
+# fix2_shielded_phase7_confirmation.py supplementary check -- see
+# docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md §6 for that history). Decision
+# reversed: the shield is now the SINGLE official method for Rajasthan --
+# Phases 5-8 all read this default (via load_system_config() with no
+# override), so there is one unified set of results, not a parallel
+# shielded/unshielded pair. IS 12976:2023 Sec 8.2 independently validates
+# this exact mechanism ("stop circulation in the collector loop until the
+# storage temperature decreases") as the standard method for overheat
+# protection -- see src/simulation/tank_model.py's module docstring and
+# docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md §7.
+safety_shield:
+  enabled: true
+  bypass_water_C: 72.0                # max_water_temp_C - 3.0 C guard band
+  bypass_pcm_C: 62.0                  # max_pcm_temp_C - 3.0 C guard band
 
 delivery:
   target_temp_C: 45.0                # usable hot water
@@ -94,7 +98,23 @@ water:
 solver:
   method: backward_euler_lagged_pcm  # linear-implicit water node, PCM temperature
                                        # lagged one sub-step (see src/simulation/tank_model.py docstring)
-  timestep_s: 300                     # 5 min nominal
+  # TWO-TIER STEP. The G2 ladder (300/150/75/37.5 s, merged in
+  # results/g2_richardson_summary.csv) shows the PCM cases converge at observed
+  # order p = 0.80-0.99 -- first order, because of the melt band. Her gate
+  # ("useful energy changes < 0.05 % each time dt is halved") is therefore met
+  # only onto dt = 37.5 s (max 0.041 %); 150 s and 75 s both fail it
+  # (0.054 % and 0.071 %). Her 50 L Rajasthan tank passed at 150 s; our 100 L
+  # one does not, and that is a property of the tank, not of the port.
+  timestep_s: 150                     # SEARCH step: DOE / surrogate / NSGA-II.
+                                      # Richardson error <= 0.17 %, far inside
+                                      # the repeatability band, so design
+                                      # RANKING is unaffected -- and it keeps
+                                      # the 128-point DOE affordable.
+  timestep_confirm_s: 37.5            # CONFIRMATION step: the only value that
+                                      # passes the dt-halving gate. Every
+                                      # reported number -- confirmation runs,
+                                      # the selection funnel, the held-out
+                                      # test -- is produced at this step.
   substeps_in_melt_band: 6            # extra sub-stepping when T_pcm is within the melt band
   melt_band_margin_K: 2.0             # how far outside [Ts,Tl] still counts as "fast-changing"
   abs_tol: 1.0e-6

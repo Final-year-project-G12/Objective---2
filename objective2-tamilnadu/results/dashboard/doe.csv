@@ -1,0 +1,10 @@
+regime,rank,pcm,designs,window_win_share,annual_win_share,best_window_kWh,median_window_kWh
+0,1,RT57HC,126,1.0,1.0,288.4,92.6
+0,2,n-Hexacosane (C26),126,0.9841,0.9841,250.7,74.7
+0,3,PureTemp 58,126,0.9921,0.9921,264.6,81.7
+1,1,RT57HC,126,0.9841,0.9841,225.2,71.3
+1,2,n-Hexacosane (C26),126,0.9683,0.9683,192.8,51.0
+1,3,n-Pentacosane (C25),126,0.9762,0.9921,213.0,68.2
+2,1,RT57HC,126,0.9921,0.9921,260.5,83.5
+2,2,n-Pentacosane (C25),126,1.0,1.0,242.3,81.0
+2,3,n-Hexacosane (C26),126,0.9762,0.9841,225.9,65.2

@@ -75,8 +75,12 @@ def ua_eff_total_w_k(n_capsule: int, capsule_diameter_m: float, capsule_area_m2:
     r_wall = wall_thickness / (wall_k * capsule_area_m2)
 
     k_eff = effective_conductivity_W_mK(pcm_props, f_melt, enhancement)
-    radius = capsule_diameter_m / 2.0
-    r_pcm = radius / (5.0 * k_eff * capsule_area_m2) if k_eff > 0 else float("inf")
+    # O2 G7 (decision D3, thickness = inner radius): the PCM conduction path is the INNER sphere,
+    # radius R_in = D/2 - t_wall, with the lumped resistance referred to the inner surface. Before this the
+    # outer radius and outer area were used (an 8 % overstatement of the path at R_in = 10 mm).
+    r_in = capsule_diameter_m / 2.0 - wall_thickness
+    a_in = 4.0 * math.pi * r_in ** 2
+    r_pcm = r_in / (5.0 * k_eff * a_in) if k_eff > 0 else float("inf")
 
     r_total_per_capsule = r_conv + r_wall + r_pcm
     ua_per_capsule = 1.0 / r_total_per_capsule if r_total_per_capsule > 0 else 0.0

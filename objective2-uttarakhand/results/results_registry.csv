@@ -1,0 +1,536 @@
+id,quantity,value,unit,source_file,filter
+band.all.g_window,"WP6 repeatability band (all, g_window)",17.995,kWh,results/wp6_band.csv,"scope=all, objective=g_window"
+band.all.g_annual,"WP6 repeatability band (all, g_annual)",16.219,kWh,results/wp6_band.csv,"scope=all, objective=g_annual"
+band.all.d_overheat,"WP6 repeatability band (all, d_overheat)",78.342,h,results/wp6_band.csv,"scope=all, objective=d_overheat"
+band.r0.g_window,"WP6 repeatability band (r0, g_window)",21.976,kWh,results/wp6_band.csv,"scope=r0, objective=g_window"
+band.r0.g_annual,"WP6 repeatability band (r0, g_annual)",19.939,kWh,results/wp6_band.csv,"scope=r0, objective=g_annual"
+band.r0.d_overheat,"WP6 repeatability band (r0, d_overheat)",95.72,h,results/wp6_band.csv,"scope=r0, objective=d_overheat"
+band.r1.g_window,"WP6 repeatability band (r1, g_window)",19.429,kWh,results/wp6_band.csv,"scope=r1, objective=g_window"
+band.r1.g_annual,"WP6 repeatability band (r1, g_annual)",17.299,kWh,results/wp6_band.csv,"scope=r1, objective=g_annual"
+band.r1.d_overheat,"WP6 repeatability band (r1, d_overheat)",83.679,h,results/wp6_band.csv,"scope=r1, objective=d_overheat"
+band.r2.g_window,"WP6 repeatability band (r2, g_window)",19.962,kWh,results/wp6_band.csv,"scope=r2, objective=g_window"
+band.r2.g_annual,"WP6 repeatability band (r2, g_annual)",17.778,kWh,results/wp6_band.csv,"scope=r2, objective=g_annual"
+band.r2.d_overheat,"WP6 repeatability band (r2, d_overheat)",85.0,h,results/wp6_band.csv,"scope=r2, objective=d_overheat"
+band.r3.g_window,"WP6 repeatability band (r3, g_window)",6.051,kWh,results/wp6_band.csv,"scope=r3, objective=g_window"
+band.r3.g_annual,"WP6 repeatability band (r3, g_annual)",6.302,kWh,results/wp6_band.csv,"scope=r3, objective=g_annual"
+band.r3.d_overheat,"WP6 repeatability band (r3, d_overheat)",36.74,h,results/wp6_band.csv,"scope=r3, objective=d_overheat"
+sel.r0.pcm,regime 0 chosen PCM,PureTemp 58,,results/g10_selection_r0.json,chosen
+sel.r0.R_in_m,"regime 0 chosen design: R_in_m (select years, paired vs same-flow water-only)",0.0398,m,results/g10_selection_r0.json,chosen
+sel.r0.fraction,"regime 0 chosen design: fraction (select years, paired vs same-flow water-only)",0.2633,-,results/g10_selection_r0.json,chosen
+sel.r0.N,"regime 0 chosen design: N (select years, paired vs same-flow water-only)",47,capsules,results/g10_selection_r0.json,chosen
+sel.r0.flow,"regime 0 chosen design: flow (select years, paired vs same-flow water-only)",0.0194,kg/s,results/g10_selection_r0.json,chosen
+sel.r0.g_window,"regime 0 chosen design: g_window (select years, paired vs same-flow water-only)",79.96,kWh/yr,results/g10_selection_r0.json,chosen
+sel.r0.g_annual,"regime 0 chosen design: g_annual (select years, paired vs same-flow water-only)",89.83,kWh/yr,results/g10_selection_r0.json,chosen
+sel.r0.d_overheat,"regime 0 chosen design: d_overheat (select years, paired vs same-flow water-only)",210.5,h/yr,results/g10_selection_r0.json,chosen
+sel.r0.t_pcm_max,"regime 0 chosen design: t_pcm_max (select years, paired vs same-flow water-only)",63.24,C,results/g10_selection_r0.json,chosen
+sel.r0.t_water_max,"regime 0 chosen design: t_water_max (select years, paired vs same-flow water-only)",72.25,C,results/g10_selection_r0.json,chosen
+sel.r0.pcm_mass_kg,"regime 0 chosen design: pcm_mass_kg (select years, paired vs same-flow water-only)",11.04,kg,results/g10_selection_r0.json,chosen
+sel.r0.arrangement,regime 0 chosen arrangement,staggered,,results/g10_selection_r0.json,chosen
+sel.r0.nS0,regime 0 candidates indistinguishable on g_window (S0),30,designs,results/g10_selection_r0.json,
+sel.r0.band_g_window,regime 0 band used for g_window,21.98,kWh,results/g10_selection_r0.json,band
+sel.r1.pcm,regime 1 chosen PCM,PureTemp 58,,results/g10_selection_r1.json,chosen
+sel.r1.R_in_m,"regime 1 chosen design: R_in_m (select years, paired vs same-flow water-only)",0.0393,m,results/g10_selection_r1.json,chosen
+sel.r1.fraction,"regime 1 chosen design: fraction (select years, paired vs same-flow water-only)",0.2973,-,results/g10_selection_r1.json,chosen
+sel.r1.N,"regime 1 chosen design: N (select years, paired vs same-flow water-only)",55,capsules,results/g10_selection_r1.json,chosen
+sel.r1.flow,"regime 1 chosen design: flow (select years, paired vs same-flow water-only)",0.0314,kg/s,results/g10_selection_r1.json,chosen
+sel.r1.g_window,"regime 1 chosen design: g_window (select years, paired vs same-flow water-only)",72.07,kWh/yr,results/g10_selection_r1.json,chosen
+sel.r1.g_annual,"regime 1 chosen design: g_annual (select years, paired vs same-flow water-only)",85.09,kWh/yr,results/g10_selection_r1.json,chosen
+sel.r1.d_overheat,"regime 1 chosen design: d_overheat (select years, paired vs same-flow water-only)",294.2,h/yr,results/g10_selection_r1.json,chosen
+sel.r1.t_pcm_max,"regime 1 chosen design: t_pcm_max (select years, paired vs same-flow water-only)",63.52,C,results/g10_selection_r1.json,chosen
+sel.r1.t_water_max,"regime 1 chosen design: t_water_max (select years, paired vs same-flow water-only)",72.43,C,results/g10_selection_r1.json,chosen
+sel.r1.pcm_mass_kg,"regime 1 chosen design: pcm_mass_kg (select years, paired vs same-flow water-only)",12.454,kg,results/g10_selection_r1.json,chosen
+sel.r1.arrangement,regime 1 chosen arrangement,single-layer,,results/g10_selection_r1.json,chosen
+sel.r1.gain_tau_serve_h,regime 1 chosen design: tau_serve gain,-0.107,h,results/g10_selection_r1.json,chosen
+sel.r1.nS0,regime 1 candidates indistinguishable on g_window (S0),25,designs,results/g10_selection_r1.json,
+sel.r1.band_g_window,regime 1 band used for g_window,19.43,kWh,results/g10_selection_r1.json,band
+sel.r2.pcm,regime 2 chosen PCM,savE® OM55,,results/g10_selection_r2.json,chosen
+sel.r2.R_in_m,"regime 2 chosen design: R_in_m (select years, paired vs same-flow water-only)",0.0397,m,results/g10_selection_r2.json,chosen
+sel.r2.fraction,"regime 2 chosen design: fraction (select years, paired vs same-flow water-only)",0.2997,-,results/g10_selection_r2.json,chosen
+sel.r2.N,"regime 2 chosen design: N (select years, paired vs same-flow water-only)",54,capsules,results/g10_selection_r2.json,chosen
+sel.r2.flow,"regime 2 chosen design: flow (select years, paired vs same-flow water-only)",0.0199,kg/s,results/g10_selection_r2.json,chosen
+sel.r2.g_window,"regime 2 chosen design: g_window (select years, paired vs same-flow water-only)",62.95,kWh/yr,results/g10_selection_r2.json,chosen
+sel.r2.g_annual,"regime 2 chosen design: g_annual (select years, paired vs same-flow water-only)",74.47,kWh/yr,results/g10_selection_r2.json,chosen
+sel.r2.d_overheat,"regime 2 chosen design: d_overheat (select years, paired vs same-flow water-only)",223.4,h/yr,results/g10_selection_r2.json,chosen
+sel.r2.t_pcm_max,"regime 2 chosen design: t_pcm_max (select years, paired vs same-flow water-only)",62.9,C,results/g10_selection_r2.json,chosen
+sel.r2.t_water_max,"regime 2 chosen design: t_water_max (select years, paired vs same-flow water-only)",72.3,C,results/g10_selection_r2.json,chosen
+sel.r2.pcm_mass_kg,"regime 2 chosen design: pcm_mass_kg (select years, paired vs same-flow water-only)",13.197,kg,results/g10_selection_r2.json,chosen
+sel.r2.arrangement,regime 2 chosen arrangement,single-layer,,results/g10_selection_r2.json,chosen
+sel.r2.gain_tau_serve_h,regime 2 chosen design: tau_serve gain,-0.16,h,results/g10_selection_r2.json,chosen
+sel.r2.nS0,regime 2 candidates indistinguishable on g_window (S0),27,designs,results/g10_selection_r2.json,
+sel.r2.band_g_window,regime 2 band used for g_window,19.96,kWh,results/g10_selection_r2.json,band
+sel.r3.pcm,regime 3 chosen PCM,n-Hexacosane (C26),,results/g10_selection_r3.json,chosen
+sel.r3.R_in_m,"regime 3 chosen design: R_in_m (select years, paired vs same-flow water-only)",0.0384,m,results/g10_selection_r3.json,chosen
+sel.r3.fraction,"regime 3 chosen design: fraction (select years, paired vs same-flow water-only)",0.0202,-,results/g10_selection_r3.json,chosen
+sel.r3.N,"regime 3 chosen design: N (select years, paired vs same-flow water-only)",4,capsules,results/g10_selection_r3.json,chosen
+sel.r3.flow,"regime 3 chosen design: flow (select years, paired vs same-flow water-only)",0.01,kg/s,results/g10_selection_r3.json,chosen
+sel.r3.g_window,"regime 3 chosen design: g_window (select years, paired vs same-flow water-only)",-5.78,kWh/yr,results/g10_selection_r3.json,chosen
+sel.r3.g_annual,"regime 3 chosen design: g_annual (select years, paired vs same-flow water-only)",-4.32,kWh/yr,results/g10_selection_r3.json,chosen
+sel.r3.d_overheat,"regime 3 chosen design: d_overheat (select years, paired vs same-flow water-only)",114.1,h/yr,results/g10_selection_r3.json,chosen
+sel.r3.t_pcm_max,"regime 3 chosen design: t_pcm_max (select years, paired vs same-flow water-only)",63.47,C,results/g10_selection_r3.json,chosen
+sel.r3.t_water_max,"regime 3 chosen design: t_water_max (select years, paired vs same-flow water-only)",72.13,C,results/g10_selection_r3.json,chosen
+sel.r3.pcm_mass_kg,"regime 3 chosen design: pcm_mass_kg (select years, paired vs same-flow water-only)",0.731,kg,results/g10_selection_r3.json,chosen
+sel.r3.arrangement,regime 3 chosen arrangement,single-layer,,results/g10_selection_r3.json,chosen
+sel.r3.nS0,regime 3 candidates indistinguishable on g_window (S0),49,designs,results/g10_selection_r3.json,
+sel.r3.band_g_window,regime 3 band used for g_window,6.05,kWh,results/g10_selection_r3.json,band
+test.r0.chosen.PureTemp_58.2024.g_window,held-out g_window,77.44,kWh,results/g10_heldout_results.csv,"regime=0, role=chosen, pcm=PureTemp 58, year=2024"
+test.r0.chosen.PureTemp_58.2024.g_annual,held-out g_annual,87.2,kWh,results/g10_heldout_results.csv,"regime=0, role=chosen, pcm=PureTemp 58, year=2024"
+test.r0.chosen.PureTemp_58.2024.d_overheat,held-out d_overheat,208.7,h,results/g10_heldout_results.csv,"regime=0, role=chosen, pcm=PureTemp 58, year=2024"
+test.r0.chosen.PureTemp_58.2024.t_pcm_max,held-out t_pcm_max,63.07,C,results/g10_heldout_results.csv,"regime=0, role=chosen, pcm=PureTemp 58, year=2024"
+test.r0.chosen.PureTemp_58.2024.t_water_max,held-out t_water_max,72.21,C,results/g10_heldout_results.csv,"regime=0, role=chosen, pcm=PureTemp 58, year=2024"
+test.r0.chosen.PureTemp_58.2024.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.102,h,results/g10_heldout_results.csv,"regime=0, role=chosen, pcm=PureTemp 58, year=2024"
+test.r0.chosen.PureTemp_58.2025.g_window,held-out g_window,74.56,kWh,results/g10_heldout_results.csv,"regime=0, role=chosen, pcm=PureTemp 58, year=2025"
+test.r0.chosen.PureTemp_58.2025.g_annual,held-out g_annual,84.53,kWh,results/g10_heldout_results.csv,"regime=0, role=chosen, pcm=PureTemp 58, year=2025"
+test.r0.chosen.PureTemp_58.2025.d_overheat,held-out d_overheat,189.6,h,results/g10_heldout_results.csv,"regime=0, role=chosen, pcm=PureTemp 58, year=2025"
+test.r0.chosen.PureTemp_58.2025.t_pcm_max,held-out t_pcm_max,63.02,C,results/g10_heldout_results.csv,"regime=0, role=chosen, pcm=PureTemp 58, year=2025"
+test.r0.chosen.PureTemp_58.2025.t_water_max,held-out t_water_max,72.14,C,results/g10_heldout_results.csv,"regime=0, role=chosen, pcm=PureTemp 58, year=2025"
+test.r0.chosen.PureTemp_58.2025.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.111,h,results/g10_heldout_results.csv,"regime=0, role=chosen, pcm=PureTemp 58, year=2025"
+test.r0.best_of_pcm.n-Octacosane_(C28).2024.g_window,held-out g_window,39.66,kWh,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=n-Octacosane (C28), year=2024"
+test.r0.best_of_pcm.n-Octacosane_(C28).2024.g_annual,held-out g_annual,53.37,kWh,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=n-Octacosane (C28), year=2024"
+test.r0.best_of_pcm.n-Octacosane_(C28).2024.d_overheat,held-out d_overheat,489.0,h,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=n-Octacosane (C28), year=2024"
+test.r0.best_of_pcm.n-Octacosane_(C28).2024.t_pcm_max,held-out t_pcm_max,62.01,C,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=n-Octacosane (C28), year=2024"
+test.r0.best_of_pcm.n-Octacosane_(C28).2024.t_water_max,held-out t_water_max,72.09,C,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=n-Octacosane (C28), year=2024"
+test.r0.best_of_pcm.n-Octacosane_(C28).2024.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.046,h,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=n-Octacosane (C28), year=2024"
+test.r0.best_of_pcm.n-Octacosane_(C28).2025.g_window,held-out g_window,37.66,kWh,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=n-Octacosane (C28), year=2025"
+test.r0.best_of_pcm.n-Octacosane_(C28).2025.g_annual,held-out g_annual,51.62,kWh,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=n-Octacosane (C28), year=2025"
+test.r0.best_of_pcm.n-Octacosane_(C28).2025.d_overheat,held-out d_overheat,453.0,h,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=n-Octacosane (C28), year=2025"
+test.r0.best_of_pcm.n-Octacosane_(C28).2025.t_pcm_max,held-out t_pcm_max,62.01,C,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=n-Octacosane (C28), year=2025"
+test.r0.best_of_pcm.n-Octacosane_(C28).2025.t_water_max,held-out t_water_max,72.08,C,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=n-Octacosane (C28), year=2025"
+test.r0.best_of_pcm.n-Octacosane_(C28).2025.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.059,h,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=n-Octacosane (C28), year=2025"
+test.r0.best_of_pcm.PlusICE_A58.2024.g_window,held-out g_window,87.01,kWh,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=PlusICE A58, year=2024"
+test.r0.best_of_pcm.PlusICE_A58.2024.g_annual,held-out g_annual,99.79,kWh,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=PlusICE A58, year=2024"
+test.r0.best_of_pcm.PlusICE_A58.2024.d_overheat,held-out d_overheat,512.9,h,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=PlusICE A58, year=2024"
+test.r0.best_of_pcm.PlusICE_A58.2024.t_pcm_max,held-out t_pcm_max,63.96,C,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=PlusICE A58, year=2024"
+test.r0.best_of_pcm.PlusICE_A58.2024.t_water_max,held-out t_water_max,72.71,C,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=PlusICE A58, year=2024"
+test.r0.best_of_pcm.PlusICE_A58.2024.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.074,h,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=PlusICE A58, year=2024"
+test.r0.best_of_pcm.PlusICE_A58.2025.g_window,held-out g_window,85.87,kWh,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=PlusICE A58, year=2025"
+test.r0.best_of_pcm.PlusICE_A58.2025.g_annual,held-out g_annual,98.91,kWh,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=PlusICE A58, year=2025"
+test.r0.best_of_pcm.PlusICE_A58.2025.d_overheat,held-out d_overheat,468.5,h,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=PlusICE A58, year=2025"
+test.r0.best_of_pcm.PlusICE_A58.2025.t_pcm_max,held-out t_pcm_max,63.96,C,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=PlusICE A58, year=2025"
+test.r0.best_of_pcm.PlusICE_A58.2025.t_water_max,held-out t_water_max,72.66,C,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=PlusICE A58, year=2025"
+test.r0.best_of_pcm.PlusICE_A58.2025.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.086,h,results/g10_heldout_results.csv,"regime=0, role=best_of_pcm, pcm=PlusICE A58, year=2025"
+test.r1.chosen.PureTemp_58.2024.g_window,held-out g_window,62.79,kWh,results/g10_heldout_results.csv,"regime=1, role=chosen, pcm=PureTemp 58, year=2024"
+test.r1.chosen.PureTemp_58.2024.g_annual,held-out g_annual,75.39,kWh,results/g10_heldout_results.csv,"regime=1, role=chosen, pcm=PureTemp 58, year=2024"
+test.r1.chosen.PureTemp_58.2024.d_overheat,held-out d_overheat,289.6,h,results/g10_heldout_results.csv,"regime=1, role=chosen, pcm=PureTemp 58, year=2024"
+test.r1.chosen.PureTemp_58.2024.t_pcm_max,held-out t_pcm_max,63.53,C,results/g10_heldout_results.csv,"regime=1, role=chosen, pcm=PureTemp 58, year=2024"
+test.r1.chosen.PureTemp_58.2024.t_water_max,held-out t_water_max,72.55,C,results/g10_heldout_results.csv,"regime=1, role=chosen, pcm=PureTemp 58, year=2024"
+test.r1.chosen.PureTemp_58.2024.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.095,h,results/g10_heldout_results.csv,"regime=1, role=chosen, pcm=PureTemp 58, year=2024"
+test.r1.chosen.PureTemp_58.2025.g_window,held-out g_window,60.73,kWh,results/g10_heldout_results.csv,"regime=1, role=chosen, pcm=PureTemp 58, year=2025"
+test.r1.chosen.PureTemp_58.2025.g_annual,held-out g_annual,73.74,kWh,results/g10_heldout_results.csv,"regime=1, role=chosen, pcm=PureTemp 58, year=2025"
+test.r1.chosen.PureTemp_58.2025.d_overheat,held-out d_overheat,252.0,h,results/g10_heldout_results.csv,"regime=1, role=chosen, pcm=PureTemp 58, year=2025"
+test.r1.chosen.PureTemp_58.2025.t_pcm_max,held-out t_pcm_max,63.46,C,results/g10_heldout_results.csv,"regime=1, role=chosen, pcm=PureTemp 58, year=2025"
+test.r1.chosen.PureTemp_58.2025.t_water_max,held-out t_water_max,72.38,C,results/g10_heldout_results.csv,"regime=1, role=chosen, pcm=PureTemp 58, year=2025"
+test.r1.chosen.PureTemp_58.2025.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.111,h,results/g10_heldout_results.csv,"regime=1, role=chosen, pcm=PureTemp 58, year=2025"
+test.r1.best_of_pcm.n-Octacosane_(C28).2024.g_window,held-out g_window,10.92,kWh,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=n-Octacosane (C28), year=2024"
+test.r1.best_of_pcm.n-Octacosane_(C28).2024.g_annual,held-out g_annual,25.57,kWh,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=n-Octacosane (C28), year=2024"
+test.r1.best_of_pcm.n-Octacosane_(C28).2024.d_overheat,held-out d_overheat,377.0,h,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=n-Octacosane (C28), year=2024"
+test.r1.best_of_pcm.n-Octacosane_(C28).2024.t_pcm_max,held-out t_pcm_max,62.01,C,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=n-Octacosane (C28), year=2024"
+test.r1.best_of_pcm.n-Octacosane_(C28).2024.t_water_max,held-out t_water_max,72.08,C,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=n-Octacosane (C28), year=2024"
+test.r1.best_of_pcm.n-Octacosane_(C28).2024.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.06,h,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=n-Octacosane (C28), year=2024"
+test.r1.best_of_pcm.n-Octacosane_(C28).2025.g_window,held-out g_window,9.57,kWh,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=n-Octacosane (C28), year=2025"
+test.r1.best_of_pcm.n-Octacosane_(C28).2025.g_annual,held-out g_annual,24.67,kWh,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=n-Octacosane (C28), year=2025"
+test.r1.best_of_pcm.n-Octacosane_(C28).2025.d_overheat,held-out d_overheat,352.2,h,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=n-Octacosane (C28), year=2025"
+test.r1.best_of_pcm.n-Octacosane_(C28).2025.t_pcm_max,held-out t_pcm_max,62.01,C,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=n-Octacosane (C28), year=2025"
+test.r1.best_of_pcm.n-Octacosane_(C28).2025.t_water_max,held-out t_water_max,72.08,C,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=n-Octacosane (C28), year=2025"
+test.r1.best_of_pcm.n-Octacosane_(C28).2025.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.068,h,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=n-Octacosane (C28), year=2025"
+test.r1.best_of_pcm.PlusICE_A58.2024.g_window,held-out g_window,53.43,kWh,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=PlusICE A58, year=2024"
+test.r1.best_of_pcm.PlusICE_A58.2024.g_annual,held-out g_annual,67.32,kWh,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=PlusICE A58, year=2024"
+test.r1.best_of_pcm.PlusICE_A58.2024.d_overheat,held-out d_overheat,401.9,h,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=PlusICE A58, year=2024"
+test.r1.best_of_pcm.PlusICE_A58.2024.t_pcm_max,held-out t_pcm_max,64.04,C,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=PlusICE A58, year=2024"
+test.r1.best_of_pcm.PlusICE_A58.2024.t_water_max,held-out t_water_max,73.07,C,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=PlusICE A58, year=2024"
+test.r1.best_of_pcm.PlusICE_A58.2024.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.085,h,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=PlusICE A58, year=2024"
+test.r1.best_of_pcm.PlusICE_A58.2025.g_window,held-out g_window,52.33,kWh,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=PlusICE A58, year=2025"
+test.r1.best_of_pcm.PlusICE_A58.2025.g_annual,held-out g_annual,66.63,kWh,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=PlusICE A58, year=2025"
+test.r1.best_of_pcm.PlusICE_A58.2025.d_overheat,held-out d_overheat,348.4,h,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=PlusICE A58, year=2025"
+test.r1.best_of_pcm.PlusICE_A58.2025.t_pcm_max,held-out t_pcm_max,64.05,C,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=PlusICE A58, year=2025"
+test.r1.best_of_pcm.PlusICE_A58.2025.t_water_max,held-out t_water_max,72.82,C,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=PlusICE A58, year=2025"
+test.r1.best_of_pcm.PlusICE_A58.2025.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.099,h,results/g10_heldout_results.csv,"regime=1, role=best_of_pcm, pcm=PlusICE A58, year=2025"
+test.r2.chosen.savE®_OM55.2024.g_window,held-out g_window,63.2,kWh,results/g10_heldout_results.csv,"regime=2, role=chosen, pcm=savE® OM55, year=2024"
+test.r2.chosen.savE®_OM55.2024.g_annual,held-out g_annual,74.52,kWh,results/g10_heldout_results.csv,"regime=2, role=chosen, pcm=savE® OM55, year=2024"
+test.r2.chosen.savE®_OM55.2024.d_overheat,held-out d_overheat,214.2,h,results/g10_heldout_results.csv,"regime=2, role=chosen, pcm=savE® OM55, year=2024"
+test.r2.chosen.savE®_OM55.2024.t_pcm_max,held-out t_pcm_max,62.88,C,results/g10_heldout_results.csv,"regime=2, role=chosen, pcm=savE® OM55, year=2024"
+test.r2.chosen.savE®_OM55.2024.t_water_max,held-out t_water_max,72.29,C,results/g10_heldout_results.csv,"regime=2, role=chosen, pcm=savE® OM55, year=2024"
+test.r2.chosen.savE®_OM55.2024.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.17,h,results/g10_heldout_results.csv,"regime=2, role=chosen, pcm=savE® OM55, year=2024"
+test.r2.chosen.savE®_OM55.2025.g_window,held-out g_window,49.57,kWh,results/g10_heldout_results.csv,"regime=2, role=chosen, pcm=savE® OM55, year=2025"
+test.r2.chosen.savE®_OM55.2025.g_annual,held-out g_annual,61.02,kWh,results/g10_heldout_results.csv,"regime=2, role=chosen, pcm=savE® OM55, year=2025"
+test.r2.chosen.savE®_OM55.2025.d_overheat,held-out d_overheat,168.4,h,results/g10_heldout_results.csv,"regime=2, role=chosen, pcm=savE® OM55, year=2025"
+test.r2.chosen.savE®_OM55.2025.t_pcm_max,held-out t_pcm_max,62.81,C,results/g10_heldout_results.csv,"regime=2, role=chosen, pcm=savE® OM55, year=2025"
+test.r2.chosen.savE®_OM55.2025.t_water_max,held-out t_water_max,72.17,C,results/g10_heldout_results.csv,"regime=2, role=chosen, pcm=savE® OM55, year=2025"
+test.r2.chosen.savE®_OM55.2025.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.152,h,results/g10_heldout_results.csv,"regime=2, role=chosen, pcm=savE® OM55, year=2025"
+test.r2.best_of_pcm.PureTemp_58.2024.g_window,held-out g_window,58.77,kWh,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=PureTemp 58, year=2024"
+test.r2.best_of_pcm.PureTemp_58.2024.g_annual,held-out g_annual,72.44,kWh,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=PureTemp 58, year=2024"
+test.r2.best_of_pcm.PureTemp_58.2024.d_overheat,held-out d_overheat,268.6,h,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=PureTemp 58, year=2024"
+test.r2.best_of_pcm.PureTemp_58.2024.t_pcm_max,held-out t_pcm_max,63.65,C,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=PureTemp 58, year=2024"
+test.r2.best_of_pcm.PureTemp_58.2024.t_water_max,held-out t_water_max,72.64,C,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=PureTemp 58, year=2024"
+test.r2.best_of_pcm.PureTemp_58.2024.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.108,h,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=PureTemp 58, year=2024"
+test.r2.best_of_pcm.PureTemp_58.2025.g_window,held-out g_window,42.99,kWh,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=PureTemp 58, year=2025"
+test.r2.best_of_pcm.PureTemp_58.2025.g_annual,held-out g_annual,57.01,kWh,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=PureTemp 58, year=2025"
+test.r2.best_of_pcm.PureTemp_58.2025.d_overheat,held-out d_overheat,214.6,h,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=PureTemp 58, year=2025"
+test.r2.best_of_pcm.PureTemp_58.2025.t_pcm_max,held-out t_pcm_max,63.66,C,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=PureTemp 58, year=2025"
+test.r2.best_of_pcm.PureTemp_58.2025.t_water_max,held-out t_water_max,72.6,C,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=PureTemp 58, year=2025"
+test.r2.best_of_pcm.PureTemp_58.2025.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.099,h,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=PureTemp 58, year=2025"
+test.r2.best_of_pcm.n-Hexacosane_(C26).2024.g_window,held-out g_window,48.14,kWh,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=n-Hexacosane (C26), year=2024"
+test.r2.best_of_pcm.n-Hexacosane_(C26).2024.g_annual,held-out g_annual,64.43,kWh,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=n-Hexacosane (C26), year=2024"
+test.r2.best_of_pcm.n-Hexacosane_(C26).2024.d_overheat,held-out d_overheat,464.3,h,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=n-Hexacosane (C26), year=2024"
+test.r2.best_of_pcm.n-Hexacosane_(C26).2024.t_pcm_max,held-out t_pcm_max,64.21,C,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=n-Hexacosane (C26), year=2024"
+test.r2.best_of_pcm.n-Hexacosane_(C26).2024.t_water_max,held-out t_water_max,73.09,C,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=n-Hexacosane (C26), year=2024"
+test.r2.best_of_pcm.n-Hexacosane_(C26).2024.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.102,h,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=n-Hexacosane (C26), year=2024"
+test.r2.best_of_pcm.n-Hexacosane_(C26).2025.g_window,held-out g_window,34.25,kWh,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=n-Hexacosane (C26), year=2025"
+test.r2.best_of_pcm.n-Hexacosane_(C26).2025.g_annual,held-out g_annual,51.14,kWh,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=n-Hexacosane (C26), year=2025"
+test.r2.best_of_pcm.n-Hexacosane_(C26).2025.d_overheat,held-out d_overheat,358.0,h,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=n-Hexacosane (C26), year=2025"
+test.r2.best_of_pcm.n-Hexacosane_(C26).2025.t_pcm_max,held-out t_pcm_max,64.12,C,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=n-Hexacosane (C26), year=2025"
+test.r2.best_of_pcm.n-Hexacosane_(C26).2025.t_water_max,held-out t_water_max,73.04,C,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=n-Hexacosane (C26), year=2025"
+test.r2.best_of_pcm.n-Hexacosane_(C26).2025.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.093,h,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=n-Hexacosane (C26), year=2025"
+test.r3.chosen.n-Hexacosane_(C26).2024.g_window,held-out g_window,-5.94,kWh,results/g10_heldout_results.csv,"regime=3, role=chosen, pcm=n-Hexacosane (C26), year=2024"
+test.r3.chosen.n-Hexacosane_(C26).2024.g_annual,held-out g_annual,-4.49,kWh,results/g10_heldout_results.csv,"regime=3, role=chosen, pcm=n-Hexacosane (C26), year=2024"
+test.r3.chosen.n-Hexacosane_(C26).2024.d_overheat,held-out d_overheat,99.8,h,results/g10_heldout_results.csv,"regime=3, role=chosen, pcm=n-Hexacosane (C26), year=2024"
+test.r3.chosen.n-Hexacosane_(C26).2024.t_pcm_max,held-out t_pcm_max,63.65,C,results/g10_heldout_results.csv,"regime=3, role=chosen, pcm=n-Hexacosane (C26), year=2024"
+test.r3.chosen.n-Hexacosane_(C26).2024.t_water_max,held-out t_water_max,72.19,C,results/g10_heldout_results.csv,"regime=3, role=chosen, pcm=n-Hexacosane (C26), year=2024"
+test.r3.chosen.n-Hexacosane_(C26).2024.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.002,h,results/g10_heldout_results.csv,"regime=3, role=chosen, pcm=n-Hexacosane (C26), year=2024"
+test.r3.chosen.n-Hexacosane_(C26).2025.g_window,held-out g_window,-6.36,kWh,results/g10_heldout_results.csv,"regime=3, role=chosen, pcm=n-Hexacosane (C26), year=2025"
+test.r3.chosen.n-Hexacosane_(C26).2025.g_annual,held-out g_annual,-4.88,kWh,results/g10_heldout_results.csv,"regime=3, role=chosen, pcm=n-Hexacosane (C26), year=2025"
+test.r3.chosen.n-Hexacosane_(C26).2025.d_overheat,held-out d_overheat,71.4,h,results/g10_heldout_results.csv,"regime=3, role=chosen, pcm=n-Hexacosane (C26), year=2025"
+test.r3.chosen.n-Hexacosane_(C26).2025.t_pcm_max,held-out t_pcm_max,63.43,C,results/g10_heldout_results.csv,"regime=3, role=chosen, pcm=n-Hexacosane (C26), year=2025"
+test.r3.chosen.n-Hexacosane_(C26).2025.t_water_max,held-out t_water_max,72.11,C,results/g10_heldout_results.csv,"regime=3, role=chosen, pcm=n-Hexacosane (C26), year=2025"
+test.r3.chosen.n-Hexacosane_(C26).2025.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.002,h,results/g10_heldout_results.csv,"regime=3, role=chosen, pcm=n-Hexacosane (C26), year=2025"
+test.r3.best_of_pcm.PureTemp_53.2024.g_window,held-out g_window,-6.09,kWh,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=PureTemp 53, year=2024"
+test.r3.best_of_pcm.PureTemp_53.2024.g_annual,held-out g_annual,12.9,kWh,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=PureTemp 53, year=2024"
+test.r3.best_of_pcm.PureTemp_53.2024.d_overheat,held-out d_overheat,138.5,h,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=PureTemp 53, year=2024"
+test.r3.best_of_pcm.PureTemp_53.2024.t_pcm_max,held-out t_pcm_max,63.17,C,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=PureTemp 53, year=2024"
+test.r3.best_of_pcm.PureTemp_53.2024.t_water_max,held-out t_water_max,72.81,C,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=PureTemp 53, year=2024"
+test.r3.best_of_pcm.PureTemp_53.2024.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.039,h,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=PureTemp 53, year=2024"
+test.r3.best_of_pcm.PureTemp_53.2025.g_window,held-out g_window,-14.05,kWh,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=PureTemp 53, year=2025"
+test.r3.best_of_pcm.PureTemp_53.2025.g_annual,held-out g_annual,4.89,kWh,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=PureTemp 53, year=2025"
+test.r3.best_of_pcm.PureTemp_53.2025.d_overheat,held-out d_overheat,102.8,h,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=PureTemp 53, year=2025"
+test.r3.best_of_pcm.PureTemp_53.2025.t_pcm_max,held-out t_pcm_max,63.4,C,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=PureTemp 53, year=2025"
+test.r3.best_of_pcm.PureTemp_53.2025.t_water_max,held-out t_water_max,72.8,C,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=PureTemp 53, year=2025"
+test.r3.best_of_pcm.PureTemp_53.2025.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.036,h,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=PureTemp 53, year=2025"
+test.r3.best_of_pcm.Myristic_acid_(C14).2024.g_window,held-out g_window,-4.57,kWh,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=Myristic acid (C14), year=2024"
+test.r3.best_of_pcm.Myristic_acid_(C14).2024.g_annual,held-out g_annual,-2.48,kWh,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=Myristic acid (C14), year=2024"
+test.r3.best_of_pcm.Myristic_acid_(C14).2024.d_overheat,held-out d_overheat,199.8,h,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=Myristic acid (C14), year=2024"
+test.r3.best_of_pcm.Myristic_acid_(C14).2024.t_pcm_max,held-out t_pcm_max,64.05,C,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=Myristic acid (C14), year=2024"
+test.r3.best_of_pcm.Myristic_acid_(C14).2024.t_water_max,held-out t_water_max,72.57,C,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=Myristic acid (C14), year=2024"
+test.r3.best_of_pcm.Myristic_acid_(C14).2024.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.005,h,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=Myristic acid (C14), year=2024"
+test.r3.best_of_pcm.Myristic_acid_(C14).2025.g_window,held-out g_window,-5.05,kWh,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=Myristic acid (C14), year=2025"
+test.r3.best_of_pcm.Myristic_acid_(C14).2025.g_annual,held-out g_annual,-2.94,kWh,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=Myristic acid (C14), year=2025"
+test.r3.best_of_pcm.Myristic_acid_(C14).2025.d_overheat,held-out d_overheat,150.8,h,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=Myristic acid (C14), year=2025"
+test.r3.best_of_pcm.Myristic_acid_(C14).2025.t_pcm_max,held-out t_pcm_max,64.17,C,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=Myristic acid (C14), year=2025"
+test.r3.best_of_pcm.Myristic_acid_(C14).2025.t_water_max,held-out t_water_max,72.58,C,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=Myristic acid (C14), year=2025"
+test.r3.best_of_pcm.Myristic_acid_(C14).2025.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,-0.004,h,results/g10_heldout_results.csv,"regime=3, role=best_of_pcm, pcm=Myristic acid (C14), year=2025"
+shield.r0.shield_water_h_pcm,"regime 0 chosen design, select-year mean: shield_water_h_pcm",310.9,h/yr,results/g13_shield_split_r0.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r0.shield_water_h_plain,"regime 0 chosen design, select-year mean: shield_water_h_plain",465.8,h/yr,results/g13_shield_split_r0.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r0.d_shield_water_h,"regime 0 chosen design, select-year mean: d_shield_water_h",-154.9,h/yr,results/g13_shield_split_r0.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r0.shield_pcm_h,"regime 0 chosen design, select-year mean: shield_pcm_h",365.4,h/yr,results/g13_shield_split_r0.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r0.d_overheat_as_stored,"regime 0 chosen design, select-year mean: d_overheat_as_stored",210.5,h/yr,results/g13_shield_split_r0.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r0.t_water_max_pcm_C,"regime 0 chosen design, select-year mean: t_water_max_pcm_C",72.2,C,results/g13_shield_split_r0.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r0.t_water_max_plain_C,"regime 0 chosen design, select-year mean: t_water_max_plain_C",73.0,C,results/g13_shield_split_r0.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r1.shield_water_h_pcm,"regime 1 chosen design, select-year mean: shield_water_h_pcm",159.1,h/yr,results/g13_shield_split_r1.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r1.shield_water_h_plain,"regime 1 chosen design, select-year mean: shield_water_h_plain",313.2,h/yr,results/g13_shield_split_r1.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r1.d_shield_water_h,"regime 1 chosen design, select-year mean: d_shield_water_h",-154.1,h/yr,results/g13_shield_split_r1.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r1.shield_pcm_h,"regime 1 chosen design, select-year mean: shield_pcm_h",448.2,h/yr,results/g13_shield_split_r1.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r1.d_overheat_as_stored,"regime 1 chosen design, select-year mean: d_overheat_as_stored",294.2,h/yr,results/g13_shield_split_r1.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r1.t_water_max_pcm_C,"regime 1 chosen design, select-year mean: t_water_max_pcm_C",72.4,C,results/g13_shield_split_r1.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r1.t_water_max_plain_C,"regime 1 chosen design, select-year mean: t_water_max_plain_C",72.9,C,results/g13_shield_split_r1.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r2.shield_water_h_pcm,"regime 2 chosen design, select-year mean: shield_water_h_pcm",166.4,h/yr,results/g13_shield_split_r2.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r2.shield_water_h_plain,"regime 2 chosen design, select-year mean: shield_water_h_plain",275.4,h/yr,results/g13_shield_split_r2.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r2.d_shield_water_h,"regime 2 chosen design, select-year mean: d_shield_water_h",-109.0,h/yr,results/g13_shield_split_r2.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r2.shield_pcm_h,"regime 2 chosen design, select-year mean: shield_pcm_h",332.4,h/yr,results/g13_shield_split_r2.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r2.d_overheat_as_stored,"regime 2 chosen design, select-year mean: d_overheat_as_stored",223.4,h/yr,results/g13_shield_split_r2.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r2.t_water_max_pcm_C,"regime 2 chosen design, select-year mean: t_water_max_pcm_C",72.3,C,results/g13_shield_split_r2.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r2.t_water_max_plain_C,"regime 2 chosen design, select-year mean: t_water_max_plain_C",72.9,C,results/g13_shield_split_r2.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r3.shield_water_h_pcm,"regime 3 chosen design, select-year mean: shield_water_h_pcm",47.7,h/yr,results/g13_shield_split_r3.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r3.shield_water_h_plain,"regime 3 chosen design, select-year mean: shield_water_h_plain",50.5,h/yr,results/g13_shield_split_r3.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r3.d_shield_water_h,"regime 3 chosen design, select-year mean: d_shield_water_h",-2.7,h/yr,results/g13_shield_split_r3.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r3.shield_pcm_h,"regime 3 chosen design, select-year mean: shield_pcm_h",116.8,h/yr,results/g13_shield_split_r3.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r3.d_overheat_as_stored,"regime 3 chosen design, select-year mean: d_overheat_as_stored",114.1,h/yr,results/g13_shield_split_r3.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r3.t_water_max_pcm_C,"regime 3 chosen design, select-year mean: t_water_max_pcm_C",72.1,C,results/g13_shield_split_r3.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r3.t_water_max_plain_C,"regime 3 chosen design, select-year mean: t_water_max_plain_C",72.6,C,results/g13_shield_split_r3.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.rows_with_fewer_water_side_hours,design-years (16 designs x 8 years) with fewer water-side shield hours than water-only,128,of 128,"results/g13_shield_split_r{0,1,2,3}.csv",d_shield_water_h < 0
+ctrl.r0.anchor_g_window,"regime 0 interior-anchor g_window (R25, 10 %, 0.030 kg/s)",26.99,kWh/yr,results/g14_controls_r0.csv,block=base
+ctrl.r0.thickness_const_mass.R10,regime 0 change in g_window vs interior anchor: thickness_const_mass R10,-18.79,kWh/yr,results/g14_controls_r0.csv,"block=thickness_const_mass, level=R10, minus anchor"
+ctrl.r0.thickness_const_mass.R15,regime 0 change in g_window vs interior anchor: thickness_const_mass R15,-10.86,kWh/yr,results/g14_controls_r0.csv,"block=thickness_const_mass, level=R15, minus anchor"
+ctrl.r0.thickness_const_mass.R20,regime 0 change in g_window vs interior anchor: thickness_const_mass R20,-5.66,kWh/yr,results/g14_controls_r0.csv,"block=thickness_const_mass, level=R20, minus anchor"
+ctrl.r0.thickness_const_mass.R30,regime 0 change in g_window vs interior anchor: thickness_const_mass R30,2.45,kWh/yr,results/g14_controls_r0.csv,"block=thickness_const_mass, level=R30, minus anchor"
+ctrl.r0.thickness_const_mass.R40,regime 0 change in g_window vs interior anchor: thickness_const_mass R40,1.76,kWh/yr,results/g14_controls_r0.csv,"block=thickness_const_mass, level=R40, minus anchor"
+ctrl.r0.fraction.x0.5,regime 0 change in g_window vs interior anchor: fraction x0.5,-16.86,kWh/yr,results/g14_controls_r0.csv,"block=fraction, level=x0.5, minus anchor"
+ctrl.r0.fraction.x2,regime 0 change in g_window vs interior anchor: fraction x2,29.9,kWh/yr,results/g14_controls_r0.csv,"block=fraction, level=x2, minus anchor"
+ctrl.r1.anchor_g_window,"regime 1 interior-anchor g_window (R25, 10 %, 0.030 kg/s)",18.74,kWh/yr,results/g14_controls_r1.csv,block=base
+ctrl.r1.thickness_const_mass.R10,regime 1 change in g_window vs interior anchor: thickness_const_mass R10,-16.76,kWh/yr,results/g14_controls_r1.csv,"block=thickness_const_mass, level=R10, minus anchor"
+ctrl.r1.thickness_const_mass.R15,regime 1 change in g_window vs interior anchor: thickness_const_mass R15,-9.69,kWh/yr,results/g14_controls_r1.csv,"block=thickness_const_mass, level=R15, minus anchor"
+ctrl.r1.thickness_const_mass.R20,regime 1 change in g_window vs interior anchor: thickness_const_mass R20,-5.13,kWh/yr,results/g14_controls_r1.csv,"block=thickness_const_mass, level=R20, minus anchor"
+ctrl.r1.thickness_const_mass.R30,regime 1 change in g_window vs interior anchor: thickness_const_mass R30,1.97,kWh/yr,results/g14_controls_r1.csv,"block=thickness_const_mass, level=R30, minus anchor"
+ctrl.r1.thickness_const_mass.R40,regime 1 change in g_window vs interior anchor: thickness_const_mass R40,0.25,kWh/yr,results/g14_controls_r1.csv,"block=thickness_const_mass, level=R40, minus anchor"
+ctrl.r1.fraction.x0.5,regime 1 change in g_window vs interior anchor: fraction x0.5,-12.41,kWh/yr,results/g14_controls_r1.csv,"block=fraction, level=x0.5, minus anchor"
+ctrl.r1.fraction.x2,regime 1 change in g_window vs interior anchor: fraction x2,21.1,kWh/yr,results/g14_controls_r1.csv,"block=fraction, level=x2, minus anchor"
+ctrl.r2.anchor_g_window,"regime 2 interior-anchor g_window (R25, 10 %, 0.030 kg/s)",20.74,kWh/yr,results/g14_controls_r2.csv,block=base
+ctrl.r2.thickness_const_mass.R10,regime 2 change in g_window vs interior anchor: thickness_const_mass R10,-13.8,kWh/yr,results/g14_controls_r2.csv,"block=thickness_const_mass, level=R10, minus anchor"
+ctrl.r2.thickness_const_mass.R15,regime 2 change in g_window vs interior anchor: thickness_const_mass R15,-6.81,kWh/yr,results/g14_controls_r2.csv,"block=thickness_const_mass, level=R15, minus anchor"
+ctrl.r2.thickness_const_mass.R20,regime 2 change in g_window vs interior anchor: thickness_const_mass R20,-3.33,kWh/yr,results/g14_controls_r2.csv,"block=thickness_const_mass, level=R20, minus anchor"
+ctrl.r2.thickness_const_mass.R30,regime 2 change in g_window vs interior anchor: thickness_const_mass R30,0.73,kWh/yr,results/g14_controls_r2.csv,"block=thickness_const_mass, level=R30, minus anchor"
+ctrl.r2.thickness_const_mass.R40,regime 2 change in g_window vs interior anchor: thickness_const_mass R40,-3.33,kWh/yr,results/g14_controls_r2.csv,"block=thickness_const_mass, level=R40, minus anchor"
+ctrl.r2.fraction.x0.5,regime 2 change in g_window vs interior anchor: fraction x0.5,-13.34,kWh/yr,results/g14_controls_r2.csv,"block=fraction, level=x0.5, minus anchor"
+ctrl.r2.fraction.x2,regime 2 change in g_window vs interior anchor: fraction x2,24.33,kWh/yr,results/g14_controls_r2.csv,"block=fraction, level=x2, minus anchor"
+ctrl.r3.anchor_g_window,"regime 3 interior-anchor g_window (R25, 10 %, 0.030 kg/s)",-14.58,kWh/yr,results/g14_controls_r3.csv,block=base
+ctrl.r3.thickness_const_mass.R10,regime 3 change in g_window vs interior anchor: thickness_const_mass R10,-8.88,kWh/yr,results/g14_controls_r3.csv,"block=thickness_const_mass, level=R10, minus anchor"
+ctrl.r3.thickness_const_mass.R15,regime 3 change in g_window vs interior anchor: thickness_const_mass R15,-4.57,kWh/yr,results/g14_controls_r3.csv,"block=thickness_const_mass, level=R15, minus anchor"
+ctrl.r3.thickness_const_mass.R20,regime 3 change in g_window vs interior anchor: thickness_const_mass R20,-2.76,kWh/yr,results/g14_controls_r3.csv,"block=thickness_const_mass, level=R20, minus anchor"
+ctrl.r3.thickness_const_mass.R30,regime 3 change in g_window vs interior anchor: thickness_const_mass R30,0.62,kWh/yr,results/g14_controls_r3.csv,"block=thickness_const_mass, level=R30, minus anchor"
+ctrl.r3.thickness_const_mass.R40,regime 3 change in g_window vs interior anchor: thickness_const_mass R40,0.03,kWh/yr,results/g14_controls_r3.csv,"block=thickness_const_mass, level=R40, minus anchor"
+ctrl.r3.fraction.x0.5,regime 3 change in g_window vs interior anchor: fraction x0.5,5.52,kWh/yr,results/g14_controls_r3.csv,"block=fraction, level=x0.5, minus anchor"
+ctrl.r3.fraction.x2,regime 3 change in g_window vs interior anchor: fraction x2,-11.79,kWh/yr,results/g14_controls_r3.csv,"block=fraction, level=x2, minus anchor"
+anchor.r0.chosen.bottom,regime 0 chosen design g_window with the stack at the bottom (select-year mean),51.8,kWh/yr,results/g15_anchor_r0.csv,"role=chosen, purpose=select, anchor=bottom"
+anchor.r0.chosen.center,regime 0 chosen design g_window with the stack at the center (select-year mean),79.96,kWh/yr,results/g15_anchor_r0.csv,"role=chosen, purpose=select, anchor=center"
+anchor.r0.chosen.top,regime 0 chosen design g_window with the stack at the top (select-year mean),105.99,kWh/yr,results/g15_anchor_r0.csv,"role=chosen, purpose=select, anchor=top"
+anchor.r0.chosen.range,regime 0 chosen design: g_window range over the three stack positions,54.2,kWh/yr,results/g15_anchor_r0.csv,max - min over bottom/center/top
+anchor.r1.chosen.bottom,regime 1 chosen design g_window with the stack at the bottom (select-year mean),52.47,kWh/yr,results/g15_anchor_r1.csv,"role=chosen, purpose=select, anchor=bottom"
+anchor.r1.chosen.center,regime 1 chosen design g_window with the stack at the center (select-year mean),72.07,kWh/yr,results/g15_anchor_r1.csv,"role=chosen, purpose=select, anchor=center"
+anchor.r1.chosen.top,regime 1 chosen design g_window with the stack at the top (select-year mean),87.82,kWh/yr,results/g15_anchor_r1.csv,"role=chosen, purpose=select, anchor=top"
+anchor.r1.chosen.range,regime 1 chosen design: g_window range over the three stack positions,35.35,kWh/yr,results/g15_anchor_r1.csv,max - min over bottom/center/top
+anchor.r2.chosen.bottom,regime 2 chosen design g_window with the stack at the bottom (select-year mean),45.04,kWh/yr,results/g15_anchor_r2.csv,"role=chosen, purpose=select, anchor=bottom"
+anchor.r2.chosen.center,regime 2 chosen design g_window with the stack at the center (select-year mean),62.95,kWh/yr,results/g15_anchor_r2.csv,"role=chosen, purpose=select, anchor=center"
+anchor.r2.chosen.top,regime 2 chosen design g_window with the stack at the top (select-year mean),80.8,kWh/yr,results/g15_anchor_r2.csv,"role=chosen, purpose=select, anchor=top"
+anchor.r2.chosen.range,regime 2 chosen design: g_window range over the three stack positions,35.75,kWh/yr,results/g15_anchor_r2.csv,max - min over bottom/center/top
+anchor.r3.chosen.bottom,regime 3 chosen design g_window with the stack at the bottom (select-year mean),-4.58,kWh/yr,results/g15_anchor_r3.csv,"role=chosen, purpose=select, anchor=bottom"
+anchor.r3.chosen.center,regime 3 chosen design g_window with the stack at the center (select-year mean),-5.78,kWh/yr,results/g15_anchor_r3.csv,"role=chosen, purpose=select, anchor=center"
+anchor.r3.chosen.top,regime 3 chosen design g_window with the stack at the top (select-year mean),-1.01,kWh/yr,results/g15_anchor_r3.csv,"role=chosen, purpose=select, anchor=top"
+anchor.r3.chosen.range,regime 3 chosen design: g_window range over the three stack positions,4.76,kWh/yr,results/g15_anchor_r3.csv,max - min over bottom/center/top
+anchor.min_gain_any,smallest explore/select-year mean g_window of any kept design at any stack position,-10.35,kWh/yr,"results/g15_anchor_r{0,1,2,3}.csv",min over the kept designs x 3 anchors x 2 year roles x 4 regimes
+serve.r0.pcm.tau_serve_mean_h,"regime 0 chosen design, evening scenario, case pcm: tau_serve_mean_h (select-year mean)",0.253,h,results/g16_serve_r0.csv,case=pcm
+serve.r0.pcm.serve_frac_45_mean,"regime 0 chosen design, evening scenario, case pcm: serve_frac_45_mean (select-year mean)",0.0371,-,results/g16_serve_r0.csv,case=pcm
+serve.r0.pcm.serve_E_del45_mean_kWh,"regime 0 chosen design, evening scenario, case pcm: serve_E_del45_mean_kWh (select-year mean)",1.288,kWh/night,results/g16_serve_r0.csv,case=pcm
+serve.r0.pcm.tau_hold_mean_h,"regime 0 chosen design, evening scenario, case pcm: tau_hold_mean_h (select-year mean)",27.2,h,results/g16_serve_r0.csv,case=pcm
+serve.r0.plain.tau_serve_mean_h,"regime 0 chosen design, evening scenario, case plain: tau_serve_mean_h (select-year mean)",0.364,h,results/g16_serve_r0.csv,case=plain
+serve.r0.plain.serve_frac_45_mean,"regime 0 chosen design, evening scenario, case plain: serve_frac_45_mean (select-year mean)",0.0563,-,results/g16_serve_r0.csv,case=plain
+serve.r0.plain.serve_E_del45_mean_kWh,"regime 0 chosen design, evening scenario, case plain: serve_E_del45_mean_kWh (select-year mean)",1.08,kWh/night,results/g16_serve_r0.csv,case=plain
+serve.r0.plain.tau_hold_mean_h,"regime 0 chosen design, evening scenario, case plain: tau_hold_mean_h (select-year mean)",19.67,h,results/g16_serve_r0.csv,case=plain
+serve.r0.pcm_L0.tau_serve_mean_h,"regime 0 chosen design, evening scenario, case pcm_L0: tau_serve_mean_h (select-year mean)",0.233,h,results/g16_serve_r0.csv,case=pcm_L0
+serve.r0.pcm_L0.serve_frac_45_mean,"regime 0 chosen design, evening scenario, case pcm_L0: serve_frac_45_mean (select-year mean)",0.0255,-,results/g16_serve_r0.csv,case=pcm_L0
+serve.r0.pcm_L0.serve_E_del45_mean_kWh,"regime 0 chosen design, evening scenario, case pcm_L0: serve_E_del45_mean_kWh (select-year mean)",0.866,kWh/night,results/g16_serve_r0.csv,case=pcm_L0
+serve.r0.pcm_L0.tau_hold_mean_h,"regime 0 chosen design, evening scenario, case pcm_L0: tau_hold_mean_h (select-year mean)",8.99,h,results/g16_serve_r0.csv,case=pcm_L0
+serve.r0.plain_40L.tau_serve_mean_h,"regime 0 chosen design, evening scenario, case plain_40L: tau_serve_mean_h (select-year mean)",0.195,h,results/g16_serve_r0.csv,case=plain_40L
+serve.r0.plain_40L.serve_frac_45_mean,"regime 0 chosen design, evening scenario, case plain_40L: serve_frac_45_mean (select-year mean)",0.0175,-,results/g16_serve_r0.csv,case=plain_40L
+serve.r0.plain_40L.serve_E_del45_mean_kWh,"regime 0 chosen design, evening scenario, case plain_40L: serve_E_del45_mean_kWh (select-year mean)",0.617,kWh/night,results/g16_serve_r0.csv,case=plain_40L
+serve.r0.plain_40L.tau_hold_mean_h,"regime 0 chosen design, evening scenario, case plain_40L: tau_hold_mean_h (select-year mean)",6.85,h,results/g16_serve_r0.csv,case=plain_40L
+serve.r1.pcm.tau_serve_mean_h,"regime 1 chosen design, evening scenario, case pcm: tau_serve_mean_h (select-year mean)",0.182,h,results/g16_serve_r1.csv,case=pcm
+serve.r1.pcm.serve_frac_45_mean,"regime 1 chosen design, evening scenario, case pcm: serve_frac_45_mean (select-year mean)",0.0255,-,results/g16_serve_r1.csv,case=pcm
+serve.r1.pcm.serve_E_del45_mean_kWh,"regime 1 chosen design, evening scenario, case pcm: serve_E_del45_mean_kWh (select-year mean)",1.287,kWh/night,results/g16_serve_r1.csv,case=pcm
+serve.r1.pcm.tau_hold_mean_h,"regime 1 chosen design, evening scenario, case pcm: tau_hold_mean_h (select-year mean)",21.92,h,results/g16_serve_r1.csv,case=pcm
+serve.r1.plain.tau_serve_mean_h,"regime 1 chosen design, evening scenario, case plain: tau_serve_mean_h (select-year mean)",0.29,h,results/g16_serve_r1.csv,case=plain
+serve.r1.plain.serve_frac_45_mean,"regime 1 chosen design, evening scenario, case plain: serve_frac_45_mean (select-year mean)",0.0447,-,results/g16_serve_r1.csv,case=plain
+serve.r1.plain.serve_E_del45_mean_kWh,"regime 1 chosen design, evening scenario, case plain: serve_E_del45_mean_kWh (select-year mean)",1.125,kWh/night,results/g16_serve_r1.csv,case=plain
+serve.r1.plain.tau_hold_mean_h,"regime 1 chosen design, evening scenario, case plain: tau_hold_mean_h (select-year mean)",14.66,h,results/g16_serve_r1.csv,case=plain
+serve.r1.pcm_L0.tau_serve_mean_h,"regime 1 chosen design, evening scenario, case pcm_L0: tau_serve_mean_h (select-year mean)",0.148,h,results/g16_serve_r1.csv,case=pcm_L0
+serve.r1.pcm_L0.serve_frac_45_mean,"regime 1 chosen design, evening scenario, case pcm_L0: serve_frac_45_mean (select-year mean)",0.0141,-,results/g16_serve_r1.csv,case=pcm_L0
+serve.r1.pcm_L0.serve_E_del45_mean_kWh,"regime 1 chosen design, evening scenario, case pcm_L0: serve_E_del45_mean_kWh (select-year mean)",0.861,kWh/night,results/g16_serve_r1.csv,case=pcm_L0
+serve.r1.pcm_L0.tau_hold_mean_h,"regime 1 chosen design, evening scenario, case pcm_L0: tau_hold_mean_h (select-year mean)",5.0,h,results/g16_serve_r1.csv,case=pcm_L0
+serve.r1.plain_40L.tau_serve_mean_h,"regime 1 chosen design, evening scenario, case plain_40L: tau_serve_mean_h (select-year mean)",0.1,h,results/g16_serve_r1.csv,case=plain_40L
+serve.r1.plain_40L.serve_frac_45_mean,"regime 1 chosen design, evening scenario, case plain_40L: serve_frac_45_mean (select-year mean)",0.0069,-,results/g16_serve_r1.csv,case=plain_40L
+serve.r1.plain_40L.serve_E_del45_mean_kWh,"regime 1 chosen design, evening scenario, case plain_40L: serve_E_del45_mean_kWh (select-year mean)",0.559,kWh/night,results/g16_serve_r1.csv,case=plain_40L
+serve.r1.plain_40L.tau_hold_mean_h,"regime 1 chosen design, evening scenario, case plain_40L: tau_hold_mean_h (select-year mean)",2.99,h,results/g16_serve_r1.csv,case=plain_40L
+serve.r2.pcm.tau_serve_mean_h,"regime 2 chosen design, evening scenario, case pcm: tau_serve_mean_h (select-year mean)",0.105,h,results/g16_serve_r2.csv,case=pcm
+serve.r2.pcm.serve_frac_45_mean,"regime 2 chosen design, evening scenario, case pcm: serve_frac_45_mean (select-year mean)",0.0135,-,results/g16_serve_r2.csv,case=pcm
+serve.r2.pcm.serve_E_del45_mean_kWh,"regime 2 chosen design, evening scenario, case pcm: serve_E_del45_mean_kWh (select-year mean)",1.293,kWh/night,results/g16_serve_r2.csv,case=pcm
+serve.r2.pcm.tau_hold_mean_h,"regime 2 chosen design, evening scenario, case pcm: tau_hold_mean_h (select-year mean)",14.58,h,results/g16_serve_r2.csv,case=pcm
+serve.r2.plain.tau_serve_mean_h,"regime 2 chosen design, evening scenario, case plain: tau_serve_mean_h (select-year mean)",0.265,h,results/g16_serve_r2.csv,case=plain
+serve.r2.plain.serve_frac_45_mean,"regime 2 chosen design, evening scenario, case plain: serve_frac_45_mean (select-year mean)",0.041,-,results/g16_serve_r2.csv,case=plain
+serve.r2.plain.serve_E_del45_mean_kWh,"regime 2 chosen design, evening scenario, case plain: serve_E_del45_mean_kWh (select-year mean)",1.147,kWh/night,results/g16_serve_r2.csv,case=plain
+serve.r2.plain.tau_hold_mean_h,"regime 2 chosen design, evening scenario, case plain: tau_hold_mean_h (select-year mean)",12.83,h,results/g16_serve_r2.csv,case=plain
+serve.r2.pcm_L0.tau_serve_mean_h,"regime 2 chosen design, evening scenario, case pcm_L0: tau_serve_mean_h (select-year mean)",0.126,h,results/g16_serve_r2.csv,case=pcm_L0
+serve.r2.pcm_L0.serve_frac_45_mean,"regime 2 chosen design, evening scenario, case pcm_L0: serve_frac_45_mean (select-year mean)",0.011,-,results/g16_serve_r2.csv,case=pcm_L0
+serve.r2.pcm_L0.serve_E_del45_mean_kWh,"regime 2 chosen design, evening scenario, case pcm_L0: serve_E_del45_mean_kWh (select-year mean)",0.915,kWh/night,results/g16_serve_r2.csv,case=pcm_L0
+serve.r2.pcm_L0.tau_hold_mean_h,"regime 2 chosen design, evening scenario, case pcm_L0: tau_hold_mean_h (select-year mean)",4.16,h,results/g16_serve_r2.csv,case=pcm_L0
+serve.r2.plain_40L.tau_serve_mean_h,"regime 2 chosen design, evening scenario, case plain_40L: tau_serve_mean_h (select-year mean)",0.081,h,results/g16_serve_r2.csv,case=plain_40L
+serve.r2.plain_40L.serve_frac_45_mean,"regime 2 chosen design, evening scenario, case plain_40L: serve_frac_45_mean (select-year mean)",0.0058,-,results/g16_serve_r2.csv,case=plain_40L
+serve.r2.plain_40L.serve_E_del45_mean_kWh,"regime 2 chosen design, evening scenario, case plain_40L: serve_E_del45_mean_kWh (select-year mean)",0.566,kWh/night,results/g16_serve_r2.csv,case=plain_40L
+serve.r2.plain_40L.tau_hold_mean_h,"regime 2 chosen design, evening scenario, case plain_40L: tau_hold_mean_h (select-year mean)",2.39,h,results/g16_serve_r2.csv,case=plain_40L
+serve.r3.pcm.tau_serve_mean_h,"regime 3 chosen design, evening scenario, case pcm: tau_serve_mean_h (select-year mean)",0.087,h,results/g16_serve_r3.csv,case=pcm
+serve.r3.pcm.serve_frac_45_mean,"regime 3 chosen design, evening scenario, case pcm: serve_frac_45_mean (select-year mean)",0.0151,-,results/g16_serve_r3.csv,case=pcm
+serve.r3.pcm.serve_E_del45_mean_kWh,"regime 3 chosen design, evening scenario, case pcm: serve_E_del45_mean_kWh (select-year mean)",1.135,kWh/night,results/g16_serve_r3.csv,case=pcm
+serve.r3.pcm.tau_hold_mean_h,"regime 3 chosen design, evening scenario, case pcm: tau_hold_mean_h (select-year mean)",3.57,h,results/g16_serve_r3.csv,case=pcm
+serve.r3.plain.tau_serve_mean_h,"regime 3 chosen design, evening scenario, case plain: tau_serve_mean_h (select-year mean)",0.091,h,results/g16_serve_r3.csv,case=plain
+serve.r3.plain.serve_frac_45_mean,"regime 3 chosen design, evening scenario, case plain: serve_frac_45_mean (select-year mean)",0.0144,-,results/g16_serve_r3.csv,case=plain
+serve.r3.plain.serve_E_del45_mean_kWh,"regime 3 chosen design, evening scenario, case plain: serve_E_del45_mean_kWh (select-year mean)",1.151,kWh/night,results/g16_serve_r3.csv,case=plain
+serve.r3.plain.tau_hold_mean_h,"regime 3 chosen design, evening scenario, case plain: tau_hold_mean_h (select-year mean)",3.75,h,results/g16_serve_r3.csv,case=plain
+serve.r3.pcm_L0.tau_serve_mean_h,"regime 3 chosen design, evening scenario, case pcm_L0: tau_serve_mean_h (select-year mean)",0.09,h,results/g16_serve_r3.csv,case=pcm_L0
+serve.r3.pcm_L0.serve_frac_45_mean,"regime 3 chosen design, evening scenario, case pcm_L0: serve_frac_45_mean (select-year mean)",0.0136,-,results/g16_serve_r3.csv,case=pcm_L0
+serve.r3.pcm_L0.serve_E_del45_mean_kWh,"regime 3 chosen design, evening scenario, case pcm_L0: serve_E_del45_mean_kWh (select-year mean)",1.127,kWh/night,results/g16_serve_r3.csv,case=pcm_L0
+serve.r3.pcm_L0.tau_hold_mean_h,"regime 3 chosen design, evening scenario, case pcm_L0: tau_hold_mean_h (select-year mean)",3.62,h,results/g16_serve_r3.csv,case=pcm_L0
+serve.r3.plain_40L.tau_serve_mean_h,"regime 3 chosen design, evening scenario, case plain_40L: tau_serve_mean_h (select-year mean)",0.089,h,results/g16_serve_r3.csv,case=plain_40L
+serve.r3.plain_40L.serve_frac_45_mean,"regime 3 chosen design, evening scenario, case plain_40L: serve_frac_45_mean (select-year mean)",0.0135,-,results/g16_serve_r3.csv,case=plain_40L
+serve.r3.plain_40L.serve_E_del45_mean_kWh,"regime 3 chosen design, evening scenario, case plain_40L: serve_E_del45_mean_kWh (select-year mean)",1.114,kWh/night,results/g16_serve_r3.csv,case=plain_40L
+serve.r3.plain_40L.tau_hold_mean_h,"regime 3 chosen design, evening scenario, case plain_40L: tau_hold_mean_h (select-year mean)",3.6,h,results/g16_serve_r3.csv,case=plain_40L
+widen.r0.A_radius.R45,"regime 0 widened-bound diagnostic: g_window change vs chosen (explore years), A_radius R45",-20.67,kWh/yr,results/g17_widen_r0.csv,"block=A_radius, level=R45, minus chosen explore g_window"
+widen.r0.A_radius.R50,"regime 0 widened-bound diagnostic: g_window change vs chosen (explore years), A_radius R50",-36.31,kWh/yr,results/g17_widen_r0.csv,"block=A_radius, level=R50, minus chosen explore g_window"
+widen.r0.B_fraction.f0.25,"regime 0 widened-bound diagnostic: g_window change vs chosen (explore years), B_fraction f0.25",-3.66,kWh/yr,results/g17_widen_r0.csv,"block=B_fraction, level=f0.25, minus chosen explore g_window"
+widen.r0.B_fraction.f0.30,"regime 0 widened-bound diagnostic: g_window change vs chosen (explore years), B_fraction f0.30",12.34,kWh/yr,results/g17_widen_r0.csv,"block=B_fraction, level=f0.30, minus chosen explore g_window"
+widen.r0.B_fraction.f0.40,"regime 0 widened-bound diagnostic: g_window change vs chosen (explore years), B_fraction f0.40",42.54,kWh/yr,results/g17_widen_r0.csv,"block=B_fraction, level=f0.40, minus chosen explore g_window"
+widen.r0.D_flow.q0.080,"regime 0 widened-bound diagnostic: g_window change vs chosen (explore years), D_flow q0.080",8.23,kWh/yr,results/g17_widen_r0.csv,"block=D_flow, level=q0.080, minus chosen explore g_window"
+widen.r1.A_radius.R45,"regime 1 widened-bound diagnostic: g_window change vs chosen (explore years), A_radius R45",-7.97,kWh/yr,results/g17_widen_r1.csv,"block=A_radius, level=R45, minus chosen explore g_window"
+widen.r1.A_radius.R50,"regime 1 widened-bound diagnostic: g_window change vs chosen (explore years), A_radius R50",-25.94,kWh/yr,results/g17_widen_r1.csv,"block=A_radius, level=R50, minus chosen explore g_window"
+widen.r1.B_fraction.f0.25,"regime 1 widened-bound diagnostic: g_window change vs chosen (explore years), B_fraction f0.25",-14.74,kWh/yr,results/g17_widen_r1.csv,"block=B_fraction, level=f0.25, minus chosen explore g_window"
+widen.r1.B_fraction.f0.30,"regime 1 widened-bound diagnostic: g_window change vs chosen (explore years), B_fraction f0.30",0.01,kWh/yr,results/g17_widen_r1.csv,"block=B_fraction, level=f0.30, minus chosen explore g_window"
+widen.r1.B_fraction.f0.40,"regime 1 widened-bound diagnostic: g_window change vs chosen (explore years), B_fraction f0.40",23.4,kWh/yr,results/g17_widen_r1.csv,"block=B_fraction, level=f0.40, minus chosen explore g_window"
+widen.r1.D_flow.q0.080,"regime 1 widened-bound diagnostic: g_window change vs chosen (explore years), D_flow q0.080",0.94,kWh/yr,results/g17_widen_r1.csv,"block=D_flow, level=q0.080, minus chosen explore g_window"
+widen.r2.A_radius.R45,"regime 2 widened-bound diagnostic: g_window change vs chosen (explore years), A_radius R45",-18.17,kWh/yr,results/g17_widen_r2.csv,"block=A_radius, level=R45, minus chosen explore g_window"
+widen.r2.A_radius.R50,"regime 2 widened-bound diagnostic: g_window change vs chosen (explore years), A_radius R50",-40.65,kWh/yr,results/g17_widen_r2.csv,"block=A_radius, level=R50, minus chosen explore g_window"
+widen.r2.B_fraction.f0.25,"regime 2 widened-bound diagnostic: g_window change vs chosen (explore years), B_fraction f0.25",-15.54,kWh/yr,results/g17_widen_r2.csv,"block=B_fraction, level=f0.25, minus chosen explore g_window"
+widen.r2.B_fraction.f0.30,"regime 2 widened-bound diagnostic: g_window change vs chosen (explore years), B_fraction f0.30",-0.0,kWh/yr,results/g17_widen_r2.csv,"block=B_fraction, level=f0.30, minus chosen explore g_window"
+widen.r2.B_fraction.f0.40,"regime 2 widened-bound diagnostic: g_window change vs chosen (explore years), B_fraction f0.40",22.56,kWh/yr,results/g17_widen_r2.csv,"block=B_fraction, level=f0.40, minus chosen explore g_window"
+widen.r2.D_flow.q0.080,"regime 2 widened-bound diagnostic: g_window change vs chosen (explore years), D_flow q0.080",6.16,kWh/yr,results/g17_widen_r2.csv,"block=D_flow, level=q0.080, minus chosen explore g_window"
+widen.r3.A_radius.R45,"regime 3 widened-bound diagnostic: g_window change vs chosen (explore years), A_radius R45",-1.1,kWh/yr,results/g17_widen_r3.csv,"block=A_radius, level=R45, minus chosen explore g_window"
+widen.r3.A_radius.R50,"regime 3 widened-bound diagnostic: g_window change vs chosen (explore years), A_radius R50",-1.25,kWh/yr,results/g17_widen_r3.csv,"block=A_radius, level=R50, minus chosen explore g_window"
+widen.r3.B_fraction.f0.25,"regime 3 widened-bound diagnostic: g_window change vs chosen (explore years), B_fraction f0.25",-40.94,kWh/yr,results/g17_widen_r3.csv,"block=B_fraction, level=f0.25, minus chosen explore g_window"
+widen.r3.B_fraction.f0.30,"regime 3 widened-bound diagnostic: g_window change vs chosen (explore years), B_fraction f0.30",-50.82,kWh/yr,results/g17_widen_r3.csv,"block=B_fraction, level=f0.30, minus chosen explore g_window"
+widen.r3.B_fraction.f0.40,"regime 3 widened-bound diagnostic: g_window change vs chosen (explore years), B_fraction f0.40",,kWh/yr,results/g17_widen_r3.csv,"block=B_fraction, level=f0.40, minus chosen explore g_window"
+widen.r3.D_flow.q0.080,"regime 3 widened-bound diagnostic: g_window change vs chosen (explore years), D_flow q0.080",0.84,kWh/yr,results/g17_widen_r3.csv,"block=D_flow, level=q0.080, minus chosen explore g_window"
+g9.grid.r0_p1.eps_g_window,G9 dense-grid check eps_g_window (r0_p1),0.449,kWh or h or ratio,results/g9_grid_check.csv,pair=r0_p1
+g9.grid.r0_p1.eps_g_annual,G9 dense-grid check eps_g_annual (r0_p1),0.573,kWh or h or ratio,results/g9_grid_check.csv,pair=r0_p1
+g9.grid.r0_p1.eps_d_overheat,G9 dense-grid check eps_d_overheat (r0_p1),3.236,kWh or h or ratio,results/g9_grid_check.csv,pair=r0_p1
+g9.grid.r0_p1.hv_ratio_final_over_grid,G9 dense-grid check hv_ratio_final_over_grid (r0_p1),1.083,kWh or h or ratio,results/g9_grid_check.csv,pair=r0_p1
+g9.grid.r0_p1.within_band,G9 dense-grid check within band (r0_p1),True,,results/g9_grid_check.csv,pair=r0_p1
+g9.grid.r1_p1.eps_g_window,G9 dense-grid check eps_g_window (r1_p1),2.558,kWh or h or ratio,results/g9_grid_check.csv,pair=r1_p1
+g9.grid.r1_p1.eps_g_annual,G9 dense-grid check eps_g_annual (r1_p1),2.752,kWh or h or ratio,results/g9_grid_check.csv,pair=r1_p1
+g9.grid.r1_p1.eps_d_overheat,G9 dense-grid check eps_d_overheat (r1_p1),0.0,kWh or h or ratio,results/g9_grid_check.csv,pair=r1_p1
+g9.grid.r1_p1.hv_ratio_final_over_grid,G9 dense-grid check hv_ratio_final_over_grid (r1_p1),1.073,kWh or h or ratio,results/g9_grid_check.csv,pair=r1_p1
+g9.grid.r1_p1.within_band,G9 dense-grid check within band (r1_p1),True,,results/g9_grid_check.csv,pair=r1_p1
+g9.grid.r2_p1.eps_g_window,G9 dense-grid check eps_g_window (r2_p1),0.157,kWh or h or ratio,results/g9_grid_check.csv,pair=r2_p1
+g9.grid.r2_p1.eps_g_annual,G9 dense-grid check eps_g_annual (r2_p1),0.3,kWh or h or ratio,results/g9_grid_check.csv,pair=r2_p1
+g9.grid.r2_p1.eps_d_overheat,G9 dense-grid check eps_d_overheat (r2_p1),0.0,kWh or h or ratio,results/g9_grid_check.csv,pair=r2_p1
+g9.grid.r2_p1.hv_ratio_final_over_grid,G9 dense-grid check hv_ratio_final_over_grid (r2_p1),1.078,kWh or h or ratio,results/g9_grid_check.csv,pair=r2_p1
+g9.grid.r2_p1.within_band,G9 dense-grid check within band (r2_p1),True,,results/g9_grid_check.csv,pair=r2_p1
+g9.grid.r3_p1.eps_g_window,G9 dense-grid check eps_g_window (r3_p1),2.767,kWh or h or ratio,results/g9_grid_check.csv,pair=r3_p1
+g9.grid.r3_p1.eps_g_annual,G9 dense-grid check eps_g_annual (r3_p1),2.537,kWh or h or ratio,results/g9_grid_check.csv,pair=r3_p1
+g9.grid.r3_p1.eps_d_overheat,G9 dense-grid check eps_d_overheat (r3_p1),-0.762,kWh or h or ratio,results/g9_grid_check.csv,pair=r3_p1
+g9.grid.r3_p1.hv_ratio_final_over_grid,G9 dense-grid check hv_ratio_final_over_grid (r3_p1),1.051,kWh or h or ratio,results/g9_grid_check.csv,pair=r3_p1
+g9.grid.r3_p1.within_band,G9 dense-grid check within band (r3_p1),True,,results/g9_grid_check.csv,pair=r3_p1
+g9.seed.r0_p1.within_band,G9 seed spread within band (r0_p1),True,,results/g9_seed_stability.csv,pair=r0_p1
+g9.seed.r0_p2.within_band,G9 seed spread within band (r0_p2),True,,results/g9_seed_stability.csv,pair=r0_p2
+g9.seed.r0_p3.within_band,G9 seed spread within band (r0_p3),True,,results/g9_seed_stability.csv,pair=r0_p3
+g9.seed.r1_p1.within_band,G9 seed spread within band (r1_p1),True,,results/g9_seed_stability.csv,pair=r1_p1
+g9.seed.r1_p2.within_band,G9 seed spread within band (r1_p2),True,,results/g9_seed_stability.csv,pair=r1_p2
+g9.seed.r1_p3.within_band,G9 seed spread within band (r1_p3),True,,results/g9_seed_stability.csv,pair=r1_p3
+g9.seed.r2_p1.within_band,G9 seed spread within band (r2_p1),True,,results/g9_seed_stability.csv,pair=r2_p1
+g9.seed.r2_p2.within_band,G9 seed spread within band (r2_p2),True,,results/g9_seed_stability.csv,pair=r2_p2
+g9.seed.r2_p3.within_band,G9 seed spread within band (r2_p3),True,,results/g9_seed_stability.csv,pair=r2_p3
+g9.seed.r3_p1.within_band,G9 seed spread within band (r3_p1),True,,results/g9_seed_stability.csv,pair=r3_p1
+g9.seed.r3_p2.within_band,G9 seed spread within band (r3_p2),True,,results/g9_seed_stability.csv,pair=r3_p2
+g9.seed.r3_p3.within_band,G9 seed spread within band (r3_p3),True,,results/g9_seed_stability.csv,pair=r3_p3
+g9.al.r0_p1.n_train,G9 final training-set size (r0_p1),223,designs,results/g9_al_summary.csv,pair=r0_p1
+g9.al.r0_p1.rounds,G9 active-learning rounds (r0_p1),8,rounds,results/g9_al_summary.csv,pair=r0_p1
+g9.al.r0_p2.n_train,G9 final training-set size (r0_p2),213,designs,results/g9_al_summary.csv,pair=r0_p2
+g9.al.r0_p2.rounds,G9 active-learning rounds (r0_p2),7,rounds,results/g9_al_summary.csv,pair=r0_p2
+g9.al.r0_p3.n_train,G9 final training-set size (r0_p3),222,designs,results/g9_al_summary.csv,pair=r0_p3
+g9.al.r0_p3.rounds,G9 active-learning rounds (r0_p3),8,rounds,results/g9_al_summary.csv,pair=r0_p3
+g9.al.r1_p1.n_train,G9 final training-set size (r1_p1),223,designs,results/g9_al_summary.csv,pair=r1_p1
+g9.al.r1_p1.rounds,G9 active-learning rounds (r1_p1),8,rounds,results/g9_al_summary.csv,pair=r1_p1
+g9.al.r1_p2.n_train,G9 final training-set size (r1_p2),223,designs,results/g9_al_summary.csv,pair=r1_p2
+g9.al.r1_p2.rounds,G9 active-learning rounds (r1_p2),8,rounds,results/g9_al_summary.csv,pair=r1_p2
+g9.al.r1_p3.n_train,G9 final training-set size (r1_p3),222,designs,results/g9_al_summary.csv,pair=r1_p3
+g9.al.r1_p3.rounds,G9 active-learning rounds (r1_p3),8,rounds,results/g9_al_summary.csv,pair=r1_p3
+g9.al.r2_p1.n_train,G9 final training-set size (r2_p1),223,designs,results/g9_al_summary.csv,pair=r2_p1
+g9.al.r2_p1.rounds,G9 active-learning rounds (r2_p1),8,rounds,results/g9_al_summary.csv,pair=r2_p1
+g9.al.r2_p2.n_train,G9 final training-set size (r2_p2),223,designs,results/g9_al_summary.csv,pair=r2_p2
+g9.al.r2_p2.rounds,G9 active-learning rounds (r2_p2),8,rounds,results/g9_al_summary.csv,pair=r2_p2
+g9.al.r2_p3.n_train,G9 final training-set size (r2_p3),212,designs,results/g9_al_summary.csv,pair=r2_p3
+g9.al.r2_p3.rounds,G9 active-learning rounds (r2_p3),7,rounds,results/g9_al_summary.csv,pair=r2_p3
+g9.al.r3_p1.n_train,G9 final training-set size (r3_p1),223,designs,results/g9_al_summary.csv,pair=r3_p1
+g9.al.r3_p1.rounds,G9 active-learning rounds (r3_p1),8,rounds,results/g9_al_summary.csv,pair=r3_p1
+g9.al.r3_p2.n_train,G9 final training-set size (r3_p2),213,designs,results/g9_al_summary.csv,pair=r3_p2
+g9.al.r3_p2.rounds,G9 active-learning rounds (r3_p2),7,rounds,results/g9_al_summary.csv,pair=r3_p2
+g9.al.r3_p3.n_train,G9 final training-set size (r3_p3),203,designs,results/g9_al_summary.csv,pair=r3_p3
+g9.al.r3_p3.rounds,G9 active-learning rounds (r3_p3),6,rounds,results/g9_al_summary.csv,pair=r3_p3
+abl.r0.base,regime 0 ablation base g_window (explore years),80.37,kWh,results/g11_ablation_r0.csv,block=base
+abl.r0.L0,regime 0 latent heat = 0: g_window,-68.76,kWh,results/g11_ablation_r0.csv,block=pos_control_latent_zero
+abl.r0.Tm45,regime 0 synthetic Tm=45 C: g_window,134.61,kWh,results/g11_ablation_r0.csv,block=pos_control_Tm45_synthetic
+abl.r0.N2,regime 0 determinism max abs diff,0.0,,results/g11_ablation_r0.csv,block=neg_control_determinism
+abl.r0.anchor_bottom,"regime 0 staggered, bottom anchor: g_window",51.52,kWh,results/g11_ablation_r0.csv,level=staggered|bottom
+abl.r0.anchor_center,"regime 0 staggered, center anchor: g_window",80.37,kWh,results/g11_ablation_r0.csv,level=staggered|center
+abl.r0.anchor_top,"regime 0 staggered, top anchor: g_window",107.33,kWh,results/g11_ablation_r0.csv,level=staggered|top
+abl.r0.count_f0.02,regime 0 PCM fraction f0.02: g_window,2.57,kWh,results/g11_ablation_r0.csv,"block=count, level=f0.02"
+abl.r0.count_f0.04,regime 0 PCM fraction f0.04: g_window,8.56,kWh,results/g11_ablation_r0.csv,"block=count, level=f0.04"
+abl.r0.count_f0.07,regime 0 PCM fraction f0.07: g_window,18.44,kWh,results/g11_ablation_r0.csv,"block=count, level=f0.07"
+abl.r0.count_f0.10,regime 0 PCM fraction f0.10: g_window,28.3,kWh,results/g11_ablation_r0.csv,"block=count, level=f0.10"
+abl.r0.count_f0.14,regime 0 PCM fraction f0.14: g_window,40.0,kWh,results/g11_ablation_r0.csv,"block=count, level=f0.14"
+abl.r0.count_f0.20,regime 0 PCM fraction f0.20: g_window,62.99,kWh,results/g11_ablation_r0.csv,"block=count, level=f0.20"
+abl.r0.count_f0.25,regime 0 PCM fraction f0.25: g_window,76.72,kWh,results/g11_ablation_r0.csv,"block=count, level=f0.25"
+abl.r0.count_f0.30,regime 0 PCM fraction f0.30: g_window,90.53,kWh,results/g11_ablation_r0.csv,"block=count, level=f0.30"
+abl.r0.flow_q0.010,regime 0 flow q0.010: g_window,27.36,kWh,results/g11_ablation_r0.csv,"block=flow, level=q0.010"
+abl.r0.flow_q0.020,regime 0 flow q0.020: g_window,81.46,kWh,results/g11_ablation_r0.csv,"block=flow, level=q0.020"
+abl.r0.flow_q0.030,regime 0 flow q0.030: g_window,87.44,kWh,results/g11_ablation_r0.csv,"block=flow, level=q0.030"
+abl.r0.flow_q0.040,regime 0 flow q0.040: g_window,88.54,kWh,results/g11_ablation_r0.csv,"block=flow, level=q0.040"
+abl.r0.flow_q0.050,regime 0 flow q0.050: g_window,89.1,kWh,results/g11_ablation_r0.csv,"block=flow, level=q0.050"
+abl.r0.thickness_valid,regime 0 thickness levels with a valid geometry,5,of 6,results/g11_ablation_r0.csv,block=thickness_const_mass
+abl.r1.base,regime 1 ablation base g_window (explore years),71.55,kWh,results/g11_ablation_r1.csv,block=base
+abl.r1.L0,regime 1 latent heat = 0: g_window,-83.47,kWh,results/g11_ablation_r1.csv,block=pos_control_latent_zero
+abl.r1.Tm45,regime 1 synthetic Tm=45 C: g_window,133.97,kWh,results/g11_ablation_r1.csv,block=pos_control_Tm45_synthetic
+abl.r1.N2,regime 1 determinism max abs diff,0.0,,results/g11_ablation_r1.csv,block=neg_control_determinism
+abl.r1.anchor_bottom,"regime 1 staggered, bottom anchor: g_window",47.87,kWh,results/g11_ablation_r1.csv,level=staggered|bottom
+abl.r1.anchor_center,"regime 1 staggered, center anchor: g_window",67.89,kWh,results/g11_ablation_r1.csv,level=staggered|center
+abl.r1.anchor_top,"regime 1 staggered, top anchor: g_window",83.41,kWh,results/g11_ablation_r1.csv,level=staggered|top
+abl.r1.count_f0.02,regime 1 PCM fraction f0.02: g_window,0.84,kWh,results/g11_ablation_r1.csv,"block=count, level=f0.02"
+abl.r1.count_f0.04,regime 1 PCM fraction f0.04: g_window,5.23,kWh,results/g11_ablation_r1.csv,"block=count, level=f0.04"
+abl.r1.count_f0.07,regime 1 PCM fraction f0.07: g_window,12.11,kWh,results/g11_ablation_r1.csv,"block=count, level=f0.07"
+abl.r1.count_f0.10,regime 1 PCM fraction f0.10: g_window,19.81,kWh,results/g11_ablation_r1.csv,"block=count, level=f0.10"
+abl.r1.count_f0.14,regime 1 PCM fraction f0.14: g_window,31.35,kWh,results/g11_ablation_r1.csv,"block=count, level=f0.14"
+abl.r1.count_f0.20,regime 1 PCM fraction f0.20: g_window,44.89,kWh,results/g11_ablation_r1.csv,"block=count, level=f0.20"
+abl.r1.count_f0.25,regime 1 PCM fraction f0.25: g_window,56.8,kWh,results/g11_ablation_r1.csv,"block=count, level=f0.25"
+abl.r1.count_f0.30,regime 1 PCM fraction f0.30: g_window,71.55,kWh,results/g11_ablation_r1.csv,"block=count, level=f0.30"
+abl.r1.flow_q0.010,regime 1 flow q0.010: g_window,18.46,kWh,results/g11_ablation_r1.csv,"block=flow, level=q0.010"
+abl.r1.flow_q0.020,regime 1 flow q0.020: g_window,65.21,kWh,results/g11_ablation_r1.csv,"block=flow, level=q0.020"
+abl.r1.flow_q0.030,regime 1 flow q0.030: g_window,71.22,kWh,results/g11_ablation_r1.csv,"block=flow, level=q0.030"
+abl.r1.flow_q0.040,regime 1 flow q0.040: g_window,72.47,kWh,results/g11_ablation_r1.csv,"block=flow, level=q0.040"
+abl.r1.flow_q0.050,regime 1 flow q0.050: g_window,73.02,kWh,results/g11_ablation_r1.csv,"block=flow, level=q0.050"
+abl.r1.thickness_valid,regime 1 thickness levels with a valid geometry,1,of 6,results/g11_ablation_r1.csv,block=thickness_const_mass
+abl.r2.base,regime 2 ablation base g_window (explore years),66.06,kWh,results/g11_ablation_r2.csv,block=base
+abl.r2.L0,regime 2 latent heat = 0: g_window,-72.85,kWh,results/g11_ablation_r2.csv,block=pos_control_latent_zero
+abl.r2.Tm45,regime 2 synthetic Tm=45 C: g_window,104.8,kWh,results/g11_ablation_r2.csv,block=pos_control_Tm45_synthetic
+abl.r2.N2,regime 2 determinism max abs diff,0.0,,results/g11_ablation_r2.csv,block=neg_control_determinism
+abl.r2.anchor_bottom,"regime 2 staggered, bottom anchor: g_window",46.29,kWh,results/g11_ablation_r2.csv,level=staggered|bottom
+abl.r2.anchor_center,"regime 2 staggered, center anchor: g_window",64.2,kWh,results/g11_ablation_r2.csv,level=staggered|center
+abl.r2.anchor_top,"regime 2 staggered, top anchor: g_window",81.12,kWh,results/g11_ablation_r2.csv,level=staggered|top
+abl.r2.count_f0.02,regime 2 PCM fraction f0.02: g_window,0.38,kWh,results/g11_ablation_r2.csv,"block=count, level=f0.02"
+abl.r2.count_f0.04,regime 2 PCM fraction f0.04: g_window,4.22,kWh,results/g11_ablation_r2.csv,"block=count, level=f0.04"
+abl.r2.count_f0.07,regime 2 PCM fraction f0.07: g_window,10.0,kWh,results/g11_ablation_r2.csv,"block=count, level=f0.07"
+abl.r2.count_f0.10,regime 2 PCM fraction f0.10: g_window,16.89,kWh,results/g11_ablation_r2.csv,"block=count, level=f0.10"
+abl.r2.count_f0.14,regime 2 PCM fraction f0.14: g_window,25.87,kWh,results/g11_ablation_r2.csv,"block=count, level=f0.14"
+abl.r2.count_f0.20,regime 2 PCM fraction f0.20: g_window,38.9,kWh,results/g11_ablation_r2.csv,"block=count, level=f0.20"
+abl.r2.count_f0.25,regime 2 PCM fraction f0.25: g_window,50.52,kWh,results/g11_ablation_r2.csv,"block=count, level=f0.25"
+abl.r2.count_f0.30,regime 2 PCM fraction f0.30: g_window,66.06,kWh,results/g11_ablation_r2.csv,"block=count, level=f0.30"
+abl.r2.flow_q0.010,regime 2 flow q0.010: g_window,30.15,kWh,results/g11_ablation_r2.csv,"block=flow, level=q0.010"
+abl.r2.flow_q0.020,regime 2 flow q0.020: g_window,66.16,kWh,results/g11_ablation_r2.csv,"block=flow, level=q0.020"
+abl.r2.flow_q0.030,regime 2 flow q0.030: g_window,69.97,kWh,results/g11_ablation_r2.csv,"block=flow, level=q0.030"
+abl.r2.flow_q0.040,regime 2 flow q0.040: g_window,71.21,kWh,results/g11_ablation_r2.csv,"block=flow, level=q0.040"
+abl.r2.flow_q0.050,regime 2 flow q0.050: g_window,71.87,kWh,results/g11_ablation_r2.csv,"block=flow, level=q0.050"
+abl.r2.thickness_valid,regime 2 thickness levels with a valid geometry,0,of 6,results/g11_ablation_r2.csv,block=thickness_const_mass
+abl.r3.base,regime 3 ablation base g_window (explore years),-5.52,kWh,results/g11_ablation_r3.csv,block=base
+abl.r3.L0,regime 3 latent heat = 0: g_window,-8.62,kWh,results/g11_ablation_r3.csv,block=pos_control_latent_zero
+abl.r3.Tm45,regime 3 synthetic Tm=45 C: g_window,-1.08,kWh,results/g11_ablation_r3.csv,block=pos_control_Tm45_synthetic
+abl.r3.N2,regime 3 determinism max abs diff,0.0,,results/g11_ablation_r3.csv,block=neg_control_determinism
+abl.r3.anchor_bottom,"regime 3 staggered, bottom anchor: g_window",-4.52,kWh,results/g11_ablation_r3.csv,level=staggered|bottom
+abl.r3.anchor_center,"regime 3 staggered, center anchor: g_window",-5.52,kWh,results/g11_ablation_r3.csv,level=staggered|center
+abl.r3.anchor_top,"regime 3 staggered, top anchor: g_window",-0.25,kWh,results/g11_ablation_r3.csv,level=staggered|top
+abl.r3.count_f0.02,regime 3 PCM fraction f0.02: g_window,-5.52,kWh,results/g11_ablation_r3.csv,"block=count, level=f0.02"
+abl.r3.count_f0.04,regime 3 PCM fraction f0.04: g_window,-8.81,kWh,results/g11_ablation_r3.csv,"block=count, level=f0.04"
+abl.r3.count_f0.07,regime 3 PCM fraction f0.07: g_window,-15.25,kWh,results/g11_ablation_r3.csv,"block=count, level=f0.07"
+abl.r3.count_f0.10,regime 3 PCM fraction f0.10: g_window,-20.14,kWh,results/g11_ablation_r3.csv,"block=count, level=f0.10"
+abl.r3.count_f0.14,regime 3 PCM fraction f0.14: g_window,-26.48,kWh,results/g11_ablation_r3.csv,"block=count, level=f0.14"
+abl.r3.count_f0.20,regime 3 PCM fraction f0.20: g_window,-38.58,kWh,results/g11_ablation_r3.csv,"block=count, level=f0.20"
+abl.r3.count_f0.25,regime 3 PCM fraction f0.25: g_window,-46.46,kWh,results/g11_ablation_r3.csv,"block=count, level=f0.25"
+abl.r3.count_f0.30,regime 3 PCM fraction f0.30: g_window,-56.34,kWh,results/g11_ablation_r3.csv,"block=count, level=f0.30"
+abl.r3.flow_q0.010,regime 3 flow q0.010: g_window,-5.52,kWh,results/g11_ablation_r3.csv,"block=flow, level=q0.010"
+abl.r3.flow_q0.020,regime 3 flow q0.020: g_window,-5.01,kWh,results/g11_ablation_r3.csv,"block=flow, level=q0.020"
+abl.r3.flow_q0.030,regime 3 flow q0.030: g_window,-4.89,kWh,results/g11_ablation_r3.csv,"block=flow, level=q0.030"
+abl.r3.flow_q0.040,regime 3 flow q0.040: g_window,-4.83,kWh,results/g11_ablation_r3.csv,"block=flow, level=q0.040"
+abl.r3.flow_q0.050,regime 3 flow q0.050: g_window,-4.72,kWh,results/g11_ablation_r3.csv,"block=flow, level=q0.050"
+abl.r3.thickness_valid,regime 3 thickness levels with a valid geometry,6,of 6,results/g11_ablation_r3.csv,block=thickness_const_mass
+g4.cfd.N1.strat,litres at or above 45 C after the draw,19.8,L,results/g4_cfd_draw_case.csv,"n_nodes=1, state=stratified 30 L @55 / 20 L @25"
+g4.cfd.N1.mixed,litres at or above 45 C after the draw,0.0,L,results/g4_cfd_draw_case.csv,"n_nodes=1, state=mixed 43 C"
+g4.cfd.N5.strat,litres at or above 45 C after the draw,19.8,L,results/g4_cfd_draw_case.csv,"n_nodes=5, state=stratified 30 L @55 / 20 L @25"
+g4.cfd.N5.mixed,litres at or above 45 C after the draw,0.0,L,results/g4_cfd_draw_case.csv,"n_nodes=5, state=mixed 43 C"
+g4.cfd.N10.strat,litres at or above 45 C after the draw,22.5,L,results/g4_cfd_draw_case.csv,"n_nodes=10, state=stratified 30 L @55 / 20 L @25"
+g4.cfd.N10.mixed,litres at or above 45 C after the draw,0.0,L,results/g4_cfd_draw_case.csv,"n_nodes=10, state=mixed 43 C"
+g4.cfd.N15.strat,litres at or above 45 C after the draw,24.3,L,results/g4_cfd_draw_case.csv,"n_nodes=15, state=stratified 30 L @55 / 20 L @25"
+g4.cfd.N15.mixed,litres at or above 45 C after the draw,0.0,L,results/g4_cfd_draw_case.csv,"n_nodes=15, state=mixed 43 C"
+g4.cfd.N20.strat,litres at or above 45 C after the draw,25.2,L,results/g4_cfd_draw_case.csv,"n_nodes=20, state=stratified 30 L @55 / 20 L @25"
+g4.cfd.N20.mixed,litres at or above 45 C after the draw,0.0,L,results/g4_cfd_draw_case.csv,"n_nodes=20, state=mixed 43 C"
+g4.cfd.N40.strat,litres at or above 45 C after the draw,26.1,L,results/g4_cfd_draw_case.csv,"n_nodes=40, state=stratified 30 L @55 / 20 L @25"
+g4.cfd.N40.mixed,litres at or above 45 C after the draw,0.0,L,results/g4_cfd_draw_case.csv,"n_nodes=40, state=mixed 43 C"

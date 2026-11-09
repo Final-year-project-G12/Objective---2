@@ -18,6 +18,30 @@ night to avoid reverse (tank-to-collector) heat loss.
 """
 
 
+def heat_removal_factor(flow_kg_s: float, system_config: dict) -> float:
+    """F_R(m) = m*cp*(1 - exp(-A*U_L*F'/(m*cp))) / (A*U_L)  (Hottel-Whillier form, Eldokaishi 2022 Eq. 2)."""
+    import math
+    c, fd = system_config["collector"], system_config["collector"]["flow_dependent_fr"]
+    m_cp = max(float(flow_kg_s), 1e-9) * system_config["water"]["cp_J_kgK"]
+    a_ul = c["area_m2"] * fd["UL_for_flow_factor_W_m2K"]
+    return m_cp * (1.0 - math.exp(-a_ul * fd["efficiency_factor_Fprime"] / m_cp)) / a_ul
+
+
+def apply_flow_dependent_fr(system_config: dict, flow_kg_s: float) -> dict:
+    """Returns system_config unchanged when collector.flow_dependent_fr.enabled is false (the default). When enabled, returns a COPY whose
+    fr_tau_alpha and fr_ul_W_m2K are scaled by F_R(flow)/F_R(reference_flow), so flow acts on collection as well as on the PCM film coefficient."""
+    fd = system_config["collector"].get("flow_dependent_fr") or {}
+    if not fd.get("enabled", False):
+        return system_config
+    import copy
+    scale = heat_removal_factor(flow_kg_s, system_config) / heat_removal_factor(fd["reference_flow_kg_s"], system_config)
+    out = copy.deepcopy(system_config)
+    out["collector"]["fr_tau_alpha"] = system_config["collector"]["fr_tau_alpha"] * scale
+    out["collector"]["fr_ul_W_m2K"] = system_config["collector"]["fr_ul_W_m2K"] * scale
+    out["collector"]["flow_dependent_fr_scale"] = scale
+    return out
+
+
 def collector_output_w(I_t_Wm2: float, T_in_C: float, T_amb_C: float, system_config: dict):
     """Returns (Q_useful_W, is_circulating: bool)."""
     cfg = system_config["collector"]

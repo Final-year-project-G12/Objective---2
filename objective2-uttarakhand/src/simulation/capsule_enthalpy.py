@@ -9,11 +9,18 @@ h(T) =  Cp_solid*(T-Tref)                                   T  < Ts
 
   f = clip((h - h_s) / L, 0, 1)
 
-The PCM database (data/objective1/pcm_database_uttarakhand.csv) reports a
+The PCM database (data/objective1/pcm_database_tamilnadu.csv) reports a
 single melting point Tm_C, not a measured (solidus, liquidus) interval,
 so we treat melting as a narrow band Tm +/- melting_half_width_K
 (system_config_shared.yaml, pcm_integration.melting_half_width_K) — a
 documented simplification, not a measured property.
+
+CAPSULE WALL (O2 G2, 2026-10-26): the aluminium shell shares the PCM
+node's temperature, so its sensible heat is carried in the same node as an
+extra specific heat per kg of PCM, `wall_cp_J_kgK` = m_wall*c_wall/m_pcm
+(0.0 = no wall, the legacy behaviour). The enthalpy is then
+h(T) + wall_cp*(T-Tref) everywhere, which stays exactly invertible: the
+mushy zone just gains wall_cp*(Tl-Ts) of extra enthalpy per kg of PCM.
 
 Reference temperature Tref = 0 C throughout (arbitrary; only enthalpy
 DIFFERENCES matter for the energy balance, so the choice of Tref cancels
@@ -35,6 +42,7 @@ class PCMThermalProps:
     conductivity_W_mK: float
     density_kg_m3: float             # solid-basis, used for fixed capsule mass
     melting_half_width_K: float = 1.0
+    wall_cp_J_kgK: float = 0.0       # capsule-wall heat capacity per kg PCM (see module docstring)
 
     @property
     def Ts_C(self):
@@ -47,7 +55,13 @@ class PCMThermalProps:
     @property
     def h_s_J_kg(self):
         """Enthalpy at the solidus temperature (start of melting)."""
-        return self.cp_solid_J_kgK * (self.Ts_C - TREF_C)
+        return (self.cp_solid_J_kgK + self.wall_cp_J_kgK) * (self.Ts_C - TREF_C)
+
+    @property
+    def melt_span_enthalpy_J_kg(self):
+        """Enthalpy absorbed across the whole melting band: latent heat plus
+        the wall's sensible heat over (Tl - Ts)."""
+        return self.latent_heat_J_kg + self.wall_cp_J_kgK * (self.Tl_C - self.Ts_C)
 
 
 def pcm_props_from_record(record: dict, melting_half_width_K: float = 1.0) -> PCMThermalProps:
@@ -78,30 +92,32 @@ def pcm_props_from_record(record: dict, melting_half_width_K: float = 1.0) -> PC
 
 
 def enthalpy_of_temperature(T_C: float, props: PCMThermalProps) -> float:
-    """h(T) in J/kg, piecewise per the module docstring."""
+    """h(T) in J/kg PCM (wall included via wall_cp), piecewise per the module docstring."""
     if T_C < props.Ts_C:
-        return props.cp_solid_J_kgK * (T_C - TREF_C)
+        return (props.cp_solid_J_kgK + props.wall_cp_J_kgK) * (T_C - TREF_C)
     elif T_C <= props.Tl_C:
         f = (T_C - props.Ts_C) / (props.Tl_C - props.Ts_C)
-        return props.h_s_J_kg + f * props.latent_heat_J_kg
+        return props.h_s_J_kg + f * props.melt_span_enthalpy_J_kg
     else:
-        return props.h_s_J_kg + props.latent_heat_J_kg + props.cp_liquid_J_kgK * (T_C - props.Tl_C)
+        return (props.h_s_J_kg + props.melt_span_enthalpy_J_kg
+                + (props.cp_liquid_J_kgK + props.wall_cp_J_kgK) * (T_C - props.Tl_C))
 
 
 def temperature_and_liquid_fraction_of_enthalpy(h_J_kg: float, props: PCMThermalProps):
     """Inverse of enthalpy_of_temperature(): returns (T_C, f_melt in [0,1])."""
     h_s = props.h_s_J_kg
-    h_l = h_s + props.latent_heat_J_kg
+    span = props.melt_span_enthalpy_J_kg
+    h_l = h_s + span
 
     if h_J_kg < h_s:
-        T_C = TREF_C + h_J_kg / props.cp_solid_J_kgK
+        T_C = TREF_C + h_J_kg / (props.cp_solid_J_kgK + props.wall_cp_J_kgK)
         f = 0.0
     elif h_J_kg <= h_l:
-        f_raw = (h_J_kg - h_s) / props.latent_heat_J_kg if props.latent_heat_J_kg > 0 else 1.0
+        f_raw = (h_J_kg - h_s) / span if span > 0 else 1.0
         f = min(max(f_raw, 0.0), 1.0)
         T_C = props.Ts_C + f * (props.Tl_C - props.Ts_C)
     else:
-        T_C = props.Tl_C + (h_J_kg - h_l) / props.cp_liquid_J_kgK
+        T_C = props.Tl_C + (h_J_kg - h_l) / (props.cp_liquid_J_kgK + props.wall_cp_J_kgK)
         f = 1.0
     return T_C, f
 

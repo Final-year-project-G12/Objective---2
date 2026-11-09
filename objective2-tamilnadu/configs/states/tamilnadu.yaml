@@ -94,6 +94,7 @@ regimes:
     n_points: 46
     population_covered: 20468850
     Tm_target_C: 67.0
+    o1_Tm_target_C: 67.0
     T_mains_est_C: 28.463
     L_required_kJ_per_kg: 405.97
     medoid_point_id: TNP_0006
@@ -107,6 +108,7 @@ regimes:
     n_points: 41
     population_covered: 20422160
     Tm_target_C: 67.0
+    o1_Tm_target_C: 67.0
     T_mains_est_C: 23.969
     L_required_kJ_per_kg: 438.22
     medoid_point_id: TNP_0007
@@ -120,6 +122,7 @@ regimes:
     n_points: 46
     population_covered: 30335760
     Tm_target_C: 67.0
+    o1_Tm_target_C: 67.0
     T_mains_est_C: 27.768
     L_required_kJ_per_kg: 405.54
     medoid_point_id: TNP_0001

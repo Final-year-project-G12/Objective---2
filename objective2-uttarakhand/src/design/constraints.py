@@ -1,11 +1,10 @@
 """
 src/design/constraints.py
 ===========================
-Phase 2 / D2.2 — wraps geometry.compute_geometry() with the design-bounds
-range checks (capsule diameter, capsule count, derived thickness) so every
+Wraps geometry.compute_geometry() with the geometry-engine bounds
+(`geometry_engine` block of configs/design_space.yaml): range checks (capsule diameter, capsule count, derived thickness) so every
 generated design gets ONE valid/invalid verdict plus a single reason code,
-before any physics is run. This is the gate DOE (Phase 5) will call for
-every sampled row; the simulator never needs to see a geometrically
+before any physics is run. The simulator never sees a geometrically
 invalid design.
 
 Reason-code precedence (first hit wins, matches the framework doc's list):
@@ -62,51 +61,3 @@ def _reject(design: DesignVector, reason: str, note: str) -> dict:
         "reason": reason,
         "notes": note,
     }
-
-
-# ─────────────────────────────────────────────────────────────────────────
-# Phase 2 exit check — determinism + boundary cases
-# ─────────────────────────────────────────────────────────────────────────
-
-def run_boundary_self_test(verbose: bool = True):
-    """Runs the framework doc's Phase 2 exit check: boundary cases (min/max
-    thickness, min/max count) each return a clean valid/invalid + reason, no
-    crashes; determinism (same vector twice -> identical output)."""
-    system_config = load_system_config()
-    bounds = load_design_bounds()
-    d_bounds = bounds["capsule_diameter_m"]
-    n_bounds = bounds["capsule_count"]
-    f_bounds = bounds["flow_rate_kg_s"]
-
-    cases = [
-        ("min_diameter_min_count", DesignVector(d_bounds["min"], n_bounds["min"], f_bounds["min"])),
-        ("max_diameter_max_count", DesignVector(d_bounds["max"], n_bounds["max"], f_bounds["max"])),
-        ("min_diameter_max_count", DesignVector(d_bounds["min"], n_bounds["max"], f_bounds["max"])),
-        ("max_diameter_min_count", DesignVector(d_bounds["max"], n_bounds["min"], f_bounds["min"])),
-        ("mid_case", DesignVector(0.05, 14, 0.030)),
-        ("flow_below_min", DesignVector(0.05, 14, f_bounds["min"] - 0.005)),
-        ("flow_above_max", DesignVector(0.05, 14, f_bounds["max"] + 0.005)),
-        ("oversized_diameter_for_tank", DesignVector(0.30, 14, 0.030)),
-    ]
-
-    rows = []
-    for name, design in cases:
-        r1 = check_design(design, system_config, bounds)
-        r2 = check_design(design, system_config, bounds)
-        deterministic = (r1["valid"] == r2["valid"] and r1["reason"] == r2["reason"])
-        rows.append((name, r1["valid"], r1["reason"], deterministic))
-        if verbose:
-            print(f"  {name:28s} valid={r1['valid']!s:5s} reason={str(r1['reason']):20s} "
-                  f"deterministic={deterministic}")
-
-    all_deterministic = all(r[3] for r in rows)
-    if verbose:
-        print(f"\n  All boundary cases deterministic: {all_deterministic}")
-    return rows, all_deterministic
-
-
-if __name__ == "__main__":
-    print("=" * 68)
-    print("  Phase 2 exit check — geometry & constraint boundary cases")
-    print("=" * 68)
-    run_boundary_self_test()

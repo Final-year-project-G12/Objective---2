@@ -1,0 +1,27 @@
+case,kind,regime,pcm,R_in_mm,pcm_diameter_m,fraction,flow_kg_s,arrangement,dT_drive_K,h_w_W_m2K,Bi,Ste,n_cells_est,T_mains_C,pcm_beats_water_only,T_amb_C
+cases/r0_chosen_puretemp_58,capsule_chosen,0,PureTemp 58,39.79,0.07958,0.2633,0.01941,staggered,12.0,124.96,24.861,0.138,1156,21.821,True,
+cases_viz/r0_chosen_puretemp_58,capsule_viz,0,PureTemp 58,39.79,0.07958,0.2633,0.01941,staggered,12.0,124.96,24.861,0.138,1156,21.821,True,
+cases/r0_chosen_puretemp_58_cond,capsule_conduction,0,PureTemp 58,39.79,0.07958,0.2633,0.01941,staggered,12.0,124.96,24.861,0.138,1156,21.821,True,
+cases/r0_alt_plusice_a58,capsule_runner_up,0,PlusICE A58,39.57,0.07914,0.2977,0.03655,single-layer,12.0,175.79,31.62,0.124,1024,21.821,True,
+cases_tank/r0_charge,tank_charge,0,,,,,0.03,,,,,,6320,21.821,True,23.82
+cases_tank/r0_draw,tank_draw,0,,,,,0.03,,,,,,6320,21.821,True,23.82
+cases_tank/r0_idle,tank_idle,0,,,,,0.03,,,,,,6320,21.821,True,23.82
+cases/r1_chosen_puretemp_58,capsule_chosen,1,PureTemp 58,39.31,0.07862,0.2973,0.03136,single-layer,12.0,162.26,31.89,0.138,1024,18.581,True,
+cases_viz/r1_chosen_puretemp_58,capsule_viz,1,PureTemp 58,39.31,0.07862,0.2973,0.03136,single-layer,12.0,162.26,31.89,0.138,1024,18.581,True,
+cases/r1_chosen_puretemp_58_cond,capsule_conduction,1,PureTemp 58,39.31,0.07862,0.2973,0.03136,single-layer,12.0,162.26,31.89,0.138,1024,18.581,True,
+cases/r1_alt_plusice_a58,capsule_runner_up,1,PlusICE A58,40.0,0.08,0.2959,0.05,single-layer,12.0,207.85,37.79,0.124,1156,18.581,True,
+cases_tank/r1_charge,tank_charge,1,,,,,0.03,,,,,,6320,18.581,True,20.58
+cases_tank/r1_draw,tank_draw,1,,,,,0.03,,,,,,6320,18.581,True,20.58
+cases_tank/r1_idle,tank_idle,1,,,,,0.03,,,,,,6320,18.581,True,20.58
+cases/r2_chosen_save_om55,capsule_chosen,2,savE® OM55,39.66,0.07933,0.2997,0.01988,single-layer,12.0,126.72,38.664,0.174,1156,17.006,True,
+cases_viz/r2_chosen_save_om55,capsule_viz,2,savE® OM55,39.66,0.07933,0.2997,0.01988,single-layer,12.0,126.72,38.664,0.174,1156,17.006,True,
+cases/r2_chosen_save_om55_cond,capsule_conduction,2,savE® OM55,39.66,0.07933,0.2997,0.01988,single-layer,12.0,126.72,38.664,0.174,1156,17.006,True,
+cases/r2_alt_puretemp_58,capsule_runner_up,2,PureTemp 58,39.57,0.07913,0.2975,0.05,single-layer,12.0,208.86,41.319,0.138,1024,17.006,True,
+cases_tank/r2_charge,tank_charge,2,,,,,0.03,,,,,,6320,17.006,True,19.01
+cases_tank/r2_draw,tank_draw,2,,,,,0.03,,,,,,6320,17.006,True,19.01
+cases_tank/r2_idle,tank_idle,2,,,,,0.03,,,,,,6320,17.006,True,19.01
+cases/r3_chosen_n_hexacosane_c26,capsule_chosen,3,n-Hexacosane (C26),38.4,0.0768,0.0202,0.01,single-layer,12.0,90.75,14.642,0.107,1024,7.447,False,
+cases_viz/r3_chosen_n_hexacosane_c26,capsule_viz,3,n-Hexacosane (C26),38.4,0.0768,0.0202,0.01,single-layer,12.0,90.75,14.642,0.107,1024,7.447,False,
+cases_tank/r3_charge,tank_charge,3,,,,,0.03,,,,,,6320,7.447,False,9.45
+cases_tank/r3_draw,tank_draw,3,,,,,0.03,,,,,,6320,7.447,False,9.45
+cases_tank/r3_idle,tank_idle,3,,,,,0.03,,,,,,6320,7.447,False,9.45
