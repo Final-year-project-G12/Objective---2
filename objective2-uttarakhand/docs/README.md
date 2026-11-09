@@ -2,7 +2,7 @@
 
 **Status: current.** Port of the Rajasthan current chain (v3, PCM fraction cap 30 %) to Uttarakhand with Objective 1's new K = 4 regimes.
 `docs/PROGRESS.md` is the log of the port and every gate. The legacy K = 5 chain (UTC-indexed demand, single-node tank) was removed in the
-cleanup of 2026-10-28, as in Rajasthan; it is in git history only. The full report is `Objective2_Uttarakhand_Report_v3.docx` (PDF beside it).
+cleanup of 2026-10-28, as in Rajasthan; it is in git history only. The full report is `Objective2_Uttarakhand_Report_v3.docx` (PDF beside it). `Objective2_Uttarakhand_Algorithms_Explained.docx` (PDF beside it) explains what the simulation includes, every algorithm, why it was chosen over the alternatives, and how to run the steps in parallel.
 
 Scope: this folder only. Fixed and not optimised: 50 L tank, collector area, the Uttarakhand demand profile, the O1 PCM top-3, **delivery target 50 C**
 (`configs/system_config_shared.yaml`). Held-out test years 2024-2025, used once. Nothing is committed to git by this work.
