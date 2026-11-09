@@ -124,7 +124,9 @@ the enthalpy-porosity model built in.
 
 | question | file |
 |---|---|
-| What were the results? | `docs/RESULTS.md` |
+| What were the results? | `docs/RESULTS.md` (hand-written, layered: read only above the 2026-10-28 superseded banner) |
+| The same results, generated from `results/` with no hand-typed numbers | `docs/04_RESULTS.md` (`scripts/g12_results_doc.py`) |
+| Which algorithms actually run? | `../documentation/OBJECTIVES_AND_ALGORITHMS.md` — `docs/RESULTS.md`'s own "Algorithms used" table sits **below** the superseded banner and describes the retired architecture |
 | Why two simulators? | `docs/SIMULATOR_AND_CFD.md` |
 | What does the CFD show, and what went wrong? | `docs/CFD_VERIFICATION.md` |
 | How do I run it? | `README.md`, `ansys/HOW_TO_RUN_ANSYS.md` |
@@ -158,8 +160,24 @@ These are stated here rather than left for a reader to find:
 - **Irradiance is used as plane-of-array directly**, with no tilt model. It
   applies equally to the PCM tank and its plain twin, so the reported
   *difference* is largely insulated — the absolute energies are not.
-- **`g12_verify_docs` reports ~68 stale path references**, almost all inside the
-  historical progress log, which legitimately describes paths as they were.
+- **`g12_verify_docs` reports 236 stale path references** (verified 2026-11-09).
+  An earlier version of this file said "~68, almost all inside the historical
+  progress log" — that is wrong on both counts. The progress log holds 65 of
+  them, 28 %, and it is the only file where describing paths as they once were
+  is legitimate. The other 171 are genuinely stale:
+
+  | doc | missing refs |
+  |---|---|
+  | `docs/DATA_REFERENCE.md` | 88 |
+  | `docs/RAJASTHAN_METHOD_PORT_PROGRESS.md` | 65 |
+  | `docs/HOW_TO_RUN.md` | 39 |
+  | `docs/RESULTS.md` | 15 |
+  | `README.md` | 15 |
+  | `docs/CFD_VERIFICATION.md` | 14 |
+
+  The 39 in the run guide matter most, since people follow it: it still
+  documents `python pipeline.py --stage ...`, and `pipeline.py` no longer
+  exists (the pipeline is `scripts/tn_run_all.py`, stages `g2`…`g24`).
 
 ---
 
