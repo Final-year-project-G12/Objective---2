@@ -182,6 +182,30 @@ def main():
         add(f"g4.cfd.N{r.n_nodes}.{'strat' if 'strat' in r.initial_state else 'mixed'}", "litres at or above 45 C after the draw",
             round(float(r.litres_at_or_above_45C), 1), "L", "g4_cfd_draw_case.csv", f"n_nodes={r.n_nodes}, state={r.initial_state}")
 
+    # --- OpenFOAM capsule check (rj_openfoam/results, docs/07_OPENFOAM_VALIDATION.md); model-to-model, benchmark not met
+    rj = Path("..") / "rj_openfoam" / "results"       # relative to results/, so source_file reads results/../rj_openfoam/results/...
+    par = pd.read_csv(OUT.parent / "rj_openfoam" / "results" / "of_model_parity.csv")
+    add("cfd.parity.max_abs_diff", "max abs melt-fraction difference, standalone lumped vs repo kernel (27 cases)", round(float(par.max_abs_diff_meltfrac.max()), 6),
+        "-", "../rj_openfoam/results/of_model_parity.csv", "max over all rows")
+    ms = pd.read_csv(OUT.parent / "rj_openfoam" / "results" / "of_mesh_study.csv").set_index("cells_radial")
+    for n in (20, 40, 80):
+        add(f"cfd.mesh.n{n}.t50", f"r0 charge_70 time to 50 % melt, {n} cells across the radius", round(float(ms.t50_s[n]), 0), "s",
+            "../rj_openfoam/results/of_mesh_study.csv", f"cells_radial={n}")
+        add(f"cfd.mesh.n{n}.t90", f"r0 charge_70 time to 90 % melt, {n} cells", round(float(ms.t90_s[n]), 0), "s",
+            "../rj_openfoam/results/of_mesh_study.csv", f"cells_radial={n}")
+    for k in ("t50_s", "t90_s"):
+        add(f"cfd.mesh.change_40_80.{k[:3]}", f"change of {k[:3]} from 40 to 80 cells (criterion < 2 %)", round(100.0 * (ms[k][80] - ms[k][40]) / ms[k][40], 1), "%",
+            "../rj_openfoam/results/of_mesh_study.csv", "(n80 - n40) / n40")
+    v0 = pd.read_csv(OUT.parent / "rj_openfoam" / "results" / "of_v0_benchmark.csv")
+    for r in v0.itertuples():
+        tag = r.series if r.series != "openfoam" else r.case
+        add(f"cfd.v0.{tag}.t50", f"Tan 2009 sphere, time to 50 % liquid fraction: {tag}", round(float(r.t50_min), 1), "min",
+            "../rj_openfoam/results/of_v0_benchmark.csv", f"series={r.series}, case={r.case}")
+    cc = pd.read_csv(OUT.parent / "rj_openfoam" / "results" / "of_v0_conduction_check.csv", comment="#")
+    for r in cc.itertuples():
+        add(f"cfd.v0.cond.{r.model}.t50", f"conduction-only time to 50 %: {r.model}", round(float(r.t50_min), 1), "min",
+            "../rj_openfoam/results/of_v0_conduction_check.csv", f"model={r.model}")
+
     reg = pd.DataFrame(ROWS)
     reg.to_csv(OUT / "results_registry.csv", index=False, encoding="utf-8")
     print("registry rows", len(reg))

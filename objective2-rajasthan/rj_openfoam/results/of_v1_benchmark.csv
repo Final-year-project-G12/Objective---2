@@ -1,0 +1,5 @@
+series,case,t25_min,t50_min,t75_min,t90_min,rmse_vs_experiment
+experimental,,40,60,120,143,nan
+openfoam,lit_V1_dong2022_n40_glass,13.67,29.67,47.67,63,0.2656
+openfoam,lit_V1_dong2022_n40_glass_h300,17,37,59,78.33,0.2036
+openfoam,lit_V1_dong2022_n40_cond_glass,15.33,52.33,102,142.3,0.06959

@@ -18,7 +18,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 DOCS = [ROOT / "docs" / n for n in ("README.md", "01_MODEL_AND_METRICS.md", "02_WEATHER_AND_DESIGN_SPACE.md",
                                               "03_OPTIMISATION_PIPELINE.md", "04_RESULTS.md", "05_LIMITATIONS_AND_OPEN_ITEMS.md",
-                                              "06_OBJECTIVE3_HANDOFF.md")]
+                                              "06_OBJECTIVE3_HANDOFF.md", "07_OPENFOAM_VALIDATION.md")]
 EXT = (".py", ".csv", ".yaml", ".json", ".md", ".lock", ".txt", ".sha256")
 BASES = [ROOT.parent.parent.parent, ROOT, ROOT / "docs", ROOT / "docs", ROOT / "results", ROOT / "results", ROOT / "src", ROOT / "scripts"]
 SKIP = {"out.csv"}

@@ -1,0 +1,32 @@
+# Tan, Hosseinizadeh, Khodadadi, Fan 2009, IJHMT 52:3464-3472, Fig. 4 (liquid fraction vs time), n-octadecane, 1 C subcooling, 40 C surface.
+# Read BY EYE from the rendered PDF figure (page 7, 300 dpi crop), NOT with WebPlotDigitizer; estimated reading error +/-0.02 in liquid fraction, +/-1 min.
+# series: experimental = filled squares (every 10 min); fluent = solid line (read at the listed times)
+series,time_min,liquid_fraction
+experimental,0,0.00
+experimental,10,0.06
+experimental,20,0.20
+experimental,30,0.23
+experimental,40,0.34
+experimental,50,0.43
+experimental,60,0.51
+experimental,70,0.59
+experimental,80,0.67
+experimental,90,0.75
+experimental,100,0.82
+experimental,110,0.87
+experimental,120,0.92
+experimental,130,0.96
+experimental,140,0.99
+fluent,0,0.00
+fluent,5,0.10
+fluent,10,0.15
+fluent,20,0.24
+fluent,30,0.36
+fluent,40,0.48
+fluent,50,0.59
+fluent,60,0.70
+fluent,70,0.78
+fluent,80,0.86
+fluent,90,0.93
+fluent,100,0.98
+fluent,105,1.00

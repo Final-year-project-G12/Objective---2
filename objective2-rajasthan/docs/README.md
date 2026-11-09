@@ -20,6 +20,7 @@ Scope: this folder only (Rajasthan). Fixed and not optimised: 50 L tank, 1.5 m2 
 | [`04_RESULTS.md`](04_RESULTS.md) | generated tables of the results (chosen designs, held-out test, optimiser checks, ablations) |
 | [`05_LIMITATIONS_AND_OPEN_ITEMS.md`](05_LIMITATIONS_AND_OPEN_ITEMS.md) | what the results do not support, deviations, items for Dr. Deepika |
 | [`06_OBJECTIVE3_HANDOFF.md`](06_OBJECTIVE3_HANDOFF.md) | the regenerated environment contract for Objective 3 |
+| [`07_OPENFOAM_VALIDATION.md`](07_OPENFOAM_VALIDATION.md) | OpenFOAM check of the capsule constants c and F (WP2-C): status, benchmark, mesh study, what was not done |
 | `PROGRESS.md` | the progress log, gates G1-G19 with evidence |
 | `../results/results_registry.csv` | every headline number with its source file (`scripts/g12_registry.py`) |
 

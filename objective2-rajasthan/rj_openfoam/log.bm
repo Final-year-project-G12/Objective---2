@@ -1,0 +1,16 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2406                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : _1653fa08-20260127 OPENFOAM=2406 patch=260127 version=2406
+Arch   : "LSB;label=32;scalar=64"
+Exec   : blockMesh
+Date   : Oct 28 2026
+Time   : 20:12:38
+Host   : Manvitha
+PID    : 6606
+fileName::stripInvalid() called for invalid fileName /mnt/d/FinalYearProject/OBJECTIVE2/Objective---2/objective2-rajasthan/rj_openfoam
+    For debug level (= 2) > 1 this is considered fatal

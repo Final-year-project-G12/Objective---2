@@ -1,0 +1,11 @@
+# Dong, Wang, Zhang, Shi, Zhang, Shuai 2022, Energy 238:121830, Fig. 7 (liquid fraction vs time, constrained melting), SPHERE series (grey circles), n-octadecane, 1 K subcooling, bath 10 K above Tm.
+# Read BY EYE from the rendered PDF figure (page 6, 160 dpi), NOT with WebPlotDigitizer; estimated reading error +/-0.03 in liquid fraction, +/-2 min. The 143 min total melting time is stated in the text (Sec. 4.1).
+series,time_min,liquid_fraction
+experimental,0,0.00
+experimental,20,0.175
+experimental,40,0.33
+experimental,60,0.515
+experimental,80,0.625
+experimental,100,0.725
+experimental,120,0.865
+experimental,143,1.00

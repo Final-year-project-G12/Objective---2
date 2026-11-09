@@ -1,0 +1,90 @@
+# rj_openfoam case definitions (Objective 2, Rajasthan, v3 designs)
+# Design numbers copied from O2_Rajasthan_Pipeline_Report (Table 25, results/g10_selection_r*.json).
+# PCM properties are NOT filled in here on purpose: they must be copied from the SAME PCM
+# database file the O2 simulator reads (report section 10.2: simulator reads the database,
+# not the O1 ranking table). make_capsule_case.py refuses to run while any value is null.
+
+openfoam:
+  distribution: esi          # esi (v2312/v2406/v2412) -> buoyantPimpleFoam + system/fvOptions
+                             # org (v11/v12)           -> foamRun -solver fluid + constant/fvModels
+  wedge_angle_deg: 5.0
+  cells_radial: 40           # cells across the radius; mesh study: 20 / 40 / 80 (R2)
+  max_co: 0.5
+  write_interval_s: 300
+  sample_every_s: 20        # function-object output interval
+  max_delta_t_s: 2.0
+  radial_grading: 0.4       # last/first cell ratio towards the wall
+  Cu: 1.0e5                 # Darcy constant of solidificationMeltingSource (same as Tan 2009's C = 1e5 kg/m3 s); V0 sensitivity: 1e8, 1e10
+  q: 0.01
+  distribution_checked: "OpenFOAM-v2406 (ESI), WSL2 Ubuntu-24.04, /usr/lib/openfoam/openfoam2406; 2026-10-29"
+
+capsule_wall:                # from configs/system_config_shared.yaml (report Table 17)
+  material: aluminium
+  thickness_m: 0.0008
+  # wall is NOT meshed in the default case; a fixed-T or convective BC is applied on the
+  # inner PCM surface. Option to mesh it later via chtMultiRegion (see README).
+
+designs:                     # chosen v3 designs, report Table 25
+  r0:
+    regime: 0
+    medoid: RJP_0132
+    pcm: "savE OM55"
+    inner_radius_m: 0.0395
+    pcm_fraction: 0.284
+    capsules: 52
+    flow_kg_s: 0.0155
+    arrangement: staggered
+  r1:
+    regime: 1
+    medoid: RJP_0192
+    pcm: "PureTemp 60"
+    inner_radius_m: 0.040
+    pcm_fraction: 0.296
+    capsules: 52
+    flow_kg_s: 0.0493
+    arrangement: single-layer
+  r2:
+    regime: 2
+    medoid: RJP_0083
+    pcm: "PureTemp 58"
+    inner_radius_m: 0.040
+    pcm_fraction: 0.296
+    capsules: 52
+    flow_kg_s: 0.0236
+    arrangement: single-layer
+
+# Copied 2026-10-28 from the SAME file the simulator reads: data/objective1/pcm_database_rajasthan.csv
+# (configs/states/rajasthan.yaml: pcm_database_file; loaded by src/io_utils.get_pcm_properties). Units SI.
+# DB column -> field: Tm_C, latent_heat_kJ_kg x1000, TC_W_mK (ONE value; used for k_solid and k_liquid, as the simulator does),
+# density_solid/liquid_kg_m3, Cp_solid/liquid_kJ_kgK x1000.
+# mu_Pa_s and beta_1_K are NOT in the database and no datasheet value is in Sources/ or was found online (2026-10-29).
+# Student decision 2026-10-29: run them labelled ASSUMED, with a range. Values = typical paraffin / fatty-acid magnitudes, copied from
+# openfoam_cfd/config/o2_cfd_config.yaml (assumed_liquid_properties), NOT sourced. Every result that uses them is PROVISIONAL;
+# the range mu x0.5 / x2 and beta x0.5 / x2 is run to show how far F moves. Replace with datasheet values when available.
+pcm_properties:
+  "savE OM55":   {Tm_C: 55.0, latent_J_kg: 188000.0, k_solid: 0.13, k_liquid: 0.13, rho_solid: 935.0, rho_liquid: 841.0, cp_solid: 2680.0, cp_liquid: 2760.0, mu_Pa_s: 3.5e-3, beta_1_K: 7.0e-4, mu_beta_status: ASSUMED}
+  "PureTemp 60": {Tm_C: 61.0, latent_J_kg: 220000.0, k_solid: 0.20, k_liquid: 0.20, rho_solid: 960.0, rho_liquid: 870.0, cp_solid: 2040.0, cp_liquid: 2380.0, mu_Pa_s: 3.5e-3, beta_1_K: 7.0e-4, mu_beta_status: ASSUMED}
+  "PureTemp 58": {Tm_C: 58.0, latent_J_kg: 225000.0, k_solid: 0.20, k_liquid: 0.20, rho_solid: 890.0, rho_liquid: 810.0, cp_solid: 2470.0, cp_liquid: 2710.0, mu_Pa_s: 3.5e-3, beta_1_K: 7.0e-4, mu_beta_status: ASSUMED}
+  # V0 literature benchmark: ALL values from Tan et al. 2009, IJHMT 52:3464-3472, Table 1 (Sources/ PDF); mu = kinematic viscosity 5e-6 m2/s x 772 kg/m3.
+  "n-octadecane (Tan 2009)": {Tm_C: 28.2, latent_J_kg: 243500.0, k_solid: 0.1505, k_liquid: 0.1505, rho_solid: 772.0, rho_liquid: 772.0, cp_solid: 2330.0, cp_liquid: 2330.0, mu_Pa_s: 3.86e-3, beta_1_K: 9.1e-4}  # Tan 2009 Table 1; mu = nu*rho = 5e-6*772
+
+  # V1 literature benchmark: ALL values from Dong et al. 2022, Energy 238:121830, Table 2 (Sources/ PDF); mu and beta are given there (not assumed).
+  "n-octadecane (Dong 2022)": {Tm_C: 28.2, latent_J_kg: 243500.0, k_solid: 0.1505, k_liquid: 0.1505, rho_solid: 774.5, rho_liquid: 774.5, cp_solid: 2330.0, cp_liquid: 2330.0, mu_Pa_s: 3.86e-3, beta_1_K: 9.42e-4}  # Tm 301.35 K
+
+pcm_database_rows:           # file data/objective1/pcm_database_rajasthan.csv (csv line numbers, header = line 1)
+  "savE OM55":   {name_in_db: "savE® OM55", csv_line: 34}
+  "PureTemp 60": {name_in_db: "PureTemp 60", csv_line: 44}
+  "PureTemp 58": {name_in_db: "PureTemp 58", csv_line: 39}
+
+melting_half_width_K: 1.0    # same as simulator (report Table 17)
+
+# Scenarios run on one capsule (axisymmetric wedge). Temperatures in C.
+scenarios:
+  V0_tan2009:  {pcm: "n-octadecane (Tan 2009)", radius_m: 0.05083, T_init_C: 27.2, T_wall_C: 40.0, end_time_s: 8400, bc: fixedWall}   # D = 101.66 mm (Fig. 1) -> R = 50.83 mm; Ti = Tm-1 C, outer surface 40 C (Sec. 2.1/2.4); 140 min = Fig. 4 range. Wall (about 1.5 mm glass) not modelled: 40 C applied on the PCM surface
+  V1_dong2022: {pcm: "n-octadecane (Dong 2022)", radius_m: 0.0343, T_init_C: 27.2, T_wall_C: 38.2, end_time_s: 9000, bc: fixedWall}   # Table 1 sphere a=b=c=34.3 mm (PCM), 2 mm resin shell (k 0.4, Table 2); Ti = 300.35 K, bath 311.35 K (Sec. 3.3); constrained melting, total 143 min (Sec. 4.1)
+  charge_70:   {T_init_C: 30.0, T_wall_C: 70.0, end_time_s: 14400, bc: fixedWall}   # top-node water near 72 C shield
+  charge_62:   {T_init_C: 30.0, T_wall_C: 62.0, end_time_s: 21600, bc: fixedWall}   # PCM charge-block level
+  discharge_mains: {T_init_C: 64.0, T_wall_C: null, end_time_s: 21600, bc: fixedWall, wall_from: mains_regime_C}
+  charge_conv: {T_init_C: 30.0, T_water_C: 70.0, h_W_m2K: null, end_time_s: 14400, bc: convective}  # h from simulator at design flow
+
+mains_regime_C: {r0: 25.13, r1: 25.98, r2: 24.70}   # report Table 11

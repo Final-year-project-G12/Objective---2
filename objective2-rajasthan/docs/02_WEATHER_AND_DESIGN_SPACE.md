@@ -11,7 +11,7 @@
 - **Acceptance rule:** at least 98 % valid hours; gaps up to 3 h interpolated and flagged; longer gaps reject the point-year and stay listed.
   Result: all 45 accepted, 100 % valid hours, no gaps; 8760 h after the 29 February drop (`tests/test_weather_roles.py` exercises the
   fill and reject paths on synthetic files).
-- **Check of the plan's claim:** 2024 and 2025 are the two lowest-GHI years in all three clusters (progress log section 7).
+- **Check of the plan's claim:** 2024 and 2025 are the two lowest-GHI years in all three clusters (progress log section 7). They were the held-out years of the v1 test only; the v3 test uses 2011-2015 (progress log section 26).
 
 ## 2. Year roles (`src/weather/roles.py`)
 

@@ -84,13 +84,17 @@ The held-out years use exact plain runs instead of the grid (`evaluate_night` in
 ## 6. What is not modelled
 
 No supercooling, no volume change on melting, no backup heater, no pump energy, a flow-independent collector F_R, a single lumped
-PCM resistance r/(5k) with the project's liquid-convection factor (no CFD-derived correction is applied).
+PCM resistance r/(5k) with the project's liquid-convection factor (no CFD-derived correction is applied; CFD status in `07_OPENFOAM_VALIDATION.md`).
 
 Further simplifications to state in the report:
 
 - Melting is a narrow band Tm +/- 1 K (`melting_half_width_K`), because the PCM database gives one Tm, not a solidus/liquidus pair.
 - Natural convection in the liquid PCM is not resolved: conductivity is multiplied by 2.0 (`liquid_convection_enhancement`) once
   the melt fraction reaches 0.5. This factor is assumed, not measured.
+- CFD status of the two assumed constants `c = 5` (in `R = r/(c k_eff)`) and `F = 2.0` (2026-10-29, `07_OPENFOAM_VALIDATION.md`): **not checked.** An OpenFOAM single-capsule case exists, the lumped
+  model was shown identical to the repo kernel (max melt-fraction difference 0.000000, `rj_openfoam/results/of_model_parity.csv`), but the case does not reproduce the Tan et al. 2009 sphere experiment (t50 23 min against 60 min experiment
+  and 50 min Fluent) and the mesh study is not converged (t50 +14 % from 40 to 80 cells), so no fitted `c` or `F` exists. Both stay frozen. `pcm_integration.conduction_coefficient_c` exists as an off-by-default option
+  (absent from the frozen config = 5.0, `tests/test_capsule_closure_option.py`).
 - Hourly weather is held constant over the sub-steps of each hour, and each hour's draw is spread evenly across it (both inputs are hourly).
 - Hydraulics cover only the packed capsule bed (Ergun 1952); pipe and valve losses are out of scope.
 - All capsules in a node are identical and see that node's water temperature.

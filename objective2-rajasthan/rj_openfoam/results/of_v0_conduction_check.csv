@@ -1,0 +1,4 @@
+# g = 0, beta = 0 (no convection): OpenFOAM n20 case lit_V0_tan2009_n20_cond against an independent 1-D spherical enthalpy solution (scripts/stefan_sphere_1d.py)
+model,t25_min,t50_min
+openfoam_conduction_only,19.7,89.0
+stefan_1d,19.0,88.4

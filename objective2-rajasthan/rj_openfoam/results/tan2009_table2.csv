@@ -1,0 +1,10 @@
+# Tan et al. 2009 Table 2: time (min) at which the solid-liquid front passes each thermocouple (printed in the paper; no digitising).
+point,height_mm_from_center,experiment_min,fluent_min
+A,-44,6,16
+H,37.5,26,24
+G,25,44,42
+B,-37.5,68,32
+F,12.5,78,56
+E,0,104,68
+C,-25,122,84
+D,-12.5,126,82

@@ -603,3 +603,23 @@ g4.cfd.N20.strat,litres at or above 45 C after the draw,25.2,L,results/g4_cfd_dr
 g4.cfd.N20.mixed,litres at or above 45 C after the draw,0.0,L,results/g4_cfd_draw_case.csv,"n_nodes=20, state=mixed 43 C"
 g4.cfd.N40.strat,litres at or above 45 C after the draw,26.1,L,results/g4_cfd_draw_case.csv,"n_nodes=40, state=stratified 30 L @55 / 20 L @25"
 g4.cfd.N40.mixed,litres at or above 45 C after the draw,0.0,L,results/g4_cfd_draw_case.csv,"n_nodes=40, state=mixed 43 C"
+cfd.parity.max_abs_diff,"max abs melt-fraction difference, standalone lumped vs repo kernel (27 cases)",0.0,-,results/../rj_openfoam/results/of_model_parity.csv,max over all rows
+cfd.mesh.n20.t50,"r0 charge_70 time to 50 % melt, 20 cells across the radius",960.0,s,results/../rj_openfoam/results/of_mesh_study.csv,cells_radial=20
+cfd.mesh.n20.t90,"r0 charge_70 time to 90 % melt, 20 cells",1760.0,s,results/../rj_openfoam/results/of_mesh_study.csv,cells_radial=20
+cfd.mesh.n40.t50,"r0 charge_70 time to 50 % melt, 40 cells across the radius",980.0,s,results/../rj_openfoam/results/of_mesh_study.csv,cells_radial=40
+cfd.mesh.n40.t90,"r0 charge_70 time to 90 % melt, 40 cells",2020.0,s,results/../rj_openfoam/results/of_mesh_study.csv,cells_radial=40
+cfd.mesh.n80.t50,"r0 charge_70 time to 50 % melt, 80 cells across the radius",1120.0,s,results/../rj_openfoam/results/of_mesh_study.csv,cells_radial=80
+cfd.mesh.n80.t90,"r0 charge_70 time to 90 % melt, 80 cells",2340.0,s,results/../rj_openfoam/results/of_mesh_study.csv,cells_radial=80
+cfd.mesh.change_40_80.t50,change of t50 from 40 to 80 cells (criterion < 2 %),14.3,%,results/../rj_openfoam/results/of_mesh_study.csv,(n80 - n40) / n40
+cfd.mesh.change_40_80.t90,change of t90 from 40 to 80 cells (criterion < 2 %),15.8,%,results/../rj_openfoam/results/of_mesh_study.csv,(n80 - n40) / n40
+cfd.v0.experimental.t50,"Tan 2009 sphere, time to 50 % liquid fraction: experimental",60.0,min,results/../rj_openfoam/results/of_v0_benchmark.csv,"series=experimental, case=nan"
+cfd.v0.fluent.t50,"Tan 2009 sphere, time to 50 % liquid fraction: fluent",50.0,min,results/../rj_openfoam/results/of_v0_benchmark.csv,"series=fluent, case=nan"
+cfd.v0.lit_V0_tan2009_n20.t50,"Tan 2009 sphere, time to 50 % liquid fraction: lit_V0_tan2009_n20",23.7,min,results/../rj_openfoam/results/of_v0_benchmark.csv,"series=openfoam, case=lit_V0_tan2009_n20"
+cfd.v0.lit_V0_tan2009_n40.t50,"Tan 2009 sphere, time to 50 % liquid fraction: lit_V0_tan2009_n40",23.0,min,results/../rj_openfoam/results/of_v0_benchmark.csv,"series=openfoam, case=lit_V0_tan2009_n40"
+cfd.v0.lit_V0_tan2009_n80.t50,"Tan 2009 sphere, time to 50 % liquid fraction: lit_V0_tan2009_n80",25.3,min,results/../rj_openfoam/results/of_v0_benchmark.csv,"series=openfoam, case=lit_V0_tan2009_n80"
+cfd.v0.lit_V0_tan2009_n40_glass.t50,"Tan 2009 sphere, time to 50 % liquid fraction: lit_V0_tan2009_n40_glass",27.0,min,results/../rj_openfoam/results/of_v0_benchmark.csv,"series=openfoam, case=lit_V0_tan2009_n40_glass"
+cfd.v0.lit_V0_tan2009_n80_glass.t50,"Tan 2009 sphere, time to 50 % liquid fraction: lit_V0_tan2009_n80_glass",29.3,min,results/../rj_openfoam/results/of_v0_benchmark.csv,"series=openfoam, case=lit_V0_tan2009_n80_glass"
+cfd.v0.lit_V0_tan2009_n20_cu1e8.t50,"Tan 2009 sphere, time to 50 % liquid fraction: lit_V0_tan2009_n20_cu1e8",30.0,min,results/../rj_openfoam/results/of_v0_benchmark.csv,"series=openfoam, case=lit_V0_tan2009_n20_cu1e8"
+cfd.v0.lit_V0_tan2009_n20_cond.t50,"Tan 2009 sphere, time to 50 % liquid fraction: lit_V0_tan2009_n20_cond",89.0,min,results/../rj_openfoam/results/of_v0_benchmark.csv,"series=openfoam, case=lit_V0_tan2009_n20_cond"
+cfd.v0.cond.openfoam_conduction_only.t50,conduction-only time to 50 %: openfoam_conduction_only,89.0,min,results/../rj_openfoam/results/of_v0_conduction_check.csv,model=openfoam_conduction_only
+cfd.v0.cond.stefan_1d.t50,conduction-only time to 50 %: stefan_1d,88.4,min,results/../rj_openfoam/results/of_v0_conduction_check.csv,model=stefan_1d

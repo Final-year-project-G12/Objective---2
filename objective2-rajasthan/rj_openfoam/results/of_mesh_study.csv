@@ -1,0 +1,4 @@
+case,design,scenario,cells_radial,t50_s,t90_s,f_end,t_end_s,max_U_m_s,E_wall_J,dH_J,energy_mismatch_pct
+r0_charge_70_n20,r0,charge_70,20,960,1760,1,14400,0.00735648,68752.2,69537.8,-1.12977
+r0_charge_70_n40,r0,charge_70,40,980,2020,1,14400,0.00688254,67941.8,68556.4,-0.896547
+r0_charge_70_n80,r0,charge_70,80,1120,2340,0.999672,2900,0.0118611,66840.7,67535.7,-1.02909

@@ -1,0 +1,10 @@
+series,case,t25_min,t50_min,t75_min,t90_min,rmse_vs_experiment,rmse_vs_fluent
+experimental,,40,60,90,120,nan,nan
+fluent,,30,50,70,90,nan,nan
+openfoam,lit_V0_tan2009_n20,11.67,23.67,33.67,41.33,0.3278,0.2094
+openfoam,lit_V0_tan2009_n40,11.33,23,34.33,45.33,0.3198,0.2003
+openfoam,lit_V0_tan2009_n80,12,25.33,40.33,53.67,0.2863,0.1628
+openfoam,lit_V0_tan2009_n40_glass,13.33,27,41.67,55,0.2777,0.1532
+openfoam,lit_V0_tan2009_n80_glass,14,29.33,47.33,63,0.2453,0.1176
+openfoam,lit_V0_tan2009_n20_cu1e8,13.33,30,nan,nan,0.1912,0.1067
+openfoam,lit_V0_tan2009_n20_cond,19.67,89,nan,nan,0.22,0.3191

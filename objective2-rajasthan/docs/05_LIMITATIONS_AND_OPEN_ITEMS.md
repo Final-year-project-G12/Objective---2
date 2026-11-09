@@ -43,7 +43,7 @@
    band of R 25 mm (section 5b of `04_RESULTS.md`), so the 40 mm edge optimum is a plateau, not a distinct peak. The outer volume still varies a little with R.
 7. **Arrangement** is a null on `g_window` at the centre anchor in all three regimes (largest gap 4.4 / 8.9 / 8.1 kWh against bands of 15.1 / 10.0 / 15.7); it matters only for overheating hours, where the differences exceed the band for some pairs of arrangements.
 8. **Tank-model convergence.** N = 10 versus 20 changes the paired gain by 0.15-0.25 percentage points; this is part of the band, not removed.
-9. **Weather.** One medoid point per cluster, 10 years; the held-out years are the two lowest-GHI years, so the held-out gain is a harsher case.
+9. **Weather.** One medoid point per cluster, 10 years. The v3 one-shot test uses the untouched years 2011-2015, which are higher-GHI years than 2021-2023 (2024-2025 are the two lowest-GHI years but were used by the v1 test and are labelled `used_test_v1`), so the v3 held-out level is not like for like with the select-year value or with the v1 held-out level (`PROGRESS.md` section 26.2).
 10. **No measurements.** The model has not been validated against any hardware or field data; the CFD agreement is model-to-model.
 
 ## Supplementary studies run on 2026-10-28 (explore years only; details in `docs/PROGRESS.md` section 31)
@@ -63,7 +63,7 @@
 - Surrogate comparison: the NN ensemble won nowhere; it is used only as a committee member for active learning.
 - G9 regime 0 needed a method change (box-vertex step, `03`) after failing the dense-grid check twice. It is now a declared step; the with/without comparison for all nine pairs (section 5f of `04_RESULTS.md`) shows it is what makes regime 0 pass and is not needed for regimes 1 and 2.
 - Positive control "PCM fraction x2" was uninformative from the chosen designs (cap); re-run from an interior anchor it passes (+31 to +44 kWh, section 5b of `04_RESULTS.md`, `scripts/g14_issue5_controls.py`).
-- The WP2-C CFD runs and the porting to the other three states were out of scope; no CFD-derived correction is applied in the simulator.
+- The WP2-C CFD tier is closed as an unvalidated upper bound (`07_OPENFOAM_VALIDATION.md`, decision 2026-10-30): the capsule CFD reproduces neither Tan 2009 nor Dong 2022 (it melts about 1.6 to 2 times faster than both experiments) and its mesh study is not grid-independent, so `c = 5` and `F = 2` are kept, not validated or contradicted by CFD, and no CFD-derived correction is applied in the simulator (the off-by-default option exists); the porting to the other three states was out of scope.
 - `--stage all` of `pipeline.py` has not been executed end to end (hours; refused by the held-out lock); each stage's commands were printed with `--dry-run` and the stages were run individually.
 
 ## Items for Dr. Deepika / the O1 owner
