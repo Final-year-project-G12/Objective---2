@@ -238,6 +238,25 @@ def main():
         add(f"b2.fit.n{n}.F", f"B2 fitted F, r0 charge_70, {n} cells (grid range 1-5)", round(float(cf.F["lumped_fitted"]), 2), "-",
             f"../rj_openfoam/results/calib_r0_charge_70_n{n}.csv", "model=lumped_fitted")
 
+    # --- B3 OpenFOAM-only checks (unvalidated upper bound; docs/07 section 7)
+    gci = pd.read_csv(OUT.parent / "rj_openfoam" / "results" / "of_gci.csv")
+    for r in gci.itertuples():
+        add(f"b3.gci.{r.quantity[:3]}.p", f"B3 observed order of convergence, {r.quantity} (20/40/80 cells; negative = not in asymptotic range)", round(float(r.observed_order_p), 2), "-",
+            "../rj_openfoam/results/of_gci.csv", f"quantity={r.quantity}")
+    fz = pd.read_csv(OUT.parent / "rj_openfoam" / "results" / "of_freeze_check.csv").fillna("")
+    for r in fz.itertuples():
+        tag = r.series if r.case == "" else r.case
+        for col, lab in (("t_f50_min", "50 %"), ("t_f10_min", "10 %")):
+            add(f"b3.freeze.{tag}.{col}", f"B3 freezing, minutes until liquid fraction {lab}: {tag}", round(float(getattr(r, col)), 1), "min",
+                "../rj_openfoam/results/of_freeze_check.csv", f"series={r.series}, case={r.case}")
+    sp = pd.read_csv(OUT.parent / "rj_openfoam" / "results" / "of_spotcheck.csv")
+    for r in sp.itertuples():
+        add(f"b3.spot.{r.design}.{r.series}.t50", f"B3 spot-check {r.design} ({r.pcm}), minutes to 50 % liquid: {r.series}", round(float(r.t50_min), 1), "min",
+            "../rj_openfoam/results/of_spotcheck.csv", f"design={r.design}, series={r.series}")
+    for c in ("r0_charge_70_n20_co025", "r1_charge_70_n40", "r2_charge_70_n40", "r0_discharge_mains_n20", "r0_discharge_mains_n40"):
+        w = int((OUT.parent / "rj_openfoam" / "results" / "runs" / c / "wall_time.txt").read_text().split()[1])
+        add(f"b3.wall.{c}", f"B3 OpenFOAM wall time, {c}", w, "s", f"../rj_openfoam/results/runs/{c}/wall_time.txt", "")
+
     reg = pd.DataFrame(ROWS)
     reg.to_csv(OUT / "results_registry.csv", index=False, encoding="utf-8")
     print("registry rows", len(reg))

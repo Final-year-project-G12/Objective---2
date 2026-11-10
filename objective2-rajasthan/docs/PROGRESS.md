@@ -1034,3 +1034,6 @@ Diagnostic run on branch `o2-b1-boundary-test` (separate git worktree; the appro
 - **Status:** UNVALIDATED. The CFD does not reproduce Tan 2009 or Dong 2022 (`docs/07_OPENFOAM_VALIDATION.md`); the student's decision stands (report as unvalidated upper bound, frozen c = 5, F = 2 for all reported results).
 - **Effect on one year (`results/b2_closure_v1_check.csv`):** regime 0, PureTemp 58, R 40 mm, 29.6 %, 0.0236 kg/s, single-layer, 2018 explore year: annual E_del45 961.6 kWh (legacy) against 931.4 kWh (v1); energy residual about 1e-12 % in both. No selection, band or held-out result was re-run with v1.
 - **Test:** `tests/test_cfd_closure.py` (4 tests: legacy no-op, v1 values, unknown name rejected, year run bit-identical for legacy and equal to the explicit c, F keys for v1). Full suite: 94 passed.
+
+## 2026-11-10 - B3 OpenFOAM-only CFD checks (WP2-C)
+Details and every figure: `docs/07_OPENFOAM_VALIDATION.md` section 7. GCI not defined (p negative: not in the asymptotic range); time step halved changes t50 by -2.1 %; freezing r0: CFD t50 26.7 min (40 cells) against 23.3 (lumped frozen), time to 10 % liquid 111 against 55 min; spot-checks r0 / r1 / r2: lumped frozen is 6.5 / 4.3 / 4.8 times slower than the CFD at t50 (unvalidated upper bound). Fluent comparison, C4 and C6 not done. Generator bug (colon file name lost on Windows) fixed.

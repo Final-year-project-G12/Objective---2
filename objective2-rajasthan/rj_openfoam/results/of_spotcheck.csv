@@ -1,0 +1,10 @@
+design,pcm,R_in_mm,series,c,F,t50_min,t90_min,rmse_meltfrac_vs_cfd
+r0,savE OM55,39.5,openfoam_40cells,,,16.33,33.67,0
+r0,savE OM55,39.5,lumped_frozen_c5_F2,5,2,106.3,138.4,0.4741
+r0,savE OM55,39.5,lumped_cfd_closure_v1_c10_F5,10,5,53.13,59.57,0.252
+r1,PureTemp 60,40,openfoam_40cells,,,28.67,54,0
+r1,PureTemp 60,40,lumped_frozen_c5_F2,5,2,123,166.7,0.4462
+r1,PureTemp 60,40,lumped_cfd_closure_v1_c10_F5,10,5,61.52,70.27,0.1868
+r2,PureTemp 58,40,openfoam_40cells,,,19.33,37.67,0
+r2,PureTemp 58,40,lumped_frozen_c5_F2,5,2,93.2,123.9,0.4063
+r2,PureTemp 58,40,lumped_cfd_closure_v1_c10_F5,10,5,46.6,52.75,0.1852

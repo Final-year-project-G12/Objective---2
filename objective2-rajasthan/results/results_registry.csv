@@ -685,3 +685,27 @@ b2.fit.n80.lumped_frozen.rmse,"B2 melt-fraction RMSE of the lumped capsule vs Op
 b2.fit.n80.lumped_fitted.rmse,"B2 melt-fraction RMSE of the lumped capsule vs OpenFOAM r0 charge_70 (80 cells), lumped_fitted",0.4658,-,results/../rj_openfoam/results/calib_r0_charge_70_n80.csv,model=lumped_fitted
 b2.fit.n80.c,"B2 fitted c, r0 charge_70, 80 cells (grid edge 10)",10.0,-,results/../rj_openfoam/results/calib_r0_charge_70_n80.csv,model=lumped_fitted
 b2.fit.n80.F,"B2 fitted F, r0 charge_70, 80 cells (grid range 1-5)",1.0,-,results/../rj_openfoam/results/calib_r0_charge_70_n80.csv,model=lumped_fitted
+b3.gci.t50.p,"B3 observed order of convergence, t50_s (20/40/80 cells; negative = not in asymptotic range)",-2.81,-,results/../rj_openfoam/results/of_gci.csv,quantity=t50_s
+b3.gci.t90.p,"B3 observed order of convergence, t90_s (20/40/80 cells; negative = not in asymptotic range)",-0.3,-,results/../rj_openfoam/results/of_gci.csv,quantity=t90_s
+b3.freeze.lumped_frozen_c5_F2.t_f50_min,"B3 freezing, minutes until liquid fraction 50 %: lumped_frozen_c5_F2",23.3,min,results/../rj_openfoam/results/of_freeze_check.csv,"series=lumped_frozen_c5_F2, case="
+b3.freeze.lumped_frozen_c5_F2.t_f10_min,"B3 freezing, minutes until liquid fraction 10 %: lumped_frozen_c5_F2",55.1,min,results/../rj_openfoam/results/of_freeze_check.csv,"series=lumped_frozen_c5_F2, case="
+b3.freeze.lumped_cfd_closure_v1_c10_F5.t_f50_min,"B3 freezing, minutes until liquid fraction 50 %: lumped_cfd_closure_v1_c10_F5",4.7,min,results/../rj_openfoam/results/of_freeze_check.csv,"series=lumped_cfd_closure_v1_c10_F5, case="
+b3.freeze.lumped_cfd_closure_v1_c10_F5.t_f10_min,"B3 freezing, minutes until liquid fraction 10 %: lumped_cfd_closure_v1_c10_F5",20.5,min,results/../rj_openfoam/results/of_freeze_check.csv,"series=lumped_cfd_closure_v1_c10_F5, case="
+b3.freeze.r0_discharge_mains_n20.t_f50_min,"B3 freezing, minutes until liquid fraction 50 %: r0_discharge_mains_n20",25.7,min,results/../rj_openfoam/results/of_freeze_check.csv,"series=openfoam, case=r0_discharge_mains_n20"
+b3.freeze.r0_discharge_mains_n20.t_f10_min,"B3 freezing, minutes until liquid fraction 10 %: r0_discharge_mains_n20",105.0,min,results/../rj_openfoam/results/of_freeze_check.csv,"series=openfoam, case=r0_discharge_mains_n20"
+b3.freeze.r0_discharge_mains_n40.t_f50_min,"B3 freezing, minutes until liquid fraction 50 %: r0_discharge_mains_n40",26.7,min,results/../rj_openfoam/results/of_freeze_check.csv,"series=openfoam, case=r0_discharge_mains_n40"
+b3.freeze.r0_discharge_mains_n40.t_f10_min,"B3 freezing, minutes until liquid fraction 10 %: r0_discharge_mains_n40",111.0,min,results/../rj_openfoam/results/of_freeze_check.csv,"series=openfoam, case=r0_discharge_mains_n40"
+b3.spot.r0.openfoam_40cells.t50,"B3 spot-check r0 (savE OM55), minutes to 50 % liquid: openfoam_40cells",16.3,min,results/../rj_openfoam/results/of_spotcheck.csv,"design=r0, series=openfoam_40cells"
+b3.spot.r0.lumped_frozen_c5_F2.t50,"B3 spot-check r0 (savE OM55), minutes to 50 % liquid: lumped_frozen_c5_F2",106.3,min,results/../rj_openfoam/results/of_spotcheck.csv,"design=r0, series=lumped_frozen_c5_F2"
+b3.spot.r0.lumped_cfd_closure_v1_c10_F5.t50,"B3 spot-check r0 (savE OM55), minutes to 50 % liquid: lumped_cfd_closure_v1_c10_F5",53.1,min,results/../rj_openfoam/results/of_spotcheck.csv,"design=r0, series=lumped_cfd_closure_v1_c10_F5"
+b3.spot.r1.openfoam_40cells.t50,"B3 spot-check r1 (PureTemp 60), minutes to 50 % liquid: openfoam_40cells",28.7,min,results/../rj_openfoam/results/of_spotcheck.csv,"design=r1, series=openfoam_40cells"
+b3.spot.r1.lumped_frozen_c5_F2.t50,"B3 spot-check r1 (PureTemp 60), minutes to 50 % liquid: lumped_frozen_c5_F2",123.0,min,results/../rj_openfoam/results/of_spotcheck.csv,"design=r1, series=lumped_frozen_c5_F2"
+b3.spot.r1.lumped_cfd_closure_v1_c10_F5.t50,"B3 spot-check r1 (PureTemp 60), minutes to 50 % liquid: lumped_cfd_closure_v1_c10_F5",61.5,min,results/../rj_openfoam/results/of_spotcheck.csv,"design=r1, series=lumped_cfd_closure_v1_c10_F5"
+b3.spot.r2.openfoam_40cells.t50,"B3 spot-check r2 (PureTemp 58), minutes to 50 % liquid: openfoam_40cells",19.3,min,results/../rj_openfoam/results/of_spotcheck.csv,"design=r2, series=openfoam_40cells"
+b3.spot.r2.lumped_frozen_c5_F2.t50,"B3 spot-check r2 (PureTemp 58), minutes to 50 % liquid: lumped_frozen_c5_F2",93.2,min,results/../rj_openfoam/results/of_spotcheck.csv,"design=r2, series=lumped_frozen_c5_F2"
+b3.spot.r2.lumped_cfd_closure_v1_c10_F5.t50,"B3 spot-check r2 (PureTemp 58), minutes to 50 % liquid: lumped_cfd_closure_v1_c10_F5",46.6,min,results/../rj_openfoam/results/of_spotcheck.csv,"design=r2, series=lumped_cfd_closure_v1_c10_F5"
+b3.wall.r0_charge_70_n20_co025,"B3 OpenFOAM wall time, r0_charge_70_n20_co025",1457,s,results/../rj_openfoam/results/runs/r0_charge_70_n20_co025/wall_time.txt,
+b3.wall.r1_charge_70_n40,"B3 OpenFOAM wall time, r1_charge_70_n40",2156,s,results/../rj_openfoam/results/runs/r1_charge_70_n40/wall_time.txt,
+b3.wall.r2_charge_70_n40,"B3 OpenFOAM wall time, r2_charge_70_n40",2594,s,results/../rj_openfoam/results/runs/r2_charge_70_n40/wall_time.txt,
+b3.wall.r0_discharge_mains_n20,"B3 OpenFOAM wall time, r0_discharge_mains_n20",112,s,results/../rj_openfoam/results/runs/r0_discharge_mains_n20/wall_time.txt,
+b3.wall.r0_discharge_mains_n40,"B3 OpenFOAM wall time, r0_discharge_mains_n40",750,s,results/../rj_openfoam/results/runs/r0_discharge_mains_n40/wall_time.txt,

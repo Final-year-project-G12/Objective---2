@@ -1,0 +1,5 @@
+series,case,c,F,t_f90_min,t_f50_min,t_f10_min
+lumped_frozen_c5_F2,,5,2,7.783,23.27,55.08
+lumped_cfd_closure_v1_c10_F5,,10,5,1.567,4.667,20.5
+openfoam,r0_discharge_mains_n20,,,2,25.67,105
+openfoam,r0_discharge_mains_n40,,,1.667,26.67,111
