@@ -671,3 +671,17 @@ b1.sel.r2.flow,B1 widened box: regime 2 chosen flow (select years 2021-2023),0.0
 b1.sel.r2.g_window,B1 widened box: regime 2 chosen g_window (select years 2021-2023),182.1,kWh,results/b1_selection_r2.json,chosen
 b1.sel.r2.g_annual,B1 widened box: regime 2 chosen g_annual (select years 2021-2023),193.3,kWh,results/b1_selection_r2.json,chosen
 b1.sel.r2.arrangement,B1 widened box: regime 2 chosen arrangement,staggered,,results/b1_selection_r2.json,chosen
+b2.closure.legacy.E_del45,"B2 one-year E_del45 with closure legacy (c 5, F 2)",961.6,kWh,results/b2_closure_v1_check.csv,closure=legacy
+b2.closure.cfd_closure_v1.E_del45,"B2 one-year E_del45 with closure cfd_closure_v1 (c 10, F 5)",931.4,kWh,results/b2_closure_v1_check.csv,closure=cfd_closure_v1
+b2.fit.n20.lumped_frozen.rmse,"B2 melt-fraction RMSE of the lumped capsule vs OpenFOAM r0 charge_70 (20 cells), lumped_frozen",0.4847,-,results/../rj_openfoam/results/calib_r0_charge_70_n20.csv,model=lumped_frozen
+b2.fit.n20.lumped_fitted.rmse,"B2 melt-fraction RMSE of the lumped capsule vs OpenFOAM r0 charge_70 (20 cells), lumped_fitted",0.2678,-,results/../rj_openfoam/results/calib_r0_charge_70_n20.csv,model=lumped_fitted
+b2.fit.n20.c,"B2 fitted c, r0 charge_70, 20 cells (grid edge 10)",10.0,-,results/../rj_openfoam/results/calib_r0_charge_70_n20.csv,model=lumped_fitted
+b2.fit.n20.F,"B2 fitted F, r0 charge_70, 20 cells (grid range 1-5)",5.0,-,results/../rj_openfoam/results/calib_r0_charge_70_n20.csv,model=lumped_fitted
+b2.fit.n40.lumped_frozen.rmse,"B2 melt-fraction RMSE of the lumped capsule vs OpenFOAM r0 charge_70 (40 cells), lumped_frozen",0.4739,-,results/../rj_openfoam/results/calib_r0_charge_70_n40.csv,model=lumped_frozen
+b2.fit.n40.lumped_fitted.rmse,"B2 melt-fraction RMSE of the lumped capsule vs OpenFOAM r0 charge_70 (40 cells), lumped_fitted",0.2519,-,results/../rj_openfoam/results/calib_r0_charge_70_n40.csv,model=lumped_fitted
+b2.fit.n40.c,"B2 fitted c, r0 charge_70, 40 cells (grid edge 10)",10.0,-,results/../rj_openfoam/results/calib_r0_charge_70_n40.csv,model=lumped_fitted
+b2.fit.n40.F,"B2 fitted F, r0 charge_70, 40 cells (grid range 1-5)",5.0,-,results/../rj_openfoam/results/calib_r0_charge_70_n40.csv,model=lumped_fitted
+b2.fit.n80.lumped_frozen.rmse,"B2 melt-fraction RMSE of the lumped capsule vs OpenFOAM r0 charge_70 (80 cells), lumped_frozen",0.6275,-,results/../rj_openfoam/results/calib_r0_charge_70_n80.csv,model=lumped_frozen
+b2.fit.n80.lumped_fitted.rmse,"B2 melt-fraction RMSE of the lumped capsule vs OpenFOAM r0 charge_70 (80 cells), lumped_fitted",0.4658,-,results/../rj_openfoam/results/calib_r0_charge_70_n80.csv,model=lumped_fitted
+b2.fit.n80.c,"B2 fitted c, r0 charge_70, 80 cells (grid edge 10)",10.0,-,results/../rj_openfoam/results/calib_r0_charge_70_n80.csv,model=lumped_fitted
+b2.fit.n80.F,"B2 fitted F, r0 charge_70, 80 cells (grid range 1-5)",1.0,-,results/../rj_openfoam/results/calib_r0_charge_70_n80.csv,model=lumped_fitted

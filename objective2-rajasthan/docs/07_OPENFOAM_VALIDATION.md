@@ -1,5 +1,7 @@
 # 07 - OpenFOAM check of the two lumped-capsule constants (plan item WP2-C), status 2026-10-29
 
+> **Terminology (2026-11-10).** The file name says "validation" but this is a *CFD model-consistency cross-check*, not validation: the setup does not reproduce Tan et al. 2009, and no experiment of the project capsules exists. Simulator verification, CFD cross-checking and experimental validation are three separate claims; only the first two exist, and the CFD one is incomplete. Never write "CFD-validated".
+
 **Status: started, stopped at the literature benchmark. The CFD setup does not reproduce Tan et al. 2009, and the mesh study is not grid-independent, so no design-capsule run, no fit of `c`/`F` and no re-score of O2 was done. Nothing in `results/` outside the `of_*` files and nothing in the O2 results depends on this work.** All agreement below is model-to-model (or model-to-one-published-experiment), not a measurement of the project capsules.
 
 Code and run data: `rj_openfoam/` (README there). Software: OpenFOAM-v2406 (ESI) in WSL2 Ubuntu-24.04 (`buoyantPimpleFoam`, `solidificationMeltingSource`), ParaView 6.2 (`pvpython`). Nothing was installed. The held-out lock `results/held_out_test.lock` was not touched; no simulator run used 2011-2015.
@@ -148,3 +150,7 @@ Whether the selection or the 21.1 / 14.4 / 21.9 kWh bands would change is theref
 | `rj_openfoam/results/tan2009_fig4_digitised.csv`, `rj_openfoam/results/tan2009_table2.csv` | reference data from the paper (Fig. 4 read by eye; Table 2 as printed) |
 | `rj_openfoam/results/runs/<case>/` | `meltAndTemp.dat`, `wallQ.dat`, `maxU.dat`, case metadata, `controlDict`, `log.checkMesh`, wall time of each run (the 900 MB case folders were deleted; regenerate with `rj_openfoam/scripts/run_batch.py`) |
 | `rj_openfoam/results/paraview_v0_n40/` | ParaView snapshots and front contours of the 40-cell V0 run |
+
+## 6. cfd_closure_v1 switch (B2, 2026-11-10)
+
+`pcm_integration.closure` selects a named capsule closure (`src/simulation/cfd_closure.py`): absent or `legacy` keeps c = 5, F = 2 bit-for-bit; `cfd_closure_v1` (`configs/cfd_closure_v1.yaml`) sets c = 10, F = 5, the best fit to the r0 charge_70 case at 40 cells (`rj_openfoam/results/calib_r0_charge_70_n40.csv`, RMSE 0.2519 against 0.4739 for c = 5, F = 2). The fitted c is on the edge of the search grid at 20, 40 and 80 cells and the CFD is not grid-independent (section 2.2), so v1 is UNVALIDATED and is not used for any reported result. One-year effect: annual E_del45 961.6 kWh (legacy) against 931.4 kWh (v1), `results/b2_closure_v1_check.csv`. Test: `tests/test_cfd_closure.py`.

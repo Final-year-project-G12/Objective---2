@@ -223,6 +223,21 @@ def main():
             add(f"b1.sel.r{c}.{key}", f"B1 widened box: regime {c} chosen {key} (select years 2021-2023)", round(j[key] * sc, nd), unit, src, "chosen")
         add(f"b1.sel.r{c}.arrangement", f"B1 widened box: regime {c} chosen arrangement", j["arrangement"], "", src, "chosen")
 
+    # --- B2 cfd_closure_v1 (unvalidated switch)
+    b2 = pd.read_csv(OUT / "b2_closure_v1_check.csv")
+    for r in b2.itertuples():
+        add(f"b2.closure.{r.closure}.E_del45", f"B2 one-year E_del45 with closure {r.closure} (c {r.c}, F {r.F})", round(float(r.E_del45_annual_kWh), 1), "kWh",
+            "b2_closure_v1_check.csv", f"closure={r.closure}")
+    for n in (20, 40, 80):
+        cf = pd.read_csv(OUT.parent / "rj_openfoam" / "results" / f"calib_r0_charge_70_n{n}.csv").set_index("model")
+        for m in ("lumped_frozen", "lumped_fitted"):
+            add(f"b2.fit.n{n}.{m}.rmse", f"B2 melt-fraction RMSE of the lumped capsule vs OpenFOAM r0 charge_70 ({n} cells), {m}", round(float(cf.rmse_meltfrac[m]), 4), "-",
+                f"../rj_openfoam/results/calib_r0_charge_70_n{n}.csv", f"model={m}")
+        add(f"b2.fit.n{n}.c", f"B2 fitted c, r0 charge_70, {n} cells (grid edge 10)", round(float(cf.c["lumped_fitted"]), 2), "-",
+            f"../rj_openfoam/results/calib_r0_charge_70_n{n}.csv", "model=lumped_fitted")
+        add(f"b2.fit.n{n}.F", f"B2 fitted F, r0 charge_70, {n} cells (grid range 1-5)", round(float(cf.F["lumped_fitted"]), 2), "-",
+            f"../rj_openfoam/results/calib_r0_charge_70_n{n}.csv", "model=lumped_fitted")
+
     reg = pd.DataFrame(ROWS)
     reg.to_csv(OUT / "results_registry.csv", index=False, encoding="utf-8")
     print("registry rows", len(reg))

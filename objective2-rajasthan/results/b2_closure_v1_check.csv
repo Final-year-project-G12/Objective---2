@@ -1,0 +1,3 @@
+closure,c,F,E_del45_annual_kWh,residual_pct_of_collector,case
+legacy,5,2,961.553,2.036480627824094e-12,"rajasthan regime 0, PureTemp 58, R 40 mm, fraction 29.6 %, flow 0.0236 kg/s, single-layer, explore year 2018, multinode 10 nodes"
+cfd_closure_v1,10,5,931.378,1.1593067013420256e-12,"rajasthan regime 0, PureTemp 58, R 40 mm, fraction 29.6 %, flow 0.0236 kg/s, single-layer, explore year 2018, multinode 10 nodes"
