@@ -6,8 +6,10 @@ weather year may be used for:
 
     2016-2020  "explore"  design exploration (DOE, surrogate training, optimisation)
     2021-2023  "select"   choosing the winner among explored designs
-    2024-2025  "test"     held-out test, run exactly ONCE (plan decision D5; Uttarakhand has never run a
-                          held-out test, so these years are untouched -- user choice 2026-10-28)
+    2024-2025  "test"     held-out test, run exactly ONCE (plan decision D5). That one run has happened:
+                          results/held_out_test.lock holds run_id heldout_c75ac0e6fb78, UTC 2026-10-28T13:18:41,
+                          and results/g10_heldout_results.csv holds its rows. These years are therefore USED
+                          and cannot be reused as untouched data (e.g. by Objective 3).
 
 `load_point_year(..., purpose=...)` refuses a year whose role differs from the stated
 purpose. The test years (2024-2025) additionally require `acquire_test_lock()`, which atomically

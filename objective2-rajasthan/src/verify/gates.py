@@ -90,6 +90,8 @@ def _direct_run(state, cluster_id, diameter_m, n_capsule, flow_rate_kg_s, pcm_na
     system_config = load_system_config()   # dt = 150 s from system_config_shared.yaml
     if system_config_overrides:
         system_config = _deep_merge(system_config, system_config_overrides)
+    from src.simulation.cfd_closure import apply_closure
+    system_config = apply_closure(system_config)   # no-op unless pcm_integration.closure is set
 
     from src.io_utils import get_regime
     regime = get_regime(state, cluster_id)

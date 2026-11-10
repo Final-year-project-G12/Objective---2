@@ -15,7 +15,8 @@
 # evidence audit n_confirmed = 0 across all clusters). The historical K=4 MCDM
 # ranking was physically invalidated in Phase 10 (rho = -0.52 to -0.64; RT44HC
 # ranked last in solar fraction). The shortlist below represents the
-# "Objective 2 Physics-Validated Candidate Universe" based on Phase 9/10
+# "Objective 2 Physics-Validated Candidate Universe" (label kept for traceability; it is a ranking by the O1
+# lumped-enthalpy physics model, not a validation of those PCMs; no MCDM ranking exists at K=3) based on Phase 9/10
 # 10-year simulation performance (savE® OM48 #1 delivery, savE® OM50 #2 delivery).
 # ============================================================================
 

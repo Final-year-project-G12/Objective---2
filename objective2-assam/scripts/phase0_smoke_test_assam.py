@@ -241,7 +241,7 @@ def test_phase0_assam():
             print(f"  [OK] Candidate '{p_name}': Tm={rec['Tm_C']} C, L={rec['latent_heat_kJ_kg']} kJ/kg, rho={rec['density_solid_kg_m3']} kg/m3")
             
         results["pcm_database"] = "PASS"
-        print("  [OK] PCM database schema standardized, all 3 physics-validated candidates resolved without invented properties.")
+        print("  [OK] PCM database schema standardized, all 3 shortlisted candidates (selected from the O1 physics-model ranking, not an MCDM ranking) resolved without invented properties.")
     except Exception as e:
         results["pcm_database"] = f"FAIL: {e}"
         all_passed = False

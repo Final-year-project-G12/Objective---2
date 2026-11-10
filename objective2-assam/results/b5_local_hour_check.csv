@@ -1,0 +1,4 @@
+case,useful_energy_kWh,solar_fraction,max_water_temp_C,max_pcm_temp_C,n_safety_violations,residual_pct_of_collector
+before_port_utc_demand_index,681.6336,0.6242,66.5131,66.0472,5,0.0
+after_port_local_hour_demand,636.8571,0.5589,79.2419,79.2256,6182,0.0
+after_port_local_hour_shield_on,634.2709,0.558,72.3595,63.4172,0,0.0

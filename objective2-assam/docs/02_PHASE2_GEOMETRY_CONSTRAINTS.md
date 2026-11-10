@@ -1,5 +1,7 @@
 # 02 — Phase 2 Audit: Geometry & Constraint Engine (Assam)
 
+> **Legacy pipeline (label added 2026-11-10): not reconciled with the current method, no held-out test.** Single-node tank, 300 s step, no selection logs, no `held_out_test.lock`; not a surrogate-assisted NSGA-II search with held-out validation. See "Corrections applied 2026-11-10" in `README.md`.
+
 > State name corrected from a leftover Rajasthan copy; the engine below
 > is genuinely state-agnostic (byte-identical across all states), so no
 > numeric content changed — only the state name and run command.

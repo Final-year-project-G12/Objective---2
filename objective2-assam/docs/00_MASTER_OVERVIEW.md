@@ -1,4 +1,6 @@
-# 00 — Objective 2 Master Overview (Assam, Phases 0–7 run; Phase 8 not yet built)
+# 00 — Objective 2 Master Overview (Assam, Phases 0–8 run; Phase 8 outputs exist but are not a valid hand-off)
+
+> **Legacy pipeline (label added 2026-11-10): not reconciled with the current method, no held-out test.** Single-node tank, 300 s step, no selection logs, no `held_out_test.lock`; not a surrogate-assisted NSGA-II search with held-out validation. See "Corrections applied 2026-11-10" in `README.md`.
 
 ## What this covers
 
@@ -20,7 +22,7 @@ Assam's actual `results/` files.
 | Phase 5 | D2.4 — reduced DOE (`src/doe/`) | COMPLETE — **165 cases (111 valid / 54 infeasible-retained), 138/27 train/holdout** |
 | Phase 6 | D2.5 — surrogate (`src/surrogate/`) | COMPLETE — **useful-energy hold-out R² = 0.9977 (target > 0.80)**, 29 features |
 | Phase 7 | D2.6 — optimization + simulator confirmation | COMPLETE, run via a **bespoke `scripts/run_phase7_optimization.py`**, not the ported `src/optimize/` module — see caveat below. Result as reported: a PCM design "PASSED" in all 3 regimes. **Independently checked here: this verdict is wrong** — see "The safety-verdict bug" below. |
-| Phase 8 | D2.7–D2.9 — robustness + recommendation cards + Obj3 handoff | **NOT RUN.** `src/robustness/monte_carlo.py` and `src/handoff/build_*.py` exist (ported, same as Rajasthan/Tamil Nadu) but there is no `results/phase8_*` file and no `obj3_environment_contract_assam.json` anywhere in this repo. Any document that previously described Phase 8 "results" for Assam was describing Rajasthan's numbers by mistake. |
+| Phase 8 | D2.7–D2.9 — robustness + recommendation cards + Obj3 handoff | **RUN 2026-09-14 (corrected 2026-11-10; see `08_PHASE8_ROBUSTNESS_HANDOFF.md`): P(temp-safe) 0.13 / 0.02 / 0.00, all "NOT ROBUST"; contract and cards exist but are not valid O3 inputs.** Earlier text: NOT RUN. `src/robustness/monte_carlo.py` and `src/handoff/build_*.py` exist (ported, same as Rajasthan/Tamil Nadu) but there is no `results/phase8_*` file and no `obj3_environment_contract_assam.json` anywhere in this repo. Any document that previously described Phase 8 "results" for Assam was describing Rajasthan's numbers by mistake. |
 
 ## Climate regimes actually used (from `configs/states/assam.yaml` / `data/objective1/cluster_profiles_assam.csv`)
 
@@ -41,7 +43,7 @@ ranking returned zero confirmed candidates, and the earlier K=4 ranking
 was physically invalidated in Objective 1's own Phase 10 (ρ = −0.52 to
 −0.64 correlation with actual solar-fraction performance; the old
 rank-1 PCM RT44HC came last). The shortlist actually used here is
-Objective 1's **Phase 9/10 physics-validated candidate universe**
+Objective 1's **Phase 9/10 physics-ranked candidate universe** (labelled "physics-validated" in `assam.yaml`; a ranking by O1's physics model, not a validation)
 (10-year simulation ranking), not a clustering+MCDM output — this is a
 material difference from how Rajasthan/Tamil Nadu's shortlists were
 built, and should be stated as such in the paper rather than described
@@ -101,8 +103,8 @@ Phase 7 (optimize): run via scripts/run_phase7_optimization.py (a
     so most of the design space Phase 7 searched was unsafe to begin
     with -- Phase 7 needed the filter it skipped.
 
-Phase 8 (robustness+handoff): NOT RUN for Assam. No results/phase8_*.csv,
-    no obj3_environment_contract_assam.json anywhere in this repo.
+Phase 8 (robustness+handoff): corrected 2026-11-10 - results/phase8_*.csv, phase8_recommendation_cards.md
+    and obj3_environment_contract_assam.json exist (2026-09-14); not robust, not a valid O3 input.
 ```
 
 ## The safety-verdict bug — read this before citing Phase 7's "PASS"

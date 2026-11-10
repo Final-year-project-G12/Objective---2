@@ -5,7 +5,7 @@
 0. **Still boundary-limited after the cap was raised to 30 % (v3, 2026-10-28).** Chosen designs: radius 39.5-40 mm, fraction 28.4-29.6 %. Share of the final rank-1 fronts at the cap / at the
    40 mm radius end: regime 0 56 % / 100 %, regime 1 0 % / 0 %, regime 2 83 % / 97 % (`g9_boundary_check.csv`); the ablation count sweep still rises +16.5 / +19.6 / +21.1 kWh from 25 % to 30 %
    (`g11_ablation_r*.csv`). The best PCM amount is therefore still unknown. Beyond 30 % the packing limits (28-48 % at R 40 mm) and the displaced water volume would start to bind, and no source read covers it.
-   **Planned, not started:** test a 40 % cap as a further declared change with a new untouched test (about 11-12 h of computing; `docs/PROGRESS.md` section 27).
+   **Tested 2026-11-10 (B1, explore/select years only, `docs/PROGRESS.md` 'B1 boundary test'):** with radius up to 50 mm and fraction up to 40 % the fronts still touch the new bounds (fraction cap 0-74 %, 50 mm end 0-97 % of fronts per pair; `b1_boundary_check.csv`) and all three chosen designs change (g_window 198 / 168 / 182 against 130 / 137 / 141 kWh). Still boundary-limited, now an extrapolation beyond any source; v3 stays the approved box; no held-out run was made for the B1 designs.
    Items 1-6 below were investigated on the v1 designs and not re-run on v3 (stack position, shield split, evening decomposition, control anchor).
 
 1. **Boundary-limited on the PCM fraction (tested 2026-10-27).** Every chosen design sits at inner radius 40 mm and PCM fraction about 20 %.
@@ -98,3 +98,13 @@
    A related negative result from the legacy model: two 75-85 C PCMs (Rubitherm RT80HC and RT82, from the manufacturer's 21.01.2026
    datasheets, kept in `data/legacy/pcm/rajasthan_overheat_track_candidates.csv`; legacy-model check) never melted (melt fraction 0)
    yet still passed 65 C by sensible heating, so "pick a higher Tm" does not avoid the PCM limit. Not re-run on the current model.
+
+## Open items added 2026-11-10 (corrections pass)
+
+- Open decision (d): put F_R(flow) into the released model or keep it as a documented sensitivity (G24: <= 1.43 kWh change in `g_window`).
+- Open: the 30 % PCM-fraction cap is limiting (`g17`). A 40 % / 50 mm diagnostic (B1, 2026-11-10, explore/select years only) still ends on the new bounds (item 0 above, `results/b1_*`); testing those designs on held-out data would need a new untouched test set (none left: 2011-2015 and 2024-2025 are used) and a decision to leave the v3 box.
+- Not done, checked 2026-11-10 (B4): a monthly mains-temperature series; no source in `.claude/Sources/` provides one, and Burch and Christensen 2007 is in the bibliography without its PDF.
+- Open: tank sizing 33.3 L/m2 is below IS 12976:2023 (decision D8); the compact tank is the fixed condition of this work.
+- Open (e): method citations to source before submission: Sobol sequence, XGBoost, committee-disagreement active learning, expected-improvement Bayesian optimisation. Do not cite Bradford 2018 for g20.
+- Open: `docs/O2_Rajasthan_Pipeline_Report.docx` has not been updated by this pass (a .docx is outside the edit scope).
+- Experimental validation does not exist (Objective 4); the CFD work is a model cross-check that stopped at the literature benchmark.

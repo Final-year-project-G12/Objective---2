@@ -47,6 +47,22 @@ from src.simulation.energy_balance import EnergyAccumulator
 from src.simulation.demand_profile import DemandModel
 
 
+def _demand_hour_of_day(row, i: int) -> int:
+    """Local clock hour (0-23) used to index the demand profile.
+
+    B5 port from objective2-rajasthan (2026-11-10). The demand profile is defined in local clock hours (07:00 / 19:00 peaks), so it
+    must be indexed by the weather file's `local_hour` column, never by the UTC hour of `timestamp_utc` (the UTC index put the
+    "evening" draw at about 00:30 local). A frame with a UTC timestamp but no `local_hour` is refused rather than silently falling
+    back to UTC. A frame with neither (synthetic gate inputs) keeps the row-index fallback.
+    """
+    if "local_hour" in row:
+        return int(row["local_hour"])
+    if "timestamp_utc" in row:
+        raise ValueError("weather frame has timestamp_utc but no local_hour; "
+                         "refusing to index the local-time demand profile by UTC hour")
+    return i % 24
+
+
 @dataclass
 class DesignRuntime:
     """Constant-for-the-run quantities derived once from the geometry record
@@ -75,6 +91,8 @@ class SimulationResult:
     complete_melt_cycles: int
     initial_f_melt: float = 0.0
     n_clipped_steps: int = 0
+    n_shield_water_activations: int = 0
+    n_shield_pcm_activations: int = 0
 
 
 def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: float,
@@ -99,6 +117,16 @@ def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: fl
     delivery_target_C = system_config["delivery"]["target_temp_C"]
     max_water_C = system_config["safety"]["max_water_temp_C"]
     max_pcm_C = system_config["safety"]["max_pcm_temp_C"]
+
+    # B5 port from objective2-rajasthan: rule-based safety shield, OFF unless system_config["safety_shield"]["enabled"] is true (Assam's
+    # configs/system_config_shared.yaml has no such block, so every existing Assam result is unchanged). Thresholds default to the
+    # safety maxima minus the same 3.0 C guard band Rajasthan uses.
+    shield_cfg = system_config.get("safety_shield", {})
+    shield_enabled = bool(shield_cfg.get("enabled", False))
+    bypass_water_C = shield_cfg.get("bypass_water_C", max_water_C - 3.0)
+    bypass_pcm_C = shield_cfg.get("bypass_pcm_C", max_pcm_C - 3.0)
+    n_shield_water = 0
+    n_shield_pcm = 0
 
     has_pcm = design.n_capsule > 0
     m_pcm_total_kg = (design.n_capsule * design.capsule_volume_m3 * pcm_props.density_kg_m3
@@ -145,7 +173,7 @@ def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: fl
         row = weather_hourly.iloc[i]
         I_t = float(row["GHI_Wm2"])
         T_amb = float(row["T_amb_C"])
-        hour_of_day = int(row["timestamp_utc"].hour) if "timestamp_utc" in row else i % 24
+        hour_of_day = _demand_hour_of_day(row, i)
 
         draw_mass_hour_kg = demand.draw_mass_kg_for_hour(hour_of_day)
         draw_mass_per_substep_kg = draw_mass_hour_kg / n_substeps_per_hour
@@ -183,10 +211,20 @@ def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: fl
 
                 a_coll, b_coll, circulating = collector_linear_coeffs(I_t, T_amb, system_config)
 
+                # Water-side shield (B5 port): stop the pump once T_w (start-of-substep) reaches the bypass threshold.
+                if shield_enabled and T_w >= bypass_water_C:
+                    circulating = False
+                    n_shield_water += 1
+
                 if has_pcm:
                     ua_eff = ua_eff_total_w_k(design.n_capsule, design.capsule_diameter_m,
                                                design.capsule_area_m2, superficial_velocity,
                                                pcm_props, f_melt, system_config)
+                    # PCM-side shield (B5 port): charge-only block. Stop charging (T_w > T_pcm) once T_pcm reaches the threshold, keep
+                    # discharge (T_pcm > T_w) active because that direction cools the PCM.
+                    if shield_enabled and T_pcm >= bypass_pcm_C and T_w > T_pcm:
+                        ua_eff = 0.0
+                        n_shield_pcm += 1
                 else:
                     ua_eff = 0.0
 
@@ -290,4 +328,5 @@ def run_year(weather_hourly: pd.DataFrame, demand: DemandModel, mains_temp_C: fl
         n_safety_violations=n_safety, final_f_melt=f_melt,
         complete_melt_cycles=complete_cycles,
         initial_f_melt=initial_f_melt, n_clipped_steps=n_clipped_steps,
+        n_shield_water_activations=n_shield_water, n_shield_pcm_activations=n_shield_pcm,
     )

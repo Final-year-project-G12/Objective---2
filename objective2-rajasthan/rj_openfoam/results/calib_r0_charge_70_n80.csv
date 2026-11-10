@@ -1,0 +1,4 @@
+case,model,c,F,rmse_meltfrac,t50_s,t90_s
+r0_charge_70_n80,openfoam,,,0,1120.0,2340.0
+r0_charge_70_n80,lumped_frozen,5,2,0.6275,nan,nan
+r0_charge_70_n80,lumped_fitted,10.00,1.00,0.4658,nan,nan

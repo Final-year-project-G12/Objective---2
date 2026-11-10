@@ -1,12 +1,16 @@
 # Objective 3 — Inputs From Objective 2 and What To Do Next (Assam)
 
+> **Legacy pipeline (label added 2026-11-10): not reconciled with the current method, no held-out test.** Single-node tank, 300 s step, no selection logs, no `held_out_test.lock`; not a surrogate-assisted NSGA-II search with held-out validation. See "Corrections applied 2026-11-10" in `README.md`.
+
+> **NOT A VALID OBJECTIVE 3 INPUT until Assam is re-run on the current method (2026-11-10).** The Phase 7 designs are unvalidated candidates (safety verdict issue below), O1 inputs are an older version-locked copy, and there is no held-out test.
+
 **Objective 2 is NOT complete for Assam.** This doc previously described
 Rajasthan's finished hand-off (`obj3_environment_contract_rajasthan.json`)
 with no Assam-specific content — that was wrong. For Assam:
 
 - Phases 0–7 have been run (with two open issues, below).
-- **Phase 8 has not been run at all** — see `08_PHASE8_ROBUSTNESS_HANDOFF.md`.
-- **There is no `obj3_environment_contract_assam.json` file anywhere in
+- **Phase 8 outputs exist (corrected 2026-11-10; dated 2026-09-14) but are not usable**: Phase 8 outputs read 2026-11-10 (all dated 2026-09-14): `results/phase8_robustness.csv` has 3 rows (regime 0 savE OM48, regime 1 savE OM48, regime 2 savE OM46), 100 Monte Carlo draws each (not the 120 mentioned below); P(temp-safe) = 0.13 / 0.02 / 0.00 against a 0.95 requirement, P(meets delivery temp) = 1.00 / 1.00 / 0.96, P(meets annual demand) = 1.00 / 1.00 / 0.75, status "CAVEAT / NOT ROBUST" in all three. The designs behind them (`phase7_deployable_design_per_regime.csv`) have simulated PCM peaks of 66.14 / 67.73 / 69.96 C against the 65 C limit (margin -1.14 / -2.73 / -4.96 C) and 11 / 297 / 160 safety-violation sub-hours; the 13-313 / -1.2 to -5.1 C quoted elsewhere comes from `phase7_resimulation_results.csv`, a different set of re-simulated candidates. `phase7_optimization_report.md` still reports "PASSED" because it tests 95 C water / 90 C PCM limits (its section on constraints), not the frozen 75 C / 65 C. `results/obj3_environment_contract_assam.json` exists (schema v1, `sim_v1_assam`, delivery 45 C, 300 s step) but carries `Tm_target_C` 44.0 (older O1 value), the 129-point regime sizes 33 / 61 / 35, "NOT YET SPLIT" weather (one medoid year per regime, no train/validation/test years), unchosen reward weights, and a shield rationale that itself cites P(temp-safe) well below 0.95. `phase8_recommendation_cards.md` headlines the PCMs as an "Objective 1 Validated PCM Shortlist" and shows "Safety Margin to 75 C" values (-1.1 C etc.) that are actually `constraint_margin_C`, the margin to the 65 C PCM limit. Verdict: the files exist but are an unsafe-design hand-off, not a valid O3 input.
+- **(Superseded: the file now exists in `results/`, but see above and do not train on it.)** Earlier text: there is no `obj3_environment_contract_assam.json` file anywhere in
   this repo.** Objective 3 has nothing to consume for Assam yet.
 
 ## 1. What's actually blocking the hand-off
@@ -87,7 +91,7 @@ work:
 - No unseen-weather-year or member-point re-confirmation (medoid-only,
   same 40-hr cut-list deferral as every other state).
 - Objective 1's PCM shortlist for Assam is not a standard MCDM Top-3 —
-  it's a Phase 9/10 physics-validated substitute, because Objective 1's
+  it's a Phase 9/10 physics-ranked substitute (a ranking by O1's physics model, not a validation), because Objective 1's
   own confirmed-feasible K=3 MCDM ranking returned zero candidates (see
   `00_MASTER_OVERVIEW.md`). If Objective 1 revisits this, Assam's
   Objective 2 phases 5–7 would need re-running against a new shortlist.

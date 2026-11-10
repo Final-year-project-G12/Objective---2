@@ -1,5 +1,7 @@
 # 07 — Phase 7 Audit: Optimization Pass + Simulator Confirmation (Assam)
 
+> **Legacy pipeline (label added 2026-11-10): not reconciled with the current method, no held-out test.** Single-node tank, 300 s step, no selection logs, no `held_out_test.lock`; not a surrogate-assisted NSGA-II search with held-out validation. See "Corrections applied 2026-11-10" in `README.md`.
+
 Actual files used: `scripts/run_phase7_optimization.py` (a **bespoke
 script written for Assam**, not the ported `src/optimize/search.py` +
 `src/optimize/select_deployable.py` used by Rajasthan/Tamil Nadu, though
@@ -139,4 +141,4 @@ paper section or Objective 3 hand-off.
 - Only 5 of the 21 top candidates were re-simulated (Rajasthan
   re-simulated all 60 of its top-5-per-pair set) — a narrower
   simulator-confirmation footprint.
-- No NSGA-II / full active-learning loop, same as the other states.
+- No NSGA-II / full active-learning loop. (Corrected 2026-11-10: Rajasthan, Tamil Nadu and Uttarakhand now have both; Assam is the legacy pipeline.)

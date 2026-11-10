@@ -219,7 +219,8 @@ solidificationMeltingSource1
     for fld, bc in (("p_rgh", "fixedFluxPressure"), ("p", "calculated")):
         w(f"0/{fld}", foam("volScalarField", fld, f"dimensions [1 -1 -2 0 0 0 0];\ninternalField uniform 100000;\nboundaryField\n{{\n    wall {{ type {bc}; value uniform 100000; }}\n{wedge}}}"))
     if T0 > Tm + 0.5:      # starts liquid (discharge): the fvOption's liquid-fraction field must start at 1, not 0
-        w("0/solidificationMeltingSource1:alpha1", foam("volScalarField", "solidificationMeltingSource1:alpha1",
+        # a colon in a file name is an NTFS stream on Windows and is lost on copy; Allrun renames this file on Linux (fix 2026-11-10)
+        w("0/alpha1_init", foam("volScalarField", "solidificationMeltingSource1:alpha1",
           f"dimensions [0 0 0 0 0 0 0];\ninternalField uniform 1;\nboundaryField\n{{\n    wall {{ type zeroGradient; }}\n{wedge}}}"))
 
     fo = lambda nm, body: (f"    {nm}\n    {{\n        libs (fieldFunctionObjects);\n{body}\n        writeFields no;\n        log no;\n"
@@ -263,7 +264,7 @@ solvers
 }
 PIMPLE { momentumPredictor yes; nOuterCorrectors 1; nCorrectors 2; nNonOrthogonalCorrectors 0; pRefCell 0; pRefValue 100000; }"""))
     w("Allrun", '#!/bin/sh\ncd "${0%/*}" || exit 1\n. ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions\n'
-                "runApplication blockMesh\nrunApplication checkMesh -allGeometry -allTopology\nrunApplication $(getApplication)\ntouch case.foam\n")
+                "[ -f 0/alpha1_init ] && mv 0/alpha1_init '0/solidificationMeltingSource1:alpha1'\nrunApplication blockMesh\nrunApplication checkMesh -allGeometry -allTopology\nrunApplication $(getApplication)\ntouch case.foam\n")
     os.chmod(os.path.join(c, "Allrun"), 0o755)
     w("case_meta.yaml", yaml.safe_dump({
         "design": a.design, "scenario": a.scenario, "pcm": pcm, "R_m": R, "cells_radial": n, "n_cells_est": ncell,

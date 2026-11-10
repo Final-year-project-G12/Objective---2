@@ -89,3 +89,5 @@ Every design passes an exact geometry check before it is simulated; feasibility 
   with a disclosed confound (outer volume falls with radius at constant mass).
 - Flow: the water-only tank itself depends strongly on flow in the multi-node model; the PCM gain at the same flow is nearly flat.
 - Arrangement: a null at a single point (R = 20 mm, 5 %), but about 15 % of the gain variance over the whole space in screening.
+
+**Boundary diagnostic (B1, 2026-11-10).** The approved box is unchanged. A diagnostic copy with inner radius 10-50 mm and PCM fraction 2-40 % (explore 2016-2020, select 2021-2023 only) still ended on the new bounds; see `docs/05_LIMITATIONS_AND_OPEN_ITEMS.md` item 0 and `results/b1_boundary_check.csv`.

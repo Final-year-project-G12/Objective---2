@@ -5,6 +5,8 @@
 the legacy K = 5 contract (UTC-indexed demand, single-node tank; removed in the cleanup, git history only), which must not be used for training.
 The structure is Rajasthan's contract v2 (template `data/legacy/obj3_environment_contract_template_from_rajasthan.json`) with the Uttarakhand values.
 
+**Hand-off design basis (checked 2026-11-10 against `configs/system_config_shared.yaml`):** tank 50 L (line 30), collector 1.5 m2 (line 24), delivery target 50 C (line 84), PCM limit 65 C (line 55). That is 33.3 L per m2, below the 40-100 L/m2 of IS 12976:2023. **K = 4 inheritance:** the four regimes come from O1 commit `6be0dcd`, which is not on O1 main (K = 5); the contract is not valid against O1 main's five-cluster outputs. The held-out years 2024-2025 were used once (run id `heldout_c75ac0e6fb78`) and are not available to O3.
+
 ## What is in the contract
 
 | Item | Uttarakhand v2 |

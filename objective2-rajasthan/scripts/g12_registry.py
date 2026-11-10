@@ -206,6 +206,57 @@ def main():
         add(f"cfd.v0.cond.{r.model}.t50", f"conduction-only time to 50 %: {r.model}", round(float(r.t50_min), 1), "min",
             "../rj_openfoam/results/of_v0_conduction_check.csv", f"model={r.model}")
 
+    # --- B1 boundary diagnostic (widened box: radius 10-50 mm, fraction 2-40 %; branch o2-b1-boundary-test, select years only)
+    bb = pd.read_csv(OUT / "b1_boundary_check.csv")
+    for pair in sorted(bb.pair.unique()):
+        for key, tag in (("R_in at 50 mm end (>=49 mm)", "r50"), ("fraction at 40 % cap (>=39.5 %)", "f40"),
+                         ("R_in at 40 mm end (>=39 mm)", "r40")):
+            v = bb[(bb.pair == pair) & (bb.bound == key)].share_of_front.iloc[0]
+            add(f"b1.boundary.{pair}.{tag}", f"B1 widened box: share of final front at '{key}' ({pair})", round(100.0 * float(v), 1), "%",
+                "b1_boundary_check.csv", f"pair={pair}, bound={key}")
+    for c in range(3):
+        j = json.loads((OUT / f"b1_selection_r{c}.json").read_text(encoding="utf-8"))["chosen"]
+        src = f"b1_selection_r{c}.json"
+        add(f"b1.sel.r{c}.pcm", f"B1 widened box: regime {c} chosen PCM", j["pcm"], "", src, "chosen")
+        for key, unit, nd, sc in (("R_in_m", "mm", 1, 1000.0), ("fraction", "%", 1, 100.0), ("flow", "kg/s", 4, 1.0),
+                                  ("g_window", "kWh", 1, 1.0), ("g_annual", "kWh", 1, 1.0)):
+            add(f"b1.sel.r{c}.{key}", f"B1 widened box: regime {c} chosen {key} (select years 2021-2023)", round(j[key] * sc, nd), unit, src, "chosen")
+        add(f"b1.sel.r{c}.arrangement", f"B1 widened box: regime {c} chosen arrangement", j["arrangement"], "", src, "chosen")
+
+    # --- B2 cfd_closure_v1 (unvalidated switch)
+    b2 = pd.read_csv(OUT / "b2_closure_v1_check.csv")
+    for r in b2.itertuples():
+        add(f"b2.closure.{r.closure}.E_del45", f"B2 one-year E_del45 with closure {r.closure} (c {r.c}, F {r.F})", round(float(r.E_del45_annual_kWh), 1), "kWh",
+            "b2_closure_v1_check.csv", f"closure={r.closure}")
+    for n in (20, 40, 80):
+        cf = pd.read_csv(OUT.parent / "rj_openfoam" / "results" / f"calib_r0_charge_70_n{n}.csv").set_index("model")
+        for m in ("lumped_frozen", "lumped_fitted"):
+            add(f"b2.fit.n{n}.{m}.rmse", f"B2 melt-fraction RMSE of the lumped capsule vs OpenFOAM r0 charge_70 ({n} cells), {m}", round(float(cf.rmse_meltfrac[m]), 4), "-",
+                f"../rj_openfoam/results/calib_r0_charge_70_n{n}.csv", f"model={m}")
+        add(f"b2.fit.n{n}.c", f"B2 fitted c, r0 charge_70, {n} cells (grid edge 10)", round(float(cf.c["lumped_fitted"]), 2), "-",
+            f"../rj_openfoam/results/calib_r0_charge_70_n{n}.csv", "model=lumped_fitted")
+        add(f"b2.fit.n{n}.F", f"B2 fitted F, r0 charge_70, {n} cells (grid range 1-5)", round(float(cf.F["lumped_fitted"]), 2), "-",
+            f"../rj_openfoam/results/calib_r0_charge_70_n{n}.csv", "model=lumped_fitted")
+
+    # --- B3 OpenFOAM-only checks (unvalidated upper bound; docs/07 section 7)
+    gci = pd.read_csv(OUT.parent / "rj_openfoam" / "results" / "of_gci.csv")
+    for r in gci.itertuples():
+        add(f"b3.gci.{r.quantity[:3]}.p", f"B3 observed order of convergence, {r.quantity} (20/40/80 cells; negative = not in asymptotic range)", round(float(r.observed_order_p), 2), "-",
+            "../rj_openfoam/results/of_gci.csv", f"quantity={r.quantity}")
+    fz = pd.read_csv(OUT.parent / "rj_openfoam" / "results" / "of_freeze_check.csv").fillna("")
+    for r in fz.itertuples():
+        tag = r.series if r.case == "" else r.case
+        for col, lab in (("t_f50_min", "50 %"), ("t_f10_min", "10 %")):
+            add(f"b3.freeze.{tag}.{col}", f"B3 freezing, minutes until liquid fraction {lab}: {tag}", round(float(getattr(r, col)), 1), "min",
+                "../rj_openfoam/results/of_freeze_check.csv", f"series={r.series}, case={r.case}")
+    sp = pd.read_csv(OUT.parent / "rj_openfoam" / "results" / "of_spotcheck.csv")
+    for r in sp.itertuples():
+        add(f"b3.spot.{r.design}.{r.series}.t50", f"B3 spot-check {r.design} ({r.pcm}), minutes to 50 % liquid: {r.series}", round(float(r.t50_min), 1), "min",
+            "../rj_openfoam/results/of_spotcheck.csv", f"design={r.design}, series={r.series}")
+    for c in ("r0_charge_70_n20_co025", "r1_charge_70_n40", "r2_charge_70_n40", "r0_discharge_mains_n20", "r0_discharge_mains_n40"):
+        w = int((OUT.parent / "rj_openfoam" / "results" / "runs" / c / "wall_time.txt").read_text().split()[1])
+        add(f"b3.wall.{c}", f"B3 OpenFOAM wall time, {c}", w, "s", f"../rj_openfoam/results/runs/{c}/wall_time.txt", "")
+
     reg = pd.DataFrame(ROWS)
     reg.to_csv(OUT / "results_registry.csv", index=False, encoding="utf-8")
     print("registry rows", len(reg))
