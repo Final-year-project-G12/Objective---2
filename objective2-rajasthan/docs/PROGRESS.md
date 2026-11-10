@@ -1037,3 +1037,6 @@ Diagnostic run on branch `o2-b1-boundary-test` (separate git worktree; the appro
 
 ## 2026-11-10 - B3 OpenFOAM-only CFD checks (WP2-C)
 Details and every figure: `docs/07_OPENFOAM_VALIDATION.md` section 7. GCI not defined (p negative: not in the asymptotic range); time step halved changes t50 by -2.1 %; freezing r0: CFD t50 26.7 min (40 cells) against 23.3 (lumped frozen), time to 10 % liquid 111 against 55 min; spot-checks r0 / r1 / r2: lumped frozen is 6.5 / 4.3 / 4.8 times slower than the CFD at t50 (unvalidated upper bound). Fluent comparison, C4 and C6 not done. Generator bug (colon file name lost on Windows) fixed.
+
+## 2026-11-10 - B4 monthly mains temperature
+B4 check (2026-11-10): no source in `.claude/Sources/` gives a monthly or seasonal mains-water temperature series (searched all extracts and summaries; hits are single constant inlet values). The only candidate, Burch and Christensen 2007 (`Burch2007` in `references.bib`, a mains-water-temperature algorithm), is in the bibliography but its PDF is not in Sources, so it was not read and not used. Left as a limitation: one mains value per regime, 18-30 C bracket.
