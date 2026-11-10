@@ -453,25 +453,121 @@ widen.r2.B_fraction.f0.40,"regime 2 widened-bound diagnostic: g_window change vs
 widen.r2.D_flow.q0.080,"regime 2 widened-bound diagnostic: g_window change vs chosen (explore years), D_flow q0.080",14.48,kWh/yr,results/g17_widen_r2.csv,"block=D_flow, level=q0.080, minus chosen explore g_window"
 issue1.r0_p1.base.eps_g_window,"G9 grid check epsilon gap, g_window (r0_p1, state base)",0.619,kWh,results/g18_issue1_with_without.csv,"pair=r0_p1, state=base"
 issue1.r0_p1.base.within_band,"G9 grid check within band (r0_p1, state base)",True,,results/g18_issue1_with_without.csv,"pair=r0_p1, state=base"
+issue1.r0_p1.novert.eps_g_window,"G9 grid check epsilon gap, g_window (r0_p1, state novert)",0.619,kWh,results/g18_issue1_with_without.csv,"pair=r0_p1, state=novert"
+issue1.r0_p1.novert.within_band,"G9 grid check within band (r0_p1, state novert)",True,,results/g18_issue1_with_without.csv,"pair=r0_p1, state=novert"
+issue1.r0_p1.vert.eps_g_window,"G9 grid check epsilon gap, g_window (r0_p1, state vert)",0.619,kWh,results/g18_issue1_with_without.csv,"pair=r0_p1, state=vert"
+issue1.r0_p1.vert.within_band,"G9 grid check within band (r0_p1, state vert)",True,,results/g18_issue1_with_without.csv,"pair=r0_p1, state=vert"
+issue1.r0_p2.base.eps_g_window,"G9 grid check epsilon gap, g_window (r0_p2, state base)",-0.666,kWh,results/g18_issue1_with_without.csv,"pair=r0_p2, state=base"
+issue1.r0_p2.base.within_band,"G9 grid check within band (r0_p2, state base)",True,,results/g18_issue1_with_without.csv,"pair=r0_p2, state=base"
+issue1.r0_p2.novert.eps_g_window,"G9 grid check epsilon gap, g_window (r0_p2, state novert)",-1.895,kWh,results/g18_issue1_with_without.csv,"pair=r0_p2, state=novert"
+issue1.r0_p2.novert.within_band,"G9 grid check within band (r0_p2, state novert)",True,,results/g18_issue1_with_without.csv,"pair=r0_p2, state=novert"
+issue1.r0_p2.vert.eps_g_window,"G9 grid check epsilon gap, g_window (r0_p2, state vert)",-2.99,kWh,results/g18_issue1_with_without.csv,"pair=r0_p2, state=vert"
+issue1.r0_p2.vert.within_band,"G9 grid check within band (r0_p2, state vert)",True,,results/g18_issue1_with_without.csv,"pair=r0_p2, state=vert"
+issue1.r0_p3.base.eps_g_window,"G9 grid check epsilon gap, g_window (r0_p3, state base)",4.556,kWh,results/g18_issue1_with_without.csv,"pair=r0_p3, state=base"
+issue1.r0_p3.base.within_band,"G9 grid check within band (r0_p3, state base)",True,,results/g18_issue1_with_without.csv,"pair=r0_p3, state=base"
+issue1.r0_p3.novert.eps_g_window,"G9 grid check epsilon gap, g_window (r0_p3, state novert)",-1.131,kWh,results/g18_issue1_with_without.csv,"pair=r0_p3, state=novert"
+issue1.r0_p3.novert.within_band,"G9 grid check within band (r0_p3, state novert)",True,,results/g18_issue1_with_without.csv,"pair=r0_p3, state=novert"
+issue1.r0_p3.vert.eps_g_window,"G9 grid check epsilon gap, g_window (r0_p3, state vert)",0.331,kWh,results/g18_issue1_with_without.csv,"pair=r0_p3, state=vert"
+issue1.r0_p3.vert.within_band,"G9 grid check within band (r0_p3, state vert)",True,,results/g18_issue1_with_without.csv,"pair=r0_p3, state=vert"
 issue1.r1_p1.base.eps_g_window,"G9 grid check epsilon gap, g_window (r1_p1, state base)",3.065,kWh,results/g18_issue1_with_without.csv,"pair=r1_p1, state=base"
 issue1.r1_p1.base.within_band,"G9 grid check within band (r1_p1, state base)",True,,results/g18_issue1_with_without.csv,"pair=r1_p1, state=base"
+issue1.r1_p1.novert.eps_g_window,"G9 grid check epsilon gap, g_window (r1_p1, state novert)",1.673,kWh,results/g18_issue1_with_without.csv,"pair=r1_p1, state=novert"
+issue1.r1_p1.novert.within_band,"G9 grid check within band (r1_p1, state novert)",True,,results/g18_issue1_with_without.csv,"pair=r1_p1, state=novert"
+issue1.r1_p1.vert.eps_g_window,"G9 grid check epsilon gap, g_window (r1_p1, state vert)",3.322,kWh,results/g18_issue1_with_without.csv,"pair=r1_p1, state=vert"
+issue1.r1_p1.vert.within_band,"G9 grid check within band (r1_p1, state vert)",True,,results/g18_issue1_with_without.csv,"pair=r1_p1, state=vert"
+issue1.r1_p2.base.eps_g_window,"G9 grid check epsilon gap, g_window (r1_p2, state base)",-0.656,kWh,results/g18_issue1_with_without.csv,"pair=r1_p2, state=base"
+issue1.r1_p2.base.within_band,"G9 grid check within band (r1_p2, state base)",True,,results/g18_issue1_with_without.csv,"pair=r1_p2, state=base"
+issue1.r1_p2.novert.eps_g_window,"G9 grid check epsilon gap, g_window (r1_p2, state novert)",-3.084,kWh,results/g18_issue1_with_without.csv,"pair=r1_p2, state=novert"
+issue1.r1_p2.novert.within_band,"G9 grid check within band (r1_p2, state novert)",True,,results/g18_issue1_with_without.csv,"pair=r1_p2, state=novert"
+issue1.r1_p2.vert.eps_g_window,"G9 grid check epsilon gap, g_window (r1_p2, state vert)",2.513,kWh,results/g18_issue1_with_without.csv,"pair=r1_p2, state=vert"
+issue1.r1_p2.vert.within_band,"G9 grid check within band (r1_p2, state vert)",True,,results/g18_issue1_with_without.csv,"pair=r1_p2, state=vert"
+issue1.r1_p3.base.eps_g_window,"G9 grid check epsilon gap, g_window (r1_p3, state base)",-2.238,kWh,results/g18_issue1_with_without.csv,"pair=r1_p3, state=base"
+issue1.r1_p3.base.within_band,"G9 grid check within band (r1_p3, state base)",True,,results/g18_issue1_with_without.csv,"pair=r1_p3, state=base"
+issue1.r1_p3.novert.eps_g_window,"G9 grid check epsilon gap, g_window (r1_p3, state novert)",-1.736,kWh,results/g18_issue1_with_without.csv,"pair=r1_p3, state=novert"
+issue1.r1_p3.novert.within_band,"G9 grid check within band (r1_p3, state novert)",True,,results/g18_issue1_with_without.csv,"pair=r1_p3, state=novert"
+issue1.r1_p3.vert.eps_g_window,"G9 grid check epsilon gap, g_window (r1_p3, state vert)",-2.068,kWh,results/g18_issue1_with_without.csv,"pair=r1_p3, state=vert"
+issue1.r1_p3.vert.within_band,"G9 grid check within band (r1_p3, state vert)",True,,results/g18_issue1_with_without.csv,"pair=r1_p3, state=vert"
 issue1.r2_p1.base.eps_g_window,"G9 grid check epsilon gap, g_window (r2_p1, state base)",11.97,kWh,results/g18_issue1_with_without.csv,"pair=r2_p1, state=base"
 issue1.r2_p1.base.within_band,"G9 grid check within band (r2_p1, state base)",True,,results/g18_issue1_with_without.csv,"pair=r2_p1, state=base"
+issue1.r2_p1.novert.eps_g_window,"G9 grid check epsilon gap, g_window (r2_p1, state novert)",11.419,kWh,results/g18_issue1_with_without.csv,"pair=r2_p1, state=novert"
+issue1.r2_p1.novert.within_band,"G9 grid check within band (r2_p1, state novert)",True,,results/g18_issue1_with_without.csv,"pair=r2_p1, state=novert"
+issue1.r2_p1.vert.eps_g_window,"G9 grid check epsilon gap, g_window (r2_p1, state vert)",11.109,kWh,results/g18_issue1_with_without.csv,"pair=r2_p1, state=vert"
+issue1.r2_p1.vert.within_band,"G9 grid check within band (r2_p1, state vert)",True,,results/g18_issue1_with_without.csv,"pair=r2_p1, state=vert"
+issue1.r2_p2.base.eps_g_window,"G9 grid check epsilon gap, g_window (r2_p2, state base)",8.374,kWh,results/g18_issue1_with_without.csv,"pair=r2_p2, state=base"
+issue1.r2_p2.base.within_band,"G9 grid check within band (r2_p2, state base)",True,,results/g18_issue1_with_without.csv,"pair=r2_p2, state=base"
+issue1.r2_p2.novert.eps_g_window,"G9 grid check epsilon gap, g_window (r2_p2, state novert)",8.374,kWh,results/g18_issue1_with_without.csv,"pair=r2_p2, state=novert"
+issue1.r2_p2.novert.within_band,"G9 grid check within band (r2_p2, state novert)",True,,results/g18_issue1_with_without.csv,"pair=r2_p2, state=novert"
+issue1.r2_p2.vert.eps_g_window,"G9 grid check epsilon gap, g_window (r2_p2, state vert)",8.374,kWh,results/g18_issue1_with_without.csv,"pair=r2_p2, state=vert"
+issue1.r2_p2.vert.within_band,"G9 grid check within band (r2_p2, state vert)",True,,results/g18_issue1_with_without.csv,"pair=r2_p2, state=vert"
+issue1.r2_p3.base.eps_g_window,"G9 grid check epsilon gap, g_window (r2_p3, state base)",10.712,kWh,results/g18_issue1_with_without.csv,"pair=r2_p3, state=base"
+issue1.r2_p3.base.within_band,"G9 grid check within band (r2_p3, state base)",True,,results/g18_issue1_with_without.csv,"pair=r2_p3, state=base"
+issue1.r2_p3.novert.eps_g_window,"G9 grid check epsilon gap, g_window (r2_p3, state novert)",10.677,kWh,results/g18_issue1_with_without.csv,"pair=r2_p3, state=novert"
+issue1.r2_p3.novert.within_band,"G9 grid check within band (r2_p3, state novert)",True,,results/g18_issue1_with_without.csv,"pair=r2_p3, state=novert"
+issue1.r2_p3.vert.eps_g_window,"G9 grid check epsilon gap, g_window (r2_p3, state vert)",10.155,kWh,results/g18_issue1_with_without.csv,"pair=r2_p3, state=vert"
+issue1.r2_p3.vert.within_band,"G9 grid check within band (r2_p3, state vert)",True,,results/g18_issue1_with_without.csv,"pair=r2_p3, state=vert"
+issue1.r0_p1.novert.hv_rel,"hypervolume relative to the best state (r0_p1, state novert)",1.0,-,results/g18_issue1_with_without.csv,"pair=r0_p1, state=novert"
+issue1.r0_p1.vert.hv_rel,"hypervolume relative to the best state (r0_p1, state vert)",0.999,-,results/g18_issue1_with_without.csv,"pair=r0_p1, state=vert"
+issue1.r0_p2.novert.hv_rel,"hypervolume relative to the best state (r0_p2, state novert)",0.999,-,results/g18_issue1_with_without.csv,"pair=r0_p2, state=novert"
+issue1.r0_p2.vert.hv_rel,"hypervolume relative to the best state (r0_p2, state vert)",1.0,-,results/g18_issue1_with_without.csv,"pair=r0_p2, state=vert"
+issue1.r0_p3.novert.hv_rel,"hypervolume relative to the best state (r0_p3, state novert)",1.0,-,results/g18_issue1_with_without.csv,"pair=r0_p3, state=novert"
+issue1.r0_p3.vert.hv_rel,"hypervolume relative to the best state (r0_p3, state vert)",0.999,-,results/g18_issue1_with_without.csv,"pair=r0_p3, state=vert"
+issue1.r1_p1.novert.hv_rel,"hypervolume relative to the best state (r1_p1, state novert)",1.0,-,results/g18_issue1_with_without.csv,"pair=r1_p1, state=novert"
+issue1.r1_p1.vert.hv_rel,"hypervolume relative to the best state (r1_p1, state vert)",0.999,-,results/g18_issue1_with_without.csv,"pair=r1_p1, state=vert"
+issue1.r1_p2.novert.hv_rel,"hypervolume relative to the best state (r1_p2, state novert)",0.998,-,results/g18_issue1_with_without.csv,"pair=r1_p2, state=novert"
+issue1.r1_p2.vert.hv_rel,"hypervolume relative to the best state (r1_p2, state vert)",1.0,-,results/g18_issue1_with_without.csv,"pair=r1_p2, state=vert"
+issue1.r1_p3.novert.hv_rel,"hypervolume relative to the best state (r1_p3, state novert)",0.99,-,results/g18_issue1_with_without.csv,"pair=r1_p3, state=novert"
+issue1.r1_p3.vert.hv_rel,"hypervolume relative to the best state (r1_p3, state vert)",1.0,-,results/g18_issue1_with_without.csv,"pair=r1_p3, state=vert"
+issue1.r2_p1.novert.hv_rel,"hypervolume relative to the best state (r2_p1, state novert)",0.996,-,results/g18_issue1_with_without.csv,"pair=r2_p1, state=novert"
+issue1.r2_p1.vert.hv_rel,"hypervolume relative to the best state (r2_p1, state vert)",1.0,-,results/g18_issue1_with_without.csv,"pair=r2_p1, state=vert"
+issue1.r2_p2.novert.hv_rel,"hypervolume relative to the best state (r2_p2, state novert)",0.995,-,results/g18_issue1_with_without.csv,"pair=r2_p2, state=novert"
+issue1.r2_p2.vert.hv_rel,"hypervolume relative to the best state (r2_p2, state vert)",1.0,-,results/g18_issue1_with_without.csv,"pair=r2_p2, state=vert"
+issue1.r2_p3.novert.hv_rel,"hypervolume relative to the best state (r2_p3, state novert)",0.994,-,results/g18_issue1_with_without.csv,"pair=r2_p3, state=novert"
+issue1.r2_p3.vert.hv_rel,"hypervolume relative to the best state (r2_p3, state vert)",1.0,-,results/g18_issue1_with_without.csv,"pair=r2_p3, state=vert"
 g9.grid.r0_p1.eps_g_window,G9 dense-grid check eps_g_window (r0_p1),0.619,kWh or h or ratio,results/g9_grid_check.csv,pair=r0_p1
 g9.grid.r0_p1.eps_g_annual,G9 dense-grid check eps_g_annual (r0_p1),0.62,kWh or h or ratio,results/g9_grid_check.csv,pair=r0_p1
 g9.grid.r0_p1.eps_d_overheat,G9 dense-grid check eps_d_overheat (r0_p1),1.249,kWh or h or ratio,results/g9_grid_check.csv,pair=r0_p1
 g9.grid.r0_p1.hv_ratio_final_over_grid,G9 dense-grid check hv_ratio_final_over_grid (r0_p1),1.103,kWh or h or ratio,results/g9_grid_check.csv,pair=r0_p1
 g9.grid.r0_p1.within_band,G9 dense-grid check within band (r0_p1),True,,results/g9_grid_check.csv,pair=r0_p1
+g9.grid.r0_p2.eps_g_window,G9 dense-grid check eps_g_window (r0_p2),-0.666,kWh or h or ratio,results/g9_grid_check.csv,pair=r0_p2
+g9.grid.r0_p2.eps_g_annual,G9 dense-grid check eps_g_annual (r0_p2),-0.263,kWh or h or ratio,results/g9_grid_check.csv,pair=r0_p2
+g9.grid.r0_p2.eps_d_overheat,G9 dense-grid check eps_d_overheat (r0_p2),23.645,kWh or h or ratio,results/g9_grid_check.csv,pair=r0_p2
+g9.grid.r0_p2.hv_ratio_final_over_grid,G9 dense-grid check hv_ratio_final_over_grid (r0_p2),1.107,kWh or h or ratio,results/g9_grid_check.csv,pair=r0_p2
+g9.grid.r0_p2.within_band,G9 dense-grid check within band (r0_p2),True,,results/g9_grid_check.csv,pair=r0_p2
+g9.grid.r0_p3.eps_g_window,G9 dense-grid check eps_g_window (r0_p3),4.556,kWh or h or ratio,results/g9_grid_check.csv,pair=r0_p3
+g9.grid.r0_p3.eps_g_annual,G9 dense-grid check eps_g_annual (r0_p3),5.191,kWh or h or ratio,results/g9_grid_check.csv,pair=r0_p3
+g9.grid.r0_p3.eps_d_overheat,G9 dense-grid check eps_d_overheat (r0_p3),-0.164,kWh or h or ratio,results/g9_grid_check.csv,pair=r0_p3
+g9.grid.r0_p3.hv_ratio_final_over_grid,G9 dense-grid check hv_ratio_final_over_grid (r0_p3),1.098,kWh or h or ratio,results/g9_grid_check.csv,pair=r0_p3
+g9.grid.r0_p3.within_band,G9 dense-grid check within band (r0_p3),True,,results/g9_grid_check.csv,pair=r0_p3
 g9.grid.r1_p1.eps_g_window,G9 dense-grid check eps_g_window (r1_p1),3.065,kWh or h or ratio,results/g9_grid_check.csv,pair=r1_p1
 g9.grid.r1_p1.eps_g_annual,G9 dense-grid check eps_g_annual (r1_p1),3.631,kWh or h or ratio,results/g9_grid_check.csv,pair=r1_p1
 g9.grid.r1_p1.eps_d_overheat,G9 dense-grid check eps_d_overheat (r1_p1),-3.981,kWh or h or ratio,results/g9_grid_check.csv,pair=r1_p1
 g9.grid.r1_p1.hv_ratio_final_over_grid,G9 dense-grid check hv_ratio_final_over_grid (r1_p1),1.095,kWh or h or ratio,results/g9_grid_check.csv,pair=r1_p1
 g9.grid.r1_p1.within_band,G9 dense-grid check within band (r1_p1),True,,results/g9_grid_check.csv,pair=r1_p1
+g9.grid.r1_p2.eps_g_window,G9 dense-grid check eps_g_window (r1_p2),-0.656,kWh or h or ratio,results/g9_grid_check.csv,pair=r1_p2
+g9.grid.r1_p2.eps_g_annual,G9 dense-grid check eps_g_annual (r1_p2),0.305,kWh or h or ratio,results/g9_grid_check.csv,pair=r1_p2
+g9.grid.r1_p2.eps_d_overheat,G9 dense-grid check eps_d_overheat (r1_p2),6.812,kWh or h or ratio,results/g9_grid_check.csv,pair=r1_p2
+g9.grid.r1_p2.hv_ratio_final_over_grid,G9 dense-grid check hv_ratio_final_over_grid (r1_p2),1.107,kWh or h or ratio,results/g9_grid_check.csv,pair=r1_p2
+g9.grid.r1_p2.within_band,G9 dense-grid check within band (r1_p2),True,,results/g9_grid_check.csv,pair=r1_p2
+g9.grid.r1_p3.eps_g_window,G9 dense-grid check eps_g_window (r1_p3),-2.238,kWh or h or ratio,results/g9_grid_check.csv,pair=r1_p3
+g9.grid.r1_p3.eps_g_annual,G9 dense-grid check eps_g_annual (r1_p3),0.215,kWh or h or ratio,results/g9_grid_check.csv,pair=r1_p3
+g9.grid.r1_p3.eps_d_overheat,G9 dense-grid check eps_d_overheat (r1_p3),-6.851,kWh or h or ratio,results/g9_grid_check.csv,pair=r1_p3
+g9.grid.r1_p3.hv_ratio_final_over_grid,G9 dense-grid check hv_ratio_final_over_grid (r1_p3),1.148,kWh or h or ratio,results/g9_grid_check.csv,pair=r1_p3
+g9.grid.r1_p3.within_band,G9 dense-grid check within band (r1_p3),True,,results/g9_grid_check.csv,pair=r1_p3
 g9.grid.r2_p1.eps_g_window,G9 dense-grid check eps_g_window (r2_p1),11.97,kWh or h or ratio,results/g9_grid_check.csv,pair=r2_p1
 g9.grid.r2_p1.eps_g_annual,G9 dense-grid check eps_g_annual (r2_p1),13.226,kWh or h or ratio,results/g9_grid_check.csv,pair=r2_p1
 g9.grid.r2_p1.eps_d_overheat,G9 dense-grid check eps_d_overheat (r2_p1),-3.371,kWh or h or ratio,results/g9_grid_check.csv,pair=r2_p1
 g9.grid.r2_p1.hv_ratio_final_over_grid,G9 dense-grid check hv_ratio_final_over_grid (r2_p1),1.016,kWh or h or ratio,results/g9_grid_check.csv,pair=r2_p1
 g9.grid.r2_p1.within_band,G9 dense-grid check within band (r2_p1),True,,results/g9_grid_check.csv,pair=r2_p1
+g9.grid.r2_p2.eps_g_window,G9 dense-grid check eps_g_window (r2_p2),8.374,kWh or h or ratio,results/g9_grid_check.csv,pair=r2_p2
+g9.grid.r2_p2.eps_g_annual,G9 dense-grid check eps_g_annual (r2_p2),8.31,kWh or h or ratio,results/g9_grid_check.csv,pair=r2_p2
+g9.grid.r2_p2.eps_d_overheat,G9 dense-grid check eps_d_overheat (r2_p2),-4.934,kWh or h or ratio,results/g9_grid_check.csv,pair=r2_p2
+g9.grid.r2_p2.hv_ratio_final_over_grid,G9 dense-grid check hv_ratio_final_over_grid (r2_p2),1.086,kWh or h or ratio,results/g9_grid_check.csv,pair=r2_p2
+g9.grid.r2_p2.within_band,G9 dense-grid check within band (r2_p2),True,,results/g9_grid_check.csv,pair=r2_p2
+g9.grid.r2_p3.eps_g_window,G9 dense-grid check eps_g_window (r2_p3),10.712,kWh or h or ratio,results/g9_grid_check.csv,pair=r2_p3
+g9.grid.r2_p3.eps_g_annual,G9 dense-grid check eps_g_annual (r2_p3),11.18,kWh or h or ratio,results/g9_grid_check.csv,pair=r2_p3
+g9.grid.r2_p3.eps_d_overheat,G9 dense-grid check eps_d_overheat (r2_p3),5.535,kWh or h or ratio,results/g9_grid_check.csv,pair=r2_p3
+g9.grid.r2_p3.hv_ratio_final_over_grid,G9 dense-grid check hv_ratio_final_over_grid (r2_p3),1.014,kWh or h or ratio,results/g9_grid_check.csv,pair=r2_p3
+g9.grid.r2_p3.within_band,G9 dense-grid check within band (r2_p3),True,,results/g9_grid_check.csv,pair=r2_p3
 g9.seed.r0_p1.within_band,G9 seed spread within band (r0_p1),True,,results/g9_seed_stability.csv,pair=r0_p1
 g9.seed.r0_p2.within_band,G9 seed spread within band (r0_p2),True,,results/g9_seed_stability.csv,pair=r0_p2
 g9.seed.r0_p3.within_band,G9 seed spread within band (r0_p3),True,,results/g9_seed_stability.csv,pair=r0_p3

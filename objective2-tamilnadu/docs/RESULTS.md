@@ -107,7 +107,7 @@ left unspent pending an explicit decision.
 > Everything in this file was computed before three defects were found and
 > fixed on 2026-10-28. The design numbers, robustness bars and
 > Objective-3 contract quoted below are **not** current. The files that
-> produced them have been moved to `archive/old_implementation/_archive/results_pre_shield_fix/`.
+> produced them have been moved to `archive/old_implementation/_archive/results_pre_shield_fix/`. *(this directory was **deleted** — the pre-shield outputs were not retained)*
 >
 > **What was wrong**
 >

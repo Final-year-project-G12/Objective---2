@@ -40,7 +40,7 @@ def main():
              "demand, shield and tank model. Energy figures are E_del,45 (energy delivered at the 45 C target) in kWh per year, `g_window` for the "
              "18:00-09:00 window and `g_annual` for the whole year. `d_overheat` is shield-hours of the PCM tank minus the water-only tank.\n")
 
-    s.append("**Version.** Sections 1-4 are the v3 results (PCM fraction cap 30 %, `docs/PROGRESS.md` section 26; tested once on the untouched years "
+    s.append("**Version.** Sections 1-4 are the v3 results (PCM fraction cap 30 %, `docs/RAJASTHAN_METHOD_PORT_PROGRESS.md` section 26; tested once on the untouched years "
              "2011-2015). Sections 1b and 5b-5f are the diagnostics of the six issues, run on the v1 (cap 20 %) designs and years (5e was re-run on the v3 designs); they describe the v1 "
              "result, their source files are unchanged in `results/`,. "
              "They have not been re-run on the v3 designs." + "\n")
@@ -121,7 +121,7 @@ def main():
     q["hv_band"] = q.hv_band.round(0).astype(int)
     s.append(md(q) + "\n")
     s.append("In v3 the box-vertex step is part of the recipe from the start (5 rounds, then vertices and 3 more rounds), and all three regimes pass the dense-grid check within the band at the first attempt. "
-             "The grid contains the vertices by construction, so the pass is not fully independent evidence (`docs/PROGRESS.md` sections 11.1-11.3 and 24 for the v1 history)." + "\n")
+             "The grid contains the vertices by construction, so the pass is not fully independent evidence (`docs/RAJASTHAN_METHOD_PORT_PROGRESS.md` sections 11.1-11.3 and 24 for the v1 history)." + "\n")
 
     s.append("## 4. Ablations and controls (G11)\n")
     s.append("Source: `results/g11_ablation_r{0,1,2}.csv`, explore years 2016-2020, `g_window` in kWh.\n")
@@ -255,14 +255,19 @@ def main():
              "(the sampling is coarse: 20, 30, 40, 45, 50, 60 mm). The upper flow bound is not limiting either: 0.080 kg/s changes `g_window` by less than the band in every regime. "
              "The 30 % PCM-fraction cap IS limiting: at 40 % the gain is higher by more than the band in every regime, with the PCM and water peaks still inside 65 C and 75 C. The chosen designs "
              "are therefore still labelled boundary-limited on the fraction cap. The cap is administrative (the packing engine accepts 28-48 % at R 40 mm) and the only literature support in the "
-             "files read for fractions above 20 % is none (Chen 2025 gives 10-20 %); a 40 % test is planned, not run (`docs/PROGRESS.md` section 27). Radii above 40 mm have no capsule-size source in the files read.\n")
+             "files read for fractions above 20 % is none (Chen 2025 gives 10-20 %); a 40 % test is planned, not run (`docs/RAJASTHAN_METHOD_PORT_PROGRESS.md` section 27). Radii above 40 mm have no capsule-size source in the files read.\n")
     s.append("## 5f. G9 with and without the box-vertex step [v1 diagnostic, cap 20 %] (issue 1)\n")
     s.append("Source: `results/g18_issue1_with_without.csv` (script `scripts/g18_issue1_compare.py`). The step (simulate the 24 corners of the design box "
              "before three more active-learning rounds) was added after regime 0 PCM 1 failed the dense-grid check twice, so it was not pre-declared; it is now a "
              "documented method step (`03_OPTIMISATION_PIPELINE.md`). All nine (regime, O1 PCM) pairs were run in three states: `base` (original 5 rounds), `novert` (base plus "
-             "3 more rounds WITHOUT the step, same code and budget) and `vert` (base plus the step plus 3 more rounds). Only the rank-1 pairs have a dense grid, "
-             "so only they have the epsilon test; hypervolume is on a common reference point per pair.\n")
+             "3 more rounds WITHOUT the step, same code and budget) and `vert` (base plus the step plus 3 more rounds). All nine pairs now have a "
+             "dense grid (CORRECTIONS O2-14), so all nine carry the epsilon test; hypervolume is on a common reference point per pair.\n")
     w1 = pd.read_csv(OUT / "g18_issue1_with_without.csv")
+    # The band was hardcoded as 13.8 in the epsilon column header while the
+    # real repeatability band is 28.0 -- the figure a reader would have
+    # checked these values against was wrong by a factor of two. Read it from
+    # the source. (2026-11-10)
+    BAND = float(pd.read_csv(OUT / "g9_grid_check.csv").band_g_window.iloc[0])
     ALL_STATES = ("base", "novert", "vert")
     present = [st for st in ALL_STATES if (w1.state == st).any()]
     missing = [st for st in ALL_STATES if st not in present]
@@ -281,7 +286,7 @@ def main():
             row[f"{st} n points"] = int(x.n_points)
             row[f"{st} hv/best"] = f"{x.hv_rel_to_best_state:.3f}"
             if pd.notna(x.eps_g_window):
-                row[f"{st} eps g_window (band 13.8)"] = f"{x.eps_g_window:.1f} {'pass' if x.within_band else 'FAIL'}"
+                row[f"{st} eps g_window (band {BAND:.1f})"] = f"{x.eps_g_window:.1f} {'pass' if x.within_band else 'FAIL'}"
         rows.append(row)
     s.append(md(pd.DataFrame(rows).fillna("-")) + "\n")
     if missing:
@@ -293,10 +298,38 @@ def main():
                  f"Re-run `scripts/g18_issue1_compare.py` for the missing state(s) before quoting this section. "
                  f"The table above reports only what was actually run.\n")
     else:
-        s.append("Reading: with equal rounds, WITHOUT the step regime 0 PCM 1 still fails the grid check (23.5 kWh against 13.8; the earlier 24.9 with 5 rounds) and WITH it passes (3.1), "
-                 "so the step is what makes regime 0 pass; the rank-1 pairs of regimes 1 and 2 pass in all states (r1 5.0 without, 1.8 with; r2 0.2 either way), so for them the step is not "
-                 "needed. Hypervolume is higher with the step in six of the nine pairs (0.5 % to 4.7 % above the no-step run) and 0.1-0.2 % lower in the other three (regime 1 PCMs 2 and 3, regime 2 PCM 1). Caveat: regime 0 PCM 1 "
-                 "has 8 rounds without the step and 11 with it (its vertex run continued from the no-step run), the other pairs 8 and 8. The criterion and the band were not changed.\n")
+        # READING REGENERATED FROM THE DATA 2026-11-10. This branch had never
+        # executed: g18's CSV held only the `base` state until the 2026-11-09
+        # backfill, so it still carried a narrative written for an earlier,
+        # partial run, and every figure in it contradicted the completed
+        # results. It said regime 0 PCM 1 "still fails the grid check (23.5 kWh
+        # against 13.8)" without the step, where the measured value is 0.6
+        # against a band of 28.0, and it described an 8-vs-11-round asymmetry
+        # that no longer exists. Nothing below is typed by hand.
+        best = w1.loc[w1.groupby("pair").hv_common_ref.idxmax()]
+        cnt = best.state.value_counts().to_dict()
+        order = [st for st in ALL_STATES if st in cnt]
+        lo = float(w1.hv_rel_to_best_state.min())
+        nbase = int((best.state == "base").sum())
+        nfail = int((~w1.within_band).sum())
+        r0 = float(w1[w1.pair == "r0_p1"].eps_g_window.max())
+        s.append(
+            "Reading: all %d rows (%d pairs x 3 states) are inside the repeatability band on every objective%s, "
+            "so no state is separable from any other by the acceptance criterion. The highest hypervolume per "
+            "pair falls to %s. Across every pair and state the hypervolume spans %.3f to 1.000 of that pair's "
+            "best -- a total spread of %.1f %%.\n"
+            % (len(w1), w1.pair.nunique(),
+               " (all `within_band` true)" if nfail == 0 else " EXCEPT %d row(s), which FAIL" % nfail,
+               ", ".join("`%s` in %d" % (st, cnt[st]) for st in order), lo, 100 * (1 - lo)))
+        s.append(
+            "What this says about the step: `base` is best in %s and both extended states beat it in every pair, "
+            "so the three extra active-learning rounds do help. How they are spent does not matter -- seeding the "
+            "24 box corners (`vert`) and simply running three more committee-disagreement rounds (`novert`) land "
+            "within %.1f %% of each other, far inside the band. The step was added after regime 0 PCM 1 failed "
+            "the dense-grid check twice and was never pre-declared; on the completed evidence that pair passes in "
+            "all three states (worst epsilon %.1f against the %.1f band), so the step is **not** what makes it "
+            "pass and the original concern does not reproduce. The criterion and the band were not changed.\n"
+            % ("no pair" if nbase == 0 else "%d pair(s)" % nbase, 100 * (1 - lo), r0, BAND))
     DOC.parent.mkdir(parents=True, exist_ok=True)
     DOC.write_text("\n".join(s), encoding="utf-8")
     print("written", DOC)

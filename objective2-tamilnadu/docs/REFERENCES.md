@@ -1,9 +1,14 @@
 # Literature Reference Base (Objective 2)
 
-This is the project's frozen citation source, carried over verbatim from
-`vertopal.com_references.txt` (the shared bibliography also used by
-Objective 1 and the audit report). Every phase doc in `docs/`
-that says "Literature" links here by key (`[Author Year]`) rather than
+This is the project's frozen citation source. Its journal entries were carried
+over verbatim from the group's BibTeX bibliography, which survives in this
+repository as `tamilnadu_pipeline/sources/references.txt` (byte-identical to
+`tamilnadu_pipeline/sources/references.bib` — both are BibTeX; the `.txt` copy
+is a format-converter download. Older notes call that download
+`vertopal.com_references.txt`, a filename that no longer exists here — it was
+this same bibliography saved under the converter's name). That bibliography is
+the shared one also used by Objective 1 and the audit report. Every phase doc
+in `docs/` that says "Literature" links here by key (`[Author Year]`) rather
 re-typing the full citation — one master list, no drift between docs.
 
 **How this list is used**: each entry below is tagged with the
@@ -139,6 +144,71 @@ timing (mean liquid fraction, cycling behavior) is a first-class ML
 prediction target — directly relevant to Gate 3's melt-fraction
 diagnostic and the retargeting method's "median charging-hour
 temperature" logic (doc 12).
+
+---
+
+## Optimisation and surrogate METHOD sources (added 2026-11-09)
+
+Added because the repository used these algorithms without citing their
+originating papers. NSGA-II in particular is the core search algorithm of this
+objective and had no citation at all. These are **method precedents**: they
+support the algorithm choice, not the correctness of this project's bounds,
+parameters or results.
+
+### Deb2002
+Deb, K., Pratap, A., Agarwal, S., Meyarivan, T. 2002. "A Fast and Elitist
+Multiobjective Genetic Algorithm: NSGA-II." *IEEE Transactions on Evolutionary
+Computation* 6(2): 182-197. DOI 10.1109/4235.996017
+**Used for**: the whole of `src/optimize/nsga2.py` - fast non-dominated
+sorting, crowding distance, elitist (mu+lambda) survival, binary tournament on
+(rank, crowding), and the constrained-domination rule used in `g9_s4_s5.py`.
+The SBX (eta 15, p_c 0.9) and polynomial-mutation (eta 20, p_m 1/n) operators
+are this paper's.
+
+### Bhattacharjee2016
+Bhattacharjee, K. S., Singh, H. K., Ray, T. 2016. "Multiple surrogate assisted
+multiobjective optimization using improved pre-selection." *2016 IEEE Congress
+on Evolutionary Computation (CEC)*. DOI 10.1109/CEC.2016.7744340
+**Used for**: the precedent for running several surrogate families in
+competition rather than committing to one - `src/optimize/surrogates.py` +
+`surrogates_advanced.py`, selected per pair in `g8_s3_compare.py`.
+
+### Bradford2018
+Bradford, E., Schweidtmann, A. M., Lapkin, A. 2018. "Efficient multiobjective
+optimization employing Gaussian processes, spectral sampling and a genetic
+algorithm." *Journal of Global Optimization* 71: 407-438.
+DOI 10.1007/s10898-018-0609-2
+**Used for**: GP surrogates in expensive black-box multi-objective problems -
+the `gp_ard` family (anisotropic Matern-5/2) in `surrogates_advanced.py` and
+the GP-Bayesian-optimisation cross-check in `g20_gp_bo_comparison.py`.
+**Caveat**: this is a method precedent, NOT the exact expected-improvement
+implementation used here; `g20` uses scikit-learn EI over a random pool.
+
+### Kumar2024
+Kumar, et al. 2024. "Design Optimization of PMaSynRM Using Kriging Surrogate
+Modeling and NSGA-II Integrated with Taguchi Method." *TENCON 2024 - IEEE
+Region 10 Conference*. DOI 10.1109/TENCON61640.2024.10902704
+**Used for**: precedent for the *combination* this objective uses - Taguchi
+screening (`g8_s1_screening.py`) feeding a surrogate, feeding NSGA-II. Cite it
+for the pipeline shape only; it does not establish that this project's DOE size
+or bounds are sufficient.
+
+### Gadhave2020
+Gadhave, et al. 2020. "Selection of Phase Change Material for Domestic Water
+Heating Using Multi Criteria Decision Approach."
+**Used for**: the application-specific precedent for MCDM-based PCM selection
+in domestic water heating - Objective 1's four-method stack, inherited here as
+the PCM shortlist in `configs/states/tamilnadu.yaml`.
+
+### Sobol1967 / Owen1998
+Sobol', I. M. 1967. "On the distribution of points in a cube and the
+approximate evaluation of integrals." *USSR Comp. Math. and Math. Physics*
+7(4): 86-112. — Owen, A. B. 1998. "Scrambling Sobol' and Niederreiter-Xing
+points." *Journal of Complexity* 14(4): 466-489.
+**Used for**: the scrambled-Sobol DOE in `g8_s2_doe.py`
+(`scipy.stats.qmc.Sobol(d=4, scramble=True).random_base2(7)`, 128 points).
+Owen is the source of the scrambling that makes the sequence randomisable
+while keeping its low-discrepancy property.
 
 ---
 
@@ -309,10 +379,18 @@ docs.
 
 ## Full original bibliography
 
-Every entry above (including the "General / background" list) was already
-copied verbatim from the project's original `vertopal.com_references.txt`
-— nothing has been added, reworded, or invented. That file was folded
-entirely into this one during the 2026-09-17 docs consolidation (see
-`docs/16_OBJECTIVE1_DATA_REFRESH.md`) and removed from the
-project root as a redundant duplicate; this file is now the single
-citation source for Objective 2.
+Of the 33 citation keys in this document, **19 trace directly to that BibTeX
+bibliography** (33 entries) and are reproduced verbatim — nothing reworded or
+invented. The remaining 14 were added here afterwards and are not in the
+original: the five data-source citations (`rubitherm2024`, `pluss2024`,
+`globalsolaratlas2024`, `renewablesninja2024`, `isrosolarcalc2024`) and the six
+optimisation-method citations added on 2026-11-09 under O2-12 (`deb2002` for
+NSGA-II, `sobol1967`, `bhattacharjee2016`, `bradford2018`, `kumar2024`,
+`gadhave2020`), plus `barghijahromi2026`, `nemes2025` and `iced2026`.
+
+The standalone copy of that bibliography which once sat in the project root
+was folded into this document during the 2026-09-17 docs consolidation and
+deleted as a redundant duplicate. The BibTeX original it was converted from
+is still in the repository at `tamilnadu_pipeline/sources/references.txt`, so
+every verbatim entry below can be checked against it. This document is the
+single citation source for Objective 2.

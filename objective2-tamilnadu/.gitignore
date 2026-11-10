@@ -27,9 +27,30 @@ __pycache__/
 .pytest_cache/
 .ipynb_checkpoints/
 
-# ---- superseded work, kept on disk but out of git ----------------------
+# ---- superseded work, kept on disk but mostly out of git ---------------
 # archive/ is retired material: the pre-restructure implementation, the
 # OpenFOAM legacy tree, superseded ANSYS cases and voided results. Nothing in
 # it is live and nothing was deleted -- it stays on disk for the record.
-# Keeping it out of git takes a clone from ~643 MB to ~315 MB.
-archive/
+#
+# REVISED 2026-11-10. Excluding archive/ wholesale was wrong in one specific
+# way: 79 of the 373 path references in the checked documents resolve ONLY
+# inside archive/, so `python scripts/g12_verify_docs.py` passed on the author's
+# machine and would have reported 79 missing paths on a fresh clone. Those
+# references are to retired DOCUMENTS and SCRIPTS, not to the heavy data.
+#
+# So: archive's text content is tracked (157 files, 1.2 MB) and its bulk is
+# not (713 MB -- a 223 MB OpenFOAM run.log, 185 MB of CSVs, 117 MB of
+# interactive HTML, 85 MB of JSON, the 63/81 MB Objective-1 aggregates).
+# `archive/**` rather than `archive/` is deliberate: git does not descend into
+# an excluded DIRECTORY, so the negations below would never be reached.
+archive/**
+!archive/**/
+!archive/**/*.md
+!archive/**/*.py
+!archive/**/*.yaml
+!archive/**/*.yml
+!archive/**/*.rst
+!archive/**/*.txt
+# ...except the logs, which are .txt-adjacent bulk and regenerable.
+archive/**/*.log
+archive/**/run.log

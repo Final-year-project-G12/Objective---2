@@ -109,7 +109,11 @@ def main():
     pd.DataFrame(bound_rows).to_csv(OUT / "g9_boundary_check.csv", index=False)
 
     grid_rows = []
-    for f in sorted(glob.glob(str(OUT / "g9_s6_grid_r*_p1.csv"))):
+    # RANKS 2 AND 3 ADDED 2026-11-09. This glob was "_p1.csv": only the rank-1
+    # dense grid had been computed, so the cross-check covered 3 of the 9
+    # (regime, rank) pairs. The rank-2/3 grids now exist at the SAME reduced
+    # fidelity (720 designs x 1 year), so all 9 are comparable and checked.
+    for f in sorted(glob.glob(str(OUT / "g9_s6_grid_r*_p*.csv"))):
         tag = Path(f).stem.replace("g9_s6_grid_", "")
         g = pd.read_csv(f)
         gok = g[(g.status == "ok") & (g.feasible == True)]  # noqa: E712

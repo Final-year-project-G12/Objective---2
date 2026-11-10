@@ -28,7 +28,7 @@ code never needs to know which state it's looking at.
 **Naming convention — please follow this exactly when you add your state:**
 `{content}_{state}.csv`, all lowercase, state name with no spaces
 (`tamilnadu`, `rajasthan`, `assam`, `uttarakhand`). Per-cluster files add
-`_cluster{k}` before the extension, e.g. `weather_regime_rajasthan_cluster2_hourly.csv`.
+`_cluster{k}` before the extension, e.g. `weather_regime_rajasthan_cluster2_hourly.csv`. *(Rajasthan tree — **does not exist** in this Tamil Nadu repo)*
 
 ---
 
@@ -47,22 +47,22 @@ code never needs to know which state it's looking at.
 | `cluster_profiles_{state}.csv` | `05_cluster_tamilnadu.py` | **1 row/cluster** | Population-weighted mean of every signature column, per regime — `n_points`, `total_population_covered`, plus mean `Tm_target_C`, `L_required_kJ_per_kg`, `HSI`, `GHI_daily_kWh`, etc. **This is what Obj2's DOE reads to get each regime's design target.** |
 | `bic_selection_{state}.csv`, `kmeans_comparison_{state}.csv` | `05_cluster_tamilnadu.py` | 1 row/K | Model-selection diagnostics (why K was chosen) — reference material, not a modeling input. |
 | `pcm_database_{state}.csv` | `06_build_pcm_database.py` | 1 row/PCM | **Full property records for every candidate PCM** (not just the shortlisted ones): `name, family, Tm_C, latent_heat_kJ_kg, density_*, Cp_*, TC_W_mK, cycles_tested, supercooling_K, rho_H_MJ_m3, corrosion_class`, plus `any_property_imputed` flagging which values came from MICE/RF imputation vs. a real datasheet/paper. |
-| `feasibility_survivors_by_cluster.csv` | `07_feasibility_filter.py` | 1 row/cluster/PCM | Every PCM checked against every cluster's `Tm_target`/`L_required`, with a pass/fail column per filter (melting window, latent-heat floor, cycling, supercooling, corrosion, safety) and `passes_all`. **2026-09-17: filter columns renamed to a `c1`-`c8` string scheme** (`"pass"`/`"fail"`/`"flag_..."`), see `docs/16_OBJECTIVE1_DATA_REFRESH.md`. |
+| `feasibility_survivors_by_cluster.csv` | `07_feasibility_filter.py` | 1 row/cluster/PCM | Every PCM checked against every cluster's `Tm_target`/`L_required`, with a pass/fail column per filter (melting window, latent-heat floor, cycling, supercooling, corrosion, safety) and `passes_all`. **2026-09-17: filter columns renamed to a `c1`-`c8` string scheme** (`"pass"`/`"fail"`/`"flag_..."`), see `archive/old_implementation/_archive/docs/history/16_OBJECTIVE1_DATA_REFRESH.md`. |
 | `feasibility_survivors_by_cluster_kappa_calibrated.csv` *(new, 2026-09-17)* | `07_feasibility_filter.py` | 1 row/cluster/PCM | Same as above, but with a calibrated (`calibrated_kappa`) relaxation of the strict latent-heat floor — **use this file, not the plain one**, for any downstream eligibility check: the plain file's strict floor rejects every candidate given the refreshed (higher) `L_required_kJ_per_kg`, this is the pool `mcdm_topk_by_cluster.csv` itself is actually built from. |
 | `mcdm_topk_by_cluster.csv` | `08_mcdm_ranking.py` | 1 row/cluster/top-3 | **The Top-3 PCM recommendation per regime** — `consensus_rank`, `name`, `Tm_C`, `latent_heat_kJ_kg`, plus each method's score (`topsis_score`, `gra_grade`, `promethee_flow`, `vikor_Q`) and `top3_inclusion_probability` from the Monte Carlo stability check. **This is what tells Obj2 which PCM(s) to design hardware for.** |
-| `mcdm_full_rankings.csv` *(renamed 2026-09-17, was `mcdm_full_scores_by_cluster.csv`)* | `08_mcdm_ranking.py` | 1 row/cluster/survivor | Same as `mcdm_topk_by_cluster.csv` but every feasibility survivor, not just the top 3 — useful if Obj2's DOE wants to simulate more than 3 candidates per regime. |
+| `mcdm_full_rankings.csv` *(renamed 2026-09-17, was `mcdm_full_rankings.csv`)* | `08_mcdm_ranking.py` | 1 row/cluster/survivor | Same as `mcdm_topk_by_cluster.csv` but every feasibility survivor, not just the top 3 — useful if Obj2's DOE wants to simulate more than 3 candidates per regime. |
 | `mcdm_method_agreement.csv` *(new, 2026-09-17)* | `08_mcdm_ranking.py` | 1 row/cluster | How often TOPSIS/GRA/PROMETHEE II/VIKOR agree on the Top-3 for that cluster — a consensus-quality diagnostic. |
 | `monte_carlo_stability.csv` | `08_mcdm_ranking.py` | 1 row/cluster/PCM | Standalone version of the Monte Carlo columns above (inclusion probability, rank-reversal rate). |
 | `physics_validation_results.csv` *(optional)* | `10_physics_validation.py` | 1 row/cluster/PCM | Simulated annual solar fraction from Obj1's own grey-box check — **only present if you've run that script.** Useful as a sanity baseline before Obj2 builds its own (higher-fidelity, geometry-aware) simulator. |
 | `physics_validation_spearman.csv` *(optional)* | `10_physics_validation.py` | 1 row/cluster | Correlation between MCDM rank and simulated performance, per regime. |
-| `seasonal_pcm_sensitivity_topk.csv`, `seasonal_pcm_sensitivity_summary.md` *(renamed 2026-09-17, was `level_b_seasonal_topk.csv`/`level_b_seasonal_summary.md`; script rewritten to `11_seasonal_pcm_sensitivity.py`)* | 1 row/cluster/season | Whether the Top-1 PCM changes by season within a regime. |
+| `seasonal_pcm_sensitivity_topk.csv`, `seasonal_pcm_sensitivity_summary.md` *(renamed 2026-09-17, was `level_b_seasonal_topk.csv`/`level_b_seasonal_summary.md`; script rewritten to `11_seasonal_pcm_sensitivity.py`)* | 1 row/cluster/season | Whether the Top-1 PCM changes by season within a regime. | *(old Objective 1 name — **no longer produced**)*
 | `cluster_assignments_{state}_levelB.csv`, `bic_selection_{state}_levelB.csv`, `level_b_feature_importance_{state}.csv` *(new, 2026-09-17)* | `05a_level_b_regime_shift_tamilnadu.py` | varies | A separate, rewritten Level-B seasonal-regime-shift GMM analysis — distinct from the seasonal PCM sensitivity table above. |
 | `recommendation_cards.md` | `09_recommendation_cards.py` | — | Human-readable summary of everything above, one card per cluster — Obj1's results section. Good for a quick sanity read, not meant to be parsed programmatically. |
 | `manifest.json` | `build_input_package.py` (this project) | — | SHA-256 hash + source path of every file above, plus which files were too large to copy (hashed only — see below) and which points are each cluster's medoid. **Re-generate this any time Objective 1 is re-run**, so a stale copy is never silently used. |
 | `raw_weather/power_{point_id}_{year}.json` | `01b_download_nasapower.py` (copied selectively) | full hourly | Real, unmodified NASA POWER hourly records — **only for each cluster's medoid point**, all available years. This is the raw material `build_regime_weather.py` turns into the per-regime files below. |
 
 **Referenced-but-not-copied** (too large — hashed in `manifest.json`, read
-directly from `era5_tamilnadu/data/...` if you ever need row-level access):
+directly from `era5_tamilnadu/data/...` if you ever need row-level access): *(Objective 1 tree as it was; path **superseded**)*
 `climate_tamilnadu_points.csv` (every point × sun-event × ERA5+POWER
 columns), `tamilnadu_cleaned_physical.csv` / `tamilnadu_cleaned_scaled.csv`
 (the same, post-QC).
@@ -108,3 +108,52 @@ same output columns so nothing downstream has to change.
    folder with exactly the structure documented above, ready for the
    shared Obj2 `src/design`, `src/simulation`, `src/surrogate` code to
    consume identically regardless of which state it is.
+
+---
+
+## What is deliberately NOT in a git clone
+
+Added 2026-11-10. If you cloned this repository rather than copying the
+author's working folder, some paths named in these documents will not be on
+your disk. That is intentional, and this section says which and why, so an
+absent file reads as a recorded decision rather than a broken reference.
+
+**1. Two large Objective-1 aggregates.** Both are excluded by
+`.gitignore` (`**/suntimes.csv` and the size rules):
+
+| file | size | how to get it |
+|---|---|---|
+| `data/objective1/daily_aggregates_tamilnadu.csv` | 63 MB | re-run Objective 1's aggregation stage in `tamilnadu_pipeline/` |
+| `data/objective1/suntimes.csv` | 81 MB | re-run Objective 1's solar-geometry stage |
+
+Everything else in `data/objective1/` **is** committed, including
+`manifest.json`. Note the consequence: `manifest.json` records a SHA-256 for
+every frozen file, so on a clone two of those hashes cannot be checked until
+you regenerate the two files above. The remaining 30 can.
+
+**2. Raw weather input** (`../tamilnadu_pipeline/data/raw/`, 2.9 GB). ERA5 and
+NASA POWER downloads. Re-downloadable from the sources recorded in Objective
+1's own `docs/`; the processed products derived from it are committed.
+
+**3. The bulk of `archive/`** (713 MB of its 714 MB). Retired material is kept
+on disk for the record, but only its *text* ships: 157 documents, scripts and
+configs, 1.2 MB. Excluded are a 223 MB OpenFOAM `run.log`, 185 MB of CSVs,
+117 MB of interactive HTML and 85 MB of JSON. So a retired `.md` or `.py` that
+these docs name is present in a clone; a retired result file is not.
+
+**4. The sibling repositories.** `Github/Objective---2/` (the Rajasthan
+original this method was ported from) and `Github/PCM-Selection-ML-model/`
+(which holds `Github/PCM-Selection-ML-model/pcm_shared_config.py`, the real
+source of `T_DELIVERY_C` and `TM_TARGET_C`) are **separate git repositories** and are not, and should not
+be, nested inside this one. `docs/RAJASTHAN_METHOD_PORT_PROGRESS.md` and parts
+of this file reference them as external provenance.
+
+### Why this section exists
+
+`scripts/g12_verify_docs.py` resolves path references against the working
+tree, not against the git index. It therefore passed on the author's machine
+while 79 of its 373 references resolved *only* inside the untracked
+`archive/`, and would have reported them missing on a clone. Narrowing the
+`archive/` rule to exclude data but keep text brought that from 79 to 23; the
+23 that remain are the four categories above, which are correct to omit.
+Recorded as O2-17 in `docs/CORRECTIONS.md`.

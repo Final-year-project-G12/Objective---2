@@ -106,7 +106,7 @@ cd ansys && python fluent_live_demo.py                        # live melting dem
 - **Two-part safety shield** (water-side bypass + PCM-side charge block) — the fix that turned `g_window` from negative in every regime to **+107 … +148 kWh**
 - Model repairs **G1** (local-hour floor), **G2** (inner-sphere PCM mass + shell heat capacity), **D3** (inner-radius conduction)
 - dt convergence study with Richardson extrapolation over a 4-point ladder
-  (300/150/75/37.5 s) → `results/g2_richardson_summary.csv`
+  (300/150/75/37.5 s) → `results/g2_timestep_convergence_300_150_75.csv`
 - Parallel execution layer (process pool, worker-side input caching)
 - NSGA-II (SBX, polynomial mutation, constrained domination, crowding, hypervolume) — validated against the ZDT1 benchmark
 - Surrogate bake-off: **Gaussian-process/Kriging**, quadratic RSM, NN ensemble, XGBoost-as-baseline
@@ -242,7 +242,7 @@ objective3/              Objective-3 hand-off (kept out of results/)
 _archive/                superseded material — nothing here is current
 ```
 
-`archive/old_implementation/_archive/results_pre_shield_fix/` holds outputs computed **before** the
+`archive/old_implementation/_archive/results_pre_shield_fix/` holds outputs computed **before** the *(this directory was **deleted** — the pre-shield outputs were not retained)*
 2026-10-28 shield fix and the v3.0 design space. Those numbers are wrong,
 not merely old.
 
