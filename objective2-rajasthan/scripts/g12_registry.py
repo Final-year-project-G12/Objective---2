@@ -206,6 +206,23 @@ def main():
         add(f"cfd.v0.cond.{r.model}.t50", f"conduction-only time to 50 %: {r.model}", round(float(r.t50_min), 1), "min",
             "../rj_openfoam/results/of_v0_conduction_check.csv", f"model={r.model}")
 
+    # --- B1 boundary diagnostic (widened box: radius 10-50 mm, fraction 2-40 %; branch o2-b1-boundary-test, select years only)
+    bb = pd.read_csv(OUT / "b1_boundary_check.csv")
+    for pair in sorted(bb.pair.unique()):
+        for key, tag in (("R_in at 50 mm end (>=49 mm)", "r50"), ("fraction at 40 % cap (>=39.5 %)", "f40"),
+                         ("R_in at 40 mm end (>=39 mm)", "r40")):
+            v = bb[(bb.pair == pair) & (bb.bound == key)].share_of_front.iloc[0]
+            add(f"b1.boundary.{pair}.{tag}", f"B1 widened box: share of final front at '{key}' ({pair})", round(100.0 * float(v), 1), "%",
+                "b1_boundary_check.csv", f"pair={pair}, bound={key}")
+    for c in range(3):
+        j = json.loads((OUT / f"b1_selection_r{c}.json").read_text(encoding="utf-8"))["chosen"]
+        src = f"b1_selection_r{c}.json"
+        add(f"b1.sel.r{c}.pcm", f"B1 widened box: regime {c} chosen PCM", j["pcm"], "", src, "chosen")
+        for key, unit, nd, sc in (("R_in_m", "mm", 1, 1000.0), ("fraction", "%", 1, 100.0), ("flow", "kg/s", 4, 1.0),
+                                  ("g_window", "kWh", 1, 1.0), ("g_annual", "kWh", 1, 1.0)):
+            add(f"b1.sel.r{c}.{key}", f"B1 widened box: regime {c} chosen {key} (select years 2021-2023)", round(j[key] * sc, nd), unit, src, "chosen")
+        add(f"b1.sel.r{c}.arrangement", f"B1 widened box: regime {c} chosen arrangement", j["arrangement"], "", src, "chosen")
+
     reg = pd.DataFrame(ROWS)
     reg.to_csv(OUT / "results_registry.csv", index=False, encoding="utf-8")
     print("registry rows", len(reg))

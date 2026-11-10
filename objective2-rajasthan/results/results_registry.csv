@@ -623,3 +623,51 @@ cfd.v0.lit_V0_tan2009_n20_cu1e8.t50,"Tan 2009 sphere, time to 50 % liquid fracti
 cfd.v0.lit_V0_tan2009_n20_cond.t50,"Tan 2009 sphere, time to 50 % liquid fraction: lit_V0_tan2009_n20_cond",89.0,min,results/../rj_openfoam/results/of_v0_benchmark.csv,"series=openfoam, case=lit_V0_tan2009_n20_cond"
 cfd.v0.cond.openfoam_conduction_only.t50,conduction-only time to 50 %: openfoam_conduction_only,89.0,min,results/../rj_openfoam/results/of_v0_conduction_check.csv,model=openfoam_conduction_only
 cfd.v0.cond.stefan_1d.t50,conduction-only time to 50 %: stefan_1d,88.4,min,results/../rj_openfoam/results/of_v0_conduction_check.csv,model=stefan_1d
+b1.boundary.r0_p1.r50,B1 widened box: share of final front at 'R_in at 50 mm end (>=49 mm)' (r0_p1),13.0,%,results/b1_boundary_check.csv,"pair=r0_p1, bound=R_in at 50 mm end (>=49 mm)"
+b1.boundary.r0_p1.f40,B1 widened box: share of final front at 'fraction at 40 % cap (>=39.5 %)' (r0_p1),73.9,%,results/b1_boundary_check.csv,"pair=r0_p1, bound=fraction at 40 % cap (>=39.5 %)"
+b1.boundary.r0_p1.r40,B1 widened box: share of final front at 'R_in at 40 mm end (>=39 mm)' (r0_p1),100.0,%,results/b1_boundary_check.csv,"pair=r0_p1, bound=R_in at 40 mm end (>=39 mm)"
+b1.boundary.r0_p2.r50,B1 widened box: share of final front at 'R_in at 50 mm end (>=49 mm)' (r0_p2),27.6,%,results/b1_boundary_check.csv,"pair=r0_p2, bound=R_in at 50 mm end (>=49 mm)"
+b1.boundary.r0_p2.f40,B1 widened box: share of final front at 'fraction at 40 % cap (>=39.5 %)' (r0_p2),41.4,%,results/b1_boundary_check.csv,"pair=r0_p2, bound=fraction at 40 % cap (>=39.5 %)"
+b1.boundary.r0_p2.r40,B1 widened box: share of final front at 'R_in at 40 mm end (>=39 mm)' (r0_p2),100.0,%,results/b1_boundary_check.csv,"pair=r0_p2, bound=R_in at 40 mm end (>=39 mm)"
+b1.boundary.r0_p3.r50,B1 widened box: share of final front at 'R_in at 50 mm end (>=49 mm)' (r0_p3),97.1,%,results/b1_boundary_check.csv,"pair=r0_p3, bound=R_in at 50 mm end (>=49 mm)"
+b1.boundary.r0_p3.f40,B1 widened box: share of final front at 'fraction at 40 % cap (>=39.5 %)' (r0_p3),22.9,%,results/b1_boundary_check.csv,"pair=r0_p3, bound=fraction at 40 % cap (>=39.5 %)"
+b1.boundary.r0_p3.r40,B1 widened box: share of final front at 'R_in at 40 mm end (>=39 mm)' (r0_p3),100.0,%,results/b1_boundary_check.csv,"pair=r0_p3, bound=R_in at 40 mm end (>=39 mm)"
+b1.boundary.r1_p1.r50,B1 widened box: share of final front at 'R_in at 50 mm end (>=49 mm)' (r1_p1),12.5,%,results/b1_boundary_check.csv,"pair=r1_p1, bound=R_in at 50 mm end (>=49 mm)"
+b1.boundary.r1_p1.f40,B1 widened box: share of final front at 'fraction at 40 % cap (>=39.5 %)' (r1_p1),0.0,%,results/b1_boundary_check.csv,"pair=r1_p1, bound=fraction at 40 % cap (>=39.5 %)"
+b1.boundary.r1_p1.r40,B1 widened box: share of final front at 'R_in at 40 mm end (>=39 mm)' (r1_p1),100.0,%,results/b1_boundary_check.csv,"pair=r1_p1, bound=R_in at 40 mm end (>=39 mm)"
+b1.boundary.r1_p2.r50,B1 widened box: share of final front at 'R_in at 50 mm end (>=49 mm)' (r1_p2),77.8,%,results/b1_boundary_check.csv,"pair=r1_p2, bound=R_in at 50 mm end (>=49 mm)"
+b1.boundary.r1_p2.f40,B1 widened box: share of final front at 'fraction at 40 % cap (>=39.5 %)' (r1_p2),22.2,%,results/b1_boundary_check.csv,"pair=r1_p2, bound=fraction at 40 % cap (>=39.5 %)"
+b1.boundary.r1_p2.r40,B1 widened box: share of final front at 'R_in at 40 mm end (>=39 mm)' (r1_p2),100.0,%,results/b1_boundary_check.csv,"pair=r1_p2, bound=R_in at 40 mm end (>=39 mm)"
+b1.boundary.r1_p3.r50,B1 widened box: share of final front at 'R_in at 50 mm end (>=49 mm)' (r1_p3),18.8,%,results/b1_boundary_check.csv,"pair=r1_p3, bound=R_in at 50 mm end (>=49 mm)"
+b1.boundary.r1_p3.f40,B1 widened box: share of final front at 'fraction at 40 % cap (>=39.5 %)' (r1_p3),37.5,%,results/b1_boundary_check.csv,"pair=r1_p3, bound=fraction at 40 % cap (>=39.5 %)"
+b1.boundary.r1_p3.r40,B1 widened box: share of final front at 'R_in at 40 mm end (>=39 mm)' (r1_p3),100.0,%,results/b1_boundary_check.csv,"pair=r1_p3, bound=R_in at 40 mm end (>=39 mm)"
+b1.boundary.r2_p1.r50,B1 widened box: share of final front at 'R_in at 50 mm end (>=49 mm)' (r2_p1),3.9,%,results/b1_boundary_check.csv,"pair=r2_p1, bound=R_in at 50 mm end (>=49 mm)"
+b1.boundary.r2_p1.f40,B1 widened box: share of final front at 'fraction at 40 % cap (>=39.5 %)' (r2_p1),43.1,%,results/b1_boundary_check.csv,"pair=r2_p1, bound=fraction at 40 % cap (>=39.5 %)"
+b1.boundary.r2_p1.r40,B1 widened box: share of final front at 'R_in at 40 mm end (>=39 mm)' (r2_p1),100.0,%,results/b1_boundary_check.csv,"pair=r2_p1, bound=R_in at 40 mm end (>=39 mm)"
+b1.boundary.r2_p2.r50,B1 widened box: share of final front at 'R_in at 50 mm end (>=49 mm)' (r2_p2),0.0,%,results/b1_boundary_check.csv,"pair=r2_p2, bound=R_in at 50 mm end (>=49 mm)"
+b1.boundary.r2_p2.f40,B1 widened box: share of final front at 'fraction at 40 % cap (>=39.5 %)' (r2_p2),28.6,%,results/b1_boundary_check.csv,"pair=r2_p2, bound=fraction at 40 % cap (>=39.5 %)"
+b1.boundary.r2_p2.r40,B1 widened box: share of final front at 'R_in at 40 mm end (>=39 mm)' (r2_p2),100.0,%,results/b1_boundary_check.csv,"pair=r2_p2, bound=R_in at 40 mm end (>=39 mm)"
+b1.boundary.r2_p3.r50,B1 widened box: share of final front at 'R_in at 50 mm end (>=49 mm)' (r2_p3),27.3,%,results/b1_boundary_check.csv,"pair=r2_p3, bound=R_in at 50 mm end (>=49 mm)"
+b1.boundary.r2_p3.f40,B1 widened box: share of final front at 'fraction at 40 % cap (>=39.5 %)' (r2_p3),39.4,%,results/b1_boundary_check.csv,"pair=r2_p3, bound=fraction at 40 % cap (>=39.5 %)"
+b1.boundary.r2_p3.r40,B1 widened box: share of final front at 'R_in at 40 mm end (>=39 mm)' (r2_p3),100.0,%,results/b1_boundary_check.csv,"pair=r2_p3, bound=R_in at 40 mm end (>=39 mm)"
+b1.sel.r0.pcm,B1 widened box: regime 0 chosen PCM,savE® OM55,,results/b1_selection_r0.json,chosen
+b1.sel.r0.R_in_m,B1 widened box: regime 0 chosen R_in_m (select years 2021-2023),48.4,mm,results/b1_selection_r0.json,chosen
+b1.sel.r0.fraction,B1 widened box: regime 0 chosen fraction (select years 2021-2023),40.0,%,results/b1_selection_r0.json,chosen
+b1.sel.r0.flow,B1 widened box: regime 0 chosen flow (select years 2021-2023),0.0499,kg/s,results/b1_selection_r0.json,chosen
+b1.sel.r0.g_window,B1 widened box: regime 0 chosen g_window (select years 2021-2023),197.9,kWh,results/b1_selection_r0.json,chosen
+b1.sel.r0.g_annual,B1 widened box: regime 0 chosen g_annual (select years 2021-2023),209.6,kWh,results/b1_selection_r0.json,chosen
+b1.sel.r0.arrangement,B1 widened box: regime 0 chosen arrangement,radial,,results/b1_selection_r0.json,chosen
+b1.sel.r1.pcm,B1 widened box: regime 1 chosen PCM,PureTemp 60,,results/b1_selection_r1.json,chosen
+b1.sel.r1.R_in_m,B1 widened box: regime 1 chosen R_in_m (select years 2021-2023),43.2,mm,results/b1_selection_r1.json,chosen
+b1.sel.r1.fraction,B1 widened box: regime 1 chosen fraction (select years 2021-2023),38.6,%,results/b1_selection_r1.json,chosen
+b1.sel.r1.flow,B1 widened box: regime 1 chosen flow (select years 2021-2023),0.0496,kg/s,results/b1_selection_r1.json,chosen
+b1.sel.r1.g_window,B1 widened box: regime 1 chosen g_window (select years 2021-2023),167.6,kWh,results/b1_selection_r1.json,chosen
+b1.sel.r1.g_annual,B1 widened box: regime 1 chosen g_annual (select years 2021-2023),177.7,kWh,results/b1_selection_r1.json,chosen
+b1.sel.r1.arrangement,B1 widened box: regime 1 chosen arrangement,single-layer,,results/b1_selection_r1.json,chosen
+b1.sel.r2.pcm,B1 widened box: regime 2 chosen PCM,PlusICE A58,,results/b1_selection_r2.json,chosen
+b1.sel.r2.R_in_m,B1 widened box: regime 2 chosen R_in_m (select years 2021-2023),49.3,mm,results/b1_selection_r2.json,chosen
+b1.sel.r2.fraction,B1 widened box: regime 2 chosen fraction (select years 2021-2023),40.0,%,results/b1_selection_r2.json,chosen
+b1.sel.r2.flow,B1 widened box: regime 2 chosen flow (select years 2021-2023),0.047,kg/s,results/b1_selection_r2.json,chosen
+b1.sel.r2.g_window,B1 widened box: regime 2 chosen g_window (select years 2021-2023),182.1,kWh,results/b1_selection_r2.json,chosen
+b1.sel.r2.g_annual,B1 widened box: regime 2 chosen g_annual (select years 2021-2023),193.3,kWh,results/b1_selection_r2.json,chosen
+b1.sel.r2.arrangement,B1 widened box: regime 2 chosen arrangement,staggered,,results/b1_selection_r2.json,chosen
