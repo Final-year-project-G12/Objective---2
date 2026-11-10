@@ -124,3 +124,10 @@ judged at 50 C. Script changes against the shared copies: Uttarakhand project an
 draw case (shared: fixed 25 C), 50 C target in the tank metrics, 12 K capsule drive (shared quick-start 15 K would exceed the 72 C
 shield for PureTemp 58), configurable WSL distribution, LF line endings for the bash scripts. **Not run:** OpenFOAM and ParaView
 are not installed on this machine; `scripts/run_all_cases.ps1` runs everything where they are.
+
+## 2026-11-10 - Corrections applied (documentation and comments only)
+
+- Applied the O1/O2 corrected-methodology note to the Uttarakhand O2 documents. Nothing was re-run; no result file and not `results/held_out_test.lock` was changed.
+- Code: `src/weather/roles.py` module docstring no longer says the held-out years are untouched; it records run id `heldout_c75ac0e6fb78`, UTC 2026-10-28T13:18:41. Tests: 81 passed.
+- Docs: `docs/README.md` (corrections section), `docs/02_WEATHER_AND_DESIGN_SPACE.md` and `docs/06_OBJECTIVE3_HANDOFF.md` (K = 4 inheritance, 50 L / 1.5 m2 / 50 C), `docs/05_LIMITATIONS_AND_OPEN_ITEMS.md` (open items), `README.md`.
+- Held-out evidence re-read: 24 rows; regimes 0-2 `g_window` > 0; regime 3 all designs negative.

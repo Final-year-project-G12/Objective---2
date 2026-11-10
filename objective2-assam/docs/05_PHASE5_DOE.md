@@ -1,5 +1,7 @@
 # 05 — Phase 5 Audit: Design-of-Experiments Dataset (Assam)
 
+> **Legacy pipeline (label added 2026-11-10): not reconciled with the current method, no held-out test.** Single-node tank, 300 s step, no selection logs, no `held_out_test.lock`; not a surrogate-assisted NSGA-II search with held-out validation. See "Corrections applied 2026-11-10" in `README.md`.
+
 Files: `src/doe/generate_cases.py`, `src/doe/run_batch.py`,
 `src/doe/split_cases.py`. Output: `results/phase5_design_cases.csv`
 (+ `.parquet`), one row per simulation.

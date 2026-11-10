@@ -1,5 +1,8 @@
 # Assam Objective 2 — Phase 0 Input Packaging & State Configuration Report
 
+> **Legacy pipeline (label added 2026-11-10): not reconciled with the current method, no held-out test.** Single-node tank, 300 s step, no selection logs, no `held_out_test.lock`; not a surrogate-assisted NSGA-II search with held-out validation. See "Corrections applied 2026-11-10" in `README.md`.
+> The "GREEN" status below is a 2026-09-09 input-packaging check only; the O1 inputs it packaged are an older version-locked copy (see `README.md`).
+
 **Document Date:** 2026-09-09  
 **Upstream Objective 1 Provenance Commit:** `e5a5e820597e89be76acd2fb0037c77eaaac3721`  
 **Overall Readiness Status:** **GREEN** (Ready for Phase 1/Phase 2)
@@ -77,7 +80,7 @@ Objective 1 historical preliminary MCDM was conducted on an unconfirmed $K=4$ cl
 - The MCDM #1 candidate (`RT44HC`) finished last in actual annual solar fraction delivery ($42.1\%$).
 - The strict evidence audit for $K=3$ established $n_{\text{confirmed}} = 0$ across all clusters.
 
-### Objective 2 Physics-Validated Candidate Shortlist
+### Objective 2 Physics-Ranked Candidate Shortlist (earlier title said "Physics-Validated"; a ranking by the O1 physics model, not a validation)
 Based on the 10-year TRNSYS-style physics validation in Phase 10, the candidate shortlist consists of:
 1. **`savE® OM48`** ($T_m = 51.0^\circ\text{C}$, $L = 165.0\text{ kJ/kg}$, $\rho = 960\text{ kg/m}^3$, $k = 0.15\text{ W/(m}\cdot\text{K)}$)
 2. **`savE® OM50`** ($T_m = 50.0^\circ\text{C}$, $L = 189.0\text{ kJ/kg}$, $\rho = 961\text{ kg/m}^3$, $k = 0.175\text{ W/(m}\cdot\text{K)}$)

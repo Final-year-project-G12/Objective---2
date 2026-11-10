@@ -10,6 +10,8 @@ Current version: the Rajasthan v3 recipe (PCM fraction cap 30 %) on Objective 1'
 2021-2023 and tested once on the untouched years 2024-2025. PCM helps in regimes 0-2; in regime 3 (cold, high altitude) it does not, and the
 recommendation there is a water-only tank. The full report is `docs/Objective2_Uttarakhand_Report_v3.docx` (PDF copy beside it).
 
+Method, in one phrase: a surrogate-assisted, constrained multi-objective search (simulator-evaluated). Designs are "the best found within the declared 2-30 % PCM-fraction and flow bounds and the selection rule", not a global optimum. This state inherits O1 K = 4 outputs (O1 commit `6be0dcd`, not on O1 main, which has K = 5). The held-out years 2024-2025 were used once and cannot be reused (e.g. by Objective 3). Corrections of 2026-11-10 are in `docs/README.md`.
+
 ## Layout
 
 ```

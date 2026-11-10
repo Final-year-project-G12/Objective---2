@@ -8,6 +8,8 @@ pipeline, results, limitations, and the Objective 3 hand-off. `docs/PROGRESS.md`
 
 Current version: v3 (PCM fraction cap 30 %), designs selected on 2021-2023 and tested once on the untouched years 2011-2015.
 
+Method, in one phrase: a surrogate-assisted, constrained multi-objective search (simulator-evaluated; surrogates only rank and propose). Designs are "the best found within the declared 2-30 % PCM-fraction and 0.010-0.050 kg/s flow bounds and the selection rule", not a global optimum. The held-out years 2011-2015 were used once and cannot be reused (e.g. by Objective 3). Corrections of 2026-11-10 are listed in `docs/README.md`.
+
 ## Contents
 
 1. [Layout](#layout)

@@ -1,5 +1,7 @@
 # 01 — Phase 1 Audit: Frozen Configuration & State Setup (Assam)
 
+> **Legacy pipeline (label added 2026-11-10): not reconciled with the current method, no held-out test.** Single-node tank, 300 s step, no selection logs, no `held_out_test.lock`; not a surrogate-assisted NSGA-II search with held-out validation. See "Corrections applied 2026-11-10" in `README.md`.
+
 Files: `configs/system_config_shared.yaml`, `configs/design_bounds_shared.yaml`,
 `configs/states/assam.yaml`. Loader: `src/io_utils.py`.
 
@@ -41,8 +43,8 @@ is Assam-specific.
   invalidated in Objective 1's own Phase 10 (ρ = −0.52 to −0.64
   correlation between MCDM rank and actual simulated solar-fraction
   performance; the old rank-1 PCM, RT44HC, came last). The 3 PCMs used
-  here are Objective 1's **Phase 9/10 physics-validated candidate
-  universe** instead — a materially different provenance from
+  here are Objective 1's **Phase 9/10 physics-ranked candidate
+  universe** (labelled "physics-validated" in `assam.yaml`; a ranking by O1's physics model, not a validation) instead — a materially different provenance from
   Rajasthan/Tamil Nadu's shortlists, and it should be described that way
   in any paper section rather than as "MCDM Top-3."
 

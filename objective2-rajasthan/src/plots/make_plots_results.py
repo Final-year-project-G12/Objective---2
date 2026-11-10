@@ -128,7 +128,7 @@ def fig_null_results():
         a.bar([f"R{r}" for r in h.index], h[col], color=COL["held-out"])
         a.axhline(ref, color="k", lw=1, ls="--" if ref else "-")
         a.set_title(t, fontsize=10)
-    fig.suptitle("Held-out 2024-2025, chosen design: what PCM does not improve (dashed = 65 C limit)")
+    fig.suptitle("Held-out 2011-2015, chosen design: what PCM does not improve (dashed = 65 C limit)")
     _save(fig, "fig5_heldout_nulls_and_costs")
 
 

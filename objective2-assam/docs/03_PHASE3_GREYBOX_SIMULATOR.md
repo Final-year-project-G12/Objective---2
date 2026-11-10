@@ -1,5 +1,7 @@
 # 03 — Phase 3 Audit: Grey-Box Enthalpy Simulator (Assam)
 
+> **Legacy pipeline (label added 2026-11-10): not reconciled with the current method, no held-out test.** Single-node tank, 300 s step, no selection logs, no `held_out_test.lock`; not a surrogate-assisted NSGA-II search with held-out validation. See "Corrections applied 2026-11-10" in `README.md`.
+
 Files: `src/simulation/capsule_enthalpy.py`, `collector_model.py`,
 `heat_transfer.py`, `hydraulic_model.py`, `demand_profile.py`,
 `energy_balance.py`, `tank_model.py`, `run_case.py`.

@@ -46,3 +46,15 @@ Numbers below are quoted from `docs/04_RESULTS.md` (generated) and the files it 
 3. **Collector F_R(flow):** a cited flow-dependent correction would remove the flow artefact.
 4. **Delivery target:** 50 C (Uttarakhand) vs 45 C (Rajasthan): decide whether the states should report at a common target.
 5. **Phase 4 Gate 4:** solar fraction 0.24-0.30 at the illustrative designs (multi-node), below the published benchmark band; reported, not tuned.
+
+## Open items added 2026-11-10 (corrections pass)
+
+- Open decision (a): reconcile O1 K = 4 (what O2 used, commit `6be0dcd`, not on main) with O1 main K = 5.
+- Open decision (b): whether Uttarakhand adopts the 60 C O1 basis (needs a full O1 and O2 re-run); today O1 and O2 both use 50 C.
+- Open: tank sizing 33.3 L/m2 is below IS 12976:2023 (decision D8); not previously stated in this folder.
+- Open: regime 3 gets no PCM gain in the held-out test (all 3 designs negative); the recommendation there is a water-only tank.
+- Open: 30 % cap limiting in regimes 0-2; no untouched test years remain (2024-2025 used).
+- Open (d): F_R(flow) is not in the released model; no G24 study exists for this state.
+- Open (e): method citations to source: Sobol sequence, XGBoost, committee-disagreement active learning, expected-improvement Bayesian optimisation.
+- Open: the .docx / .pdf reports in `docs/` were not updated by this pass.
+- Experimental validation does not exist (Objective 4).

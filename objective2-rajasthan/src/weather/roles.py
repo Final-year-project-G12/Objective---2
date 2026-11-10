@@ -67,7 +67,8 @@ def acquire_test_lock(run_id: str, selection_fingerprint: str) -> Path:
         fd = os.open(TEST_LOCK_PATH, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
     except FileExistsError:
         raise HeldOutLockError(
-            f"held-out 2024-2025 test already run (lock {TEST_LOCK_PATH}); it may be run exactly once. "
+            f"held-out test ({min(years_for('test'))}-{max(years_for('test'))}) already run "
+            f"(lock {TEST_LOCK_PATH}); it may be run exactly once. "
             f"Contents: {TEST_LOCK_PATH.read_text()[:300]}") from None
     with os.fdopen(fd, "w") as fh:
         json.dump({"run_id": run_id, "selection_fingerprint": selection_fingerprint,

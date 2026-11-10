@@ -1,5 +1,7 @@
 # 04 — Phase 4 Audit: Simulator Verification Gates (Assam)
 
+> **Legacy pipeline (label added 2026-11-10): not reconciled with the current method, no held-out test.** Single-node tank, 300 s step, no selection logs, no `held_out_test.lock`; not a surrogate-assisted NSGA-II search with held-out validation. See "Corrections applied 2026-11-10" in `README.md`.
+
 File: `src/verify/gates.py`. Output:
 `results/phase4_simulator_verification_report_assam.txt`.
 
