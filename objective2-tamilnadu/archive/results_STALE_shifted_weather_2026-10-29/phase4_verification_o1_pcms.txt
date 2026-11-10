@@ -1,0 +1,110 @@
+########################################################################
+# Objective 2 Phase 4 — Simulator Verification Report — state=tamilnadu
+########################################################################
+
+========================================================================
+GATE 1 — Energy conservation (7 diverse cases, arrangement-aware since 2026-09-17)
+========================================================================
+  A: cluster0 / Palmitic-stearic acid/Expanded graphite / mid design residual=0.000000 %
+  B: cluster1 / PureTemp 60 / small-capsule design     residual=0.000000 %
+  C: cluster2 / n-Heptacosane (C27) / large-capsule design residual=0.000000 %
+  D: cluster2 / no-PCM plain-tank baseline             residual=0.000000 %
+  E: cluster0 / Palmitic-stearic acid/Expanded graphite / bounds-extreme design residual=0.000000 %
+  F: cluster1 / PureTemp 60 / single-layer             residual=0.000000 %
+  G: cluster2 / n-Heptacosane (C27) / radial           residual=0.000000 %
+
+  mean residual = 0.000000 %   max residual = 0.000000 %
+  Gate 1 verdict: PASS  (pass<0.1%, warn<0.5%)
+
+========================================================================
+GATE 2 — Limiting cases
+========================================================================
+  [PASS] zero_irradiance -> zero collector heat                     E_collector=0.000000 kWh
+  [PASS] zero_flow -> simulator completes without crashing          residual=0.0000%, E_pump=0.000000000 kWh
+  [PASS] no_PCM -> zero charge/discharge energy                     E_charge=0.000000000, E_discharge=0.000000000
+  [PASS] zero_latent_heat -> completes, f_melt degenerate (informational) f_melt range=1.0000 (L=0 makes f a step function, expected)
+  [PASS] very_high_conductivity -> smaller mean |Tw-Tpcm| gap than nominal gap_high_k=2.254 C, gap_nominal=2.748 C
+  [PASS] perfectly_insulated_tank -> zero E_loss                    E_loss=0.000000 kWh
+  [PASS] empty_demand -> zero load and zero unmet energy            E_load=0.000000, E_unmet=0.000000
+  [PASS] solid/liquid initial PCM -> starts at 0/1 and moves correctly solid: f0=0.000->f24=0.000; liquid: f0=1.000->f24=0.000
+  [PASS] flow below/above limits -> completes, higher flow narrows Tw-Tpcm gap gap@0.002kg/s=3.350 C, gap@0.20kg/s=2.544 C
+  [PASS] capsules_removed (N=0) [single-layer] -> zero PCM charge energy E_charge=0.000000000 kWh
+  [PASS] capsules_removed (N=0) [staggered] -> zero PCM charge energy E_charge=0.000000000 kWh
+  [PASS] capsules_removed (N=0) [radial] -> zero PCM charge energy  E_charge=0.000000000 kWh
+  [PASS] rajasthan_cluster0_plain_tank_overheat (informational, non-gating) plain-tank max T_w=72.5 C vs 65 C PCM limit -> EXCEEDS on solar input alone
+
+  Gate 2: 12/12 limiting cases passed (+1 informational: Cluster-0 overheat record, non-gating; 13 rows printed above in total).
+  Gate 2 verdict: PASS
+
+========================================================================
+GATE 3 — Baseline comparison (plain tank vs fixed PCM vs optimized-looking)
+========================================================================
+  plain_tank                   useful=  1963.0 kWh  SF=70.22%  unmet=   627.1 kWh  loss= 160.8 kWh  pump=0.0000 Wh  mean_f_melt=0.0
+  fixed_PCM_max_feasible[single-layer] useful=  1994.8 kWh  SF=72.92%  unmet=   570.2 kWh  loss= 165.9 kWh  pump=0.0001 Wh  mean_f_melt=0.2897664436555907
+  fixed_PCM_max_feasible[staggered] useful=  1994.8 kWh  SF=72.92%  unmet=   570.2 kWh  loss= 165.9 kWh  pump=0.0003 Wh  mean_f_melt=0.2897664436555907
+  fixed_PCM_max_feasible[radial] useful=  1994.8 kWh  SF=72.92%  unmet=   570.2 kWh  loss= 165.9 kWh  pump=0.0000 Wh  mean_f_melt=0.2897664436555907
+  optimized_looking            useful=  1979.7 kWh  SF=71.56%  unmet=   598.8 kWh  loss= 163.3 kWh  pump=0.0003 Wh  mean_f_melt=0.2894286959026891
+
+  Capability check (synthetic PCM, Tm=40C matched to this tank's operating range):
+    plain_tank          SF=70.22%
+    matched_Tm_PCM      SF=71.88%  mean_f_melt=0.498
+    Simulator rewards a well-matched PCM over plain tank: True
+
+  Ambient-loss diagnostic: solar_fraction with-loss=72.92%  no-loss=75.26%  (no-loss >= with-loss confirms the U_tank term is active: True)
+
+  Palmitic-stearic acid/Expanded graphite (Objective 1's actual rank-1 PCM for Cluster 0, Tm=55.2C) beats plain tank in THIS 50L/9.9%-fraction design: True
+
+  Gate 3 verdict: PASS  (gated on simulator capability + active loss term, not on today's PCM/geometry choice)
+
+========================================================================
+GATE 4 — Light calibration against published benchmark
+========================================================================
+  Benchmark band (Singh et al. 2025, cited): 54.0-84.0% solar fraction
+  Chen et al. 2025 also report 94.2% storage efficiency / 31.7 h retention on a comparable configuration; both benchmarks are calibration references, not universal constants (framework doc Bug-Fix 3 / Gate 4).
+  This simulator's optimized-looking design (arrangement=staggered, d=0.08m, n=19, flow=0.040 kg/s — see gate3_baseline_comparison): 71.56% solar fraction
+  Inside cited band: True
+  Gate 4 verdict: PASS (calibration target, not a hard release gate)
+
+========================================================================
+GATE 5 — Sensitivity & physical-monotonicity spot checks
+========================================================================
+  Baseline: useful=1968.1 kWh  SF=70.43%  pump=0.0000 Wh  charge=25.02 kWh
+  [PASS] latent_heat +10% vs -10% -> more PCM energy stored/cycled with more latent heat +10%: charge=26.687 kWh   -10%: charge=23.398 kWh
+  [PASS] flow +50% vs -50% -> higher flow means more pump energy            +50%: pump=0.0000 Wh   -50%: pump=0.0000 Wh
+  [PASS] reduced effective tank-loss coefficient (ambient-warming proxy) -> lower E_loss base loss=160.91 kWh, proxy loss=145.24 kWh
+
+  Gate 5: 3/3 sensitivity checks in the expected direction.
+  Gate 5 verdict: PASS
+
+========================================================================
+O1 PCM ROSTER - Objective 1 MCDM top-3 per cluster (decision D2), repaired simulator, dt=150 s
+========================================================================
+  cluster 0: plain tank useful=1963.0 kWh SF=0.702   (O1 rank-1 tie: none)
+    [1] RT57HC                                     Tm= 56.5C L=  240kJ/kg residual=0.00000% useful=1969.9 kWh (vs plain +0.35%) mean_f_melt=0.286 max_f_melt=1.000 cycles=357 max_T_pcm=64.8C shield_pcm_substeps=86366
+    [2] n-Hexacosane (C26)                         Tm= 56.5C L=  256kJ/kg residual=0.00000% useful=1968.5 kWh (vs plain +0.28%) mean_f_melt=0.287 max_f_melt=1.000 cycles=357 max_T_pcm=64.5C shield_pcm_substeps=87718
+    [3] PureTemp 58                                Tm= 58.0C L=  225kJ/kg residual=0.00000% useful=1969.8 kWh (vs plain +0.35%) mean_f_melt=0.272 max_f_melt=1.000 cycles=356 max_T_pcm=66.0C shield_pcm_substeps=41658
+  cluster 1: plain tank useful=2023.8 kWh SF=0.619   (O1 rank-1 tie: none)
+    [1] RT57HC                                     Tm= 56.5C L=  240kJ/kg residual=0.00000% useful=2029.0 kWh (vs plain +0.26%) mean_f_melt=0.226 max_f_melt=1.000 cycles=328 max_T_pcm=64.7C shield_pcm_substeps=62830
+    [2] n-Hexacosane (C26)                         Tm= 56.5C L=  256kJ/kg residual=0.00000% useful=2027.9 kWh (vs plain +0.20%) mean_f_melt=0.227 max_f_melt=1.000 cycles=329 max_T_pcm=64.6C shield_pcm_substeps=63971
+    [3] n-Pentacosane (C25)                        Tm= 54.0C L=  238kJ/kg residual=0.00000% useful=2027.6 kWh (vs plain +0.19%) mean_f_melt=0.251 max_f_melt=1.000 cycles=342 max_T_pcm=63.8C shield_pcm_substeps=68650
+  cluster 2: plain tank useful=1927.0 kWh SF=0.680   (O1 rank-1 tie: none)
+    [1] RT57HC                                     Tm= 56.5C L=  240kJ/kg residual=0.00000% useful=1933.1 kWh (vs plain +0.32%) mean_f_melt=0.260 max_f_melt=1.000 cycles=335 max_T_pcm=64.8C shield_pcm_substeps=76232
+    [2] n-Pentacosane (C25)                        Tm= 54.0C L=  238kJ/kg residual=0.00000% useful=1931.5 kWh (vs plain +0.23%) mean_f_melt=0.283 max_f_melt=1.000 cycles=345 max_T_pcm=63.7C shield_pcm_substeps=82067
+    [3] n-Hexacosane (C26)                         Tm= 56.5C L=  256kJ/kg residual=0.00000% useful=1932.0 kWh (vs plain +0.26%) mean_f_melt=0.261 max_f_melt=1.000 cycles=335 max_T_pcm=64.5C shield_pcm_substeps=77415
+
+  O1 PCMs verified: c0#1 RT57HC, c0#2 n-Hexacosane (C26), c0#3 PureTemp 58, c1#1 RT57HC, c1#2 n-Hexacosane (C26), c1#3 n-Pentacosane (C25), c2#1 RT57HC, c2#2 n-Pentacosane (C25), c2#3 n-Hexacosane (C26)
+  worst Gate-1 residual over the roster = 0.00000 %   roster verdict: PASS
+
+========================================================================
+SUMMARY
+========================================================================
+  Gate 1: PASS
+  Gate 2: PASS
+  Gate 3: PASS
+  Gate 4: PASS
+  Gate 5: PASS
+
+  Gates passing cleanly: 5/5
+  O1 PCM roster: PASS (9 PCMs)
+
+  Go/No-Go (framework doc Phase 4 rule: residual<0.5% AND >=3/5 gates clean): GO

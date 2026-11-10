@@ -1,0 +1,112 @@
+# ============================================================================
+# design_bounds_shared.yaml  —  FROZEN, Phase 0A
+# ============================================================================
+# Identical for all four states. From O2_Unified_PerState_Execution_Framework.md
+# "DESIGN-SPACE BOUNDS — IDENTICAL FOR ALL STATES".
+#
+# 40-hr corner cut (documented, not silently dropped): capsule shape is
+# sphere-only and arrangement is staggered-only. Full spec explores all
+# shape x arrangement combinations — noted as future work.
+#
+# NOTE on the two "thickness" variables: for a sphere, the maximum PCM
+# conduction distance (center to surface) equals the radius, i.e.
+# thickness = capsule_diameter / 2. We therefore sample capsule_diameter_m
+# directly (the independent geometric variable) and DERIVE
+# pcm_thickness_m = capsule_diameter_m / 2, then check it against
+# pcm_thickness_m bounds below. Both bounds are kept so a design that
+# passes the diameter bound but produces a thickness out of range is still
+# caught explicitly (reason code in src/design/constraints.py).
+#
+# capsule_count.max WIDENED 24 -> 37 (deliberate methodology revision, not a
+# silent edit -- see docs_objective2/13_DESIGN_BOUNDS_WIDENING.md): with
+# capsule_diameter_m capped at 0.08 m, count=24 was the actual binding
+# constraint keeping max reachable pcm_volume_fraction at ~12.9% -- well
+# short of this file's OWN 0.20 ceiling below and the documented 15-20%
+# Chen et al. (2025) test levels. count=37 reaches pcm_volume_fraction=
+# 0.198 (verified geometrically valid: passes overlap/passage/pressure
+# checks), landing right at the existing 0.20 ceiling without needing to
+# raise it. Every design at count<=24 remains exactly as valid as before;
+# this only ADDS previously-unreachable higher-fraction designs to the
+# space Phase 5-7 search over. Affects all 4 states (shared config) --
+# re-run Phases 2-8 for every state after this change.
+#
+# arrangement RESTORED as a searched categorical variable 2026-09-17
+# (previously frozen to staggered-only, which contradicted the objective
+# statement naming "capsule arrangement" as one of the four things Objective
+# 2 must determine -- see a Rajasthan-pilot change plan (source removed from this project after adaptation, see docs_objective2/tamilnadu_phase_docs/)
+# Sec 3.1 and 01_PROMPT_PHASE1_CONFIG.md, adapted here for Tamil Nadu).
+# Shape stays frozen to sphere (never named in the objective statement).
+# capsule_count ceiling (37, above) is left as the shared starting ceiling
+# for all three arrangements; Phase 2 re-verifies per-arrangement reachable
+# PCM-volume-fraction against it and may find it asymmetric across
+# arrangements (report that, don't silently equalize it).
+# ============================================================================
+
+# ============================================================================
+# v3.0 (2026-10-28) — REPARAMETERIZED: pcm_volume_fraction is now the
+# SEARCHED variable and capsule_count is DERIVED from it. This reverses the
+# v2.0 relationship, and it fixes a real, previously-undetected defect.
+#
+# ROOT CAUSE. The v2.0 note above derived its capsule_count ceiling of 37
+# from "count=37 reaches pcm_volume_fraction=0.198". That arithmetic was
+# correct for a 50 L tank. The tank was later specified at 100 L, and the
+# count ceiling was never rescaled, so every achievable volume fraction
+# halved. Measured on the v2.0 bounds:
+#
+#     tank =  50 L  ->  max reachable pcm_volume_fraction = 0.1984
+#     tank = 100 L  ->  max reachable pcm_volume_fraction = 0.0992
+#
+# i.e. at the actual 100 L tank the WHOLE declared band [0.10, 0.20] was
+# unreachable -- the achievable maximum sat just BELOW the declared
+# minimum. Nothing caught it because pcm_volume_fraction was declared here
+# but never enforced in src/design/constraints.py (it is now).
+#
+# CONSEQUENCE, measured before the fix: at the box midpoint the tank held
+# ~1.4 L of PCM (~0.08 kWh latent) against ~1.16 kWh of water sensible
+# capacity per 10 C swing, so the capsules acted as thermal rounding error
+# that displaced water and added conduction resistance. g_window came out
+# NEGATIVE for all 24 probe designs across all three regimes (-36 to
+# -46 kWh/year), and was nearly flat in capsule count -- no search over
+# diameter/count/flow could have fixed it.
+#
+# WHY VOLUME FRACTION IS THE RIGHT SEARCHED VARIABLE: it is the physically
+# meaningful quantity (it sets how much latent capacity the tank has), it
+# is what Manvitha's Rajasthan study searched and reported (her chosen
+# designs sit at 28.4-29.6%), and it is dimensionless -- so a change of
+# tank size can never silently move the design space again, which is
+# exactly the failure mode above. capsule_count becomes an OUTPUT
+# (derived from fraction + diameter + tank volume) and keeps only a loose
+# sanity ceiling here; the real limits remain the geometric
+# overlap/passage/pressure checks, which are unchanged.
+#
+# CEILING RAISED 0.20 -> 0.30 to cover Rajasthan's 28.4-29.6% designs, so
+# the ported method can actually reach the operating point it was
+# developed at. The 0.10 floor is retained.
+#
+# SCOPE: this is a SHARED config, so per the v2.0 note's own instruction
+# ("re-run Phases 2-8 for every state after this change") the other three
+# states' Phase 2-8 results are invalidated by this edit and must be
+# re-run. Only Tamil Nadu is re-run as part of the current work; the other
+# three are out of scope and are flagged, not silently left stale.
+# ============================================================================
+
+version: "config_v3.0_2026-10-28"
+
+pcm_thickness_m:        {min: 0.02, max: 0.10}     # derived = diameter/2, checked independently
+capsule_diameter_m:     {min: 0.02, max: 0.08}
+pcm_volume_fraction:     {min: 0.02, max: 0.30}      # SEARCHED (v3.0); enforced in constraints.py
+                                                      # range matches the Rajasthan study's own searched
+                                                      # band ("2 to 30 % of tank volume", report Table 2)
+capsule_count:           {min: 1, max: 20000, step: 1}  # DERIVED (v3.0) -- sanity guard only;
+                                                         # overlap/passage/pressure checks bind
+capsule_shape:           [sphere]                       # frozen: never named in the objective statement
+capsule_arrangement:
+  type: categorical
+  allowed: [single-layer, staggered, radial]
+  default: staggered   # legacy-caller default only -- schema.py requires it be passed explicitly
+pcm_volume_fraction_levels_to_include_in_doe: [0.10, 0.20, 0.30]   # Chen audit baseline, rescaled to v3.0
+flow_rate_kg_s:          {min: 0.010, max: 0.050}
+
+geometry:
+  spacing_min_m: 0.003          # minimum capsule surface-to-surface clearance
+  passage_min_fraction: 0.05    # minimum free-flow (void) volume fraction of the tank
