@@ -1,41 +1,67 @@
 # How to Run — Tamil Nadu
 
-> ## 2026-10-28: there are now TWO pipelines in this repo
+> ## STOP - CORRECTED 2026-11-09. Read this before anything below it.
 >
-> **The current one** is the ported Rajasthan methodology (gates G1–G19).
-> Use it. It is driven by two commands:
+> **Everything below this banner describes pipelines that NO LONGER EXIST.**
+> The previous banner here claimed the current pipeline was
+> `run_rajasthan_pipeline.py --stage all` plus `src.doe.run_sobol_doe`, and the
+> legacy one `pipeline.py --stage ...`. Checked on 2026-11-09: **none of those
+> entry points is present**, and neither are `src/doe/`, `src/surrogate/` or
+> `src/robustness/`. Anyone following this guide could not run a single command
+> in it. That is why this banner replaces it rather than amending it.
+>
+> ### The pipeline that actually exists
+>
+> One runner, 31 stages named `g2` ... `g25`:
 >
 > ```bash
-> python -m src.doe.run_sobol_doe --points 128 --years 5 --dt 150
-> python run_rajasthan_pipeline.py --stage all
+> python scripts/tn_run_all.py --list                  # show every stage
+> python scripts/tn_run_all.py --all --keep-going --workers 6
+> python scripts/tn_run_all.py --only g8_s3_compare    # one stage
+> python scripts/tn_run_all.py --from g8_s2_doe --to g9_s4_s5
 > ```
 >
-> Stages, in enforced order: `surrogate` → `search` → `confirm` → `band`
-> → `select` → `heldout` → `diagnostics` → `registry`. Each consumes the
-> previous stage's file and will tell you which stage to run first if it
-> cannot find its input. `active` (active learning) can be run between
-> `surrogate` and `search`.
->
-> **The legacy one** is the original Phase 1–8 chain documented in the
-> rest of this file (`python pipeline.py --stage ...`). Its commands still
-> work, but its *outputs are superseded*: everything produced before
-> 2026-10-28 was computed with the single-trip safety shield (which
-> throttled the collector to protect the PCM) and a design space that
-> could only reach 9.9 % PCM volume fraction. Those files now live in
-> `archive/old_implementation/_archive/results_pre_shield_fix/`.
->
-> | what changed | where it is explained |
+> | you want | run |
 > |---|---|
-> | two-part shield, G1/G2/D3 repairs, design space v3.0, dt=150 s | `RAJASTHAN_METHOD_PORT_PROGRESS.md` |
-> | year roles (explore / select / test) and the held-out lock | `../README.md` |
-> | which numbers are citable | `results/<state>/results_registry.csv` |
+> | the designs and their gates | `python scripts/tn_final_summary.py` |
+> | the generated results document | `python scripts/g12_results_doc.py` -> `docs/04_RESULTS.md` |
+> | the Objective 3 contract | `python scripts/g25_obj3_contract.py` |
+> | figures | `python -m src.plots.make_plots_results` |
+> | tests (89) | `python -m pytest tests/ -q` |
+> | the live CFD demo | `cd ansys && python fluent_live_demo.py` |
 >
-> Run order matters because the year roles must stay apart: the DOE sees
-> **explore** years only and refuses a select/test year; the funnel's hard
-> constraints use **select** years; the **test** years are spent once,
-> behind a SHA-256 lock.
-
----
+> `g10_test` is the one-shot held-out test. It is **locked and already spent**
+> (`results/held_out_test.lock`, 2026-10-30). `--all` deliberately skips it.
+>
+> ### How the current stages map to the Phase names used below
+>
+> | old phase name below | current stage |
+> |---|---|
+> | Phase 5 "DOE" | `g8_s2_doe` - scrambled Sobol, 128 points |
+> | Phase 6 "surrogate" | `g8_s3_compare` - five-family bake-off; `stacked` wins all 9 pairs |
+> | Phase 7 "optimize" | `g9_s4_s5` - NSGA-II + active learning, then `g9_s6_grid`, `g9_band`, `g10_select` |
+> | Phase 8 "robustness" | `g9_band` (repeatability) + `g10_test` (held-out) |
+>
+> ### What below is not just renamed, but WRONG
+>
+> The legacy sections report results from the retired architecture. Do not
+> quote any of them:
+>
+> - *"radial arrangement won in all 3 regimes"* - the current designs are
+>   **staggered** in all three.
+> - *"P(temperature-safe) = 0%/18%/0%, every regime fails the 95% safety bar"*
+>   and the negative constraint margins - the current held-out test has
+>   **9 of 9** designs inside both the 65 C PCM and 75 C water limits.
+> - *"ExtraTreesRegressor ... LinearRegression baseline"* - that surrogate stack
+>   is retired; see the five-family bake-off above.
+> - The superseded pre-shield outputs it points at, in
+>   `archive/old_implementation/_archive/results_pre_shield_fix/`, were *(this directory was **deleted** — the pre-shield outputs were not retained)*
+>   **deleted** - that directory no longer exists.
+>
+> Accurate current descriptions: `../OVERVIEW.md`, `04_RESULTS.md`,
+> `CORRECTIONS.md`, and `../../documentation/OBJECTIVES_AND_ALGORITHMS.md`.
+>
+> **Everything from here down is kept for history only.**
 
 ## Legacy reference — Phases 1–8 + CFD (updated 2026-10-27)
 
@@ -84,7 +110,7 @@ Only re-run these if `tamilnadu_pipeline` (Objective 1) is re-run again.
 The 2026-09-17 run of these three scripts pulled a refreshed Objective 1
 pipeline: GMM regime count **K=5→K=3**, real elevation (was a flat 150 m
 placeholder), a rewritten MCDM/feasibility engine. See
-`docs/16_OBJECTIVE1_DATA_REFRESH.md`.
+`archive/old_implementation/_archive/docs/history/16_OBJECTIVE1_DATA_REFRESH.md`.
 
 ## 1. Phase 1 — state config + arrangement restored in shared bounds
 
@@ -199,7 +225,7 @@ arrangement one-hot) + a LinearRegression baseline + an ExtraTreesClassifier
 for feasibility, reports hold-out error broken down by regime/PCM/
 **arrangement**, and prints an arrangement feature-importance diagnostic.
 Runtime: a few seconds. Writes `surrogate_metrics.csv`,
-`surrogate_error_by_group.csv` (now ~200 rows incl. the
+`surrogate_error_by_group.csv` (now ~200 rows incl. the *(retired pipeline output — **no longer produced**)*
 regime×pcm×arrangement breakdown), `surrogate/models.pkl`.
 
 Expected result (81 train / 27 holdout rows): `useful_energy_kWh` R²=1.000
@@ -225,8 +251,8 @@ surrogate, samples arrangement uniformly, re-runs the top 20 per pair
 total) in the **real** simulator, computes an `arrangement_rationale` per
 winner, and applies the unchanged PCM-only, safety-first selection rule.
 Runtime: **~15-25 minutes** (dominated by 240 real simulator re-runs).
-Writes `surrogate_top_candidates.csv`, `optimized_designs.csv`,
-`deployable_design_per_regime.csv` (now with `arrangement` +
+Writes `surrogate_top_candidates.csv`, `optimized_designs.csv`, *(retired pipeline output — **no longer produced**)*
+`data/legacy/phase7_deployable_design_per_regime.csv` (now with `arrangement` +
 `arrangement_rationale` columns).
 
 Expected result: mean surrogate-vs-simulator error **0.05%** (0/240 large
@@ -247,20 +273,20 @@ python pipeline.py --state tamilnadu --stage multifidelity
 `src/surrogate/multifidelity.py` still constructs `DesignVector(...)`
 without the now-required `capsule_arrangement` field. Fix that one call
 site and re-run against the refreshed DOE before using this stage. See
-`docs/11_MULTIFIDELITY_SURROGATE.md`.
+`archive/old_implementation/_archive/docs/history/archive/11_MULTIFIDELITY_SURROGATE.md`.
 
 ## 8. Phase 8 — robustness analysis
 
 ```
 python pipeline.py --state tamilnadu --stage robustness
 ```
-Requires Phase 7's `deployable_design_per_regime.csv`. Runs 120 Monte
+Requires Phase 7's `data/legacy/phase7_deployable_design_per_regime.csv`. Runs 120 Monte
 Carlo draws (PCM latent heat ±10%, two-level weather noise [annual
 scale/offset drawn from a real 10-year historical ensemble + per-hour
 jitter], demand ±20%/±30min, mains temperature ±2°C) per each of the
 **3** selected designs — **360 full-year simulator re-runs total**, never
 the surrogate. Runtime: **~20-30 minutes**. Writes
-`robustness_results.csv` (360 rows), `robustness_summary.csv` (3 rows).
+`robustness_results.csv` (360 rows), `robustness_summary.csv` (3 rows). *(retired pipeline output — **no longer produced**)*
 
 Expected result: P(meets delivery temperature) = 100% for all 3 regimes;
 P(meets annual demand) = 100%/77%/95%; **P(temperature-safe) = 0%/18%/0%**
@@ -283,7 +309,7 @@ arrangement" + "Arrangement rationale" lines) and
 `supersession_note` explaining what changed from any pre-2026-09-17
 contract).
 
-See `docs/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md` for how
+See `objective3/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md` for how
 Objective 3 should consume the contract file (its own content is
 superseded/flagged — re-read the warning box at its top).
 
@@ -338,7 +364,7 @@ Full methodology and findings: `CFD_VERIFICATION.md`. Working directory:
 python build_mesh_regime.py <R_CAPSULE_m> <output_basename>
 ```
 `R_CAPSULE_m` = that regime's deployable `capsule_diameter_m` / 2, read
-directly from `results/tamilnadu/deployable_design_per_regime.csv` — never
+directly from `data/legacy/phase7_deployable_design_per_regime.csv` — never
 hand-typed from memory. Then convert the `.msh` to CGNS (Fluent's import
 format):
 ```python
@@ -446,7 +472,7 @@ Nothing under `src/` needs to change — it is state-agnostic. You need:
    `configs/states/tamilnadu.yaml`.
 3. Confirm that state's copy of `design_bounds_shared.yaml` has the same
    arrangement-restoration edit applied (see
-   `docs/17_ARRANGEMENT_RESTORATION.md`'s cross-cutting rule —
+   `archive/old_implementation/_archive/docs/history/17_ARRANGEMENT_RESTORATION.md`'s cross-cutting rule —
    no state may diverge from the shared config independently).
 4. Then run every stage in order for that state: `geometry` → `verify` →
    `doe` → `surrogate` → `optimize` → `robustness` → `handoff`, each with

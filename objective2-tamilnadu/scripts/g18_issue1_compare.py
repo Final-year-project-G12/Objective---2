@@ -8,7 +8,7 @@ pairs under three states, using only saved files:
           results/issue1_novert/_invalid_run1_rounds_not_extended/)
                                                                                            results/issue1_novert/g9_*_<pair>_ext.csv
   vert    base + the 24 box vertices + 3 more rounds (G9_WARM=1 G9_VERTICES=1)           results/g9_*_<pair>_ext2.csv
-Regime 0 PCM 1: its `novert` state is the historical 8-round no-vertex run (g9_*_r0_p1_ext.csv); its `vert` run continued from that state for 3 more rounds (11 rounds in total), unlike the other pairs, whose `vert` run continued from base (8 rounds in total).
+All nine pairs are built identically: base = 251 points, novert = base + 3 rounds with no vertex step = 281, vert = base + 24 box vertices + 3 rounds = 297. (Until 2026-11-10 regime 0 PCM 1 was an exception, read from a historical run that no longer exists; see path().)
 Per pair and state: number of simulated points and feasible share, hypervolume of the simulated non-dominated set on a common reference point, and (for the rank-1
 pairs, which have a dense 540-design grid) the additive-epsilon gap to the grid front against the WP6 band (the G9 criterion, `g9_assess.py`).
 Writes results/g18_issue1_with_without.csv.
@@ -34,8 +34,14 @@ def F_of(df):
 
 
 def path(state, tag):
-    if state == "novert" and tag == "r0_p1":      # r0_p1 already has an 8-round no-vertex run from the original G9 follow-up (its vert run continued from it)
-        return OUT / "g9_points_r0_p1_ext.csv"
+    # SPECIAL CASE REMOVED 2026-11-10. r0_p1's novert used to be read from
+    # OUT/"g9_points_r0_p1_ext.csv" -- a historical 8-round no-vertex run from
+    # the original G9 follow-up. That file does not exist any more, so the
+    # lookup silently failed main()'s .exists() guard and r0_p1 was reported
+    # with only 2 of its 3 states while every other pair had 3. The 2026-11-09
+    # backfill produced a standard novert run for r0_p1 at the standard path
+    # with 281 points, identical in size to the other eight pairs, and a
+    # standard vert run with 297. All nine pairs are now built the same way.
     return {"base": OUT / f"g9_points_{tag}.csv", "novert": NV / f"g9_points_{tag}_ext.csv", "vert": OUT / f"g9_points_{tag}_ext2.csv"}[state]
 
 

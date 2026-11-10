@@ -9,10 +9,25 @@ ADDITIVE ON PURPOSE. Her three families stay exactly as they are and keep
 competing, because the only honest way to answer "is this better than
 XGBoost" is to measure it against XGBoost on the same folds of the same
 data. An earlier attempt at this swapped XGBoost out on the strength of a
-SYNTHETIC benchmark, where a GP beat it by 11.2x on RMSE. That did not
-transfer: on the real DOE, XGBoost won 21 of 27 groups and the GP came
-third. The lesson is kept here as a rule -- the bake-off decides, not the
-model's reputation.
+SYNTHETIC benchmark, where a GP beat it by 11.2x on RMSE. The lesson is
+kept here as a rule -- the bake-off decides, not the model's reputation.
+
+CORRECTED 2026-11-09. This docstring previously claimed "on the real DOE,
+XGBoost won 21 of 27 groups and the GP came third". That is NOT what the
+current results say, and it should not be quoted. Measured from
+results/g8_s3_comparison.csv (360 rows, 9 pairs x 4 targets x 5 families
+x 2 validation schemes), winner = lowest RMSE per group:
+
+  per (pair, target) group, 36 groups per validation scheme:
+    designs_5fold        stacked 14, gp_ard 13, rsm_quadratic 5, xgboost 4
+    leave_one_year_out   stacked 14, gp_ard 14, rsm_quadratic 4, xgboost 4
+  bases only (stacked removed), 72 groups pooled:
+    gp_ard 42, rsm_quadratic 18, xgboost 12
+
+So XGBoost wins 4 of 36, not 21 of 27, and the GP is FIRST among the base
+families, not third. The "27 groups" figure came from an older 3-target
+DOE and never applied to this 4-target one. Overall per-pair selection
+(results/g8_s3_selection.csv) picks `stacked` in all 9 pairs.
 
   gp_ard        Gaussian-process regression with an ANISOTROPIC (ARD)
                 Matern-5/2 kernel plus a fitted white-noise term, one model

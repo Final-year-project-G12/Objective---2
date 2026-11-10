@@ -1,226 +1,175 @@
-# Objective 3 — Inputs From Objective 2 and What To Do Next
+# Objective 3 — inputs from Objective 2, and what to do next
 
-**Updated 2026-10-27, third pass: tank/collector resized, all 3
-robustness bars now met.** The contract was regenerated three times over
-2026-10-26/27: a demand-timing bug fix, an actual enforced safety shield
-(no longer just a spec — see §2), then a resize of the tank/collector
-from an undersized 50L/1.5m² to a standard domestic 100L/2.5m² pairing.
-**Every regime now meets all three Phase 8 robustness bars at once**
-(P(meets delivery), P(meets demand), P(temperature-safe) all cross their
-thresholds, Monte Carlo confirmed) — see `RESULTS.md` and
-`TAMILNADU_REDESIGN_PLAN.md` §5c for the full account. The per-regime
-numbers below are the final, thrice-corrected ones. If you cached any
-earlier version of the contract or these numbers, discard that copy.
-Supersedes all prior prose versions of this document, which described a
-now-nonexistent K=5-regime run. See `history/18_OBJECTIVE1_SHORTLIST_RESTORED.md`
-for the full history of how this state was reached.
-
-Objective 2 is **complete** for Tamil Nadu: 3 climate regimes (Objective 1
-was refreshed from K=5 to K=3 regimes, real elevation, rewritten MCDM
-engine), each with a PCM design that is genuinely one of Objective 1's own
-Top-3 shortlisted candidates for that regime — not a re-derived substitute.
-
-**The formal boundary** (do not cross it in either direction): Objective 1
-selected the PCM shortlist. Objective 2 selected the physical hardware
-design (PCM identity, capsule geometry, arrangement, flow) and validated
-operating envelope, below. **Objective 3 selects the real-time action —
-nothing else.** It must not change PCM identity, capsule geometry, tank
-volume, safety limits, or the physics model released here.
+**Written 2026-11-09 against the current Objective 2 results.** This replaces
+the 2026-10-27 document of the same name, which is archived at
+`../archive/superseded_obj3_contract_2026-10-27/`. **Do not use that copy, or
+any number in it.** It described designs that no longer exist and reported two
+headline conclusions that the current results reverse.
 
 ---
 
-## 1. The one file Objective 3 actually needs
+## 0. What changed, and why the old document was dangerous
 
-**`results/tamilnadu/obj3_environment_contract_tamilnadu.json`**
-(`contract_version: "obj3_contract_v2.0_2026-09-17"`,
-`validated_simulator_version: "sim_v2_tamilnadu"`). Read it
-programmatically, don't hand-copy numbers out of it — the three regimes'
-actual designs, for reference:
+| | old doc (2026-10-27) | current |
+|---|---|---|
+| PCM | n-Hexacosane (C26), n-Pentacosane (C25) | **PureTemp 58, RT57HC** |
+| arrangement | radial, single-layer | **staggered** (all three) |
+| capsules | 32–35 | **98–105** |
+| capsule Ø | 72–80 mm | **81.6 mm outer / 80.0 mm inner** |
+| PCM mass | 4.9–7.4 kg | **23.6–25.3 kg** |
+| tank / collector | 50 L / 1.5 m² | **100 L / 2.5 m²** |
+| does PCM beat a plain tank? | **"no, −12.5% to −14.8% in every regime"** | **yes — 9 of 9 on held-out years** |
+| P(meets demand) | **"0–4%"** | all three robustness bars met |
 
-| Regime | PCM | Tm (°C) | Arrangement | Capsules | Diameter (mm) | PCM mass (kg) | Useful energy (kWh/yr) | Solar fraction | Constraint margin (°C) |
-|---|---|---|---|---|---|---|---|---|---|
-| 0 | n-Hexacosane (C26) | 56.5 | radial | 32 | 72.22 | 4.859 | 1668.65 | 0.652 | +2.70 |
-| 1 | n-Hexacosane (C26) | 56.5 | radial | 33 | 75.31 | 5.682 | 1763.44 | 0.578 | +3.06 |
-| 2 | n-Pentacosane (C25) | 54.0 | single-layer | 35 | 79.76 | 7.449 | 1679.40 | 0.647 | +2.70 |
+The last two rows are why that document had to go: a controller designed to
+rescue a system that loses to a plain tank is a different controller from one
+tuned to improve on a system that already wins.
 
-Tank/collector are now **100 L / 2.5 m²** (resized 2026-10-27 from
-50 L / 1.5 m² — a standard domestic size, not the earlier undersized
-pairing). "Constraint margin" here is `max_safe_pcm_temp_C (65°C) −
-nominal peak PCM temperature`; **every regime is positive** — the direct
-effect of the safety shield Objective 2's own simulator enforces (§2
-below). The honest cost: PCM still loses to a plain tank in every regime
-(−12.5% to −14.8% — see §2), and this gap is now *wider* than right after
-the shield alone, since the bigger tank's own thermal mass does more of
-the safety-related buffering on its own.
+---
 
-Per-regime contract fields (all live, nothing placeholder):
-- full PCM property record (`selected_pcm`: Tm, latent heat, conductivity,
-  solid/liquid density and Cp, `any_property_imputed` flag)
-- capsule geometry (diameter, count, arrangement, max conduction distance,
-  PCM mass), tank (50 L, 0.05 m insulation, U=0.8 W/m²K), collector
-  (1.5 m², FR(τα)=0.75, FR·UL=4.5 W/m²K) — all identical across regimes;
-  only the PCM/geometry/arrangement differ
-- flow envelope: nominal per-regime (0.0119–0.0274 kg/s) within a shared
-  hard envelope **min 0.01 / max 0.05 kg/s**, pump efficiency 0.6, max
-  pressure 3.5 bar
-- `global_limits`: delivery target 45°C, max safe water 75°C, max safe PCM
-  65°C, irradiance cutoff 10 W/m², flow envelope — use this block for code
-  that needs "the" envelope rather than iterating every regime
-- `safety_shield`: 6 trip conditions, all on a **3°C precautionary guard
-  band below each hard limit** (bypass at 72°C water / 62°C PCM, not
-  75/65°C themselves), plus flow-envelope clipping, dry-run detection, and
-  sensor-failure fallback — see §2, this is a specification, not something
-  already enforced in the simulator
-- `reward_function`: fully specified — formula, normalized reference
-  magnitudes (from these 3 designs), default weights with rationale
-  (`w1`=`w2`=1.0 delivered/unmet energy, `w3`=0.1 pump energy, `w4`=10.0
-  safety penalty, `w5`=0.05 bypass-switching penalty), penalty-term
-  definitions tied to the same guard-band trigger as the safety shield,
-  and a tuning procedure — ready-to-train defaults, not a placeholder
-- `action_space`: discrete (charge/discharge/bypass) and a recommended
-  continuous-flow hybrid version, with the hard rule that the controller
-  may never command outside the flow envelope or temperature limits
-- 3 reset scenarios (fully solid / partially charged / fully liquid
-  initial PCM state)
-- `acceptance_test_before_drl_training`: the checklist required before any
-  DRL training starts
-- `deferred_future_work`: 4-state comparison, active-learning/NSGA-II,
-  sub-daily/hourly multi-year weather, hardware validation — read before
-  assuming any of these are done
+## 1. The one file Objective 3 reads
 
-## 2. What Objective 2 is telling Objective 3 about the physical system
+**`results/obj3_environment_contract_tamilnadu_v3.json`**
+(`contract_version: obj3_contract_v3.0_2026-11-09`), copied here beside this
+document. **Parse it; do not hand-copy numbers out of it.**
 
-- **All 3 regimes have a real PCM design, genuinely drawn from Objective
-  1's own Top-3 shortlist** for that regime (not a re-derived target or
-  substitute PCM — see `history/18_OBJECTIVE1_SHORTLIST_RESTORED.md` for why this
-  matters: an earlier Tm-retargeting revision had quietly violated this,
-  since fixed).
-- **PCM masses are now larger than the pre-fix designs** (1.26–6.18 kg
-  across the 3 regimes, vs. 0.41–0.90 kg before 2026-10-26) and sized to
-  each regime's own real (corrected) tank thermal behavior — expect
-  regular melt/freeze cycling in normal operation.
-- **No auxiliary/backup heater exists in this system.** "Unmet energy" in
-  every Objective 2 metric means genuinely undelivered heat, not a gap an
-  electric backup fills. If Objective 3's reward function assumes a
-  backup exists, that must be a stated new addition, not something
-  inherited from Objective 2.
-- **A real safety shield IS implemented in the physics model itself**
-  (`src/simulation/tank_model.py`, added 2026-10-26, immediately after the
-  demand-timing fix below exposed how badly the passive tank overheats
-  without one). It forces the collector off whenever water reaches 72°C
-  or PCM reaches 62°C (3°C below the 75°C/65°C hard limits), tightened
-  further for PCM designs specifically (see `TAMILNADU_REDESIGN_PLAN.md`
-  §5 for why). **The tank/collector was then resized** from an undersized
-  50L/1.5m² to a standard domestic 100L/2.5m² (§5c) after the shield alone
-  left demand reliability very low on the small tank. Phase 8's Monte
-  Carlo robustness analysis (120 draws/design) now finds, with both
-  changes in place:
+Regenerate it any time Objective 2's results change:
 
-  | Regime | PCM | P(meets delivery) | P(meets demand) | P(temperature-safe) | Robust? |
-  |---|---|---|---|---|---|
-  | 0 | n-Hexacosane (C26) | **1.00** | **1.00** | **1.00** | **Yes** |
-  | 1 | n-Hexacosane (C26) | **1.00** | **0.942** | **1.00** | **Yes** |
-  | 2 | n-Pentacosane (C25) | **1.00** | **1.00** | **1.00** | **Yes** |
+```bash
+python scripts/g25_obj3_contract.py          # or:
+python scripts/tn_run_all.py --only g25_obj3_contract
+```
 
-  **All three bars are met in every regime, confirmed under Monte Carlo
-  uncertainty, not just nominally.** Note how this was reached: the shield
-  alone got temperature-safety to 100% but collapsed demand reliability to
-  0–4% (a real, disclosed trade-off at the time); resizing the tank then
-  recovered demand reliability without giving up any of the shield's
-  safety margin — the two fixes were independently necessary, not
-  redundant. **For Objective 3**: the environment it inherits is already
-  safe and already delivery-reliable on average; its job is to do better
-  than this blunt reactive on/off shield on finer-grained metrics (e.g.
-  shield-activation frequency, discharge timing precision) and on harsher
-  weather years/regimes this project hasn't tested, not to fix a broken
-  baseline.
-- **Why the tank would run hot regardless of PCM choice, absent the
-  shield**: on sunny days, tank water temperature would reach well above
-  the PCM's own stability ceiling (65°C) even though it stays within
-  water's own 75°C limit — this is exactly the condition the now-enforced
-  shield (§2) reacts to, and every regime's positive constraint margin in
-  §1's table (+2.7 to +3.1°C) shows it is currently doing its job under
-  nominal operation.
+It is stage 31 of the pipeline and reads only `g10_selection_r{0,1,2}.json`,
+`g10_heldout_results.csv`, `held_out_test.lock`, `wp6_band.csv` and the two
+config files. Every one of those is SHA-256 recorded in the contract's
+`provenance` block, so a contract can always be traced to the run that made it.
 
-## 3. Concrete first steps for Objective 3
+The designs, for orientation only:
 
-1. **Load the contract, don't re-derive it.** Parse
-   `obj3_environment_contract_tamilnadu.json` for each regime's static
-   design inputs — do not re-run Objective 2's optimizer or re-pick a PCM.
-2. **A basic safety shield is already enforced inside
-   `src/simulation/tank_model.run_year` itself** (§2) — Objective 3 does
-   not need to build this from scratch before training. Still verify it
-   independently using the acceptance-test list in the contract (the
-   checklist item "the safety shield cannot be bypassed by the policy"
-   should pass trivially against this baseline, since the shield sits
-   inside the physics, not the policy). **What Objective 3 should actually
-   build first is a *better* shield/control policy** than this blunt
-   instantaneous trip — one that anticipates approaching the limit instead
-   of reacting at it, to recover the demand-reliability this version gives
-   up (§2's P(meets demand) = 0–4%).
-3. **Build a step-by-step (not annual-batch) version of the simulator.**
-   Objective 2's `run_year()` runs a full year in one call, appropriate
-   for design evaluation. Objective 3 needs a
-   `step(action) -> (obs, reward, done, info)` interface — refactor
-   `tank_model.py`'s inner timestep loop into a stateful stepper rather
-   than rewriting the physics. Reuse the physics (enthalpy model, heat
-   transfer, collector, hydraulics) unchanged; only the control surface
-   changes (fixed `flow_rate_kg_s` becomes an action instead of a
-   constant).
-4. **Start from the contract's `reward_function` defaults**, don't invent
-   new ones from scratch — copy `w1..w5` into Objective 3's own frozen
-   config as the training starting point, then follow the contract's
-   `tuning_procedure` if retuning is needed after a first training run.
-5. **Run the acceptance test with a trivial rule-based controller** (e.g.
-   "charge whenever irradiance is high and PCM isn't full, discharge
-   during demand hours, bypass otherwise") before writing any learning
-   code. If this fails any check in the contract's
-   `acceptance_test_before_drl_training` list, fix the environment before
-   touching RL.
-6. **Re-use, don't reopen, Objective 2's climate-regime split.**
-   Train/validate/test across regimes 0–2 as Objective 2 defined them
-   (`configs/states/tamilnadu.yaml`) — do not re-cluster or merge regimes.
-7. **When Rajasthan/Assam/Uttarakhand versions of Objective 2 exist**,
-   build one contract-consuming Objective 3 codebase that takes `--state`
-   the same way Objective 2's `pipeline.py` does, rather than forking
-   per-state controller code. Those states have NOT yet had the K=5→K=3
-   refresh or shortlist restoration applied — do not assume their
-   contracts already describe equivalent designs until confirmed.
+| regime | PCM | O1 rank | Ø outer | PCM fraction | capsules | flow | PCM mass |
+|---|---|---|---|---|---|---|---|
+| 0 | PureTemp 58 | 3 | 81.6 mm | 29.6 % | 104 | 0.0388 kg/s | 24.8 kg |
+| 1 | RT57HC | 1 | 81.6 mm | 27.9 % | 98 | 0.0295 kg/s | 23.6 kg |
+| 2 | RT57HC | 1 | 81.6 mm | 29.9 % | 105 | 0.0267 kg/s | 25.3 kg |
 
-## 4. What Objective 2 explicitly did NOT resolve (don't assume it did)
+All staggered, 100 L tank, 2.5 m² collector. Every selected PCM is one of
+Objective 1's own Top-3 for that regime — the generator asserts this, so a
+substituted material cannot reach Objective 3 silently.
 
-- Phase 8's Monte Carlo draws its *annual* weather magnitude from a real
-  10-year historical ensemble, but no unseen-weather-year or member-point
-  re-confirmation of the final designs' *hourly* shape exists yet
-  (medoid-only, synthetic per-hour jitter) — Objective 3's own weather
-  train/val/test split is still genuinely unstarted work.
-- Phase 8's robustness analysis covers PCM-property, weather-noise, demand
-  and mains-temperature uncertainty only — pump/heat-transfer-coefficient
-  and manufacturing-tolerance uncertainty were not sampled.
-- Phase 6b (multi-fidelity surrogate) still reflects an older DOE set —
-  not re-run against the current PCM shortlist or design bounds. Irrelevant
-  to Objective 3 (it's a Phase 6 modeling bonus, not part of the
-  environment contract) but noted for completeness.
-- The 4-state comparison, active-learning/NSGA-II search, sub-daily
-  multi-year weather, and hardware validation are all explicitly deferred
-  — see the contract's own `deferred_future_work` list.
+---
 
-## 5. Literature grounding Objective 3's contract design
+## 2. What Objective 2 is telling you about the system
 
-See `REFERENCES.md` for the full mapping; the entries most directly
-relevant to what Objective 3 is being asked to build:
+**The environment you inherit is already safe and already delivery-reliable.**
+That is the single most important difference from the old document.
 
-- **[Sivaraj2023]** — a non-thermal precedent for benchmarking multiple
-  DRL controller families against the same environment/reward before
-  committing to one, directly transferable to choosing among DQN/PPO/
-  SAC-family controllers for the charge/discharge/bypass problem here.
-- **[Emami2026]** — direct precedent for a DRL controller coordinating a
-  solar-driven system with thermal storage, the same problem shape as
-  this contract's action space.
-- **[Terfai2025]** — an ANN-based MPC alternative for solar-thermal
-  storage control, useful contrast if Objective 3 evaluates a non-DRL
-  baseline controller (as the acceptance-test's "trivial rule-based
-  controller" step effectively does).
-- **[Rubitherm2024]** — the datasheet source for the 65°C PCM stability
-  ceiling that is the direct physical trigger condition the safety shield
-  exists to anticipate (§2 above).
+- **Held-out test: done, locked, passed.** Five years (2011–2015) reserved from
+  the start, evaluated once under `held_out_test.lock`
+  (`run_id heldout_2da11230bfb5`, 2026-10-30T09:56:22Z). Nine designs — each
+  regime's chosen design *plus* the best design of every other shortlisted PCM,
+  so it cannot be a cherry-pick. **9/9 beat the water-only twin**; PCM peaks
+  63.3–64.0 °C against a 65 °C limit; water peaks 72.2–72.9 °C against 75 °C.
+  Margins are 178–269 kWh/yr over a repeatability band of 26–30 — **6–9× the
+  noise floor.**
+- **The safety shield is already enforced inside the physics**, in
+  `src/simulation/tank_model.py`, not in the policy. It forces the collector off
+  at 72 °C water / 62 °C PCM — a 3 °C guard band below the hard limits. So the
+  acceptance-test item *"the shield cannot be bypassed by the policy"* passes
+  trivially against the baseline. **Your job is a better controller than this
+  blunt reactive trip** — one that anticipates the limit instead of reacting at
+  it, improving shield-activation frequency and discharge timing. Not fixing a
+  broken baseline.
+- **No auxiliary heater exists.** "Unmet energy" means genuinely undelivered
+  heat. If your reward assumes a backup, that is a stated new addition, not
+  something inherited.
+
+---
+
+## 3. Three constraints you must not violate
+
+1. **The boundary.** Objective 1 chose the PCM. Objective 2 chose the hardware
+   and the envelope. **Objective 3 chooses the real-time action and nothing
+   else.** Do not change PCM identity, capsule geometry, tank volume, safety
+   limits or the physics model, and do not re-cluster or merge regimes.
+2. **The weather roles.** Train on 2016–2020, validate on 2021–2023. **Never
+   tune against 2011–2015** (spent by the held-out test) **or 2024–2025**
+   (spent by the v1 test). `src/weather/roles.py` enforces this — it refuses a
+   year whose role differs from the stated purpose.
+3. **The flow envelope.** 0.010–0.050 kg/s, hard. Never command outside it.
+
+---
+
+## 4. Two things the inherited design is *not*
+
+Both are in the contract under `design_space_caveats`, and both matter to you:
+
+- **It is not a global optimum.** It is the best design found *within* the
+  declared bounds under a pre-declared rule. The **30 % PCM-fraction cap is
+  binding** — at 40 % the gain is higher by more than the repeatability band in
+  every regime, with both peaks still inside limits. That run is planned, not
+  done.
+- **The nominal flow may be a model artefact.** `flow_dependent_fr` is
+  **disabled**, so the collector's F_R does not vary with flow in this model.
+  Any optimum sitting at the low flow bound is therefore suspect. **Do not treat
+  the inherited flow value as a physical optimum to defend** — it is a starting
+  point inside a verified-safe envelope, and flow is exactly what you are about
+  to make an action variable.
+
+---
+
+## 5. Concrete first steps
+
+1. **Load the contract.** Do not re-run Objective 2's optimiser or re-pick a PCM.
+2. **Build a stepper, not a new simulator.** `tank_model.run_year()` runs a
+   whole year in one call. Refactor its *inner timestep loop* into a stateful
+   `step(action) -> (obs, reward, done, info)`. **Reuse the physics unchanged** —
+   enthalpy model, heat transfer, collector, hydraulics. Only the control
+   surface changes: `flow_rate_kg_s` becomes an action instead of a constant.
+3. **Mind the two timesteps.** The search step is 150 s; the *confirmation*
+   step is 37.5 s, and it is the only one that passes the dt-halving gate. Every
+   reported Objective 2 number is at 37.5 s. Decide deliberately which your RL
+   loop uses, and report it.
+4. **Run the acceptance test with a trivial rule-based controller first** —
+   "charge when irradiance is high and the PCM isn't full, discharge during
+   demand hours, bypass otherwise". If it fails any item in the contract's
+   `acceptance_test_before_drl_training`, fix the environment before writing any
+   learning code.
+5. **Set your own reward weights.** The contract gives the formula and term
+   definitions but **deliberately no weights** — the old `w1..w5` defaults came
+   from retired designs and are not carried over. Normalise against the
+   water-only twin over the explore years.
+6. **Benchmark several learners** (DQN / PPO / SAC family) on one environment
+   and reward before committing — precedent [Sivaraj2023], [Emami2026]. An
+   ANN-MPC baseline is a useful non-DRL contrast [Terfai2025].
+
+---
+
+## 6. What Objective 2 did *not* resolve
+
+Read before assuming any of these are done. Full list in the contract's
+`deferred_future_work`.
+
+- The **40 % PCM-fraction run** the widened-bound diagnostic points to.
+- **Flow-dependent collector F_R** — still off, hence the artefact caveat.
+- **Dense-grid cross-check for rank-2/3 PCM pairs** — only rank-1 pairs have one.
+- **`g18` novert/vert runs** — that with/without comparison is incomplete.
+- **No experimental validation of any kind.** The CFD is a *model consistency
+  cross-check* — one capsule, six hours, three cases returning 0 % liquid
+  fraction, a symmetry mesh excluding melt convection. Objective 4 owns real
+  measurement.
+- **Objective 1's shortlist is not physics-confirmed.** Its MCDM-vs-physics
+  agreement is weak and *not statistically significant* (mean ρ = +0.169,
+  p = 0.12–0.96, n = 8–10). You inherit a consensus ranking, not a proven one.
+- **Hourly-shape weather confirmation** — the robustness analysis drew annual
+  magnitudes from a real 10-year ensemble but used medoid-only hourly shapes
+  with synthetic jitter.
+
+---
+
+## 7. Other states
+
+Rajasthan, Assam and Uttarakhand have **not** had the K=5→K=3 refresh or the
+shortlist restoration applied, and no Objective 2 run in this tree. When their
+contracts exist, build **one** contract-consuming Objective 3 codebase taking
+`--state`, rather than forking per-state controller code.

@@ -68,7 +68,7 @@ metadata is not verification.
 
 
 This is the single, persistent source of truth for this build (mirrors
-Manvitha's own `docs/PROGRESS.md` practice on the Rajasthan side, for the
+Manvitha's own `docs/RAJASTHAN_METHOD_PORT_PROGRESS.md` practice on the Rajasthan side, for the
 same reason: this is multi-session work and nothing here should need to be
 re-derived from scratch if a session boundary cuts it off mid-way).
 
@@ -81,7 +81,7 @@ test, 6 diagnostic/ablation studies, results registry, test suite) —
 **but keep Tamil Nadu's own existing file/folder structure** (no `g1`...`g19`
 script renaming, no copying Rajasthan's folder layout). CFD stays ANSYS
 Fluent (not OpenFOAM). Tank stays 100 L / 2.5 m² (not Rajasthan's 50 L).
-Final output format/deliverables (`deployable_design_per_regime.csv`,
+Final output format/deliverables (`data/legacy/phase7_deployable_design_per_regime.csv`,
 robustness P(delivery)/P(demand)/P(temp-safe) framework) stays as Tamil
 Nadu's current shape — the algorithms underneath change, not the contract.
 Cleanup: archive unneeded files (don't delete), separate Objective-3-related
@@ -90,7 +90,7 @@ files into their own folder out of `results/`.
 **Important, disclosed gap**: the actual Rajasthan `o2-redesign-rajasthan`
 branch code (its `nsga2.py`, `g7`...`g18` scripts, `design_space.yaml`,
 `tests/`) is NOT present in this workspace — only a pre-rebuild snapshot of
-`objective2-rajasthan/` (same simple structure Tamil Nadu currently has)
+`objective2-rajasthan/` (same simple structure Tamil Nadu currently has) *(the Rajasthan original — **not present** in this repo)*
 and the narrative report. Everything below is being built from the
 report's description, validated independently on Tamil Nadu's own data —
 it will not numerically match Manvitha's results, only the methodology.
@@ -204,7 +204,7 @@ indistinguishable from the water-only tank. Reporting that as "PCM does
 not work" would be a statement about one untuned point, not about the
 design space.
 
-### Lever sweep: what actually moves it (`results/tn_lever_sweep.csv`)
+### Lever sweep: what actually moves it (`results/tn_lever_sweep.csv`) *(diagnostic helper output — **not kept**)*
 | lever | effect on g_window |
 |---|---|
 | capsule inner radius 10 → 40 mm | regime 0 **+0.4 → +41.4**, regime 2 **−4.3 → +34.6**. Bigger capsules win. |
@@ -219,7 +219,7 @@ because at 0.010 kg/s the collector loop cannot move heat into the stack
 fast enough to charge the capsules at all.
 
 ### Combined levers — the shortlist DOES win, in every regime
-(`results/tn_corner_check.csv`, 162 combinations)
+(`results/tn_corner_check.csv`, 162 combinations) *(diagnostic helper output — **not kept**)*
 
 | regime | PCM (Objective 1 shortlist) | R_in | fraction | arrangement | N | **g_window** | g_annual | PCM peak |
 |---|---|---|---|---|---|---|---|---|
@@ -265,7 +265,7 @@ withdrawn.** Two things were confused:
    `PCM-Selection-ML-model/pcm_shared_config.py`, physics-corrected on
    2026-09-13 against Avargani et al. 2021. The *pre*-correction value was
    57.0 C (delivery 50 C), which still survives in a stale copy under
-   `All_objective_all/`. The doc-12 "retargeting" lineage (46.5–53.3 C)
+   `All_objective_all/`. The doc-12 "retargeting" lineage (46.5–53.3 C) *(outer project tree — **not present** here)*
    descends from that superseded 57 C basis — so the off-list sweep was
    re-deriving a number Objective 1 had already deliberately moved away
    from, in the opposite direction.
@@ -345,9 +345,9 @@ run on real data · **RUNNING** · **TODO**
 
 | Rajasthan gate | Status | Where |
 |---|---|---|
-| G1 demand timing (local-hour FLOOR) | **DONE** — the pre-existing fix had the right offset but rounded it, collapsing 24 local hours onto 12 buckets; now floored | `src/simulation/demand_profile.local_hour_index` |
+| G1 demand timing (local-hour FLOOR) | **DONE** — the pre-existing fix had the right offset but rounded it, collapsing 24 local hours onto 12 buckets; now floored | `src/simulation/demand_profile.local_hour_index` | *(**removed** in the g-stage refactor)*
 | G2 model repairs (inner-sphere PCM mass, shell heat capacity, leap day) | **DONE** — outer-volume mass overstated PCM by 6–28 % | `src/simulation/capsule_mass.py` |
-| G2 dt convergence | **DONE, and it corrects an earlier claim** — her own gate is met only at **dt = 37.5 s**, not 150 s. Two-tier step adopted: 150 s to search, 37.5 s to report. See below. | `scripts/g2_timestep_convergence.py`, `results/g2_richardson_summary.csv` |
+| G2 dt convergence | **DONE, and it corrects an earlier claim** — her own gate is met only at **dt = 37.5 s**, not 150 s. Two-tier step adopted: 150 s to search, 37.5 s to report. See below. | `scripts/g2_timestep_convergence.py`, `results/g2_timestep_convergence_300_150_75.csv` |
 | D3 conduction on inner radius/area | **DONE** | `capsule_mass.pcm_side_resistance`, `heat_transfer.ua_eff_total_w_k(pcm_r_coeff=...)` |
 | G3 TES metrics (E_del,45, g_window, g_annual, d_overheat, tau_hold/serve) | **DONE** — in use by the DOE | `src/metrics/tes_metrics.py` |
 | G4 multi-node stratified tank (N=10) | **DONE** — numba kernel, **844× faster**, equivalence-validated to machine precision (24/24) against the pure-Python reference in both shield modes | `src/simulation/tank_model_multinode_fast.py` (reference: `tank_model_multinode.py`) |
@@ -359,7 +359,7 @@ run on real data · **RUNNING** · **TODO**
 | G8 S1 Taguchi L9 + ANOVA | **BUILT** | `src/doe/taguchi_screening.py` |
 | G8 S2 Sobol DOE | **RUNNING** — 3,456 cases × 5 explore years, paired | `src/doe/sobol_doe.py`, `src/doe/run_sobol_doe.py` |
 | G8 S3 surrogate comparison | **DONE (code) / pending real data** — XGBoost **demoted to baseline**, Gaussian-process/Kriging promoted; measured 11.2× less error than XGBoost, posterior sd calibrated 0.969 | `src/surrogate/model_zoo.py`, `src/surrogate/fit_per_pair.py` |
-| G8 paired water-only baseline | **DONE** — run in the same worker as its PCM twin (`paired_plain=True`), so gains are differences under identical conditions | `src/parallel/runner.simulate_one` |
+| G8 paired water-only baseline | **DONE** — run in the same worker as its PCM twin (`paired_plain=True`), so gains are differences under identical conditions | `src/parallel/runner.simulate_one` | *(**removed** in the g-stage refactor)*
 | G8 active learning + box-vertex step | **BUILT** — acquisition uses the **GP posterior sd**, not NN committee spread, because the committee was measured to be ~3× overconfident (0.328 coverage vs 0.95) | `src/optimize/active_learning.py` |
 | G9 S4/S5 NSGA-II | **DONE** — SBX, polynomial mutation, constrained domination, crowding, exact hypervolume; ZDT1 front RMSE 0.00312. A real hypervolume bug was found and fixed here. | `src/optimize/nsga2.py`, `src/optimize/nsga2_search.py` |
 | G9 band (repeatability tolerance) | **BUILT** — year + dt + node + property terms, combined in quadrature, all measured | `src/verify/repeatability.py` |
@@ -568,7 +568,7 @@ touched.
 Run on **her** simulator with **her** gate, via her own
 `scripts/g2_timestep_convergence.py`, twice as her report does it
 (300/150/75, then 150/75/37.5). Merged into
-`results/g2_richardson_summary.csv`.
+`results/g2_timestep_convergence_300_150_75.csv`.
 
 Her acceptance criterion: Gate-1 residual <= 0.1 % in every run, and annual
 useful energy changing < 0.05 % each time dt is halved.
@@ -918,7 +918,7 @@ now parametrized regression tests
 regression fails loudly.
 
 The pre-fix DOE output is kept at
-`archive/old_implementation/_archive/results_pre_shield_fix/sobol_doe_results_pre_fixedpoint.csv`
+`archive/old_implementation/_archive/results_pre_shield_fix/sobol_doe_results_pre_fixedpoint.csv` *(**deleted** with the rest of the pre-shield tree)*
 for comparison; the DOE was re-run, because constraint data from a shield
 that breaches its own limit cannot be used to handle that constraint.
 

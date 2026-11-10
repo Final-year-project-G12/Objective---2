@@ -80,6 +80,7 @@ STAGES = [
     ("g12_results_doc",           "once",   "results document"),
     ("g12_verify_docs",           "once",   "doc/number cross-check"),
     ("g10_test",                  "once",   "ONE-SHOT held-out test (locked)"),
+    ("g25_obj3_contract",         "once",   "Objective 3 environment contract (handoff)"),
 ]
 # Stages whose CLI is neither "once", "regime" nor "pair". g2 takes a
 # comma-separated dt ladder and an output path, and her report runs it

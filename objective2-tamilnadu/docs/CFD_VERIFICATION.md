@@ -187,7 +187,7 @@ below), not re-run since. This is a basic physics cross-check of
 Objective 2's already-trained, already-selected designs — it does not
 re-optimize or re-select anything. All geometry, PCM identity, capsule
 count, and flow rate come directly from
-`results/tamilnadu/deployable_design_per_regime.csv` (Objective 2's real
+`data/legacy/phase7_deployable_design_per_regime.csv` (Objective 2's real
 optimizer output). Working files live in `ansys/`
 (`regime{0,1,2}_v3_capsule.cgns/.msh`, `_v3_mesh_only.cas.h5`,
 `_v3_c26_melting.{cas,dat}.h5` / `_v3_c25_melting.{cas,dat}.h5`), built
@@ -314,7 +314,7 @@ not pursued further given this is a secondary sanity check, not
 Objective 2's own validation (which already confirms real melting via the
 grey-box simulator's own `sim_mean_f_melt` output — 21.4% / 14.5% / 23.1%
 for Regimes 0/1/2 respectively — in
-`results/tamilnadu/deployable_design_per_regime.csv`).
+`data/legacy/phase7_deployable_design_per_regime.csv`).
 
 The same known, low-risk unresolved item recurred: the liquid-fraction
 initialization patch command failed with a TUI argument error in every

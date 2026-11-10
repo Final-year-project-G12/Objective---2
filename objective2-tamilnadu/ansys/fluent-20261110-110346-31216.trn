@@ -1,0 +1,121 @@
+Auto-Transcript Start Time:  11:03:46, 10 Nov 2026 India Standard Time 
+Current Directory: "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\ansys"
+
+              Welcome to ANSYS Fluent 2026 R1
+
+              Copyright 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
+              Unauthorized use, distribution or duplication is prohibited.
+              This product is subject to U.S. laws governing export and re-export.
+              For full Legal Notice, see documentation.
+
+Build Time: Feb  2 2026 16:27:16 EST  Build Id: 10262  
+ 
+Connected License Server List:	<Non FlexNet Publisher License Server (FNPLS)>
+
+*********************************************
+Info: Your license enables 4-way parallel execution.
+For faster simulations, please start the application with the appropriate parallel options.
+*********************************************
+
+
+     --------------------------------------------------------------
+     This is a student version of ANSYS FLUENT. Usage of this product
+     license is limited to the terms and conditions specified in your ANSYS
+     license form, additional terms section.
+     --------------------------------------------------------------
+Host spawning Node 0 on machine "Jaswita" (win64).
+Host waiting for connection from Node 0 at 127.0.0.1:64286 
+
+Node 0 connecting to the Host ... connection established.
+
+----------------------------------------------------------------------------------
+ID    Hostname  Core  O.S.         PID    CPU Model Name                         
+----------------------------------------------------------------------------------
+n1    Jaswita   2/12  Windows-x64  33496  12th Gen Intel(R) Core(TM) i7-1255U    
+n0*   Jaswita   1/12  Windows-x64  14236  12th Gen Intel(R) Core(TM) i7-1255U    
+host  Jaswita         Windows-x64  32564  12th Gen Intel(R) Core(TM) i7-1255U    
+
+MPI Option Selected: intel
+Selected system interconnect: default
+----------------------------------------------------------------------------------
+
+Cleanup script file is C:\\Users\\jaswi\\OneDrive\\Desktop\\ALL\\SEM_7\\project\\jammalamadugu\\new_obj\\objective2_design_optimization\\ansys\\cleanup-fluent-Jaswita-32564.bat
+
+Jaswita is already loaded (98.9697).                       Process affinity not being set.
+Information: The server has started and is running.
+(set-session-idle-timeout 4)countdown-start-timer
+>>> Fast-loading "C:\PROGRA~1\ANSYSI~1\ANSYSS~1\v261\fluent\fluent26.1.0\\addons\afd\lib\hdfio.bin"
+Done.
+
+Reading from Jaswita:"C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\ansys\v7_puretemp58.cas.h5" in NODE0 mode ...
+  Reading mesh ...
+        2690 cells,     2 cell zones ...
+           1585 triangular cells,  zone id: 1
+           1105 triangular cells,  zone id: 2
+        4106 faces,     9 face zones ...
+           2298 2D interior faces,
+ Building...
+      meshzone
+ 	distributing mesh
+i		parts..,
+d		faces..,
+:		nodes..,
+ 		cel3ls..,
+
+        bandwidth reduction using Reverse Cuthill-McKee: 772/23 = 33.5652             10 2D pressure-outlet fa
+c     materials,es,  zone id: 4
+             20 2D axis faces,  zone id: 5
+   
+      interface,    
+      domains,    48 2D wa
+l	mixture
+l      zones,faces, 
+ 	default_interior-9z
+o	interface-2_l_6ne id: 6
+             20 2D axis faces,  zone id: 
+7	2_l_8
+
+	default_interior-8             51 2D in
+t	2_l_7erior fac
+e	2_l_9
+s,	 2_l_10
+ 	2_l_11
+z	2_l_5one 
+i	3_s_2d: 8
+
+ 	3_s_1            10 2D velocity-inlet faces,  zone id: 9
+           1615 2D inter
+iWarning: Face zone 8 of type interior is between cell zones with different materials.
+         Material of cell ozone 2 is puretemp58, rwhile material of cell zone 1 is water-liquid. 
+fThis will adversely affect the solution. It is recommended that you check and correct the cell zone materials, or convert the interior face zones noted above into coupled wall pairs using the following text command:
+a         /mesh/modify-zones/slit-interior-between-diff-materials
+ces,  zone id: 10
+             34 2D axis faces,  zone id: 11
+        1417 nodes,     1 node zone  ...
+  Done.
+
+
+     parallel,
+Done.
+Warning: The use of axis boundary conditions is not appropriate for
+         a 2D/3D flow problem. Please consider changing the zone
+         type to symmetry or wall, or the problem to axisymmetric.
+
+Warning: The use of axis boundary conditions is not appropriate for
+         a 2D/3D flow problem. Please consider changing the zone
+         type to symmetry or wall, or the problem to axisymmetric.
+
+
+Reading from Jaswita:"C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\ansys\v7_puretemp58.dat.h5" in NODE0 mode ...
+
+
+  Reading results.
+Parallel variables...
+Done.
+Shutting down Server...
+Services Shutdown...Done.
+Server Shutdown...Done.
+Queue Cleared...Done.
+Shutdown Complete.
+Auto-Transcript Stop Time:  11:04:55, 10 Nov 2026 India Standard Time 
+Total Transcript Time: 1 Minute 8 Second.

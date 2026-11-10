@@ -99,7 +99,7 @@ solver:
   method: backward_euler_lagged_pcm  # linear-implicit water node, PCM temperature
                                        # lagged one sub-step (see src/simulation/tank_model.py docstring)
   # TWO-TIER STEP. The G2 ladder (300/150/75/37.5 s, merged in
-  # results/g2_richardson_summary.csv) shows the PCM cases converge at observed
+  # results/g2_timestep_convergence_{300_150_75,150_75_37p5}.csv) shows the PCM cases converge at observed
   # order p = 0.80-0.99 -- first order, because of the melt band. Her gate
   # ("useful energy changes < 0.05 % each time dt is halved") is therefore met
   # only onto dt = 37.5 s (max 0.041 %); 150 s and 75 s both fail it
