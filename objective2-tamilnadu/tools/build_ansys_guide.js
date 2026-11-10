@@ -252,6 +252,55 @@ children.push(P("All four PCMs solved with zero divergences. The ordering (C25 >
 children.push(new Paragraph({ text: "" }));
 
 // ─────────────────────────────────────────────────────────────────────────────
+// FIGURE 4 — PER-REGIME SPATIAL CONTOURS (rendered natively by Fluent)
+const CONTOURS = path.join(FIGURES, "regime_contours");
+const contourImg = (file, wPx = 520) => new Paragraph({
+  spacing: { after: 60 },
+  alignment: AlignmentType.CENTER,
+  children: [new ImageRun({
+    type: "png",
+    data: fs.readFileSync(file),
+    transformation: { width: wPx, height: Math.round(wPx * 0.72) },
+  })],
+});
+
+children.push(new Paragraph({
+  pageBreakBefore: true,
+  children: [new TextRun({ text: "", size: 1 })],
+}));
+
+children.push(H2("Figure 4: Spatial Fields Inside the Capsule — Per Regime"));
+
+children.push(P("These contours are rendered directly by Fluent from the solved field data for each regime's winning PCM (no post-processing reconstruction). Each pane is a 2D half-slice: the symmetry axis runs along the bottom edge, so the capsule appears as a half-dome sitting in the flowing hot water. The capsule shows a cold solid core (blue) wrapped by a melt front (cyan–green ring), while the surrounding water is hot and fully liquid."));
+
+const REGCONT = [
+  { r: 0, pcm: "PureTemp 58", liq: "regime0_PureTemp58_liqfrac.png", tmp: "regime0_PureTemp58_temp.png",
+    note: "Core at ~331 K (58 °C) = PureTemp 58's melt point; the slowest-melting PCM, so the solid core is the largest of the three." },
+  { r: 1, pcm: "RT57HC", liq: "regime1_RT57HC_liqfrac.png", tmp: "regime1_RT57HC_temp.png",
+    note: "Core at ~330 K (57 °C) = RT57HC's melt point; a slightly smaller solid core than Regime 0, matching its lower melt point and faster melting." },
+  { r: 2, pcm: "RT57HC", liq: "regime2_RT57HC_liqfrac.png", tmp: "regime2_RT57HC_temp.png",
+    note: "Regime 2 also selected RT57HC, so the single-capsule melt field is the same as Regime 1. The regimes differ at tank scale (105 vs 98 capsules, different flow rate), not in the per-capsule PCM physics shown here." },
+];
+
+for (const g of REGCONT) {
+  children.push(H3(`Regime ${g.r} — ${g.pcm}`));
+  try {
+    children.push(contourImg(path.join(CONTOURS, g.liq)));
+    children.push(cap(`Liquid fraction — Regime ${g.r} (${g.pcm}). Red = molten water (LF ≈ 1); blue capsule core = solid PCM (LF ≈ 0); cyan–green ring = the advancing melt front.`));
+    children.push(contourImg(path.join(CONTOURS, g.tmp)));
+    children.push(cap(`Static temperature (K) — Regime ${g.r} (${g.pcm}). Hot water ≈ 343 K (70 °C); cold capsule core at the PCM melt point; faint warm plume downstream shows advection past the capsule.`));
+  } catch (e) {
+    children.push(P("(Contour image not found — run ansys/export_contours.py to regenerate)", { color: "FF0000" }));
+  }
+  children.push(cap(g.note));
+  children.push(new Paragraph({ text: "" }));
+}
+
+children.push(P("How these were made: ansys/export_contours.py loads each solved .cas.h5/.dat.h5, builds a native Fluent banded contour of the field, and exports it with results.graphics.picture.save_picture — the same graphics path the live demo uses, so the image is Fluent's own render of the real mesh.", { italics: true, color: MUTED, size: SMALL }));
+
+children.push(new Paragraph({ text: "" }));
+
+// ─────────────────────────────────────────────────────────────────────────────
 // HOW TO OPEN IN ANSYS
 children.push(new Paragraph({ children: [new TextRun({ text: "", size: 1 })] }));
 children.push(new Paragraph({
@@ -280,7 +329,7 @@ children.push(new Paragraph({
   bullet: { level: 1 },
   spacing: { after: 60 },
   children: [new TextRun({
-    text: "regime0_v3_c26_melting.cas.h5  (Regime 0, PureTemp 58, solved)",
+    text: "v7_puretemp58.cas.h5  (Regime 0, PureTemp 58, solved — melt field)",
     size: BODY, color: INK, font: "Calibri",
   })],
 }));
@@ -289,7 +338,7 @@ children.push(new Paragraph({
   bullet: { level: 1 },
   spacing: { after: 60 },
   children: [new TextRun({
-    text: "regime1_v3_c26_melting.cas.h5  (Regime 1, RT57HC, solved)",
+    text: "v7_rt57hc.cas.h5  (Regime 1, RT57HC, solved — melt field)",
     size: BODY, color: INK, font: "Calibri",
   })],
 }));
@@ -298,7 +347,7 @@ children.push(new Paragraph({
   bullet: { level: 1 },
   spacing: { after: 60 },
   children: [new TextRun({
-    text: "regime2_v3_c25_melting.cas.h5  (Regime 2, RT57HC, solved)",
+    text: "v7_rt57hc.cas.h5  (Regime 2, RT57HC — same PCM solve as Regime 1)",
     size: BODY, color: INK, font: "Calibri",
   })],
 }));
