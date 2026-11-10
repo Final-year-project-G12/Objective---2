@@ -1040,3 +1040,6 @@ Details and every figure: `docs/07_OPENFOAM_VALIDATION.md` section 7. GCI not de
 
 ## 2026-11-10 - B4 monthly mains temperature
 B4 check (2026-11-10): no source in `.claude/Sources/` gives a monthly or seasonal mains-water temperature series (searched all extracts and summaries; hits are single constant inlet values). The only candidate, Burch and Christensen 2007 (`Burch2007` in `references.bib`, a mains-water-temperature algorithm), is in the bibliography but its PDF is not in Sources, so it was not read and not used. Left as a limitation: one mains value per regime, 18-30 C bracket.
+
+## 2026-11-10 - B5 other states (WP7)
+Audit and Assam port: see the WP7 status line of the plan and `objective2-assam/docs/B5_LOCAL_HOUR_AND_SHIELD_PORT_2026-11-10.md`. Tamil Nadu and Uttarakhand already carry the local-hour demand and shield code; Assam did not and now does (shield default off); Assam's one-case result changes by -6.6 % delivered energy. `pipeline.py --stage all` was only dry-run on Rajasthan (not executed); the other states' pipelines are separate (Uttarakhand has its own, Tamil Nadu none).
