@@ -102,7 +102,8 @@
 ## Open items added 2026-11-10 (corrections pass)
 
 - Open decision (d): put F_R(flow) into the released model or keep it as a documented sensitivity (G24: <= 1.43 kWh change in `g_window`).
-- Open: the 30 % PCM-fraction cap is limiting (`g17`); a 40 % cap test would need a new untouched test set (none left: 2011-2015 and 2024-2025 are used).
+- Open: the 30 % PCM-fraction cap is limiting (`g17`). A 40 % / 50 mm diagnostic (B1, 2026-11-10, explore/select years only) still ends on the new bounds (item 0 above, `results/b1_*`); testing those designs on held-out data would need a new untouched test set (none left: 2011-2015 and 2024-2025 are used) and a decision to leave the v3 box.
+- Not done, checked 2026-11-10 (B4): a monthly mains-temperature series; no source in `.claude/Sources/` provides one, and Burch and Christensen 2007 is in the bibliography without its PDF.
 - Open: tank sizing 33.3 L/m2 is below IS 12976:2023 (decision D8); the compact tank is the fixed condition of this work.
 - Open (e): method citations to source before submission: Sobol sequence, XGBoost, committee-disagreement active learning, expected-improvement Bayesian optimisation. Do not cite Bradford 2018 for g20.
 - Open: `docs/O2_Rajasthan_Pipeline_Report.docx` has not been updated by this pass (a .docx is outside the edit scope).

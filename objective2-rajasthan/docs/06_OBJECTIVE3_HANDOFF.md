@@ -4,6 +4,8 @@
 (`PYTHONPATH=. python -m src.handoff.build_obj3_contract_v2`).
 `results/obj3_environment_contract_rajasthan.json` is not a contract to train on: it is the template the builder copies the generic parts from (limits, action set, reward skeleton, reset scenarios, acceptance tests).
 
+**Hand-off design basis (checked 2026-11-10 against `configs/system_config_shared.yaml`):** tank 50 L (line 38), collector 1.5 m2 (line 24), delivery target 45 C (line 84), PCM limit 65 C (line 63). That is 33.3 L per m2 of collector, below the 40-100 L/m2 of IS 12976:2023 (decision D8); the contract inherits this limitation. The held-out years 2011-2015 were used once and are not available to O3.
+
 ## Contents of the contract
 
 | Item | v2 |
