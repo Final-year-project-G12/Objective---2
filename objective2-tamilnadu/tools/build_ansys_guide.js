@@ -371,6 +371,51 @@ children.push(P("Or create a report: Reports → Reference Values → Copy the p
 children.push(P(""));
 
 // ─────────────────────────────────────────────────────────────────────────────
+// HOW TO OPEN EACH FIGURE, FILE BY FILE
+children.push(H2("How to Open Each Figure in ANSYS — File by File"));
+
+children.push(P("Each figure above maps to a specific case file and a specific display. Open the file named, then follow the clicks. Quick map:"));
+
+children.push(table(
+  ["Figure", "Open this file", "Then display"],
+  [
+    ["1 — Tank + capsules + panel (mesh)", "system_tank_pcm_panel_setup.cas.h5", "Graphics → Mesh, colour by Zone"],
+    ["2 — Temperature field", "system_tank_pcm_panel_solved.cas.h5 (+ .dat)", "Contours → Static Temperature"],
+    ["3 — PCM melt comparison (chart)", "v7_c25 / v7_c26 / v7_rt57hc / v7_puretemp58 (+ .dat)", "Contours → Liquid Fraction (per PCM)"],
+    ["4 — Per-regime spatial fields", "v7_puretemp58 (R0), v7_rt57hc (R1/R2) (+ .dat)", "Contours → Liquid Fraction / Temperature"],
+  ],
+  [2400, 3400, 2800], { tiny: true }
+));
+
+children.push(P(""));
+
+children.push(H3("Figure 1 — Tank + PCM Capsules + Collector Panel (mesh & zones)"));
+children.push(B("File → Read → Case… → ansys/system_tank_pcm_panel_setup.cas.h5  (mesh only — no .dat needed)"));
+children.push(B("Left tree: Results → Graphics → Mesh → double-click"));
+children.push(B("In the Mesh panel: tick all zones under Surfaces, set Coloring → Zone → Display"));
+children.push(B("You'll see the full system coloured by cell zone — tank water (31,008), PCM capsules (4,847), Al shell (511), collector (3,200), absorber (1,200), riser (2,200); 42,966 cells total"));
+
+children.push(H3("Figure 2 — Temperature Field During Charging"));
+children.push(B("File → Read → Case & Data… → ansys/system_tank_pcm_panel_solved.cas.h5  (its .dat loads automatically)"));
+children.push(B("Results → Graphics → Contours → New"));
+children.push(B("Contours of: Temperature → Static Temperature → select all surfaces → tick Filled → Display"));
+children.push(B("Full-system view: absorber ~139 °C → panel ~125 °C → riser ~61 °C → tank ~32 °C"));
+children.push(P("To get the right-hand \"tank-only\" panel: in the Contours panel untick Auto Range, set Min/Max to the tank's own range (≈ 305–335 K), and Display again. This rescales the colour map so tank detail is visible instead of one flat block (the absorber is so much hotter it otherwise dominates the scale)."));
+
+children.push(H3("Figure 3 — PCM Melt Comparison (four materials)"));
+children.push(P("Figure 3 is a chart drawn from four solved runs, not a single Fluent window. Two ways to reproduce it:"));
+children.push(B("Fastest — redraw the chart: python ansys/plot_v4_pcm_comparison.py re-reads the melt-history CSVs and regenerates 03_pcm_melt_comparison.png"));
+children.push(B("In ANSYS — view each PCM's field: open each of v7_c25 / v7_c26 / v7_rt57hc / v7_puretemp58 (.cas.h5 + .dat.h5), then Results → Contours → Liquid Fraction. Viewing the four is what the chart summarises."));
+children.push(P("The raw numbers behind the curves are in ansys/v7_<pcm>_melt_history.csv (time, liquid fraction, capsule temperature). Final rows read 0.60 / 0.50 / 0.47 / 0.38 for C25 / C26 / RT57HC / PureTemp 58."));
+
+children.push(H3("Figure 4 — Per-Regime Spatial Contours"));
+children.push(B("Regime 0: File → Read → Case & Data… → ansys/v7_puretemp58.cas.h5"));
+children.push(B("Regimes 1 & 2: ansys/v7_rt57hc.cas.h5  (same PCM, so same single-capsule field)"));
+children.push(B("Results → Contours → Liquid Fraction (melt front) or Static Temperature → Display — these are the exact images in Figure 4"));
+
+children.push(P(""));
+
+// ─────────────────────────────────────────────────────────────────────────────
 // WHAT FILES MEAN
 children.push(H2("Understanding the File Names"));
 
@@ -444,6 +489,50 @@ children.push(B("Temporal resolution: Figures 1–2 are energy-only (no flowing 
 children.push(B("These cases verify that the physics assumptions made in the fast tank model are sound. They do not re-derive the optimal designs — designs were chosen by the tank model + NSGA-II, then verified here in CFD."));
 
 children.push(P(""));
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PROVENANCE: plot code, values, validation, tank
+children.push(new Paragraph({
+  pageBreakBefore: true,
+  children: [new TextRun({ text: "", size: 1 })],
+}));
+
+children.push(H2("Provenance: Plot Code, Parameter Values, Validation & the 100 L Tank"));
+
+children.push(H3("Where the final plot code lives"));
+children.push(table(
+  ["Figure / plots", "Script", "Reads → writes"],
+  [
+    ["Results figures (G7–G11)", "src/plots/make_plots_results.py", "results/*.csv → results/plots/*.png (150 dpi)"],
+    ["Fig 1 — system mesh & zones", "src/cfd/plot_system_mesh.py", "solved system case → 01_system_mesh_zones.png"],
+    ["Fig 2 — temperature field", "src/cfd/plot_system_fields.py", "system_…_solved → 02_system_temperature_field.png"],
+    ["Fig 3 — PCM melt comparison", "ansys/plot_v4_pcm_comparison.py", "v7_<pcm>_melt_history.csv → 03_pcm_melt_comparison.png"],
+    ["Fig 4 — per-regime contours", "ansys/export_contours.py", "v7_puretemp58 / v7_rt57hc cases → regime_contours/*.png"],
+  ],
+  [2300, 2600, 2900], { tiny: true }
+));
+children.push(P("Every plot script only READS saved files — nothing is re-simulated and no number is typed by hand (the make_plots_results.py header states this explicitly). Figures 1–3 come from solved Fluent cases; Figure 4 is rendered natively by Fluent; the G-series figures come from the optimiser's saved CSVs."));
+
+children.push(H3("How the parameter values were set"));
+children.push(P("Values come from three places, never guessed into the plots:"));
+children.push(B("Fixed system constants — configs/system_config_shared.yaml (FROZEN at Phase 0A, identical for all four states). Each value is a cited engineering assumption or a solver setting: collector 2.5 m², F_R(τα)=0.75, F_R·U_L=4.5 W/m²K; tank 100 L, U=0.8 W/m²K; 0.8 mm aluminium shell (k=205); safety 75 °C water / 65 °C PCM; shield bypass 72/62 °C."));
+children.push(B("What the optimiser may vary — configs/design_space.yaml: capsule inner radius 10–40 mm, PCM volume fraction 2–30 %, flow 0.010–0.050 kg/s, arrangement {single-layer, staggered, radial}. Hard constraints: PCM peak ≤ 65 °C, water ≤ 75 °C in every simulated year."));
+children.push(B("PCM thermal properties — taken from the Objective 1 database (data/objective1/pcm_database_tamilnadu.csv). No new PCMs are introduced in Objective 2; the shortlist (RT57HC, C25, C26, PureTemp 58) is Objective 1's output."));
+children.push(P("The final chosen numbers are the optimiser's own output in results/tn_optimal_designs.csv — the capsule counts, masses and flow rates quoted in the tables above are read from that file, not set by hand."));
+
+children.push(H3("How the designs are validated"));
+children.push(B("Two independent simulators. A fast 10-node tank model evaluates and ranks designs; ANSYS Fluent is an independent CFD physics cross-check that chooses nothing — it only confirms the melting physics the tank model assumes."));
+children.push(B("Convergence gate. Annual useful energy must change < 0.05 % when the timestep is halved. Only 37.5 s passes (0.041 %); the 150 s search step has Richardson error ≤ 0.17 %, far inside the repeatability band, so design ranking is unaffected. Every reported number uses 37.5 s."));
+children.push(B("Verification gates (the config 'verification' block). Gate 1: mean residual < 0.1 % to proceed. Gate 4: solar fraction must land in the 54–84 % literature band (Singh et al. 2025); the three designs sit at 57.8–65.2 %."));
+children.push(B("Water-only baseline. Each design is compared against a plain-water tank at the SAME flow, weather, demand and shield, so the reported benefit is a difference, insulated from shared modelling simplifications."));
+children.push(B("CFD cross-check, honestly logged (docs/CFD_VERIFICATION.md). A v3 bug — the whole domain initialised cold, so the PCM never melted — was caught and fixed in v4: water starts at 343 K, the capsule is patched cold at 303 K and read back to confirm, and the run aborts if the initial state is wrong. The melt ordering C25 > C26 > RT57HC > PureTemp 58 follows melt point and conductivity exactly."));
+
+children.push(H3("Why the tank is fixed at 100 L"));
+children.push(B("How it's fixed: configs/system_config_shared.yaml sets tank.volume_L = 100.0, and design_space.yaml lists tank_volume_L under fixed_not_optimised — so the optimiser never changes it. H/D = 2 gives D = 0.399 m, H = 0.799 m (derived in src/design/geometry.py)."));
+children.push(B("Why 100 L: it is the project instruction for Tamil Nadu (the Rajasthan reference used 50 L). The collector was scaled to 2.5 m² to hold 40 L/m², the low end of IS 12976:2023 §4.2 (40–100 L/m²). The 50 L / 1.5 m² pairing is 33.3 L/m², which that standard flags as below band — so 100 L both follows the instruction and brings collector sizing into the Indian Standard."));
+children.push(B("One consequence worth knowing: the 100 L tank is why the solver needs the finer 37.5 s step — the 50 L Rajasthan tank passed the convergence gate at 150 s; the larger tank does not. That is a property of the tank size, not a porting error."));
+
+children.push(new Paragraph({ text: "" }));
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SUMMARY

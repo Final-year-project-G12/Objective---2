@@ -258,12 +258,14 @@ ch.push(PR([
   + "the optimiser's output, so what it shows is the selected design and not a demo case.",
 ]));
 ch.push(PR([
-  { t: "The qualification: ", b: true },
-  "it was verified in headless mode, where it reproduced the trusted batch run exactly (liquid "
-  + "fraction 0.0394 at 0.3 h, matching to four decimals). The windowed version has not been "
-  + "watched running, because that needs a desktop session. The logic is identical \u2014 only the ",
-  { t: "ui_mode", c: true }, " flag differs \u2014 but the statement that the window renders is an "
-  + "expectation, not something observed.",
+  { t: "Now confirmed on screen. ", b: true },
+  "The windowed demo has been run interactively and watched: the liquid-fraction contour re-renders "
+  + "each chunk and the melt front is visibly seen advancing \u2014 the solid PCM core (blue) shrinking "
+  + "inside the hot liquid water (red). At flow time 3.7 h the capsule read liquid fraction ",
+  { t: "0.48", c: true }, " and ", { t: "62.8 \u00b0C", c: true },
+  ", consistent with the batch runs. It was also verified earlier in headless mode, reproducing the "
+  + "trusted batch run exactly (liquid fraction 0.0394 at 0.3 h, matching to four decimals). So the "
+  + "live render is now observed, not just expected.",
 ]));
 ch.push(P("To run it, from the project root:"));
 ch.push(CODEP("cd ansys\npython fluent_live_demo.py                  # regime 0, 6 h, with window\npython fluent_live_demo.py --regime 1\npython fluent_live_demo.py --hours 1         # quick look\npython fluent_live_demo.py --headless        # no window, verify setup"));
@@ -273,6 +275,32 @@ ch.push(PR([
   + "launch failure reading ", { t: "Unexpected license problem", c: true },
   " is usually a stray ", { t: "ansyscl.exe", c: true },
   " from an earlier session rather than a real licence fault.",
+], { after: 150 }));
+
+ch.push(H2("How long does the live demo run, and how to stop it?"));
+ch.push(PR([
+  "A common question when watching it: the console keeps scrolling \u2014 is it stuck? It is not. The "
+  + "demo simulates ", { t: "6 physical hours", c: true }, " of melting by default, in ",
+  { t: "20 s", c: true }, " steps \u2014 that is ",
+  { t: "6 \u00d7 3600 / 20 = 1,080 time steps", c: true },
+  ", and it runs every one before stopping on its own. It prints one block per converged step, with "
+  + "a ", { t: "\u201cN more time steps\u201d", c: true }, " counter ticking down to zero. On this machine, "
+  + "with the live contour re-rendering each chunk, a full default run takes roughly 45 min to 1.5 h "
+  + "of wall-clock time.",
+]));
+ch.push(PR([
+  { t: "To make it short, set the physical duration. ", b: true },
+  { t: "--hours 1", c: true }, " runs 180 steps (a few minutes); ",
+  { t: "--hours 0.5", c: true }, " runs 90. The melt front is already clearly advancing within the "
+  + "first simulated hour, so a short run is enough to show it live.",
+]));
+ch.push(PR([
+  { t: "To stop a run early, ", b: true }, "click ",
+  { t: "Stop at end of the time step", c: true },
+  " at the bottom-right of the Fluent window (not \u201cStop at end of the iteration\u201d, which halts "
+  + "mid-step). It finishes the current step and halts with the solution and contour intact, so the "
+  + "on-screen melt front stays valid to show. The final state is auto-saved to ",
+  { t: "C:\\fluent_work\\demo_r<regime>_final.cas.h5", c: true }, ".",
 ], { after: 150 }));
 
 /* ─────────────────── 6. checking the images ─────────────────── */
