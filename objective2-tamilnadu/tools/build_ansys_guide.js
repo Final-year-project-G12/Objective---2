@@ -226,6 +226,26 @@ children.push(cap("This figure verifies the geometry and heat conduction pathway
 
 children.push(new Paragraph({ text: "" }));
 
+children.push(H3("Figure 2b: Native ANSYS Render — Whole-System Heat Path"));
+children.push(P("The same whole-system case rendered directly by ANSYS Fluent (not post-processed in Python) — this is literally the view inside ANSYS:"));
+try {
+  children.push(new Paragraph({
+    spacing: { after: 80 },
+    alignment: AlignmentType.CENTER,
+    children: [new ImageRun({
+      type: "png",
+      data: fs.readFileSync(path.join(FIGURES, "system_views", "system_temperature.png")),
+      transformation: { width: 520, height: Math.round(520 * 0.75) },
+    })],
+  }));
+} catch (e) {
+  children.push(P("(Native system render not found — run ansys/export_system_views.py)", { color: "FF0000" }));
+}
+children.push(cap("Collector panel (left) glows hot at ~412 K (139 °C); the two pipes carry heat across to the 100 L tank (right), sitting cold at ~304 K (31 °C)."));
+children.push(cap("This is the energy-only snapshot: it shows the collector→tank heat path. The capsules are not distinct here because the PCM stays solid (same caveat as Figure 2). Rendered natively via ansys/export_system_views.py."));
+
+children.push(new Paragraph({ text: "" }));
+
 children.push(H3("Figure 3: PCM Melting Comparison — All Four Materials"));
 try {
   children.push(img(path.join(FIGURES, "03_pcm_melt_comparison.png"), 550));
@@ -297,6 +317,42 @@ for (const g of REGCONT) {
 }
 
 children.push(P("How these were made: ansys/export_contours.py loads each solved .cas.h5/.dat.h5, builds a native Fluent banded contour of the field, and exports it with results.graphics.picture.save_picture — the same graphics path the live demo uses, so the image is Fluent's own render of the real mesh.", { italics: true, color: MUTED, size: SMALL }));
+
+children.push(new Paragraph({ text: "" }));
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FIGURE 5 — DISCHARGE (PCM heating the water), single capsule + whole tank
+const DISCHARGE = path.join(FIGURES, "discharge");
+const TANKDIS = path.join(FIGURES, "tank_discharge");
+
+children.push(new Paragraph({
+  pageBreakBefore: true,
+  children: [new TextRun({ text: "", size: 1 })],
+}));
+
+children.push(H2("Figure 5: The PCM Working — Discharge (Capsules Heating the Water)"));
+children.push(P("Charging (Figures 3–4) showed hot water MELTING the PCM. Discharge is the reverse, and the payoff: in the evening the water has cooled, so the melted PCM SOLIDIFIES and releases its stored heat back into the water — the PCM heats the water. This is what keeps the tank warm after sunset."));
+
+children.push(H3("Whole tank — all 34 capsules discharging together"));
+children.push(P("The full tank with the melting model switched on: all 34 capsules start hot and fully melted, the tank water starts cold, and they discharge together, with no sun (ansys/fluent_tank_discharge.py). This is the capsules and the tank water working as one coupled model."));
+try {
+  children.push(contourImg(path.join(TANKDIS, "tank_regime0_puretemp58_temp_END.png")));
+  children.push(cap("Temperature after 2 h — the 34 capsules (red dots) sit inside the tank; a warm halo of heated water has spread out from the capsule bank into the cooler tank water. The capsules are heating the tank water."));
+  children.push(contourImg(path.join(TANKDIS, "tank_regime0_puretemp58_liqfrac_END.png")));
+  children.push(cap("Liquid fraction after 2 h — the tank water is liquid (red); each capsule shows a blue ring around a warmer centre, so every capsule is solidifying from the outside in, releasing its latent heat."));
+} catch (e) {
+  children.push(P("(Whole-tank discharge images not found — run ansys/fluent_tank_discharge.py)", { color: "FF0000" }));
+}
+children.push(cap("Regime 0 (PureTemp 58): over 2 h the tank water warmed 30.0 → 36.4 °C while the capsules cooled 70 → 54.6 °C and solidified to 27% liquid. Energy-only (conduction), consistent with the rest of the project — real convection would mix the warm water faster, but the mechanism shown is correct."));
+
+children.push(H3("Single capsule — the same discharge, up close"));
+children.push(P("The capsule-scale version (ansys/fluent_discharge_demo.py) shows one capsule's discharge in detail, the way each capsule in the tank behaves:"));
+try {
+  children.push(contourImg(path.join(DISCHARGE, "regime0_puretemp58_temp_END.png")));
+  children.push(cap("One capsule after 1 h: the hot capsule (red dome) has grown a warm halo in the water around it — heat flowing out of the PCM into the water."));
+} catch (e) {}
+
+children.push(P("How to run it yourself (live): python ansys/fluent_tank_discharge.py --regime 0 --hours 1 --live  (whole tank), or python ansys/fluent_discharge_demo.py --regime 0 --live  (single capsule). Both animate the discharge, printing water and PCM temperature per simulated minute.", { italics: true, color: MUTED, size: SMALL }));
 
 children.push(new Paragraph({ text: "" }));
 
