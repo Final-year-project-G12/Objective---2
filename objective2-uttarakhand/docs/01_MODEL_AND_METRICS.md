@@ -74,3 +74,12 @@ The held-out years use exact plain runs instead of the grid.
 
 No supercooling, no volume change on melting, no backup heater, no pump energy, a flow-independent collector F_R, a single lumped PCM
 resistance; no CFD-derived resistance correction is applied.
+
+**Off-by-default options (ported from Rajasthan 2026-11-11, same code as `objective2-rajasthan`).** None is used by any result; with the defaults
+the simulator is bit-identical (checked on regimes 0 and 3, all explore years, and by the tests):
+
+| Option | How to switch it on (`system_config_overrides`) | Effect | Test |
+|---|---|---|---|
+| Conduction coefficient c | `{"pcm_integration": {"conduction_coefficient_c": c}}` | R_pcm = r/(c k_eff) instead of c = 5 | `tests/test_capsule_closure_option.py` |
+| Named capsule closure | `{"pcm_integration": {"closure": "cfd_closure_v1"}}` | c and F from `configs/cfd_closure_v1.yaml` (a Rajasthan OpenFOAM fit, UNVALIDATED, not fitted for Uttarakhand) | `tests/test_cfd_closure.py` |
+| Flow-dependent collector F_R | `{"collector": {"flow_dependent_fr": {"enabled": true}}}` | F_R(tau alpha) and F_R U_L scaled by F_R(flow)/F_R(0.030 kg/s), Hottel-Whillier form | `tests/test_flow_dependent_fr.py` |

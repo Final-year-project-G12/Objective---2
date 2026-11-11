@@ -4,7 +4,7 @@
  "simulator_version": "sim_v3_uttarakhand (multi-node N=10, dt=150 s)",
  "config_hashes": {
   "configs/system_config_shared.yaml": {
-   "sha256": "fae34a736ad3ac82324062d42ef08f6b68134571a4657e99a8f47c3eb77f10e0"
+   "sha256": "ee59aae28012fb999c79d78f1133d1fb9db76934f52c6727713d4b80afa53568"
   },
   "configs/design_space.yaml": {
    "sha256": "3679dbc23b8e5f9924f6043a15fffedf4c86a23cee44df4432a156941f436284"

@@ -30,3 +30,19 @@ The structure is Rajasthan's contract v2 (template `data/legacy/obj3_environment
   which the passive design does not extend against the same 50 L tank.
 - Compare any controller against the same-flow water-only twin and the passive PCM design, on the explore and select years only.
 - The demand file `data/demand/demand_profile_uttarakhand.csv` must be read as local time (morning peak 07:30). Pump energy is not meaningful in the O2 simulator.
+
+## Check against the Objective 3 plan (consolidated 2026-11-10), done 2026-11-11
+
+The O3 plan starts with Rajasthan and lists Uttarakhand as "later". What it needs from this folder, and its status:
+
+| O3 plan item | Uttarakhand status |
+|---|---|
+| Hourly stepping of the unchanged kernel with carried state | Supported: `run_year_multinode(..., initial_state={"T_nodes", "h_nodes"})`; the end-of-hour node states are in `hourly.attrs["node_T"]`, `["node_h"]` (`src/simulation/tank_model_multinode.py`) |
+| Same kernel and options as Rajasthan ("no conduction-coefficient option") | **Fixed 2026-11-11**: the conduction coefficient c, the named closure and the flow-dependent F_R option were ported (all off by default; results bit-identical; 95 tests pass). The kernel files now differ from Rajasthan's only in the state name |
+| Contract hashes checked by the O3 environment | Contract regenerated 2026-11-11; only the `configs/system_config_shared.yaml` hash changed (the F_R block was added, disabled) |
+| Years already used by O2 | 2024-2025 (lock `heldout_c75ac0e6fb78`); the docstring in `src/weather/roles.py` says so (fixed 2026-11-10). O3 must not use 2016-2025 as its own test; like Rajasthan it would need earlier years (2006-2010) for the four UK medoids, downloaded and quality-checked by O3 |
+| Delivery temperature | 50 C, not 45 C: every O3 metric and reward term for Uttarakhand must use the contract's `delivery_temp_target_C` (columns named 45 are computed at 50 C) |
+| Regime 3 ("degenerate") | `meaningful_on_primary_metric = false`; the contract design has 4 capsules (2 % PCM). Treat it as a water-only tank; a controller there has no PCM to manage |
+| Action space | The contract's `control_skeleton` (charge / discharge / bypass + continuous flow) is the generic text inherited from the template. The O3 plan's correction applies here too: the only controllable input is collector loop on/off; flow should stay fixed unless the F_R(flow) option is switched on as a declared physics change |
+| Q8: K = 4 vs K = 5 | Still open **in Objective 1**, not here: O1 `main` has `K_FINAL = 5` for Uttarakhand; the K = 4 switch (O1 commit `6be0dcd`) is only on the `tamilnadu-data` branch. O2 uses K = 4. The O1 team must merge it into O1 `main` |
+

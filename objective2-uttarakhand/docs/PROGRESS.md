@@ -131,3 +131,15 @@ are not installed on this machine; `scripts/run_all_cases.ps1` runs everything w
 - Code: `src/weather/roles.py` module docstring no longer says the held-out years are untouched; it records run id `heldout_c75ac0e6fb78`, UTC 2026-10-28T13:18:41. Tests: 81 passed.
 - Docs: `docs/README.md` (corrections section), `docs/02_WEATHER_AND_DESIGN_SPACE.md` and `docs/06_OBJECTIVE3_HANDOFF.md` (K = 4 inheritance, 50 L / 1.5 m2 / 50 C), `docs/05_LIMITATIONS_AND_OPEN_ITEMS.md` (open items), `README.md`.
 - Held-out evidence re-read: 24 rows; regimes 0-2 `g_window` > 0; regime 3 all designs negative.
+
+## 2026-11-11 - Objective 3 readiness (O3 plan check)
+
+- Checked the consolidated O3 plan (2026-11-10) against this folder; findings and status in `docs/06_OBJECTIVE3_HANDOFF.md` (last section).
+- Ported from `objective2-rajasthan`, unchanged except the state name: the conduction coefficient c of R_pcm (`src/simulation/heat_transfer.py`,
+  `tank_model_multinode.py`), the named capsule closure (`src/simulation/cfd_closure.py`, `configs/cfd_closure_v1.yaml`, Rajasthan's unvalidated fit),
+  the flow-dependent collector F_R (`src/simulation/collector_model.py`, `run_case.py`, disabled block in `configs/system_config_shared.yaml`), and their
+  tests (`test_capsule_closure_option.py`, `test_cfd_closure.py`, `test_flow_dependent_fr.py`).
+- All options are off by default. Regime 0 and regime 3 designs over the five explore years give bit-identical g_window, g_annual, d_overheat and PCM peak
+  before and after. Tests: 95 passed. Nothing was re-run; no result file except the contract changed; `results/held_out_test.lock` untouched.
+- Contract regenerated (`--stage handoff`): only the `system_config_shared.yaml` SHA-256 changed.
+

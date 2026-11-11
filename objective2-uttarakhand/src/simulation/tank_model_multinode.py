@@ -115,7 +115,7 @@ def _T_f_of_h(h, Ts, Tl, L, cps, cpl, x):
 
 
 @njit(cache=True)
-def _ua_node(n, d, area, v, f, rho, kw, pr, mu, wall_t, wall_k, k_pcm, enh):
+def _ua_node(n, d, area, v, f, rho, kw, pr, mu, wall_t, wall_k, k_pcm, enh, c_cond=5.0):
     if n <= 0:
         return 0.0
     re = max(rho * v * d / mu, 1e-6)
@@ -124,7 +124,7 @@ def _ua_node(n, d, area, v, f, rho, kw, pr, mu, wall_t, wall_k, k_pcm, enh):
     k_eff = k_pcm * (enh if f >= 0.5 else 1.0)
     r_in = d / 2.0 - wall_t                      # PCM conduction path = inner radius (decision D3)
     a_in = 4.0 * np.pi * r_in * r_in
-    r_tot = 1.0 / (hw * area) + wall_t / (wall_k * area) + r_in / (5.0 * k_eff * a_in)
+    r_tot = 1.0 / (hw * area) + wall_t / (wall_k * area) + r_in / (c_cond * k_eff * a_in)
     return n / r_tot
 
 
@@ -208,6 +208,7 @@ def _kernel(ghi_unused, tamb, hod, coll_a, coll_b, coll_circ, demand24, m_w, n_c
     wall_t, wall_k, d, area_cap, m_cap = P[19], P[20], P[21], P[22], P[23]
     margin, stiff_sf, n_band, max_sub = P[24], P[25], int(P[26]), int(P[27])
     shield, byp_w, byp_p, max_w, max_p, stop_thr = P[28], P[29], P[30], P[31], P[32], P[33]
+    c_cond = P[34]                  # conduction coefficient c of R_pcm = r/(c k_eff); 5.0 unless the off-by-default option is used
 
     n_caps_tot = 0.0
     for i in range(N):
@@ -286,7 +287,7 @@ def _kernel(ghi_unused, tamb, hod, coll_a, coll_b, coll_circ, demand24, m_w, n_c
                 for i in range(N):
                     if n_caps[i] > 0:
                         ua_p = _ua_node(n_caps[i], d, area_cap, v_max, f[i], rho_w, kw, pr, mu,
-                                        wall_t, wall_k, k_pcm, enh)
+                                        wall_t, wall_k, k_pcm, enh, c_cond)
                         if ua_p > 0:
                             tau = m_pcm_node[i] * cp_min_eff / ua_p
                             ns = int(np.ceil(dt / (stiff_sf * tau)))
@@ -319,7 +320,7 @@ def _kernel(ghi_unused, tamb, hod, coll_a, coll_b, coll_circ, demand24, m_w, n_c
                             thr = mdot_d + (mdot_c if circ else 0.0)
                             v = thr / (rho_w * A_cross)
                             ua = _ua_node(n_caps[i], d, area_cap, v, f[i], rho_w, kw, pr, mu,
-                                          wall_t, wall_k, k_pcm, enh)
+                                          wall_t, wall_k, k_pcm, enh, c_cond)
                             if shield > 0.5 and Tp[i] >= byp_p and T[i] > Tp[i]:
                                 ua = 0.0
                                 sc[14] += 1
@@ -563,6 +564,7 @@ def run_year_multinode(weather_hourly, demand, mains_temp_C, design, pcm_props, 
         1.0 if shield_cfg.get("enabled", False) else 0.0,
         shield_cfg.get("bypass_water_C", max_w - 3.0), shield_cfg.get("bypass_pcm_C", max_p - 3.0),
         max_w, max_p, -1e9 if stop_when_Tw_below_C is None else float(stop_when_Tw_below_C),
+        float(integ.get("conduction_coefficient_c", 5.0)),
     ], dtype=float)
     P = np.concatenate([P, np.zeros(40 - len(P))])
     hr, node_T, node_h, sc = _kernel(np.zeros(1), weather_hourly["T_amb_C"].to_numpy(dtype=float), hod,
