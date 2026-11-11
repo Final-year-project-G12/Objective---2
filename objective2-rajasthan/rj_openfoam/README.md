@@ -27,6 +27,8 @@ constants for the chosen capsules (R ≈ 40 mm). This folder adds that check (pl
 | `scripts/make_capsule_case.py` | writes a full case (mesh, thermo, fvOptions/fvModels, BCs, function objects, Allrun) |
 | `scripts/calibrate_lumped.py` | OpenFOAM melt fraction vs lumped model, grid fit of (c, F) → `results/calib_*.csv/png` |
 | `postprocess/paraview_capsule.py` | pvpython: alpha1 / T snapshots and alpha1 = 0.5 front CSVs |
+| `postprocess/paraview_export_3d.py`, `paraview_state.py` | pvpython: wedge -> 360-degree solid of revolution as a `.pvd` time series; one `.pvsm` state per case (see "3-D results in ParaView") |
+| `results/paraview/<case>/` | the exported series (`.pvd` + `step_*.vtm`), `<case>.pvsm`, a preview PNG and `case.foam`; tracked in git |
 | `PROMPT_OpenFOAM_Recalibration.md` | the Claude Code prompt that runs steps R0–R8 |
 | `scripts/run_batch.py`, `run_wsl.sh` | generate + run several cases in WSL (paths with spaces break OpenFOAM, so runs happen in `~/rj_runs`) |
 | `scripts/case_summary.py`, `v0_compare.py`, `stefan_sphere_1d.py` | t50/t90 + energy check; V0 table; 1-D conduction reference |
@@ -39,6 +41,27 @@ cases/r0_charge_70_n40/Allrun
 pvpython postprocess/paraview_capsule.py cases/r0_charge_70_n40
 python scripts/calibrate_lumped.py cases/r0_charge_70_n40
 ```
+
+## 3-D results in ParaView (r0 charge/discharge, r1, r2; 40 cells)
+The solver runs on a 5-degree axisymmetric wedge (axis x, radial y, gravity along -x). `results/paraview/<case>/` holds a revolved 3-D copy of those fields.
+**Open:** ParaView > File > Open > `results/paraview/<case>/<case>.pvd` (fields `T` in K, `alpha1` = liquid fraction, `U` in m/s; cell data). Or File > Load State > `<case>.pvsm`
+(mid-plane slice z = 0 coloured by T, alpha1 = 0.5 melt-front surface on the z >= 0 half, outline); if ParaView asks, point it at the `.pvd` in the same folder.
+`results/runs/<case>/` still holds only the logs and `.dat` files; the raw time folders are not kept.
+
+**What the 3-D version is.** Each wedge cell is revolved about x through 360 degrees in 36 steps of 10 degrees (`--segments 72` gives one step per wedge, closer to a true sphere; 36 steps fill
+99.4 % of the sphere volume, printed by the script). One value per original cell, copied to every step; nothing is interpolated or re-solved. `U` is rotated per step so the vectors point radially all round.
+The swirl component is taken from the wedge's z component (about zero). The wedge itself is the only thing the solver computed: the 3-D picture is a rotation of that 2-D-axisymmetric result, not a 3-D simulation.
+Times: every 600 s from the first written time (0 s is not exported). `case.foam` in each folder is the empty marker of the wedge case; it opens only where the raw `cases/<case>/` exists.
+
+**Reproduce** (about 50 min for the four cases in parallel on 16 cores; WSL2 Ubuntu-24.04, OpenFOAM v2406; run from `rj_openfoam/`):
+```bash
+for a in "r0 charge_70" "r0 discharge_mains" "r1 charge_70" "r2 charge_70"; do set -- $a; python -I scripts/make_capsule_case.py --design $1 --scenario $2 --cells 40; done
+# run each case with scripts/run_wsl.sh (strip the CR characters first: tr -d '' < scripts/run_wsl.sh > run_wsl_lf.sh; bash run_wsl_lf.sh <path to cases/<case>> inside WSL)
+pvpython postprocess/paraview_export_3d.py cases/r0_charge_70_n40 results/paraview/r0_charge_70_n40 --segments 36 --every 600
+pvpython postprocess/paraview_state.py results/paraview/r0_charge_70_n40/r0_charge_70_n40.pvd results/paraview/r0_charge_70_n40/r0_charge_70_n40.pvsm results/paraview/r0_charge_70_n40/r0_charge_70_n40_preview.png
+```
+`pvpython` is `D:\Program Files\ParaView 6.2.0in\pvpython.exe` here. Raw `cases/` (about 0.9 GB for the four, 721 or 1081 time folders each) is gitignored; keep it only while you need the fields.
+**Reproduction check (2026-11-11):** the four reruns give `meltAndTemp.dat` and `wallQ.dat` bit-identical to `results/runs/<case>/` (max difference 0, `results/paraview_rerun_check.csv`), so the tables in `docs/07_OPENFOAM_VALIDATION.md` are unchanged.
 
 ## Known limits
 Single-phase solver uses density_solid (mass-consistent with the simulator), averaged k, cp; melting is isothermal at Tm (one `Tmelt` in the ESI option). No supercooling, no unconstrained (sinking-solid) melting,

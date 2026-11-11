@@ -1,0 +1,9 @@
+case,file,rows,max_abs_diff,max_rel_diff,identical
+r0_charge_70_n40,meltAndTemp.dat,720,0.000e+00,0.000e+00,True
+r0_charge_70_n40,wallQ.dat,720,0.000e+00,0.000e+00,True
+r0_discharge_mains_n40,meltAndTemp.dat,1080,0.000e+00,0.000e+00,True
+r0_discharge_mains_n40,wallQ.dat,1080,0.000e+00,0.000e+00,True
+r1_charge_70_n40,meltAndTemp.dat,720,0.000e+00,0.000e+00,True
+r1_charge_70_n40,wallQ.dat,720,0.000e+00,0.000e+00,True
+r2_charge_70_n40,meltAndTemp.dat,720,0.000e+00,0.000e+00,True
+r2_charge_70_n40,wallQ.dat,720,0.000e+00,0.000e+00,True
