@@ -68,6 +68,9 @@ def ua_eff_total_w_k(n_capsule: int, capsule_diameter_m: float, capsule_area_m2:
     wall_thickness = integ["capsule_wall_thickness_m"]
     wall_k = integ["capsule_wall_conductivity_W_mK"]
     enhancement = integ["liquid_convection_enhancement"]
+    # OFF-BY-DEFAULT closure option (O2 CFD recalibration, 2026-10-29): c in R_pcm = r/(c k_eff). Absent from the frozen config -> 5.0,
+    # the value used by every result so far. Set only through system_config_overrides (pcm_integration.conduction_coefficient_c).
+    c_cond = float(integ.get("conduction_coefficient_c", 5.0))
 
     h_w = water_side_htc_w_m2k(superficial_velocity_m_s, capsule_diameter_m, system_config)
     r_conv = 1.0 / (h_w * capsule_area_m2) if h_w > 0 else float("inf")
@@ -80,7 +83,7 @@ def ua_eff_total_w_k(n_capsule: int, capsule_diameter_m: float, capsule_area_m2:
     # outer radius and outer area were used (an 8 % overstatement of the path at R_in = 10 mm).
     r_in = capsule_diameter_m / 2.0 - wall_thickness
     a_in = 4.0 * math.pi * r_in ** 2
-    r_pcm = r_in / (5.0 * k_eff * a_in) if k_eff > 0 else float("inf")
+    r_pcm = r_in / (c_cond * k_eff * a_in) if k_eff > 0 else float("inf")
 
     r_total_per_capsule = r_conv + r_wall + r_pcm
     ua_per_capsule = 1.0 / r_total_per_capsule if r_total_per_capsule > 0 else 0.0
