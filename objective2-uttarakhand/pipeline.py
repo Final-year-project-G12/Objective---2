@@ -22,7 +22,7 @@ single place that states the order of the chain. Stages that take hours say so b
   heldout      G10  the one-shot held-out test on the untouched years 2024-2025. REFUSES when results/held_out_test.lock exists.
   ablation     G11  ablations and controls around the chosen design, explore years, 4 regimes
   report       G12  results registry, generated results document, document-reference check
-  handoff      G12  Objective 3 environment contract v2
+  handoff      G12  Objective 3 environment contract v2, then the same content in the v3 schema the O3 code reads
   plots        G12  figures from the saved results (results/plots/)
   simulate          one design, explore/select years, paired against the same-flow water-only tank (quick check, no files written)
   status            which stage outputs exist, and whether the held-out lock is set
@@ -100,7 +100,8 @@ def commands(stage):
     if stage == "report":
         return [[cmd(s + "g12_registry.py")], [cmd(s + "g12_results_doc.py")], [cmd(s + "g12_verify_docs.py")]]
     if stage == "handoff":
-        return [[cmd("-m", "src.handoff.build_obj3_contract_v2", env={"PYTHONPATH": "."})]]
+        return [[cmd("-m", "src.handoff.build_obj3_contract_v2", env={"PYTHONPATH": "."})],
+                [cmd("-m", "src.handoff.build_obj3_contract_uttarakhand_v3", env={"PYTHONPATH": "."})]]
     if stage == "plots":
         return [[cmd("-m", "src.plots.make_plots_results")]]
     raise KeyError(stage)

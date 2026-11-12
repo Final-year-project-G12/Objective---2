@@ -5,6 +5,15 @@
 the legacy K = 5 contract (UTC-indexed demand, single-node tank; removed in the cleanup, git history only), which must not be used for training.
 The structure is Rajasthan's contract v2 (template `data/legacy/obj3_environment_contract_template_from_rajasthan.json`) with the Uttarakhand values.
 
+**v3-schema form (2026-11-12):** `results/obj3_environment_contract_uttarakhand_v3.json`, written by `src/handoff/build_obj3_contract_uttarakhand_v3.py`
+(`PYTHONPATH=. python -m src.handoff.build_obj3_contract_uttarakhand_v3`; the `handoff` stage now runs it after v2). The Objective 3 code reads the
+Tamil Nadu v3 schema (`contract_version`, `static_design_per_regime`, `fixed_system`, `delivery_target_temp_C`, `flow_min_kg_s` / `flow_max_kg_s`).
+This file re-expresses the v2 contract in that schema; it is a port of the Rajasthan v3 builder in `../objective2-rajasthan/src/handoff/` (commit `ca23d0c`). No
+result value is changed or re-simulated: `verify_against_sources()` checks every copied design number against the four `results/g10_selection_r*.json` files,
+the held-out rows against `results/g10_heldout_results.csv` and the limits against v2 (33 fields). Uttarakhand values kept: 50 L / 1.5 m2, four
+regimes, delivery target 50 C, held-out 2024-2025. Regime 3 carries `degenerate_regime = true`. Differences from v2 in wording only: the v3
+`action_space.recommended` is the discrete (loop on/off) version, matching the O3 plan correction in the table below.
+
 **Hand-off design basis (checked 2026-11-10 against `configs/system_config_shared.yaml`):** tank 50 L (line 30), collector 1.5 m2 (line 24), delivery target 50 C (line 84), PCM limit 65 C (line 55). That is 33.3 L per m2, below the 40-100 L/m2 of IS 12976:2023. **K = 4 inheritance:** the four regimes come from O1 commit `6be0dcd`, which is not on O1 main (K = 5); the contract is not valid against O1 main's five-cluster outputs. The held-out years 2024-2025 were used once (run id `heldout_c75ac0e6fb78`) and are not available to O3.
 
 ## What is in the contract

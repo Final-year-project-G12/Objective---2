@@ -29,7 +29,7 @@ objective2-uttarakhand/
 │   ├── weather/              # point-year inventory, year roles, held-out lock
 │   ├── design/               # design space, geometry engine, constraints
 │   ├── optimize/             # paired baseline, evaluation, ANOVA, surrogates, NSGA-II
-│   ├── handoff/              # Objective 3 environment contract v2
+│   ├── handoff/              # Objective 3 environment contract v2 and its v3-schema form
 │   ├── plots/                # make_plots_results.py (figures 1-9)
 │   └── verify/               # Phase-4 verification battery (gates.py)
 ├── scripts/g*.py             # one script per gate step (G2-G18; G18 not run)
