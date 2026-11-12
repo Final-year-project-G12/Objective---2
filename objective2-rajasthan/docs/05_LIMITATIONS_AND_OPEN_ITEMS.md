@@ -72,7 +72,7 @@
    Palmitic-stearic/EG 0.452 vs 0.16; PureTemp 60 0.208 vs 0.20; n-Heptacosane 0.210 vs 0.2415). The simulator reads the database.
 2. **Sizing:** 33.3 L per m2 of collector is below the 40-100 L/m2 range of IS 12976:2023 (decision D8). The compact-tank case is the
    fixed condition of this work; the standards-compliant resizing study (older pipeline) has not been repeated on the new model.
-   The standard (`PCM-Selection-ML-model/Sources/pdfs/IS12976_2023.pdf`): §4.2 "tank capacities are generally chosen between 40 l/m²
+   The standard (`.claude/Sources/IS12976_2023.pdf`): §4.2 "tank capacities are generally chosen between 40 l/m²
    to 100 l/m² of collector area"; §7.1 gives 50-100 L/m² for f-chart design, with 75 L/m² as the no-correction reference and the
    correction term defined only between 37.5 and 300 L/m². The 50 L tank and 1.5 m² collector come from two different papers
    (Chen 2025 Table 1 and Singh 2025 §3); no source supports the ratio. On the legacy model (single-node tank, UTC demand, old

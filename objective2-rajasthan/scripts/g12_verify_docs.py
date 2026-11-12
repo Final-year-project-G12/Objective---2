@@ -77,7 +77,7 @@ def main():
                 if re.search(r"[=()]", tok):
                     continue
                 n += 1
-                if not exists(tok):
+                if not exists(re.sub(r":\d+(-\d+)?(,\d+(-\d+)?)*$", "", tok)):      # `file.yaml:24,38` -> check the file
                     miss.append((d.name, tok, "path not found"))
     print("checked", n, "references;", len(miss), "missing")
     for m in miss:

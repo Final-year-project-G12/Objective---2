@@ -325,27 +325,27 @@ test.r2.best_of_pcm.PlusICE_A58.2015.d_overheat,held-out d_overheat,797.8,h,resu
 test.r2.best_of_pcm.PlusICE_A58.2015.t_pcm_max,held-out t_pcm_max,64.06,C,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=PlusICE A58, year=2015"
 test.r2.best_of_pcm.PlusICE_A58.2015.t_water_max,held-out t_water_max,73.13,C,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=PlusICE A58, year=2015"
 test.r2.best_of_pcm.PlusICE_A58.2015.gain_tau_serve_mean_h,held-out gain_tau_serve_mean_h,0.014,h,results/g10_heldout_results.csv,"regime=2, role=best_of_pcm, pcm=PlusICE A58, year=2015"
-shield.r0.shield_water_h_pcm,"regime 0 chosen design, select-year mean: shield_water_h_pcm",482.9,h/yr,results/g13_shield_split_r0.csv,"role=chosen, purpose=select, mean of 2021-2023"
-shield.r0.shield_water_h_plain,"regime 0 chosen design, select-year mean: shield_water_h_plain",648.1,h/yr,results/g13_shield_split_r0.csv,"role=chosen, purpose=select, mean of 2021-2023"
-shield.r0.d_shield_water_h,"regime 0 chosen design, select-year mean: d_shield_water_h",-165.3,h/yr,results/g13_shield_split_r0.csv,"role=chosen, purpose=select, mean of 2021-2023"
-shield.r0.shield_pcm_h,"regime 0 chosen design, select-year mean: shield_pcm_h",590.0,h/yr,results/g13_shield_split_r0.csv,"role=chosen, purpose=select, mean of 2021-2023"
-shield.r0.d_overheat_as_stored,"regime 0 chosen design, select-year mean: d_overheat_as_stored",424.7,h/yr,results/g13_shield_split_r0.csv,"role=chosen, purpose=select, mean of 2021-2023"
-shield.r0.t_water_max_pcm_C,"regime 0 chosen design, select-year mean: t_water_max_pcm_C",72.4,C,results/g13_shield_split_r0.csv,"role=chosen, purpose=select, mean of 2021-2023"
-shield.r0.t_water_max_plain_C,"regime 0 chosen design, select-year mean: t_water_max_plain_C",73.1,C,results/g13_shield_split_r0.csv,"role=chosen, purpose=select, mean of 2021-2023"
-shield.r1.shield_water_h_pcm,"regime 1 chosen design, select-year mean: shield_water_h_pcm",571.7,h/yr,results/g13_shield_split_r1.csv,"role=chosen, purpose=select, mean of 2021-2023"
-shield.r1.shield_water_h_plain,"regime 1 chosen design, select-year mean: shield_water_h_plain",796.2,h/yr,results/g13_shield_split_r1.csv,"role=chosen, purpose=select, mean of 2021-2023"
-shield.r1.d_shield_water_h,"regime 1 chosen design, select-year mean: d_shield_water_h",-224.5,h/yr,results/g13_shield_split_r1.csv,"role=chosen, purpose=select, mean of 2021-2023"
-shield.r1.shield_pcm_h,"regime 1 chosen design, select-year mean: shield_pcm_h",417.7,h/yr,results/g13_shield_split_r1.csv,"role=chosen, purpose=select, mean of 2021-2023"
-shield.r1.d_overheat_as_stored,"regime 1 chosen design, select-year mean: d_overheat_as_stored",193.2,h/yr,results/g13_shield_split_r1.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r0.shield_water_h_pcm,"regime 0 chosen design, select-year mean: shield_water_h_pcm",486.7,h/yr,results/g13_shield_split_r0.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r0.shield_water_h_plain,"regime 0 chosen design, select-year mean: shield_water_h_plain",646.3,h/yr,results/g13_shield_split_r0.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r0.d_shield_water_h,"regime 0 chosen design, select-year mean: d_shield_water_h",-159.5,h/yr,results/g13_shield_split_r0.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r0.shield_pcm_h,"regime 0 chosen design, select-year mean: shield_pcm_h",350.6,h/yr,results/g13_shield_split_r0.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r0.d_overheat_as_stored,"regime 0 chosen design, select-year mean: d_overheat_as_stored",191.0,h/yr,results/g13_shield_split_r0.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r0.t_water_max_pcm_C,"regime 0 chosen design, select-year mean: t_water_max_pcm_C",72.2,C,results/g13_shield_split_r0.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r0.t_water_max_plain_C,"regime 0 chosen design, select-year mean: t_water_max_plain_C",73.2,C,results/g13_shield_split_r0.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r1.shield_water_h_pcm,"regime 1 chosen design, select-year mean: shield_water_h_pcm",494.0,h/yr,results/g13_shield_split_r1.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r1.shield_water_h_plain,"regime 1 chosen design, select-year mean: shield_water_h_plain",798.0,h/yr,results/g13_shield_split_r1.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r1.d_shield_water_h,"regime 1 chosen design, select-year mean: d_shield_water_h",-304.0,h/yr,results/g13_shield_split_r1.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r1.shield_pcm_h,"regime 1 chosen design, select-year mean: shield_pcm_h",549.2,h/yr,results/g13_shield_split_r1.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r1.d_overheat_as_stored,"regime 1 chosen design, select-year mean: d_overheat_as_stored",245.2,h/yr,results/g13_shield_split_r1.csv,"role=chosen, purpose=select, mean of 2021-2023"
 shield.r1.t_water_max_pcm_C,"regime 1 chosen design, select-year mean: t_water_max_pcm_C",72.2,C,results/g13_shield_split_r1.csv,"role=chosen, purpose=select, mean of 2021-2023"
 shield.r1.t_water_max_plain_C,"regime 1 chosen design, select-year mean: t_water_max_plain_C",73.4,C,results/g13_shield_split_r1.csv,"role=chosen, purpose=select, mean of 2021-2023"
-shield.r2.shield_water_h_pcm,"regime 2 chosen design, select-year mean: shield_water_h_pcm",482.2,h/yr,results/g13_shield_split_r2.csv,"role=chosen, purpose=select, mean of 2021-2023"
-shield.r2.shield_water_h_plain,"regime 2 chosen design, select-year mean: shield_water_h_plain",662.0,h/yr,results/g13_shield_split_r2.csv,"role=chosen, purpose=select, mean of 2021-2023"
-shield.r2.d_shield_water_h,"regime 2 chosen design, select-year mean: d_shield_water_h",-179.8,h/yr,results/g13_shield_split_r2.csv,"role=chosen, purpose=select, mean of 2021-2023"
-shield.r2.shield_pcm_h,"regime 2 chosen design, select-year mean: shield_pcm_h",540.5,h/yr,results/g13_shield_split_r2.csv,"role=chosen, purpose=select, mean of 2021-2023"
-shield.r2.d_overheat_as_stored,"regime 2 chosen design, select-year mean: d_overheat_as_stored",360.7,h/yr,results/g13_shield_split_r2.csv,"role=chosen, purpose=select, mean of 2021-2023"
-shield.r2.t_water_max_pcm_C,"regime 2 chosen design, select-year mean: t_water_max_pcm_C",72.2,C,results/g13_shield_split_r2.csv,"role=chosen, purpose=select, mean of 2021-2023"
-shield.r2.t_water_max_plain_C,"regime 2 chosen design, select-year mean: t_water_max_plain_C",73.0,C,results/g13_shield_split_r2.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r2.shield_water_h_pcm,"regime 2 chosen design, select-year mean: shield_water_h_pcm",412.1,h/yr,results/g13_shield_split_r2.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r2.shield_water_h_plain,"regime 2 chosen design, select-year mean: shield_water_h_plain",663.1,h/yr,results/g13_shield_split_r2.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r2.d_shield_water_h,"regime 2 chosen design, select-year mean: d_shield_water_h",-251.1,h/yr,results/g13_shield_split_r2.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r2.shield_pcm_h,"regime 2 chosen design, select-year mean: shield_pcm_h",700.0,h/yr,results/g13_shield_split_r2.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r2.d_overheat_as_stored,"regime 2 chosen design, select-year mean: d_overheat_as_stored",448.9,h/yr,results/g13_shield_split_r2.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r2.t_water_max_pcm_C,"regime 2 chosen design, select-year mean: t_water_max_pcm_C",72.4,C,results/g13_shield_split_r2.csv,"role=chosen, purpose=select, mean of 2021-2023"
+shield.r2.t_water_max_plain_C,"regime 2 chosen design, select-year mean: t_water_max_plain_C",73.1,C,results/g13_shield_split_r2.csv,"role=chosen, purpose=select, mean of 2021-2023"
 shield.rows_with_fewer_water_side_hours,design-years (4 designs x 8 years x 3 regimes) with fewer water-side shield hours than water-only,96,of 96,"results/g13_shield_split_r{0,1,2}.csv",d_shield_water_h < 0
 ctrl.r0.anchor_g_window,"regime 0 interior-anchor g_window (R25, 10 %, 0.030 kg/s)",41.51,kWh/yr,results/g14_controls_r0.csv,block=base
 ctrl.r0.thickness_const_mass.R10,regime 0 change in g_window vs interior anchor: thickness_const_mass R10,-28.1,kWh/yr,results/g14_controls_r0.csv,"block=thickness_const_mass, level=R10, minus anchor"
@@ -371,67 +371,67 @@ ctrl.r2.thickness_const_mass.R30,regime 2 change in g_window vs interior anchor:
 ctrl.r2.thickness_const_mass.R40,regime 2 change in g_window vs interior anchor: thickness_const_mass R40,9.06,kWh/yr,results/g14_controls_r2.csv,"block=thickness_const_mass, level=R40, minus anchor"
 ctrl.r2.fraction.x0.5,regime 2 change in g_window vs interior anchor: fraction x0.5,-22.18,kWh/yr,results/g14_controls_r2.csv,"block=fraction, level=x0.5, minus anchor"
 ctrl.r2.fraction.x2,regime 2 change in g_window vs interior anchor: fraction x2,36.31,kWh/yr,results/g14_controls_r2.csv,"block=fraction, level=x2, minus anchor"
-anchor.r0.chosen.bottom,regime 0 chosen design g_window with the stack at the bottom (select-year mean),72.63,kWh/yr,results/g15_anchor_r0.csv,"role=chosen, purpose=select, anchor=bottom"
-anchor.r0.chosen.center,regime 0 chosen design g_window with the stack at the center (select-year mean),99.43,kWh/yr,results/g15_anchor_r0.csv,"role=chosen, purpose=select, anchor=center"
-anchor.r0.chosen.top,regime 0 chosen design g_window with the stack at the top (select-year mean),118.34,kWh/yr,results/g15_anchor_r0.csv,"role=chosen, purpose=select, anchor=top"
-anchor.r0.chosen.range,regime 0 chosen design: g_window range over the three stack positions,45.71,kWh/yr,results/g15_anchor_r0.csv,max - min over bottom/center/top
-anchor.r1.chosen.bottom,regime 1 chosen design g_window with the stack at the bottom (select-year mean),57.99,kWh/yr,results/g15_anchor_r1.csv,"role=chosen, purpose=select, anchor=bottom"
-anchor.r1.chosen.center,regime 1 chosen design g_window with the stack at the center (select-year mean),94.32,kWh/yr,results/g15_anchor_r1.csv,"role=chosen, purpose=select, anchor=center"
-anchor.r1.chosen.top,regime 1 chosen design g_window with the stack at the top (select-year mean),114.05,kWh/yr,results/g15_anchor_r1.csv,"role=chosen, purpose=select, anchor=top"
-anchor.r1.chosen.range,regime 1 chosen design: g_window range over the three stack positions,56.06,kWh/yr,results/g15_anchor_r1.csv,max - min over bottom/center/top
-anchor.r2.chosen.bottom,regime 2 chosen design g_window with the stack at the bottom (select-year mean),60.91,kWh/yr,results/g15_anchor_r2.csv,"role=chosen, purpose=select, anchor=bottom"
-anchor.r2.chosen.center,regime 2 chosen design g_window with the stack at the center (select-year mean),94.94,kWh/yr,results/g15_anchor_r2.csv,"role=chosen, purpose=select, anchor=center"
-anchor.r2.chosen.top,regime 2 chosen design g_window with the stack at the top (select-year mean),115.96,kWh/yr,results/g15_anchor_r2.csv,"role=chosen, purpose=select, anchor=top"
-anchor.r2.chosen.range,regime 2 chosen design: g_window range over the three stack positions,55.05,kWh/yr,results/g15_anchor_r2.csv,max - min over bottom/center/top
-anchor.min_gain_any,smallest explore/select-year mean g_window of any kept design at any stack position,41.65,kWh/yr,"results/g15_anchor_r{0,1,2}.csv",min over 4 designs x 3 anchors x 2 year roles x 3 regimes
-serve.r0.pcm.tau_serve_mean_h,"regime 0 chosen design, evening scenario, case pcm: tau_serve_mean_h (select-year mean)",0.638,h,results/g16_serve_r0.csv,case=pcm
-serve.r0.pcm.serve_frac_45_mean,"regime 0 chosen design, evening scenario, case pcm: serve_frac_45_mean (select-year mean)",0.0807,-,results/g16_serve_r0.csv,case=pcm
-serve.r0.pcm.serve_E_del45_mean_kWh,"regime 0 chosen design, evening scenario, case pcm: serve_E_del45_mean_kWh (select-year mean)",1.247,kWh/night,results/g16_serve_r0.csv,case=pcm
-serve.r0.pcm.tau_hold_mean_h,"regime 0 chosen design, evening scenario, case pcm: tau_hold_mean_h (select-year mean)",51.44,h,results/g16_serve_r0.csv,case=pcm
-serve.r0.plain.tau_serve_mean_h,"regime 0 chosen design, evening scenario, case plain: tau_serve_mean_h (select-year mean)",0.719,h,results/g16_serve_r0.csv,case=plain
-serve.r0.plain.serve_frac_45_mean,"regime 0 chosen design, evening scenario, case plain: serve_frac_45_mean (select-year mean)",0.1016,-,results/g16_serve_r0.csv,case=plain
-serve.r0.plain.serve_E_del45_mean_kWh,"regime 0 chosen design, evening scenario, case plain: serve_E_del45_mean_kWh (select-year mean)",0.986,kWh/night,results/g16_serve_r0.csv,case=plain
-serve.r0.plain.tau_hold_mean_h,"regime 0 chosen design, evening scenario, case plain: tau_hold_mean_h (select-year mean)",44.01,h,results/g16_serve_r0.csv,case=plain
-serve.r0.pcm_L0.tau_serve_mean_h,"regime 0 chosen design, evening scenario, case pcm_L0: tau_serve_mean_h (select-year mean)",0.602,h,results/g16_serve_r0.csv,case=pcm_L0
-serve.r0.pcm_L0.serve_frac_45_mean,"regime 0 chosen design, evening scenario, case pcm_L0: serve_frac_45_mean (select-year mean)",0.0727,-,results/g16_serve_r0.csv,case=pcm_L0
-serve.r0.pcm_L0.serve_E_del45_mean_kWh,"regime 0 chosen design, evening scenario, case pcm_L0: serve_E_del45_mean_kWh (select-year mean)",0.894,kWh/night,results/g16_serve_r0.csv,case=pcm_L0
-serve.r0.pcm_L0.tau_hold_mean_h,"regime 0 chosen design, evening scenario, case pcm_L0: tau_hold_mean_h (select-year mean)",35.03,h,results/g16_serve_r0.csv,case=pcm_L0
-serve.r0.plain_40L.tau_serve_mean_h,"regime 0 chosen design, evening scenario, case plain_40L: tau_serve_mean_h (select-year mean)",0.558,h,results/g16_serve_plain_40L_r0.csv,case=plain_40L
-serve.r0.plain_40L.serve_frac_45_mean,"regime 0 chosen design, evening scenario, case plain_40L: serve_frac_45_mean (select-year mean)",0.0649,-,results/g16_serve_plain_40L_r0.csv,case=plain_40L
-serve.r0.plain_40L.serve_E_del45_mean_kWh,"regime 0 chosen design, evening scenario, case plain_40L: serve_E_del45_mean_kWh (select-year mean)",0.708,kWh/night,results/g16_serve_plain_40L_r0.csv,case=plain_40L
-serve.r0.plain_40L.tau_hold_mean_h,"regime 0 chosen design, evening scenario, case plain_40L: tau_hold_mean_h (select-year mean)",31.81,h,results/g16_serve_plain_40L_r0.csv,case=plain_40L
-serve.r1.pcm.tau_serve_mean_h,"regime 1 chosen design, evening scenario, case pcm: tau_serve_mean_h (select-year mean)",0.765,h,results/g16_serve_r1.csv,case=pcm
-serve.r1.pcm.serve_frac_45_mean,"regime 1 chosen design, evening scenario, case pcm: serve_frac_45_mean (select-year mean)",0.1048,-,results/g16_serve_r1.csv,case=pcm
-serve.r1.pcm.serve_E_del45_mean_kWh,"regime 1 chosen design, evening scenario, case pcm: serve_E_del45_mean_kWh (select-year mean)",1.249,kWh/night,results/g16_serve_r1.csv,case=pcm
-serve.r1.pcm.tau_hold_mean_h,"regime 1 chosen design, evening scenario, case pcm: tau_hold_mean_h (select-year mean)",57.3,h,results/g16_serve_r1.csv,case=pcm
-serve.r1.plain.tau_serve_mean_h,"regime 1 chosen design, evening scenario, case plain: tau_serve_mean_h (select-year mean)",0.777,h,results/g16_serve_r1.csv,case=plain
-serve.r1.plain.serve_frac_45_mean,"regime 1 chosen design, evening scenario, case plain: serve_frac_45_mean (select-year mean)",0.1102,-,results/g16_serve_r1.csv,case=plain
+anchor.r0.chosen.bottom,regime 0 chosen design g_window with the stack at the bottom (select-year mean),93.52,kWh/yr,results/g15_anchor_r0.csv,"role=chosen, purpose=select, anchor=bottom"
+anchor.r0.chosen.center,regime 0 chosen design g_window with the stack at the center (select-year mean),130.4,kWh/yr,results/g15_anchor_r0.csv,"role=chosen, purpose=select, anchor=center"
+anchor.r0.chosen.top,regime 0 chosen design g_window with the stack at the top (select-year mean),161.92,kWh/yr,results/g15_anchor_r0.csv,"role=chosen, purpose=select, anchor=top"
+anchor.r0.chosen.range,regime 0 chosen design: g_window range over the three stack positions,68.4,kWh/yr,results/g15_anchor_r0.csv,max - min over bottom/center/top
+anchor.r1.chosen.bottom,regime 1 chosen design g_window with the stack at the bottom (select-year mean),113.7,kWh/yr,results/g15_anchor_r1.csv,"role=chosen, purpose=select, anchor=bottom"
+anchor.r1.chosen.center,regime 1 chosen design g_window with the stack at the center (select-year mean),137.45,kWh/yr,results/g15_anchor_r1.csv,"role=chosen, purpose=select, anchor=center"
+anchor.r1.chosen.top,regime 1 chosen design g_window with the stack at the top (select-year mean),154.73,kWh/yr,results/g15_anchor_r1.csv,"role=chosen, purpose=select, anchor=top"
+anchor.r1.chosen.range,regime 1 chosen design: g_window range over the three stack positions,41.03,kWh/yr,results/g15_anchor_r1.csv,max - min over bottom/center/top
+anchor.r2.chosen.bottom,regime 2 chosen design g_window with the stack at the bottom (select-year mean),117.61,kWh/yr,results/g15_anchor_r2.csv,"role=chosen, purpose=select, anchor=bottom"
+anchor.r2.chosen.center,regime 2 chosen design g_window with the stack at the center (select-year mean),140.65,kWh/yr,results/g15_anchor_r2.csv,"role=chosen, purpose=select, anchor=center"
+anchor.r2.chosen.top,regime 2 chosen design g_window with the stack at the top (select-year mean),157.37,kWh/yr,results/g15_anchor_r2.csv,"role=chosen, purpose=select, anchor=top"
+anchor.r2.chosen.range,regime 2 chosen design: g_window range over the three stack positions,39.76,kWh/yr,results/g15_anchor_r2.csv,max - min over bottom/center/top
+anchor.min_gain_any,smallest explore/select-year mean g_window of any kept design at any stack position,70.18,kWh/yr,"results/g15_anchor_r{0,1,2}.csv",min over 4 designs x 3 anchors x 2 year roles x 3 regimes
+serve.r0.pcm.tau_serve_mean_h,"regime 0 chosen design, evening scenario, case pcm: tau_serve_mean_h (select-year mean)",0.591,h,results/g16_serve_r0.csv,case=pcm
+serve.r0.pcm.serve_frac_45_mean,"regime 0 chosen design, evening scenario, case pcm: serve_frac_45_mean (select-year mean)",0.0724,-,results/g16_serve_r0.csv,case=pcm
+serve.r0.pcm.serve_E_del45_mean_kWh,"regime 0 chosen design, evening scenario, case pcm: serve_E_del45_mean_kWh (select-year mean)",1.332,kWh/night,results/g16_serve_r0.csv,case=pcm
+serve.r0.pcm.tau_hold_mean_h,"regime 0 chosen design, evening scenario, case pcm: tau_hold_mean_h (select-year mean)",52.1,h,results/g16_serve_r0.csv,case=pcm
+serve.r0.plain.tau_serve_mean_h,"regime 0 chosen design, evening scenario, case plain: tau_serve_mean_h (select-year mean)",0.715,h,results/g16_serve_r0.csv,case=plain
+serve.r0.plain.serve_frac_45_mean,"regime 0 chosen design, evening scenario, case plain: serve_frac_45_mean (select-year mean)",0.1012,-,results/g16_serve_r0.csv,case=plain
+serve.r0.plain.serve_E_del45_mean_kWh,"regime 0 chosen design, evening scenario, case plain: serve_E_del45_mean_kWh (select-year mean)",0.983,kWh/night,results/g16_serve_r0.csv,case=plain
+serve.r0.plain.tau_hold_mean_h,"regime 0 chosen design, evening scenario, case plain: tau_hold_mean_h (select-year mean)",43.49,h,results/g16_serve_r0.csv,case=plain
+serve.r0.pcm_L0.tau_serve_mean_h,"regime 0 chosen design, evening scenario, case pcm_L0: tau_serve_mean_h (select-year mean)",0.556,h,results/g16_serve_r0.csv,case=pcm_L0
+serve.r0.pcm_L0.serve_frac_45_mean,"regime 0 chosen design, evening scenario, case pcm_L0: serve_frac_45_mean (select-year mean)",0.0611,-,results/g16_serve_r0.csv,case=pcm_L0
+serve.r0.pcm_L0.serve_E_del45_mean_kWh,"regime 0 chosen design, evening scenario, case pcm_L0: serve_E_del45_mean_kWh (select-year mean)",0.859,kWh/night,results/g16_serve_r0.csv,case=pcm_L0
+serve.r0.pcm_L0.tau_hold_mean_h,"regime 0 chosen design, evening scenario, case pcm_L0: tau_hold_mean_h (select-year mean)",30.31,h,results/g16_serve_r0.csv,case=pcm_L0
+serve.r0.plain_40L.tau_serve_mean_h,"regime 0 chosen design, evening scenario, case plain_40L: tau_serve_mean_h (select-year mean)",0.523,h,results/g16_serve_plain_40L_r0.csv,case=plain_40L
+serve.r0.plain_40L.serve_frac_45_mean,"regime 0 chosen design, evening scenario, case plain_40L: serve_frac_45_mean (select-year mean)",0.0571,-,results/g16_serve_plain_40L_r0.csv,case=plain_40L
+serve.r0.plain_40L.serve_E_del45_mean_kWh,"regime 0 chosen design, evening scenario, case plain_40L: serve_E_del45_mean_kWh (select-year mean)",0.648,kWh/night,results/g16_serve_plain_40L_r0.csv,case=plain_40L
+serve.r0.plain_40L.tau_hold_mean_h,"regime 0 chosen design, evening scenario, case plain_40L: tau_hold_mean_h (select-year mean)",28.1,h,results/g16_serve_plain_40L_r0.csv,case=plain_40L
+serve.r1.pcm.tau_serve_mean_h,"regime 1 chosen design, evening scenario, case pcm: tau_serve_mean_h (select-year mean)",0.803,h,results/g16_serve_r1.csv,case=pcm
+serve.r1.pcm.serve_frac_45_mean,"regime 1 chosen design, evening scenario, case pcm: serve_frac_45_mean (select-year mean)",0.1095,-,results/g16_serve_r1.csv,case=pcm
+serve.r1.pcm.serve_E_del45_mean_kWh,"regime 1 chosen design, evening scenario, case pcm: serve_E_del45_mean_kWh (select-year mean)",1.364,kWh/night,results/g16_serve_r1.csv,case=pcm
+serve.r1.pcm.tau_hold_mean_h,"regime 1 chosen design, evening scenario, case pcm: tau_hold_mean_h (select-year mean)",59.39,h,results/g16_serve_r1.csv,case=pcm
+serve.r1.plain.tau_serve_mean_h,"regime 1 chosen design, evening scenario, case plain: tau_serve_mean_h (select-year mean)",0.778,h,results/g16_serve_r1.csv,case=plain
+serve.r1.plain.serve_frac_45_mean,"regime 1 chosen design, evening scenario, case plain: serve_frac_45_mean (select-year mean)",0.1101,-,results/g16_serve_r1.csv,case=plain
 serve.r1.plain.serve_E_del45_mean_kWh,"regime 1 chosen design, evening scenario, case plain: serve_E_del45_mean_kWh (select-year mean)",0.995,kWh/night,results/g16_serve_r1.csv,case=plain
 serve.r1.plain.tau_hold_mean_h,"regime 1 chosen design, evening scenario, case plain: tau_hold_mean_h (select-year mean)",50.45,h,results/g16_serve_r1.csv,case=plain
-serve.r1.pcm_L0.tau_serve_mean_h,"regime 1 chosen design, evening scenario, case pcm_L0: tau_serve_mean_h (select-year mean)",0.655,h,results/g16_serve_r1.csv,case=pcm_L0
-serve.r1.pcm_L0.serve_frac_45_mean,"regime 1 chosen design, evening scenario, case pcm_L0: serve_frac_45_mean (select-year mean)",0.0815,-,results/g16_serve_r1.csv,case=pcm_L0
-serve.r1.pcm_L0.serve_E_del45_mean_kWh,"regime 1 chosen design, evening scenario, case pcm_L0: serve_E_del45_mean_kWh (select-year mean)",0.871,kWh/night,results/g16_serve_r1.csv,case=pcm_L0
-serve.r1.pcm_L0.tau_hold_mean_h,"regime 1 chosen design, evening scenario, case pcm_L0: tau_hold_mean_h (select-year mean)",40.41,h,results/g16_serve_r1.csv,case=pcm_L0
-serve.r1.plain_40L.tau_serve_mean_h,"regime 1 chosen design, evening scenario, case plain_40L: tau_serve_mean_h (select-year mean)",0.598,h,results/g16_serve_plain_40L_r1.csv,case=plain_40L
-serve.r1.plain_40L.serve_frac_45_mean,"regime 1 chosen design, evening scenario, case plain_40L: serve_frac_45_mean (select-year mean)",0.0716,-,results/g16_serve_plain_40L_r1.csv,case=plain_40L
-serve.r1.plain_40L.serve_E_del45_mean_kWh,"regime 1 chosen design, evening scenario, case plain_40L: serve_E_del45_mean_kWh (select-year mean)",0.721,kWh/night,results/g16_serve_plain_40L_r1.csv,case=plain_40L
-serve.r1.plain_40L.tau_hold_mean_h,"regime 1 chosen design, evening scenario, case plain_40L: tau_hold_mean_h (select-year mean)",37.11,h,results/g16_serve_plain_40L_r1.csv,case=plain_40L
-serve.r2.pcm.tau_serve_mean_h,"regime 2 chosen design, evening scenario, case pcm: tau_serve_mean_h (select-year mean)",0.658,h,results/g16_serve_r2.csv,case=pcm
-serve.r2.pcm.serve_frac_45_mean,"regime 2 chosen design, evening scenario, case pcm: serve_frac_45_mean (select-year mean)",0.0873,-,results/g16_serve_r2.csv,case=pcm
-serve.r2.pcm.serve_E_del45_mean_kWh,"regime 2 chosen design, evening scenario, case pcm: serve_E_del45_mean_kWh (select-year mean)",1.246,kWh/night,results/g16_serve_r2.csv,case=pcm
-serve.r2.pcm.tau_hold_mean_h,"regime 2 chosen design, evening scenario, case pcm: tau_hold_mean_h (select-year mean)",50.78,h,results/g16_serve_r2.csv,case=pcm
+serve.r1.pcm_L0.tau_serve_mean_h,"regime 1 chosen design, evening scenario, case pcm_L0: tau_serve_mean_h (select-year mean)",0.594,h,results/g16_serve_r1.csv,case=pcm_L0
+serve.r1.pcm_L0.serve_frac_45_mean,"regime 1 chosen design, evening scenario, case pcm_L0: serve_frac_45_mean (select-year mean)",0.0675,-,results/g16_serve_r1.csv,case=pcm_L0
+serve.r1.pcm_L0.serve_E_del45_mean_kWh,"regime 1 chosen design, evening scenario, case pcm_L0: serve_E_del45_mean_kWh (select-year mean)",0.807,kWh/night,results/g16_serve_r1.csv,case=pcm_L0
+serve.r1.pcm_L0.tau_hold_mean_h,"regime 1 chosen design, evening scenario, case pcm_L0: tau_hold_mean_h (select-year mean)",33.62,h,results/g16_serve_r1.csv,case=pcm_L0
+serve.r1.plain_40L.tau_serve_mean_h,"regime 1 chosen design, evening scenario, case plain_40L: tau_serve_mean_h (select-year mean)",0.557,h,results/g16_serve_plain_40L_r1.csv,case=plain_40L
+serve.r1.plain_40L.serve_frac_45_mean,"regime 1 chosen design, evening scenario, case plain_40L: serve_frac_45_mean (select-year mean)",0.0621,-,results/g16_serve_plain_40L_r1.csv,case=plain_40L
+serve.r1.plain_40L.serve_E_del45_mean_kWh,"regime 1 chosen design, evening scenario, case plain_40L: serve_E_del45_mean_kWh (select-year mean)",0.654,kWh/night,results/g16_serve_plain_40L_r1.csv,case=plain_40L
+serve.r1.plain_40L.tau_hold_mean_h,"regime 1 chosen design, evening scenario, case plain_40L: tau_hold_mean_h (select-year mean)",32.48,h,results/g16_serve_plain_40L_r1.csv,case=plain_40L
+serve.r2.pcm.tau_serve_mean_h,"regime 2 chosen design, evening scenario, case pcm: tau_serve_mean_h (select-year mean)",0.68,h,results/g16_serve_r2.csv,case=pcm
+serve.r2.pcm.serve_frac_45_mean,"regime 2 chosen design, evening scenario, case pcm: serve_frac_45_mean (select-year mean)",0.0881,-,results/g16_serve_r2.csv,case=pcm
+serve.r2.pcm.serve_E_del45_mean_kWh,"regime 2 chosen design, evening scenario, case pcm: serve_E_del45_mean_kWh (select-year mean)",1.362,kWh/night,results/g16_serve_r2.csv,case=pcm
+serve.r2.pcm.tau_hold_mean_h,"regime 2 chosen design, evening scenario, case pcm: tau_hold_mean_h (select-year mean)",53.98,h,results/g16_serve_r2.csv,case=pcm
 serve.r2.plain.tau_serve_mean_h,"regime 2 chosen design, evening scenario, case plain: tau_serve_mean_h (select-year mean)",0.692,h,results/g16_serve_r2.csv,case=plain
 serve.r2.plain.serve_frac_45_mean,"regime 2 chosen design, evening scenario, case plain: serve_frac_45_mean (select-year mean)",0.0977,-,results/g16_serve_r2.csv,case=plain
-serve.r2.plain.serve_E_del45_mean_kWh,"regime 2 chosen design, evening scenario, case plain: serve_E_del45_mean_kWh (select-year mean)",0.998,kWh/night,results/g16_serve_r2.csv,case=plain
-serve.r2.plain.tau_hold_mean_h,"regime 2 chosen design, evening scenario, case plain: tau_hold_mean_h (select-year mean)",43.66,h,results/g16_serve_r2.csv,case=plain
-serve.r2.pcm_L0.tau_serve_mean_h,"regime 2 chosen design, evening scenario, case pcm_L0: tau_serve_mean_h (select-year mean)",0.584,h,results/g16_serve_r2.csv,case=pcm_L0
-serve.r2.pcm_L0.serve_frac_45_mean,"regime 2 chosen design, evening scenario, case pcm_L0: serve_frac_45_mean (select-year mean)",0.0709,-,results/g16_serve_r2.csv,case=pcm_L0
-serve.r2.pcm_L0.serve_E_del45_mean_kWh,"regime 2 chosen design, evening scenario, case pcm_L0: serve_E_del45_mean_kWh (select-year mean)",0.884,kWh/night,results/g16_serve_r2.csv,case=pcm_L0
-serve.r2.pcm_L0.tau_hold_mean_h,"regime 2 chosen design, evening scenario, case pcm_L0: tau_hold_mean_h (select-year mean)",34.28,h,results/g16_serve_r2.csv,case=pcm_L0
-serve.r2.plain_40L.tau_serve_mean_h,"regime 2 chosen design, evening scenario, case plain_40L: tau_serve_mean_h (select-year mean)",0.537,h,results/g16_serve_plain_40L_r2.csv,case=plain_40L
-serve.r2.plain_40L.serve_frac_45_mean,"regime 2 chosen design, evening scenario, case plain_40L: serve_frac_45_mean (select-year mean)",0.0627,-,results/g16_serve_plain_40L_r2.csv,case=plain_40L
-serve.r2.plain_40L.serve_E_del45_mean_kWh,"regime 2 chosen design, evening scenario, case plain_40L: serve_E_del45_mean_kWh (select-year mean)",0.717,kWh/night,results/g16_serve_plain_40L_r2.csv,case=plain_40L
-serve.r2.plain_40L.tau_hold_mean_h,"regime 2 chosen design, evening scenario, case plain_40L: tau_hold_mean_h (select-year mean)",31.43,h,results/g16_serve_plain_40L_r2.csv,case=plain_40L
+serve.r2.plain.serve_E_del45_mean_kWh,"regime 2 chosen design, evening scenario, case plain: serve_E_del45_mean_kWh (select-year mean)",0.999,kWh/night,results/g16_serve_r2.csv,case=plain
+serve.r2.plain.tau_hold_mean_h,"regime 2 chosen design, evening scenario, case plain: tau_hold_mean_h (select-year mean)",43.72,h,results/g16_serve_r2.csv,case=plain
+serve.r2.pcm_L0.tau_serve_mean_h,"regime 2 chosen design, evening scenario, case pcm_L0: tau_serve_mean_h (select-year mean)",0.531,h,results/g16_serve_r2.csv,case=pcm_L0
+serve.r2.pcm_L0.serve_frac_45_mean,"regime 2 chosen design, evening scenario, case pcm_L0: serve_frac_45_mean (select-year mean)",0.058,-,results/g16_serve_r2.csv,case=pcm_L0
+serve.r2.pcm_L0.serve_E_del45_mean_kWh,"regime 2 chosen design, evening scenario, case pcm_L0: serve_E_del45_mean_kWh (select-year mean)",0.823,kWh/night,results/g16_serve_r2.csv,case=pcm_L0
+serve.r2.pcm_L0.tau_hold_mean_h,"regime 2 chosen design, evening scenario, case pcm_L0: tau_hold_mean_h (select-year mean)",28.57,h,results/g16_serve_r2.csv,case=pcm_L0
+serve.r2.plain_40L.tau_serve_mean_h,"regime 2 chosen design, evening scenario, case plain_40L: tau_serve_mean_h (select-year mean)",0.498,h,results/g16_serve_plain_40L_r2.csv,case=plain_40L
+serve.r2.plain_40L.serve_frac_45_mean,"regime 2 chosen design, evening scenario, case plain_40L: serve_frac_45_mean (select-year mean)",0.0536,-,results/g16_serve_plain_40L_r2.csv,case=plain_40L
+serve.r2.plain_40L.serve_E_del45_mean_kWh,"regime 2 chosen design, evening scenario, case plain_40L: serve_E_del45_mean_kWh (select-year mean)",0.647,kWh/night,results/g16_serve_plain_40L_r2.csv,case=plain_40L
+serve.r2.plain_40L.tau_hold_mean_h,"regime 2 chosen design, evening scenario, case plain_40L: tau_hold_mean_h (select-year mean)",27.3,h,results/g16_serve_plain_40L_r2.csv,case=plain_40L
 widen.r0.A_radius.R45,"regime 0 widened-bound diagnostic: g_window change vs chosen (explore years), A_radius R45",-27.14,kWh/yr,results/g17_widen_r0.csv,"block=A_radius, level=R45, minus chosen explore g_window"
 widen.r0.A_radius.R50,"regime 0 widened-bound diagnostic: g_window change vs chosen (explore years), A_radius R50",-59.59,kWh/yr,results/g17_widen_r0.csv,"block=A_radius, level=R50, minus chosen explore g_window"
 widen.r0.B_fraction.f0.25,"regime 0 widened-bound diagnostic: g_window change vs chosen (explore years), B_fraction f0.25",-16.46,kWh/yr,results/g17_widen_r0.csv,"block=B_fraction, level=f0.25, minus chosen explore g_window"

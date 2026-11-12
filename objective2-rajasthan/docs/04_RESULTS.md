@@ -22,9 +22,9 @@ Source: `results/g13_shield_split_r{0,1,2}.csv` (script `scripts/g13_issue4_shie
 
 | regime | water-side h, PCM tank | water-side h, water-only | d_shield_water h | PCM-side throttle h | d_overheat h (stored) | peak water C, PCM | peak water C, water-only |
 |---|---|---|---|---|---|---|---|
-| 0 | 482.9 | 648.1 | -165.3 | 590.0 | 424.7 | 72.4 | 73.1 |
-| 1 | 571.7 | 796.2 | -224.5 | 417.7 | 193.2 | 72.2 | 73.4 |
-| 2 | 482.2 | 662.0 | -179.8 | 540.5 | 360.7 | 72.2 | 73.0 |
+| 0 | 486.7 | 646.3 | -159.5 | 350.6 | 191.0 | 72.2 | 73.2 |
+| 1 | 494.0 | 798.0 | -304.0 | 549.2 | 245.2 | 72.2 | 73.4 |
+| 2 | 412.1 | 663.1 | -251.1 | 700.0 | 448.9 | 72.4 | 73.1 |
 
 Reading: in 96 of 96 design-years (chosen designs and the best design of every other O1 PCM, explore and select years) the PCM tank has FEWER water-side shield hours than the water-only tank, and its water peak stays closer to the 72 C guard. The PCM-side throttle hours are real and are reported separately: they mean the capsules are full and charging is held back, not that a limit was exceeded (PCM peak stays below 65 C in every kept design). The v3 held-out file carries the same split (section 2).
 
@@ -138,11 +138,11 @@ Source: `results/g15_anchor_r{0,1,2}.csv` (script `scripts/g15_issue6_anchor.py`
 
 | regime | band | bottom | centre | top | range | best PCM at bottom | regret of chosen design at bottom | best PCM at center | regret of chosen design at center | best PCM at top | regret of chosen design at top |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 0 | 21.1 | 72.6 | 99.4 | 118.3 | 45.7 | savE® OM55 (+11.6 over 2nd) | 4.1 | savE® OM55 (+14.7 over 2nd) | 2.6 | savE® OM55 (+16.1 over 2nd) | 0.2 |
-| 1 | 14.4 | 58.0 | 94.3 | 114.1 | 56.1 | PureTemp 60 (+15.2 over 2nd) | 22.2 | PureTemp 60 (+18.2 over 2nd) | 2.7 | PureTemp 60 (+21.7 over 2nd) | 0.0 |
-| 2 | 21.9 | 60.9 | 94.9 | 116.0 | 55.0 | PureTemp 58 (+9.0 over 2nd) | 22.0 | PureTemp 58 (+9.2 over 2nd) | 4.5 | PureTemp 58 (+16.4 over 2nd) | 0.0 |
+| 0 | 21.1 | 93.5 | 130.4 | 161.9 | 68.4 | savE® OM55 (+25.1 over 2nd) | 39.4 | savE® OM55 (+18.1 over 2nd) | 19.6 | savE® OM55 (+15.7 over 2nd) | 1.0 |
+| 1 | 14.4 | 113.7 | 137.4 | 154.7 | 41.0 | PureTemp 60 (+21.4 over 2nd) | 0.4 | PureTemp 60 (+25.6 over 2nd) | 0.3 | PureTemp 60 (+29.6 over 2nd) | 0.2 |
+| 2 | 21.9 | 117.6 | 140.6 | 157.4 | 39.8 | PureTemp 58 (+13.7 over 2nd) | 2.3 | PureTemp 58 (+13.6 over 2nd) | 3.0 | PureTemp 58 (+14.1 over 2nd) | 0.5 |
 
-Reading: the sign of the gain survives every position (smallest mean gain of any kept design at any position: 41.6 kWh against bands of 10-16 kWh), so 'PCM helps on the window metric' does not depend on the anchor. The LEVEL does: the chosen design's range over the three positions is 45-56 kWh, three to six times the band, and the top position gives the highest values, in line with the 'near the top' statements that the Eldokaishi 2022 introduction attributes to others and with the abstract of Izgi and Arslan 2022 (see the progress log, section 21) - which is no reason to adopt it. The best PCM of each regime is the same at all three positions, but its margin over the runner-up is inside the band in regimes 0 and 2 at the bottom and centre (regime 1 separates its top two at every position). 'Regret' is how much better the best of the four saved designs is than the chosen one at that position: in regimes 1 and 2 with the stack at the bottom another design of the same PCM is 22 kWh better, so the chosen designs there are not anchor-robust (its flow and size were selected for the centre position).
+Reading: the sign of the gain survives every position (smallest mean gain of any kept design at any position: 70.2 kWh against bands of 10-16 kWh), so 'PCM helps on the window metric' does not depend on the anchor. The LEVEL does: the chosen design's range over the three positions is 45-56 kWh, three to six times the band, and the top position gives the highest values, in line with the 'near the top' statements that the Eldokaishi 2022 introduction attributes to others and with the abstract of Izgi and Arslan 2022 (see the progress log, section 21) - which is no reason to adopt it. The best PCM of each regime is the same at all three positions, but its margin over the runner-up is inside the band in regimes 0 and 2 at the bottom and centre (regime 1 separates its top two at every position). 'Regret' is how much better the best of the four saved designs is than the chosen one at that position: in regimes 1 and 2 with the stack at the bottom another design of the same PCM is 22 kWh better, so the chosen designs there are not anchor-robust (its flow and size were selected for the centre position).
 
 ## 5d. Evening-scenario decomposition [v1 diagnostic, cap 20 %] (issue 3)
 
@@ -150,9 +150,9 @@ Source: `results/g16_serve_r{0,1,2}.csv` and `g16_serve_plain_40L_r{0,1,2}.csv` 
 
 | regime | tau_serve h: plain / 40 L water / L=0 / PCM | serve fraction: plain / 40 L / L=0 / PCM | E_del45 kWh: plain / 40 L / L=0 / PCM | tau_hold h: plain / 40 L / L=0 / PCM | PCM minus plain: tau_serve h, E_del45 kWh | PCM minus 40 L water: tau_serve h, E_del45 kWh |
 |---|---|---|---|---|---|---|
-| 0 | 0.719 / 0.558 / 0.602 / 0.638 | 0.102 / 0.065 / 0.073 / 0.081 | 0.986 / 0.708 / 0.894 / 1.247 | 44.0 / 31.8 / 35.0 / 51.4 | -0.081, +0.261 | +0.080, +0.539 |
-| 1 | 0.777 / 0.598 / 0.655 / 0.765 | 0.110 / 0.072 / 0.082 / 0.105 | 0.995 / 0.721 / 0.871 / 1.249 | 50.5 / 37.1 / 40.4 / 57.3 | -0.012, +0.254 | +0.167, +0.527 |
-| 2 | 0.692 / 0.537 / 0.584 / 0.658 | 0.098 / 0.063 / 0.071 / 0.087 | 0.998 / 0.717 / 0.884 / 1.246 | 43.7 / 31.4 / 34.3 / 50.8 | -0.034, +0.248 | +0.121, +0.529 |
+| 0 | 0.715 / 0.523 / 0.556 / 0.591 | 0.101 / 0.057 / 0.061 / 0.072 | 0.983 / 0.648 / 0.859 / 1.332 | 43.5 / 28.1 / 30.3 / 52.1 | -0.124, +0.349 | +0.068, +0.684 |
+| 1 | 0.778 / 0.557 / 0.594 / 0.803 | 0.110 / 0.062 / 0.067 / 0.110 | 0.995 / 0.654 / 0.807 / 1.364 | 50.4 / 32.5 / 33.6 / 59.4 | +0.024, +0.369 | +0.246, +0.710 |
+| 2 | 0.692 / 0.498 / 0.531 / 0.680 | 0.098 / 0.054 / 0.058 / 0.088 | 0.999 / 0.647 / 0.823 / 1.362 | 43.7 / 27.3 / 28.6 / 54.0 | -0.012, +0.363 | +0.182, +0.715 |
 
 Reading: the zero or negative `tau_serve` gain is the net of two opposite effects. Taking about 20 % of the 50 L tank for capsules removes water, which alone shortens the serve time (water-only tank with 40 L: shorter than the 50 L tank in every regime); the PCM then adds back time relative to that displacement-matched tank, but not enough to pass the 50 L tank. The energy delivered up to 45 C in the same scenario is HIGHER with PCM than with the 50 L water-only tank in every regime and select year, and the sensible-only (L = 0) case is lower than the water-only tank, so that energy gain comes from the latent heat. What remains true and is reported: the volume of water delivered at 45 C or above in the evening (serve fraction) and the time to the first drop below 45 C are NOT improved relative to the same fixed 50 L tank, because the capsules take water volume.
 
