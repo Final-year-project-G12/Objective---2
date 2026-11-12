@@ -29,6 +29,7 @@ Method, in one phrase: a surrogate-assisted, constrained multi-objective search 
 ```
 objective2-rajasthan/
 ├── pipeline.py               # entry point for the current chain (stages: status, verify ... plots; see its docstring)
+├── make_all_plots.py         # one command for every figure: python make_all_plots.py  ->  results/plots/ (39 figures; --list shows them)
 ├── run_all_rajasthan.py      # tests + report + handoff + plots from saved results; --full runs the whole chain (hours)
 ├── config.py                 # shared paths
 ├── configs/
@@ -42,7 +43,7 @@ objective2-rajasthan/
 │   ├── design/               # design space, geometry engine, constraints
 │   ├── optimize/             # paired baseline, evaluation, ANOVA, surrogates, NSGA-II
 │   ├── handoff/              # Objective 3 environment contract v2
-│   ├── plots/                # make_plots_results.py (figures 1-9)
+│   ├── plots/                # make_plots_results.py (figures 1-9; make_all_plots.py imports them and adds figures 10-50)
 │   └── verify/               # Phase-4 verification battery (gates.py)
 ├── scripts/g*.py             # one script per gate step (G2-G22)
 ├── tests/                    # python -m pytest tests
