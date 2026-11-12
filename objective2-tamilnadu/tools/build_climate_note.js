@@ -1,78 +1,60 @@
 /*
  * build_climate_note.js
  * =====================
- * "Climate parameters in the simulators" — what is used, where in the code,
- * how it changes through a run, and how to check the ANSYS image outputs.
- *
- * Every file:line reference and every number was read off the code and the
- * config, not recalled.
+ * O2_Climate_Parameters_and_Simulators.docx — Q&A.
+ * The 8 ORIGINAL questions (climate parameters / equation / pump / timestep /
+ * PCM purpose / melting figure / which PCM / safety) PLUS 4 added questions
+ * (the two simulators, where values come from, optimum & 100 L, blue->red
+ * colour). 12 in total, listed in a contents box up front. Clear, simple,
+ * well spaced, a few real ANSYS images. 4-5 pages.
  */
 const fs = require("fs");
 const path = require("path");
 const {
   Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
-  WidthType, ShadingType, BorderStyle, AlignmentType,
+  WidthType, ShadingType, BorderStyle, ImageRun, AlignmentType,
 } = require("docx");
 
 const ROOT = path.join(__dirname, "..");
-const INK = "1A1A1A", MUTED = "5A5A5A", RULE = "C6C6C6", HDR = "EFEFEF",
-      CODE = "1F4E5F", WARN = "8A3A2A";
-const BODY = 20, SMALL = 17, CAP = 15;
+const FIG = path.join(ROOT, "ansys", "figures");
+const CONT = path.join(FIG, "regime_contours");
+
+const INK = "1A1A1A", MUTED = "5A5A5A", RULE = "C8C8C8", HDR = "EFEFEF",
+      ACCENT = "1F5C73", QBG = "EAF1F4";
+const BODY = 22, SMALL = 18, CAP = 16;
 
 const P = (text, o = {}) => new Paragraph({
-  spacing: { after: o.after ?? 110, line: o.line ?? 250 },
+  spacing: { after: o.after ?? 130, line: o.line ?? 268 },
   children: [new TextRun({
     text, bold: o.bold, italics: o.italics,
     size: o.size ?? BODY, color: o.color ?? INK, font: "Calibri",
   })],
 });
-
 const PR = (parts, o = {}) => new Paragraph({
-  spacing: { after: o.after ?? 110, line: 250 },
+  spacing: { after: o.after ?? 130, line: 268 },
   children: parts.map((p) => new TextRun({
     text: typeof p === "string" ? p : p.t,
     bold: typeof p === "string" ? false : !!p.b,
     italics: typeof p === "string" ? false : !!p.i,
-    font: (typeof p === "object" && p.c) ? "Consolas" : "Calibri",
-    color: (typeof p === "object" && p.c) ? CODE : INK,
-    size: o.size ?? BODY,
+    size: o.size ?? BODY, color: INK, font: "Calibri",
   })),
 });
-
-const H1 = (text) => new Paragraph({
-  spacing: { before: 280, after: 110 },
-  children: [new TextRun({ text, bold: true, size: 26, color: INK, font: "Calibri" })],
-});
-const H2 = (text) => new Paragraph({
-  spacing: { before: 170, after: 80 },
-  children: [new TextRun({ text, bold: true, size: 21, color: INK, font: "Calibri" })],
-});
-
 const B = (text) => new Paragraph({
-  bullet: { level: 0 }, spacing: { after: 60, line: 250 },
+  bullet: { level: 0 }, spacing: { after: 70, line: 256 },
   children: [new TextRun({ text, size: BODY, color: INK, font: "Calibri" })],
 });
 
-// a monospace block, for equations and commands
-const CODEP = (text) => new Paragraph({
-  spacing: { before: 50, after: 90, line: 235 },
-  shading: { type: ShadingType.CLEAR, fill: "F5F5F5", color: "auto" },
-  indent: { left: 180 },
-  children: [new TextRun({ text, size: SMALL, color: CODE, font: "Consolas" })],
-});
-
-function table(headers, rows, widths, opts = {}) {
+function table(headers, rows, widths) {
   const total = widths.reduce((a, b) => a + b, 0);
   const cell = (text, i, head) => new TableCell({
     width: { size: widths[i], type: WidthType.DXA },
     shading: head ? { type: ShadingType.CLEAR, fill: HDR, color: "auto" } : undefined,
-    margins: { top: 45, bottom: 45, left: 80, right: 80 },
+    margins: { top: 45, bottom: 45, left: 75, right: 75 },
     children: [new Paragraph({
-      spacing: { after: 0, line: 225 },
+      spacing: { after: 0, line: 244 },
       children: [new TextRun({
         text: String(text), bold: head, size: SMALL,
-        color: head ? INK : (opts.mono && i === opts.mono ? CODE : MUTED),
-        font: (opts.mono && i === opts.mono && !head) ? "Consolas" : "Calibri",
+        color: head ? INK : MUTED, font: "Calibri",
       })],
     })],
   });
@@ -93,277 +75,273 @@ function table(headers, rows, widths, opts = {}) {
   });
 }
 
+const QUESTIONS = [
+  // 8 original
+  "Which climate parameters are used?",
+  "Which equation is used for the collector?",
+  "When does the pump stop?",
+  "Why is an adaptive timestep used?",
+  "What is the purpose of the PCM?",
+  "Which ANSYS figure proves the PCM melts?",
+  "Which PCM melts the most?",
+  "What are the safety limits?",
+  // 4 added
+  "The two simulators — which one decides the design?",
+  "Where do the parameter values come from, and how do I change them?",
+  "Is the optimal design found in ANSYS — and why is the tank 100 L?",
+  "Why does the picture change colour from blue to red?",
+  "What does each ANSYS view of the tank actually show?",
+];
+
+let QN = 0;
+function Q() {
+  const text = QUESTIONS[QN];
+  QN += 1;
+  return new Paragraph({
+    spacing: { before: 230, after: 80 },
+    shading: { type: ShadingType.CLEAR, fill: QBG, color: "auto" },
+    border: { left: { style: BorderStyle.SINGLE, size: 18, color: ACCENT, space: 8 } },
+    children: [
+      new TextRun({ text: `Q${QN}.  `, bold: true, size: 24, color: ACCENT, font: "Calibri" }),
+      new TextRun({ text, bold: true, size: 24, color: INK, font: "Calibri" }),
+    ],
+  });
+}
+
+const img = (file, wPx, ratio) => new Paragraph({
+  spacing: { before: 70, after: 40 }, alignment: AlignmentType.CENTER,
+  children: [new ImageRun({
+    type: "png", data: fs.readFileSync(file),
+    transformation: { width: wPx, height: Math.round(wPx / ratio) },
+  })],
+});
+const cap = (text) => new Paragraph({
+  spacing: { after: 120, line: 232 }, alignment: AlignmentType.CENTER,
+  children: [new TextRun({ text, size: CAP, color: MUTED, font: "Calibri", italics: true })],
+});
+const CODE = (text) => new Paragraph({
+  spacing: { after: 70, before: 30 },
+  shading: { type: ShadingType.CLEAR, fill: "F5F5F5", color: "auto" },
+  indent: { left: 150 },
+  children: [new TextRun({ text, size: SMALL, color: "1F4E5F", font: "Consolas" })],
+});
+
 const ch = [];
 
-/* ─────────────────────────── title ─────────────────────────── */
+// ── title ──
 ch.push(new Paragraph({
-  spacing: { after: 50 },
+  spacing: { after: 40 },
   children: [new TextRun({
-    text: "Climate parameters in the simulators",
-    bold: true, size: 36, color: INK, font: "Calibri",
+    text: "Climate Parameters & Simulators — Q&A",
+    bold: true, size: 38, color: INK, font: "Calibri",
   })],
 }));
-ch.push(P("Objective 2 \u2014 PCM capsule tank, Tamil Nadu \u00b7 4 November 2026",
-  { color: MUTED, size: SMALL, after: 60 }));
-ch.push(P(
-  "What climate data enters the models, exactly where in the code it enters, how the values move "
-  + "through a simulated year, whether the live CFD demo is working, and how to check the ANSYS "
-  + "images of the tank and capsules. Every file reference and number below was read off the code "
-  + "and the configuration, not recalled.", { color: MUTED, size: SMALL, after: 200 }));
+ch.push(P("Objective 2 · Tamil Nadu · PCM capsule tank — the common questions, answered simply",
+  { color: MUTED, size: SMALL, after: 120 }));
 
-/* ─────────────────── 1. which parameters ─────────────────── */
-ch.push(H1("1. Which climate parameters are actually used"));
-ch.push(P(
-  "Each weather file holds twelve columns, but only three reach the physics. This is worth stating "
-  + "plainly, because the presence of a column in the data is easily mistaken for its use in the model."));
-ch.push(table(
-  ["Column", "Used?", "What it drives"],
-  [
-    ["GHI_Wm2", "YES", "Solar input to the collector \u2014 the main driver"],
-    ["T_amb_C", "YES", "Collector heat loss and tank standing loss"],
-    ["local_hour / local_date", "YES", "Aligns the demand profile to local clock time"],
-    ["GHI_clearsky_Wm2", "no (verification only)", "Used to check timestamps against solar geometry; never in the physics"],
-    ["RH_pct", "no", "Carried from NASA POWER, unused"],
-    ["wind_ms / WS_ms", "no", "Carried from NASA POWER, unused"],
-    ["timestamp_utc, point_id, cluster_id, year", "no", "Bookkeeping"],
+// ── contents box: list all questions ──
+ch.push(new Paragraph({
+  spacing: { before: 40, after: 60 },
+  children: [new TextRun({ text: "Questions in this document", bold: true, size: 22, color: ACCENT, font: "Calibri" })],
+}));
+const contentsRows = QUESTIONS.map((q, i) => new TableRow({
+  children: [
+    new TableCell({
+      width: { size: 700, type: WidthType.DXA },
+      margins: { top: 28, bottom: 28, left: 80, right: 40 },
+      children: [new Paragraph({ children: [new TextRun({ text: `Q${i + 1}`, bold: true, size: SMALL, color: ACCENT, font: "Calibri" })] })],
+    }),
+    new TableCell({
+      width: { size: 9100, type: WidthType.DXA },
+      margins: { top: 28, bottom: 28, left: 40, right: 80 },
+      children: [new Paragraph({ children: [new TextRun({
+        text: q + (i === 7 ? "    (Q1–Q8 original · Q9–Q13 added)" : ""),
+        size: SMALL, color: i < 8 ? INK : "1F5C73", font: "Calibri",
+      })] })],
+    }),
   ],
-  [3000, 2100, 5000]));
-ch.push(PR([
-  { t: "A consequence worth knowing: ", b: true },
-  "wind speed and humidity do not affect any result in this study. The collector's heat-loss "
-  + "coefficient is a fixed ", { t: "F_R\u00b7U_L = 4.5 W/m\u00b2K", c: true },
-  ", not a wind-dependent one, and the tank's standing loss uses a fixed ",
-  { t: "U = 0.8 W/m\u00b2K", c: true }, ". A windier or more humid regime is therefore "
-  + "indistinguishable from a calm dry one at the same irradiance and air temperature. For "
-  + "Tamil Nadu's coastal regimes that is a real simplification, not a neutral one.",
-]));
-ch.push(P(
-  "A fourth climate input is not hourly at all: mains water temperature. It is one constant per "
-  + "regime, taken from Objective 1's climate signature (23.97\u201328.46 \u00b0C across the three "
-  + "medoids). It does not vary by season.", { after: 150 }));
+}));
+ch.push(new Table({
+  width: { size: 9800, type: WidthType.DXA },
+  columnWidths: [700, 9100],
+  borders: {
+    top: { style: BorderStyle.SINGLE, size: 2, color: RULE },
+    bottom: { style: BorderStyle.SINGLE, size: 2, color: RULE },
+    left: { style: BorderStyle.NONE }, right: { style: BorderStyle.NONE },
+    insideHorizontal: { style: BorderStyle.SINGLE, size: 1, color: "E4E4E4" },
+    insideVertical: { style: BorderStyle.NONE },
+  },
+  rows: contentsRows,
+}));
+ch.push(P("", { after: 60 }));
 
-/* ─────────────────── 2. how they enter ─────────────────── */
-ch.push(H1("2. How they enter the physics"));
-ch.push(H2("Collector \u2014 the Hottel\u2013Whillier\u2013Bliss equation"));
-ch.push(P("Both climate variables enter here, in one line:"));
-ch.push(CODEP("Q_useful = A_c \u00d7 [ F_R(\u03c4\u03b1) \u00d7 I_t  \u2212  F_R\u00b7U_L \u00d7 (T_in \u2212 T_amb) ]"));
+// ═════════════════════ ORIGINAL 8 ═════════════════════
+
+// Q1
+ch.push(Q());
+ch.push(PR([
+  "Three: ", { t: "solar irradiance (GHI)", b: true }, ", ",
+  { t: "ambient air temperature", b: true }, ", and the ",
+  { t: "local time / date", b: true },
+  ". GHI is the main driver (heat into the collector), air temperature sets the heat loss, and the "
+  + "time/date lines the hot-water demand up with the clock. A fourth input, mains water temperature, is "
+  + "one fixed value per regime. Wind and humidity sit in the data file but are not used.",
+]));
+
+// Q2
+ch.push(Q());
+ch.push(PR([
+  "The ", { t: "Hottel–Whillier–Bliss equation", b: true },
+  " for a flat-plate collector, which balances heat gained from the sun against heat lost to the air:",
+]));
+ch.push(CODE("Q_useful = A_c × [ F_R(τα) × I_t  −  F_R·U_L × (T_in − T_amb) ]"));
+ch.push(P("I_t is the irradiance, T_amb the air temperature, T_in the water entering the collector; the fixed numbers (area 2.5 m², F_R(τα) = 0.75, F_R·U_L = 4.5) come from the config file."));
+ch.push(PR([
+  { t: "Is it from a paper? ", b: true },
+  "Yes — it is a standard collector equation (classic work by Hottel & Whillier and by Bliss in the "
+  + "1950s; textbook form in Duffie & Beckman, Solar Engineering of Thermal Processes). In this project the "
+  + "collector model follows the Hottel–Whillier form cited in ",
+  { t: "Eldokaishi et al. 2022", b: true },
+  " (Applied Thermal Engineering 204:118009), referenced in src/simulation/collector_model.py.",
+]));
+
+// Q3
+ch.push(Q());
+ch.push(PR([
+  "Below ", { t: "10 W/m²", b: true },
+  " of irradiance. Under that, the sun is too weak to be worth running the pump, so the collector loop "
+  + "is treated as off — which is what makes the collector follow the daily sunrise–sunset cycle.",
+]));
+
+// Q4
+ch.push(Q());
+ch.push(PR([
+  "To capture the ", { t: "PCM phase change (melting) accurately", b: true },
+  ". Melting happens in a narrow temperature band where the physics changes fast, so when a capsule is "
+  + "inside that band the timestep is refined (up to 6× finer) to resolve it; elsewhere it runs coarsely "
+  + "to stay fast. (Search runs at 150 s, every reported number at 37.5 s.)",
+]));
+
+// Q5
+ch.push(Q());
+ch.push(PR([
+  "To ", { t: "store latent heat", b: true },
+  ". When the PCM melts it absorbs a large amount of heat at nearly constant temperature, and when it "
+  + "solidifies it releases that heat back. This lets the tank hold useful warmth into the evening, after "
+  + "the sun is gone — the whole reason for adding a PCM.",
+]));
+
+// Q6
+ch.push(Q());
+ch.push(PR([
+  { t: "Figure 3", b: true },
+  " — the PCM melt comparison. It shows all four shortlisted PCMs melting on the same mesh under the "
+  + "same heat, with the liquid fraction climbing over time. Figures 1 and 2 only show the geometry and the "
+  + "heat path; Figure 3 is the one that shows melting.",
+]));
+try {
+  ch.push(img(path.join(FIG, "03_pcm_melt_comparison.png"), 460, 2025 / 840));
+  ch.push(cap("Figure 3 — all four PCMs melted under one duty. The only difference between the curves is the material itself, so it isolates the melting behaviour."));
+} catch (e) {}
+
+// Q7
+ch.push(Q());
+ch.push(PR([
+  { t: "C25 (n-Pentacosane)", b: true },
+  ". It has the lowest melt point (54 °C) and the highest conductivity, so heat reaches it soonest and it "
+  + "crosses its melt point first. The order from most to least melted is C25 > C26 > RT57HC > PureTemp 58 "
+  + "— exactly what melt point and conductivity predict.",
+]));
+
+// Q8
+ch.push(Q());
+ch.push(PR([
+  { t: "72 °C for the water and 62 °C for the PCM", b: true },
+  ". These are the bypass points of the safety shield: if the tank water reaches 72 °C or the PCM reaches "
+  + "62 °C, circulation stops so nothing overheats. They sit 3 °C below the hard limits (75 °C water, 65 °C "
+  + "PCM), as a guard band.",
+]));
+
+// ═════════════════════ ADDED 4 ═════════════════════
+
+// Q9
+ch.push(Q());
+ch.push(PR([
+  "Two, with different jobs. The ", { t: "fast tank model (Python)", b: true },
+  " covers the whole 100 L tank for a full year in seconds and ", { t: "ranks the designs — it chooses", b: true },
+  " the winner. ", { t: "ANSYS Fluent", b: true },
+  " covers one capsule in detail and only checks the melting physics. So the tank model decides and ANSYS "
+  + "confirms; a different CFD tool would re-confirm the same design, not change it.",
+]));
+
+// Q10
+ch.push(Q());
+ch.push(PR([
+  "From files, never typed by hand. Fixed constants (tank 100 L, collector, safety limits) are in ",
+  { t: "configs/system_config_shared.yaml", b: true }, "; the ranges the optimiser may vary (capsule size, "
+  + "PCM amount, flow, layout) are in ", { t: "configs/design_space.yaml", b: true },
+  "; PCM properties come from the Objective 1 database; the final chosen numbers are in ",
+  { t: "results/tn_optimal_designs.csv", b: true },
+  ". To change one, widen the min/max in design_space.yaml and re-run the optimiser, or edit the CSV / "
+  + "pass --regime for a one-off ANSYS run.",
+]));
+
+// Q11
+ch.push(Q());
+ch.push(PR([
+  { t: "No — the optimum is not found in ANSYS. ", b: true },
+  "The fast tank model plus the NSGA-II search pick the best design inside the bounds; ANSYS only confirms "
+  + "it melts correctly. The tank is fixed at ", { t: "100 L", b: true },
+  " because it is a project instruction for Tamil Nadu (Rajasthan used 50 L), locked as “not optimised”; "
+  + "the collector was scaled to 2.5 m² to keep 40 litres per m², the low end of Indian Standard "
+  + "IS 12976:2023.",
+]));
+
+// Q12
+ch.push(Q());
+ch.push(PR([
+  "The colour is just the ", { t: "value being plotted", b: true },
+  ", low = blue to high = red. In the melt picture that value is ", { t: "liquid fraction", b: true },
+  " (0 = solid → blue, 1 = molten → red), so the colours move as the PCM melts. The field and its banded "
+  + "scale are set in ansys/fluent_live_demo.py (around line 278) and Fluent maps min→blue, max→red "
+  + "automatically. What drives the value is the melting model (solidification_melting, line 209) plus the "
+  + "melt point, latent heat and conductivity and the hot-water temperature/flow — hotter/faster water, a "
+  + "lower melt point or higher conductivity all turn blue to red sooner.",
+]));
+try {
+  ch.push(img(path.join(CONT, "regime0_PureTemp58_liqfrac.png"), 420, 968 / 720));
+  ch.push(cap("Liquid-fraction contour: red = molten water, the blue dome = PCM still solid, the green ring = the melt front. The colours ARE the liquid-fraction value."));
+} catch (e) {}
+
+// Q13
+ch.push(Q());
+ch.push(P("There are three things you can open in ANSYS, and each shows a different part of the story:"));
 ch.push(table(
-  ["Term", "Value / source", "Meaning"],
+  ["View (file → what to display)", "What it shows / means"],
   [
-    ["I_t", "GHI_Wm2, hourly", "Irradiance on the collector plane"],
-    ["T_amb", "T_amb_C, hourly", "Ambient air temperature"],
-    ["T_in", "from the tank state", "Water entering the collector"],
-    ["A_c", "2.5 m\u00b2", "Collector area"],
-    ["F_R(\u03c4\u03b1)", "0.75", "Optical efficiency \u00d7 heat-removal factor"],
-    ["F_R\u00b7U_L", "4.5 W/m\u00b2K", "Loss coefficient (not wind-dependent)"],
+    ["Tank geometry + capsules\nsystem_tank_pcm_panel_setup.cas.h5 → Mesh",
+     "The STRUCTURE only: the 100 L tank, the 34 PCM capsules in a staggered layout, and the collector panel, absorber and riser — each a coloured zone. It is the geometry check (the thing modelled is the thing meant). No physics yet, just the shapes."],
+    ["Tank temperature / heat path\nsystem_tank_pcm_panel_solved.cas.h5 → Contours → Temperature",
+     "WHERE THE HEAT IS: absorber ~139 °C → panel ~125 °C → riser ~61 °C → tank water ~32 °C → PCM ~31.6 °C. It proves heat flows correctly from the hot collector down into the cool tank. It is an energy-only snapshot, so the PCM stays solid — it shows the heat path, not melting."],
+    ["A capsule melting live (animated)\npython fluent_live_demo.py",
+     "The PCM ACTUALLY MELTING: one capsule in hot water, the liquid-fraction contour re-drawing as the solve runs, so the blue solid core shrinks and the melt front moves inward over time. This is the proof the PCM stores heat by melting — and it is the only one of the three that animates."],
   ],
-  [1600, 3000, 5500]));
+  [3600, 6200]));
 ch.push(PR([
-  { t: "Note the sign structure. ", b: true },
-  "Irradiance adds heat; the temperature difference removes it. On a hot afternoon the tank is "
-  + "already warm, so ", { t: "T_in \u2212 T_amb", c: true },
-  " is large and the collector loses more \u2014 which is why the useful gain is not simply "
-  + "proportional to sunshine.",
-]));
-ch.push(H2("A simplification to be aware of"));
-ch.push(PR([
-  "The code uses GHI directly as plane-of-array irradiance (",
-  { t: "I_t_Wm2 = GHI_Wm2", c: true },
-  "). There is no tilt or transposition model, so collector tilt and orientation are not "
-  + "represented. For a fixed tilt near the site latitude this under-states winter gain and "
-  + "over-states summer gain. It applies identically to the PCM tank and its paired plain-water "
-  + "tank, so the ", { t: "difference", i: true },
-  " the study reports is largely insulated from it \u2014 but the absolute energy figures carry it.",
-]));
-ch.push(H2("Pump control"));
-ch.push(PR([
-  "Irradiance also acts as a switch. Below ", { t: "min_irradiance_cutoff_Wm2 = 10", c: true },
-  " the circulation pump is treated as off and no collector loop runs. This is what makes the "
-  + "collector follow the daily solar cycle rather than run continuously.",
-], { after: 150 }));
-
-/* ─────────────────── 3. where in the code ─────────────────── */
-ch.push(H1("3. Where this lives in the code"));
-ch.push(table(
-  ["What", "File", "Where"],
-  [
-    ["Weather loaded for a regime/year", "src/weather/roles.py", "load_point_year()"],
-    ["Weather handed to a simulation", "src/simulation/run_case.py", "run_case(), weather= argument"],
-    ["Collector equation", "src/simulation/collector_model.py", "collector_output_w() line 56"],
-    ["Linearised collector (for the implicit solve)", "src/simulation/collector_model.py", "collector_linear_coeffs() line 82"],
-    ["Irradiance pump cutoff", "src/simulation/tank_model_multinode.py", "line 624"],
-    ["Hourly loop + substepping", "src/simulation/tank_model_multinode.py", "lines 405\u2013440"],
-    ["Hourly output record (I_t, T_amb)", "src/simulation/tank_model_multinode.py", "line 727"],
-    ["Timestep choice by purpose", "src/io_utils.py", "dt_for() line 95"],
-    ["Mains temperature per regime", "src/simulation/run_case.py", "line 66"],
-    ["Collector / tank / shield constants", "configs/system_config_shared.yaml", "collector:, tank:, safety_shield:"],
-    ["Ephemeris check on the weather", "scripts/tn_rebuild_weather_from_raw.py", "verify_against_ephemeris()"],
-  ],
-  [4000, 3700, 2400], { mono: 1 }));
-ch.push(P(
-  "The single-node model (src/simulation/tank_model.py) uses the same collector equation; the "
-  + "multi-node model is the one the optimiser actually runs.", { color: MUTED, size: SMALL, after: 150 }));
-
-/* ─────────────────── 4. how values change ─────────────────── */
-ch.push(H1("4. How the values change during a run"));
-ch.push(P(
-  "A simulated year is stepped hour by hour. Within each hour the two climate values are held "
-  + "constant \u2014 that is the resolution of the source data \u2014 while the tank state is advanced on a "
-  + "much finer internal step."));
-ch.push(H2("The stepping scheme"));
-ch.push(table(
-  ["Level", "Step", "What varies"],
-  [
-    ["Hour", "8,760 per year", "GHI and T_amb change; demand draw changes"],
-    ["Solver step", "150 s searching, 37.5 s confirming", "Tank node temperatures, PCM enthalpy"],
-    ["Substep (adaptive)", "up to 6\u00d7 finer inside the melt band", "PCM phase change only"],
-  ],
-  [2400, 3400, 4300]));
-ch.push(PR([
-  { t: "The timestep is not fixed \u2014 it refines itself where the physics is stiff. ", b: true },
-  "At each step the code checks whether any capsule node is within 2 K of its melt band. If so it "
-  + "subdivides that step ", { t: "6\u00d7", c: true },
-  ". It also computes a thermal time constant per node (",
-  { t: "\u03c4 = m_pcm \u00b7 cp_eff / UA", c: true },
-  ") and refines further if the step is long relative to \u03c4, up to a cap. So the model spends its "
-  + "effort where the PCM is actually melting and runs coarsely the rest of the time.",
-]));
-ch.push(PR([
-  "Two timesteps are used deliberately: ", { t: "150 s", c: true },
-  " while searching the design space, and ", { t: "37.5 s", c: true },
-  " for anything reported. The convergence gate is that annual useful energy changes by less than "
-  + "0.05 % when the step is halved; on this 100 L tank only 37.5 s meets it (0.041 %), where 150 s "
-  + "gives 0.054 %. The coarse step is used for ranking designs, where the discretisation error "
-  + "(0.17 % worst case) sits far inside the repeatability band, so it cannot change the ordering.",
-]));
-ch.push(H2("What makes the numbers rise and fall"));
-ch.push(B("Through a day: irradiance rises after sunrise, the pump starts above 10 W/m\u00b2, the tank's top node warms first because the collector return enters high. Draw-offs at the morning and evening demand peaks pull warm water out and push mains water in at the bottom."));
-ch.push(B("Through the melt: once a capsule reaches its melt point its temperature nearly stops rising while it absorbs latent heat \u2014 the plateau that makes a PCM worth having. On discharge it releases that heat and holds the tank warmer for longer."));
-ch.push(B("Through the year: Tamil Nadu's three regimes differ mainly in annual irradiance (1,791\u20132,074 kWh/m\u00b2) and in mains temperature, which is why each regime gets its own optimised design rather than one shared answer."));
-ch.push(H2("A control that responds to temperature"));
-ch.push(PR([
-  "A safety shield interrupts circulation when the tank gets too hot: it bypasses above ",
-  { t: "72 \u00b0C water", c: true }, " or ", { t: "62 \u00b0C PCM", c: true },
-  ". This is why peak temperatures in the results cluster below the limits rather than running "
-  + "away on the sunniest days \u2014 the model stops charging rather than overheating.",
-], { after: 150 }));
-
-/* ─────────────────── 5. live simulation ─────────────────── */
-ch.push(H1("5. Is the live simulation working?"));
-ch.push(PR([
-  { t: "Yes, with one honest qualification. ", b: true },
-  "The script ", { t: "ansys/fluent_live_demo.py", c: true },
-  " opens ANSYS Fluent with its graphics window and re-renders a liquid-fraction contour as the "
-  + "solve advances, so the melt front moves on screen. It reads the optimal design straight from "
-  + "the optimiser's output, so what it shows is the selected design and not a demo case.",
-]));
-ch.push(PR([
-  { t: "Now confirmed on screen. ", b: true },
-  "The windowed demo has been run interactively and watched: the liquid-fraction contour re-renders "
-  + "each chunk and the melt front is visibly seen advancing \u2014 the solid PCM core (blue) shrinking "
-  + "inside the hot liquid water (red). At flow time 3.7 h the capsule read liquid fraction ",
-  { t: "0.48", c: true }, " and ", { t: "62.8 \u00b0C", c: true },
-  ", consistent with the batch runs. It was also verified earlier in headless mode, reproducing the "
-  + "trusted batch run exactly (liquid fraction 0.0394 at 0.3 h, matching to four decimals). So the "
-  + "live render is now observed, not just expected.",
-]));
-ch.push(P("To run it, from the project root:"));
-ch.push(CODEP("cd ansys\npython fluent_live_demo.py                  # regime 0, 6 h, with window\npython fluent_live_demo.py --regime 1\npython fluent_live_demo.py --hours 1         # quick look\npython fluent_live_demo.py --headless        # no window, verify setup"));
-ch.push(PR([
-  { t: "Before running: ", b: true },
-  "the Student licence allows one Fluent session at a time. Close any other Fluent window. A "
-  + "launch failure reading ", { t: "Unexpected license problem", c: true },
-  " is usually a stray ", { t: "ansyscl.exe", c: true },
-  " from an earlier session rather than a real licence fault.",
-], { after: 150 }));
-
-ch.push(H2("How long does the live demo run, and how to stop it?"));
-ch.push(PR([
-  "A common question when watching it: the console keeps scrolling \u2014 is it stuck? It is not. The "
-  + "demo simulates ", { t: "6 physical hours", c: true }, " of melting by default, in ",
-  { t: "20 s", c: true }, " steps \u2014 that is ",
-  { t: "6 \u00d7 3600 / 20 = 1,080 time steps", c: true },
-  ", and it runs every one before stopping on its own. It prints one block per converged step, with "
-  + "a ", { t: "\u201cN more time steps\u201d", c: true }, " counter ticking down to zero. On this machine, "
-  + "with the live contour re-rendering each chunk, a full default run takes roughly 45 min to 1.5 h "
-  + "of wall-clock time.",
-]));
-ch.push(PR([
-  { t: "To make it short, set the physical duration. ", b: true },
-  { t: "--hours 1", c: true }, " runs 180 steps (a few minutes); ",
-  { t: "--hours 0.5", c: true }, " runs 90. The melt front is already clearly advancing within the "
-  + "first simulated hour, so a short run is enough to show it live.",
-]));
-ch.push(PR([
-  { t: "To stop a run early, ", b: true }, "click ",
-  { t: "Stop at end of the time step", c: true },
-  " at the bottom-right of the Fluent window (not \u201cStop at end of the iteration\u201d, which halts "
-  + "mid-step). It finishes the current step and halts with the solution and contour intact, so the "
-  + "on-screen melt front stays valid to show. The final state is auto-saved to ",
-  { t: "C:\\fluent_work\\demo_r<regime>_final.cas.h5", c: true }, ".",
-], { after: 150 }));
-
-/* ─────────────────── 6. checking the images ─────────────────── */
-ch.push(H1("6. How to check the tank and capsule images"));
-ch.push(P(
-  "The three figures in ansys/figures/ are not drawings \u2014 each comes from a solved case, and each "
-  + "can be traced back to the numbers behind it. Here is how to verify each one yourself."));
-
-ch.push(H2("Figure 1 \u2014 tank, capsules and collector panel (01_system_mesh_zones.png)"));
-ch.push(P("It claims six cell zones over 42,966 cells. Check the mesh directly, without launching Fluent:"));
-ch.push(CODEP("python ansys/verify_zones.py \"C:\\fluent_work\\regime0_v3_mesh_only.cas.h5\""));
-ch.push(P(
-  "It reads the case file's HDF5 structure and prints every cell and face zone with its cell count "
-  + "and geometric extent, so you can confirm which zone is the inlet and which the outlet from "
-  + "their x-positions rather than trusting a label. This matters: zone names are not guaranteed to "
-  + "repeat between separately imported meshes, even when the geometry is identical."));
-
-ch.push(H2("Figure 2 \u2014 temperature field (02_system_temperature_field.png)"));
-ch.push(PR([
-  "The numbers in its caption (absorber 139 \u00b0C \u2192 panel 125 \u00b0C \u2192 riser 61 \u00b0C \u2192 water 32.2 \u00b0C) "
-  + "come from the solved system case. ", { t: "Read this figure as a geometry and heat-path "
-  + "check, not as evidence the PCM works.", b: true },
-  " Its own caption says why: the case runs energy-only with momentum frozen, so nothing "
-  + "circulates, the water only reaches 32 \u00b0C and no PCM melts in it. Melting evidence is Figure 3.",
+  { t: "In short: ", b: true },
+  "the first shows the shape, the second shows the heat reaching the tank, and the third shows the PCM "
+  + "melting. The first two are static solved snapshots you can zoom and rotate; only the live demo moves.",
 ]));
 
-ch.push(H2("Figure 3 \u2014 PCM melt comparison (03_pcm_melt_comparison.png)"));
-ch.push(P("This is the one that carries the physics result. Three independent ways to check it:"));
-ch.push(B("Regenerate it: python ansys/plot_v4_pcm_comparison.py re-reads the raw melt histories and redraws the figure. If the curves change, the plot was not matching the data."));
-ch.push(B("Read the raw numbers: ansys/v7_<pcm>_melt_history.csv holds time, liquid fraction and capsule temperature for every solver chunk. The final rows should give 0.60 / 0.50 / 0.47 / 0.38 for C25 / C26 / RT57HC / PureTemp 58."));
-ch.push(B("Check the solver was clean: grep -c \"Divergence detected\" ansys/v7_*.log should return 0 for all four. A diverged run can still produce a plausible-looking curve."));
-ch.push(PR([
-  { t: "What makes the result believable ", b: true },
-  "is not the picture but the ordering. C25 has the lowest melt point and melts most; C26 and "
-  + "RT57HC share a melt point and the higher-conductivity one melts more; PureTemp 58 has the "
-  + "highest melt point and lowest conductivity and melts least. Three independent physical "
-  + "relationships, all satisfied. A plotting error would be unlikely to preserve all three.",
-]));
-ch.push(PR([
-  { t: "One limit to read with it: ", b: true },
-  "the solver uses first-order upwind, which is more diffusive than second order, so these melt "
-  + "fractions are conservative. A second-order run of the three PCMs that would converge under it "
-  + "reached higher fractions in the same order. First order is used because it is the only setting "
-  + "under which all four PCMs solve, and a comparison needs identical settings. Read the ordering, "
-  + "not the absolute values.",
-]));
-ch.push(H2("Opening a case in Fluent yourself"));
-ch.push(P("To inspect any solved case interactively, launch Fluent (2D, double precision) and read the case and data together:"));
-ch.push(CODEP("File > Read > Case & Data...  \u2192  C:\\fluent_work\\v7_c26.cas.h5"));
-ch.push(P(
-  "Then Results > Graphics > Contours on Liquid Fraction or Temperature. The full manual route, "
-  + "with every panel value, is in ansys/HOW_TO_RUN_ANSYS.md.", { after: 120 }));
-
-ch.push(P(
-  "Related: docs/SIMULATOR_AND_CFD.md (why there are two simulators), docs/CFD_VERIFICATION.md "
-  + "(the full CFD history), docs/RESULTS.md (the numbers).",
+ch.push(P(""));
+ch.push(P("Further detail: O2_ANSYS_Complete_Guide.docx (click-by-click ANSYS steps and all figures) and the project's docs/ folder (SIMULATOR_AND_CFD.md, CFD_VERIFICATION.md, RESULTS.md).",
   { italics: true, color: MUTED, size: CAP, after: 0 }));
 
 const doc = new Document({
-  creator: "Objective 2 \u2014 Tamil Nadu",
-  title: "Climate parameters in the simulators",
+  creator: "Objective 2 — Tamil Nadu",
+  title: "Climate Parameters & Simulators — Q&A",
   sections: [{
-    properties: { page: { margin: { top: 1000, bottom: 900, left: 1000, right: 1000 } } },
+    properties: { page: { margin: { top: 850, bottom: 750, left: 950, right: 950 } } },
     children: ch,
   }],
 });
