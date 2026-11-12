@@ -151,3 +151,9 @@ are not installed on this machine; `scripts/run_all_cases.ps1` runs everything w
   regime 3 marked `degenerate_regime`, no B1 or OpenFOAM-run claims (neither was done for Uttarakhand).
 - `pipeline.py --stage handoff` runs v2 then v3. `scripts/g12_verify_docs.py`: Rajasthan's fix ported (a reference like `file.yaml:24,38` is checked
   as the file). Nothing was re-run; `results/held_out_test.lock` untouched.
+
+## 2026-11-12 - K = 4 confirmed final
+
+- The student confirmed that Objective 1 has been changed to K = 4 regimes for Uttarakhand and that the project continues with K = 4 (no K = 5).
+  Open decision (a) is closed. Updated: `README.md`, `docs/README.md`, `docs/02_WEATHER_AND_DESIGN_SPACE.md`, `docs/05_LIMITATIONS_AND_OPEN_ITEMS.md`,
+  `docs/06_OBJECTIVE3_HANDOFF.md`. Documentation only; no result, contract or code changed.

@@ -2,7 +2,7 @@
 
 ## 1. Regimes: Objective 1 now has K = 4
 
-Objective 1 reduced Uttarakhand from 5 to 4 regimes (O1 commit 6be0dcd). **Correction 2026-11-10:** that commit is on `origin/tamilnadu-data` only and is not an ancestor of O1 main, whose `05_cluster_uttarakhand.py:73` still has `K_FINAL = 5`; the two are not reconciled. The frozen O1 copies in `data/objective1/` were refreshed for K = 4
+Objective 1 reduced Uttarakhand from 5 to 4 regimes (O1 commit 6be0dcd). **Correction 2026-11-10:** that commit is on `origin/tamilnadu-data` only and is not an ancestor of O1 main, whose `05_cluster_uttarakhand.py:73` still had `K_FINAL = 5` at that check. **Resolved 2026-11-12:** the student confirmed that Objective 1 has been changed to K = 4 for Uttarakhand and that the project continues with K = 4; there will be no move to K = 5. The frozen O1 copies in `data/objective1/` were refreshed for K = 4
 (manifest `data/objective1/manifest.json`; since the cleanup only the five files the pipeline reads are kept there), and
 `configs/states/uttarakhand.yaml` was regenerated for 4 regimes. The K = 5 files were removed in the cleanup (git history only).
 

@@ -14,7 +14,7 @@ the held-out rows against `results/g10_heldout_results.csv` and the limits again
 regimes, delivery target 50 C, held-out 2024-2025. Regime 3 carries `degenerate_regime = true`. Differences from v2 in wording only: the v3
 `action_space.recommended` is the discrete (loop on/off) version, matching the O3 plan correction in the table below.
 
-**Hand-off design basis (checked 2026-11-10 against `configs/system_config_shared.yaml`):** tank 50 L (line 30), collector 1.5 m2 (line 24), delivery target 50 C (line 84), PCM limit 65 C (line 55). That is 33.3 L per m2, below the 40-100 L/m2 of IS 12976:2023. **K = 4 inheritance:** the four regimes come from O1 commit `6be0dcd`, which is not on O1 main (K = 5); the contract is not valid against O1 main's five-cluster outputs. The held-out years 2024-2025 were used once (run id `heldout_c75ac0e6fb78`) and are not available to O3.
+**Hand-off design basis (checked 2026-11-10 against `configs/system_config_shared.yaml`):** tank 50 L (line 30), collector 1.5 m2 (line 24), delivery target 50 C (line 84), PCM limit 65 C (line 55). That is 33.3 L per m2, below the 40-100 L/m2 of IS 12976:2023. **K = 4 inheritance:** the four regimes come from O1 commit `6be0dcd`, which was not on O1 main (K = 5) at the 2026-11-10 check. **Resolved 2026-11-12:** the student confirmed that Objective 1 has been changed to K = 4 for Uttarakhand and that the project continues with K = 4; there will be no move to K = 5. The contract is built for the four regimes and must not be paired with any five-cluster O1 output. The held-out years 2024-2025 were used once (run id `heldout_c75ac0e6fb78`) and are not available to O3.
 
 ## What is in the contract
 
@@ -53,5 +53,5 @@ The O3 plan starts with Rajasthan and lists Uttarakhand as "later". What it need
 | Delivery temperature | 50 C, not 45 C: every O3 metric and reward term for Uttarakhand must use the contract's `delivery_temp_target_C` (columns named 45 are computed at 50 C) |
 | Regime 3 ("degenerate") | `meaningful_on_primary_metric = false`; the contract design has 4 capsules (2 % PCM). Treat it as a water-only tank; a controller there has no PCM to manage |
 | Action space | The contract's `control_skeleton` (charge / discharge / bypass + continuous flow) is the generic text inherited from the template. The O3 plan's correction applies here too: the only controllable input is collector loop on/off; flow should stay fixed unless the F_R(flow) option is switched on as a declared physics change |
-| Q8: K = 4 vs K = 5 | Still open **in Objective 1**, not here: O1 `main` has `K_FINAL = 5` for Uttarakhand; the K = 4 switch (O1 commit `6be0dcd`) is only on the `tamilnadu-data` branch. O2 uses K = 4. The O1 team must merge it into O1 `main` |
+| Q8: K = 4 vs K = 5 | **Resolved 2026-11-12:** K = 4 is final; Objective 1 was changed to 4 regimes (confirmed by the student). O2 and the contract use K = 4 |
 
