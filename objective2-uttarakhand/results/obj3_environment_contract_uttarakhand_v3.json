@@ -1,7 +1,7 @@
 {
  "state": "uttarakhand",
  "contract_version": "obj3_contract_v3.0_uttarakhand_2026-11-12",
- "generated_utc": "2026-11-12T12:01:16.529263+00:00",
+ "generated_utc": "2026-11-13T01:56:08.787181+00:00",
  "validated_simulator_version": "sim_v3_uttarakhand (multi-node N=10, dt=150 s)",
  "source": "Objective 2 Uttarakhand pipeline results (results/g10_selection_r*.json, g10_heldout_results.csv, wp6_band.csv, held_out_test.lock, obj3_environment_contract_uttarakhand_v2.json, configs/*.yaml). Built by src/handoff/build_obj3_contract_uttarakhand_v3.py; restructure only, no value changed.",
  "supersession_note": "RE-EXPRESSES results/obj3_environment_contract_uttarakhand_v2.json in the v3 schema that the Objective 3 code reads. Same designs, same limits, same held-out results; only the field layout and names changed. The legacy K = 5 contract (Phase-7 deployables, UTC-indexed demand, single-node tank; removed in the cleanup, git history only) stays superseded.",
@@ -1574,7 +1574,7 @@
  },
  "verification_status": {
   "simulator_verification": "see O2 docs/PROGRESS.md and results/g3_metrics_report.csv, g4_multinode_report.csv (Gate-1 residual in g10_heldout_results.csv)",
-  "model_consistency_cross_check": "OpenFOAM cases are set up in openfoam_cfd/ but NOT run for Uttarakhand (docs/PROGRESS.md section 15); results/g4_cfd_draw_case.csv compares the tank model with a CFD draw case. cfd_closure_v1 (Rajasthan's fit) is ported, off by default and UNVALIDATED.",
+  "model_consistency_cross_check": "OpenFOAM: 1 of 10 capsule cases run for Uttarakhand (r0_chosen_puretemp_58, openfoam_cfd/results/cfd_capsule_results_uttarakhand.csv: grey-box t90 about 2x the CFD); the tank cases were not run. results/g4_cfd_draw_case.csv compares the tank model with a CFD draw case. cfd_closure_v1 (Rajasthan's fit) is ported, off by default and UNVALIDATED.",
   "experimental_validation": {
    "status": "NOT DONE",
    "scope": "Objective 4"

@@ -18,6 +18,7 @@ Method, in one phrase: a surrogate-assisted, constrained multi-objective search 
 objective2-uttarakhand/
 ├── pipeline.py               # entry point for the current chain (stages: status, verify ... plots; see its docstring)
 ├── run_all_uttarakhand.py    # tests + report + handoff + plots from saved results; --full runs the whole chain (hours)
+├── make_all_plots.py         # one command for every figure: python make_all_plots.py  ->  results/plots/ (30 drawn, 9 skipped: study not run; --list shows them)
 ├── config.py                 # shared paths
 ├── configs/
 │   ├── system_config_shared.yaml   # shared system config (tank, collector, safety limits, solver step 150 s)
@@ -30,7 +31,7 @@ objective2-uttarakhand/
 │   ├── design/               # design space, geometry engine, constraints
 │   ├── optimize/             # paired baseline, evaluation, ANOVA, surrogates, NSGA-II
 │   ├── handoff/              # Objective 3 environment contract v2 and its v3-schema form
-│   ├── plots/                # make_plots_results.py (figures 1-9)
+│   ├── plots/                # make_plots_results.py (figures 1-9; make_all_plots.py imports them and adds figures 10-50)
 │   └── verify/               # Phase-4 verification battery (gates.py)
 ├── scripts/g*.py             # one script per gate step (G2-G18; G18 not run)
 ├── tests/                    # python -m pytest tests

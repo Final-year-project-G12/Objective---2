@@ -148,7 +148,8 @@ are not installed on this machine; `scripts/run_all_cases.ps1` runs everything w
 - New `src/handoff/build_obj3_contract_uttarakhand_v3.py` (port of `objective2-rajasthan/src/handoff/build_obj3_contract_rajasthan_v3.py`) writes
   `results/obj3_environment_contract_uttarakhand_v3.json`: the v2 contract re-expressed in the Tamil Nadu v3 schema the O3 code reads. Restructure only,
   no value changed; 33 copied fields checked against their sources. Uttarakhand-specific: four regimes, 50 C delivery target, held-out 2024-2025,
-  regime 3 marked `degenerate_regime`, no B1 or OpenFOAM-run claims (neither was done for Uttarakhand).
+  regime 3 marked `degenerate_regime`, no B1 claim (not run for Uttarakhand). (Corrected 2026-11-13: the OpenFOAM note now says 1 of 10 capsule
+  cases was run, `r0_chosen_puretemp_58`; it first said none.)
 - `pipeline.py --stage handoff` runs v2 then v3. `scripts/g12_verify_docs.py`: Rajasthan's fix ported (a reference like `file.yaml:24,38` is checked
   as the file). Nothing was re-run; `results/held_out_test.lock` untouched.
 
@@ -163,3 +164,13 @@ are not installed on this machine; `scripts/run_all_cases.ps1` runs everything w
 - The student confirmed 50 C as the Uttarakhand delivery basis (O1 and O2 already both use it). Open decision (b), the 60 C O1 basis, is closed:
   the shortlisted PCMs melt at about 53-58 C and the PCM limit is 65 C (shield bypass 62 C). Updated `docs/05_LIMITATIONS_AND_OPEN_ITEMS.md` and
   `docs/README.md`. Documentation only; no result, contract or code changed.
+
+## 2026-11-13 - All figures in one run (port of Rajasthan commit `7f2f701`)
+
+- New `make_all_plots.py` (port of `objective2-rajasthan/make_all_plots.py`): `python make_all_plots.py` draws fig1-fig9 (from
+  `src/plots/make_plots_results.py`) and fig10-fig50 into `results/plots/`, reading saved files only (nothing simulated, held-out loader not called).
+  Adapted to four regimes, the 50 C target, held-out 2024-2025 and the UKP weather points; no claim in a figure title is typed by hand.
+- Result: 30 figures written, 9 skipped because their study was not run for Uttarakhand (fig28 g21 sizing, fig29 g22 input sensitivity, fig30 g24
+  flow F_R, fig31 g20 GP-BO, fig32 g18 search variants, fig33 B1 widened box, fig35 g23 Chen benchmark, fig41/fig42 OpenFOAM closure and mesh studies).
+  fig21 shows the v3 box only (no B1); fig26 has no 40 L water-only case; fig40 is Uttarakhand's own OpenFOAM figure (the one capsule case run).
+- Contract v3 regenerated: its OpenFOAM note now says 1 of 10 capsule cases was run (it said none). No design value changed.

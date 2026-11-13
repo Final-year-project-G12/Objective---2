@@ -282,8 +282,9 @@ def build() -> Path:
     }
     c["verification_status"] = {
         "simulator_verification": "see O2 docs/PROGRESS.md and results/g3_metrics_report.csv, g4_multinode_report.csv (Gate-1 residual in g10_heldout_results.csv)",
-        "model_consistency_cross_check": ("OpenFOAM cases are set up in openfoam_cfd/ but NOT run for Uttarakhand "
-                                          "(docs/PROGRESS.md section 15); results/g4_cfd_draw_case.csv compares the tank model "
+        "model_consistency_cross_check": ("OpenFOAM: 1 of 10 capsule cases run for Uttarakhand (r0_chosen_puretemp_58, "
+                                          "openfoam_cfd/results/cfd_capsule_results_uttarakhand.csv: grey-box t90 about 2x the CFD); "
+                                          "the tank cases were not run. results/g4_cfd_draw_case.csv compares the tank model "
                                           "with a CFD draw case. cfd_closure_v1 (Rajasthan's fit) is ported, off by default "
                                           "and UNVALIDATED."),
         "experimental_validation": {"status": "NOT DONE", "scope": "Objective 4"},
