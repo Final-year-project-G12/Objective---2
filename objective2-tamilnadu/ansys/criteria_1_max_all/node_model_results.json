@@ -1,0 +1,53 @@
+{
+ "key": "criteria_1_max_all",
+ "title": "1. MAX of every parameter",
+ "rule": "Every knob at its upper bound: R_in 40 mm, PCM fraction 30 %, flow 0.050 kg/s, densest packing (staggered).  N follows from R and fraction (the 30 % cap at R = 40 mm gives N = 105).",
+ "regime": 0,
+ "pcm": "PureTemp 58",
+ "design": {
+  "R_in": 0.04,
+  "fraction": 0.3,
+  "flow": 0.05,
+  "arrangement": "staggered"
+ },
+ "valid": true,
+ "reason": "",
+ "N_3d": 105,
+ "drawn_capsules_2d": 34,
+ "frac_of_optimal_N": 1.0096153846153846,
+ "N": 105,
+ "pcm_mass_kg": 25.05231645678645,
+ "g_window_kWh_yr": 283.2947929553739,
+ "g_window_sd": 8.53976843561327,
+ "g_annual_kWh_yr": 290.8365201896416,
+ "d_overheat_h_yr": 880.0393518518518,
+ "t_pcm_max_C": 62.36127210602814,
+ "t_water_max_C": 72.08120253977395,
+ "gate_pcm_le_65": true,
+ "gate_water_le_75": true,
+ "rule_A_beats_plain_beyond_band": true,
+ "in_S0_tied_with_best": true,
+ "in_S1_low_overheat": true,
+ "pct_of_optimal_gain": 102.41422752001066,
+ "delta_vs_optimal": {
+  "N": 1,
+  "pcm_mass_kg": 0.2386081181203039,
+  "g_window": 6.678154998483478,
+  "g_annual": 7.771930773531949,
+  "d_overheat": 51.419609693304665,
+  "flow": 0.011239145073113806
+ },
+ "bands": {
+  "g_window_band": 28.36277516915937,
+  "d_overheat_band": 115.25279676064189,
+  "g_best_pool": 297.09042979039947
+ },
+ "verdict": "statistically TIED with the optimum (gain difference +6.7 kWh is inside the 28.4 kWh band); loses the final tie-break: PCM mass 25.05 vs 24.81 kg, 105 vs 104 capsules",
+ "day": {
+  "index": 265,
+  "max_gain_C": 9.538094254656876,
+  "hour_of_max_gain": 20,
+  "peak_melt_fraction": 1.0,
+  "melt_fraction_at_18h": 0.521873569118422
+ }
+}

@@ -1,0 +1,53 @@
+{
+ "key": "criteria_5_10pct_of_optimal",
+ "title": "5. 10 % of the optimal PCM",
+ "rule": "N = 10 % of 104 = 10 capsules (R_in, flow, arrangement kept optimal: 10 % of the radius or flow would fall below the design-space / pump bounds).",
+ "regime": 0,
+ "pcm": "PureTemp 58",
+ "design": {
+  "R_in": 0.04,
+  "fraction": 0.028449137124102124,
+  "flow": 0.0387608549268862,
+  "arrangement": "staggered"
+ },
+ "valid": true,
+ "reason": "",
+ "N_3d": 10,
+ "drawn_capsules_2d": 3,
+ "frac_of_optimal_N": 0.09615384615384616,
+ "N": 10,
+ "pcm_mass_kg": 2.385934900646329,
+ "g_window_kWh_yr": 26.917442807458468,
+ "g_window_sd": 0.9365916672169338,
+ "g_annual_kWh_yr": 27.658536562014735,
+ "d_overheat_h_yr": 799.186871788177,
+ "t_pcm_max_C": 62.36958894669756,
+ "t_water_max_C": 72.04798355751733,
+ "gate_pcm_le_65": true,
+ "gate_water_le_75": true,
+ "rule_A_beats_plain_beyond_band": false,
+ "in_S0_tied_with_best": false,
+ "in_S1_low_overheat": false,
+ "pct_of_optimal_gain": 9.73095581172288,
+ "delta_vs_optimal": {
+  "N": -94,
+  "pcm_mass_kg": -22.427773438019816,
+  "g_window": -249.69919514943197,
+  "g_annual": -255.4060528540949,
+  "d_overheat": -29.43287037037021,
+  "flow": 0.0
+ },
+ "bands": {
+  "g_window_band": 28.36277516915937,
+  "d_overheat_band": 115.25279676064189,
+  "g_best_pool": 297.09042979039947
+ },
+ "verdict": "eliminated at Rule A (gain inside the noise band = no better than a plain tank)",
+ "day": {
+  "index": 265,
+  "max_gain_C": 1.1183486094355075,
+  "hour_of_max_gain": 20,
+  "peak_melt_fraction": 1.0,
+  "melt_fraction_at_18h": 0.7583968523506841
+ }
+}

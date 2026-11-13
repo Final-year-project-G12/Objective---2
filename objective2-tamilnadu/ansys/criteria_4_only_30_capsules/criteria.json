@@ -1,0 +1,30 @@
+{
+ "key": "criteria_4_only_30_capsules",
+ "title": "4. YOUR WISH: only 30 capsules",
+ "rule": "Only 30 real capsules (R_in 40 mm, optimal flow, staggered) = 8.5 % PCM fraction.",
+ "why_not_optimal": "Under a third of the optimal PCM mass (7.2 kg vs 24.8 kg): the store is used up quickly in the evening, so only ~30 % of the optimal benefit is delivered.",
+ "regime": 0,
+ "pcm": "PureTemp 58",
+ "design": {
+  "R_in": 0.04,
+  "fraction": 0.08534741137230638,
+  "flow": 0.0387608549268862,
+  "arrangement": "staggered"
+ },
+ "n_3d": 30,
+ "fraction_pct": 8.534741137230638,
+ "frac_of_optimal_N": 0.28846153846153844,
+ "proxy": {
+  "drawn_capsules": 10,
+  "r_in_2d_m": 0.02,
+  "rule": "drawn = round(N_3d*34/104); r_2d = 0.5*R_in_3d  (optimal = 34 capsules / 20 mm)"
+ },
+ "mesh": {
+  "nx": 260,
+  "ny": 200
+ },
+ "run": {
+  "hours": 2.0,
+  "dt_s": 60.0
+ }
+}

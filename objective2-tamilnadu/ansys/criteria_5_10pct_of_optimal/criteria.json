@@ -1,0 +1,30 @@
+{
+ "key": "criteria_5_10pct_of_optimal",
+ "title": "5. 10 % of the optimal PCM",
+ "rule": "N = 10 % of 104 = 10 capsules (R_in, flow, arrangement kept optimal: 10 % of the radius or flow would fall below the design-space / pump bounds).",
+ "why_not_optimal": "Only 2.4 kg of PCM: the latent store is almost negligible - the ~27 kWh/yr gain is below the 28.4 kWh repeatability band, i.e. not distinguishable from a plain tank.",
+ "regime": 0,
+ "pcm": "PureTemp 58",
+ "design": {
+  "R_in": 0.04,
+  "fraction": 0.028449137124102124,
+  "flow": 0.0387608549268862,
+  "arrangement": "staggered"
+ },
+ "n_3d": 10,
+ "fraction_pct": 2.844913712410212,
+ "frac_of_optimal_N": 0.09615384615384616,
+ "proxy": {
+  "drawn_capsules": 3,
+  "r_in_2d_m": 0.02,
+  "rule": "drawn = round(N_3d*34/104); r_2d = 0.5*R_in_3d  (optimal = 34 capsules / 20 mm)"
+ },
+ "mesh": {
+  "nx": 260,
+  "ny": 200
+ },
+ "run": {
+  "hours": 2.0,
+  "dt_s": 60.0
+ }
+}

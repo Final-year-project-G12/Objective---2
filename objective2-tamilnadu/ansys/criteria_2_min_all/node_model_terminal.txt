@@ -1,0 +1,61 @@
+==============================================================================
+ 2. MIN of every parameter   (Regime 0, PureTemp 58, node-model on select years 2021-23)
+==============================================================================
+ rule      : Every knob at its lower bound: R_in 10 mm, PCM fraction 2 %, flow 0.010 kg/s, loosest packing (single-layer).  N = 380 tiny capsules but only ~2 % of the tank volume (1.4 kg of PCM).
+ parameters: R_in=10.0 mm  (capsule dia 21.6 mm)  fraction=2.0 %  flow=0.0100 kg/s  single-layer
+ capsules  : N = 380 real  (104 optimal -> 365 %)   PCM mass = 1.4 kg  (optimal 24.8 kg)
+ drawn in Fluent (2-D proxy): 124 capsules
+
+ OBJECTIVES  (3 select years, paired with the water-only tank at the same flow)
+   g_window  (extra deliverable heat 18:00-09:00) :      2.2 kWh/yr  +/-0.2 (year sd)   [optimal 276.6]  -> 1 % of optimal
+   g_annual  (extra deliverable heat, whole year) :      2.2 kWh/yr   [optimal 283.1]
+   d_overheat (extra shield-hours, lower = better):   1417.9 h/yr     [optimal 828.6]
+   peak PCM temperature                           :    62.58 C       (limit 65)  PASS
+   peak water temperature                         :    72.26 C       (limit 75)  PASS
+
+ SELECTION FUNNEL (scripts/g10_select.py rules, regime-0 candidate pool)
+   Rule A  gain > repeatability band (28.4 kWh) : FAIL (indistinguishable from plain tank)
+   S0      within 28.4 kWh of the best g_window (297.1) : OUT  <- eliminated here
+   S1      (only if in S0) overheating within 115 h of the lowest in S0 (788) : n/a
+   VERDICT : eliminated at Rule A (gain inside the noise band = no better than a plain tank)
+
+ WHY IT IS (NOT) OPTIMAL: Almost no PCM (1.4 kg, 2 % of the tank), so almost no latent storage: the gain (2.2 kWh/yr) is ~1 % of the optimum and far inside the repeatability band - indistinguishable from plain water.
+
+ HOW IT VARIES WITH TIME - one sunny day (day 265 of 2021), 06:00 -> 12:00 next day
+   hour | outlet T this design | outlet T plain tank | gain C | PCM T C | melt frac | optimal outlet T
+   -----+----------------------+---------------------+--------+---------+-----------+-----------------
+   06:00|         32.44        |        32.44        |  -0.00 |  28.42  |    0.00   |       31.14
+   07:00|         42.57        |        42.57        |  -0.00 |  29.00  |    0.00   |       36.06
+   08:00|         53.71        |        53.71        |  +0.00 |  30.44  |    0.00   |       43.25
+   09:00|         63.00        |        62.99        |  +0.01 |  37.69  |    0.00   |       52.99
+   10:00|         70.93        |        70.84        |  +0.09 |  53.79  |    0.00   |       65.16
+   11:00|         72.00        |        72.05        |  -0.05 |  55.54  |    0.11   |       72.00
+   12:00|         72.01        |        72.03        |  -0.02 |  59.01  |    0.55   |       72.00
+   13:00|         72.06        |        72.01        |  +0.05 |  61.62  |    1.00   |       71.94
+   14:00|         72.03        |        72.05        |  -0.03 |  62.04  |    1.00   |       72.00
+   15:00|         71.31        |        71.33        |  -0.02 |  62.04  |    1.00   |       72.00
+   16:00|         70.51        |        70.51        |  -0.00 |  62.04  |    1.00   |       71.49
+   17:00|         68.89        |        68.96        |  -0.06 |  60.66  |    1.00   |       70.22
+   18:00|         59.88        |        59.75        |  +0.13 |  38.41  |    0.00   |       56.23
+   19:00|         37.43        |        37.20        |  +0.22 |  29.04  |    0.00   |       44.37
+   20:00|         29.98        |        30.02        |  -0.04 |  28.49  |    0.00   |       39.67
+   21:00|         28.94        |        28.97        |  -0.03 |  28.45  |    0.00   |       36.36
+   22:00|         28.74        |        28.77        |  -0.02 |  28.43  |    0.00   |       35.08
+   23:00|         28.66        |        28.68        |  -0.02 |  28.41  |    0.00   |       34.63
+   00:00|         28.60        |        28.62        |  -0.02 |  28.38  |    0.00   |       34.39
+   01:00|         28.53        |        28.55        |  -0.02 |  28.36  |    0.00   |       34.15
+   02:00|         28.47        |        28.48        |  -0.02 |  28.33  |    0.00   |       33.93
+   03:00|         28.41        |        28.43        |  -0.02 |  28.30  |    0.00   |       33.69
+   04:00|         28.35        |        28.37        |  -0.01 |  28.27  |    0.00   |       33.36
+   05:00|         28.29        |        28.31        |  -0.01 |  28.23  |    0.00   |       32.63
+   06:00|         32.10        |        32.10        |  -0.00 |  28.41  |    0.00   |       31.17
+   07:00|         41.08        |        41.08        |  -0.00 |  28.93  |    0.00   |       35.33
+   08:00|         50.78        |        50.78        |  +0.00 |  30.24  |    0.00   |       41.63
+   09:00|         62.72        |        62.71        |  +0.01 |  36.85  |    0.00   |       52.02
+   10:00|         70.94        |        70.86        |  +0.09 |  52.97  |    0.00   |       64.47
+   11:00|         72.00        |        72.09        |  -0.09 |  54.93  |    0.06   |       72.00
+
+   NB: single-hour outlet temperatures can be below the plain tank (the PCM tank has already given its heat);
+       the optimiser scores the TOTAL heat delivered at >=45 C over the whole 18:00-09:00 window (g_window).
+
+   peak melt fraction 1.00; largest outlet gain vs plain tank +0.22 C at 19:00
