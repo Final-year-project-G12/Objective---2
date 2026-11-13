@@ -1,0 +1,53 @@
+{
+ "key": "criteria_6_50pct_of_optimal",
+ "title": "6. 50 % of the optimal PCM",
+ "rule": "N = 50 % of 104 = 52 capsules (R_in, flow, arrangement kept optimal).",
+ "regime": 0,
+ "pcm": "PureTemp 58",
+ "design": {
+  "R_in": 0.04,
+  "fraction": 0.14793551304533104,
+  "flow": 0.0387608549268862,
+  "arrangement": "staggered"
+ },
+ "valid": true,
+ "reason": "",
+ "N_3d": 52,
+ "drawn_capsules_2d": 17,
+ "frac_of_optimal_N": 0.5,
+ "N": 52,
+ "pcm_mass_kg": 12.406861483360908,
+ "g_window_kWh_yr": 148.54364966536397,
+ "g_window_sd": 4.827456652037773,
+ "g_annual_kWh_yr": 152.02080318588864,
+ "d_overheat_h_yr": 764.9357143807696,
+ "t_pcm_max_C": 62.33694290138938,
+ "t_water_max_C": 72.04811978608684,
+ "gate_pcm_le_65": true,
+ "gate_water_le_75": true,
+ "rule_A_beats_plain_beyond_band": true,
+ "in_S0_tied_with_best": false,
+ "in_S1_low_overheat": false,
+ "pct_of_optimal_gain": 53.700186208073966,
+ "delta_vs_optimal": {
+  "N": -52,
+  "pcm_mass_kg": -12.406846855305238,
+  "g_window": -128.07298829152646,
+  "g_annual": -131.043786230221,
+  "d_overheat": -63.6840277777776,
+  "flow": 0.0
+ },
+ "bands": {
+  "g_window_band": 28.36277516915937,
+  "d_overheat_band": 115.25279676064189,
+  "g_best_pool": 297.09042979039947
+ },
+ "verdict": "works and beats plain water, but eliminated at S0 (too far below the best g_window)",
+ "day": {
+  "index": 265,
+  "max_gain_C": 5.363617542654723,
+  "hour_of_max_gain": 20,
+  "peak_melt_fraction": 1.0,
+  "melt_fraction_at_18h": 0.6062879540762488
+ }
+}
