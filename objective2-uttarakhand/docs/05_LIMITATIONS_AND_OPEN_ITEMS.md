@@ -50,7 +50,7 @@ Numbers below are quoted from `docs/04_RESULTS.md` (generated) and the files it 
 ## Open items added 2026-11-10 (corrections pass)
 
 - ~~Open decision (a): reconcile O1 K = 4 (what O2 used, commit `6be0dcd`, not on main) with O1 main K = 5.~~ **Resolved 2026-11-12:** the student confirmed that Objective 1 has been changed to K = 4 for Uttarakhand and that the project continues with K = 4; there will be no move to K = 5.
-- Open decision (b): whether Uttarakhand adopts the 60 C O1 basis (needs a full O1 and O2 re-run); today O1 and O2 both use 50 C.
+- ~~Open decision (b): whether Uttarakhand adopts the 60 C O1 basis (needs a full O1 and O2 re-run); today O1 and O2 both use 50 C.~~ **Resolved 2026-11-12:** 50 C is final for Uttarakhand (the shortlisted PCMs melt at about 53-58 C and the PCM limit is 65 C, so a 60 C basis would leave their latent heat unusable); no re-run.
 - Open: tank sizing 33.3 L/m2 is below IS 12976:2023 (decision D8); not previously stated in this folder.
 - Open: regime 3 gets no PCM gain in the held-out test (all 3 designs negative); the recommendation there is a water-only tank.
 - Open: 30 % cap limiting in regimes 0-2; no untouched test years remain (2024-2025 used).

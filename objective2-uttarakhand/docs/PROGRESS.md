@@ -157,3 +157,9 @@ are not installed on this machine; `scripts/run_all_cases.ps1` runs everything w
 - The student confirmed that Objective 1 has been changed to K = 4 regimes for Uttarakhand and that the project continues with K = 4 (no K = 5).
   Open decision (a) is closed. Updated: `README.md`, `docs/README.md`, `docs/02_WEATHER_AND_DESIGN_SPACE.md`, `docs/05_LIMITATIONS_AND_OPEN_ITEMS.md`,
   `docs/06_OBJECTIVE3_HANDOFF.md`. Documentation only; no result, contract or code changed.
+
+## 2026-11-12 - 50 C delivery basis confirmed final
+
+- The student confirmed 50 C as the Uttarakhand delivery basis (O1 and O2 already both use it). Open decision (b), the 60 C O1 basis, is closed:
+  the shortlisted PCMs melt at about 53-58 C and the PCM limit is 65 C (shield bypass 62 C). Updated `docs/05_LIMITATIONS_AND_OPEN_ITEMS.md` and
+  `docs/README.md`. Documentation only; no result, contract or code changed.
