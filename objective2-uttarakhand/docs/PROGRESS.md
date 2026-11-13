@@ -174,3 +174,12 @@ are not installed on this machine; `scripts/run_all_cases.ps1` runs everything w
   flow F_R, fig31 g20 GP-BO, fig32 g18 search variants, fig33 B1 widened box, fig35 g23 Chen benchmark, fig41/fig42 OpenFOAM closure and mesh studies).
   fig21 shows the v3 box only (no B1); fig26 has no 40 L water-only case; fig40 is Uttarakhand's own OpenFOAM figure (the one capsule case run).
 - Contract v3 regenerated: its OpenFOAM note now says 1 of 10 capsule cases was run (it said none). No design value changed.
+
+## 2026-11-13 - OpenFOAM: Rajasthan's findings applied to Uttarakhand (documentation only)
+
+- Compared `openfoam_cfd/` with `../objective2-rajasthan/rj_openfoam/` and its `docs/07_OPENFOAM_VALIDATION.md`. Same solver set-up and assumed liquid
+  properties, so Rajasthan's results carry over: the set-up does not reproduce Tan 2009 or Dong 2022 (melts 1.6-2 x faster) and is not mesh-converged.
+- `openfoam_cfd/README.md` section 4: CFD numbers are an unvalidated upper bound; the one run case (grey-box t90 2.05 x CFD) does not change the
+  simulator (c = 5, F = 2 kept, `cfd_closure_v1` off); not comparable with Rajasthan's fixed-wall ratios. Rajasthan's colon-filename generator bug,
+  CRLF and space-in-path problems do not affect this folder (checked). `docs/README.md`: OpenFOAM status stated (1 of 10 capsule cases run).
+- No code, case or result changed.

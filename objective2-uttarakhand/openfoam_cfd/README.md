@@ -78,3 +78,20 @@ It checks the grey-box capsule model at the Uttarakhand designs: the lumped `R_p
 (compare `greybox_over_cfd_t90` and `R_pcm_scale_equivalent`), and the 50 L tank's stratification at the colder Uttarakhand mains.
 It does not model the tank with capsules, arrangement, supercooling or volume change; liquid viscosity and expansion are [ASSUMED]
 (not in the O1 database). As with the shared tank draw case, any agreement is model-to-model, not a measurement.
+
+**What Rajasthan's OpenFOAM work means for these cases (checked 2026-11-13 against `../../objective2-rajasthan/docs/07_OPENFOAM_VALIDATION.md`).**
+These cases use the same solver set-up as Rajasthan's `rj_openfoam/` (`buoyantPimpleFoam` + `solidificationMeltingSource`,
+2-D axisymmetric 5 degree wedge, mushy constant 1e5, the same [ASSUMED] liquid viscosity 3.5e-3 Pa s and expansion 7.0e-4 1/K).
+Rajasthan found that this set-up does **not** reproduce either published sphere experiment it was tested on (Tan et al. 2009,
+Dong et al. 2022): it melts about 1.6 to 2 times faster than the measurements. Its mesh study is not converged either (40 -> 80
+cells changes t50 by +14 % and t90 by +16 %; no GCI can be quoted). The finding is about the set-up, not the state, so it applies here
+without re-running the benchmarks. Consequences for Uttarakhand:
+- Report every CFD number here as an **unvalidated upper bound on the melt rate**, model-to-model only. Never write "CFD-validated".
+- The one run case (`r0_chosen_puretemp_58`: grey-box t90 2.05 x the CFD, `R_pcm_scale_equivalent` 0.36) is **not** a reason to change
+  the simulator: the frozen capsule constants (c = 5, F = 2) stay, as in Rajasthan (decision of 2026-10-30, their doc section 5),
+  and the ported `cfd_closure_v1` switch (a Rajasthan fit) stays off.
+- Do not set the 2.05 next to Rajasthan's spot-check ratios (4.3-6.5 x at t50): Rajasthan charged from a fixed 70 C wall starting
+  at 30 C; these cases charge through tank water 12 K above Tm with the Wakao-Kaguei water-side h, starting 15 K below Tm.
+- Not affected: Rajasthan's generator bug (a liquid-start field file whose name contained a colon, lost when copied to WSL) only hits
+  freezing cases; `make_case.py` here writes only `0/T`, `0/U`, `0/p`, `0/p_rgh` and there are no freezing cases. Shell scripts are
+  forced to LF by `.gitattributes`, and runs execute in `/root/o2_runs/` (no spaces in the path).
