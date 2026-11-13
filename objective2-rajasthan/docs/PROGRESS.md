@@ -1049,3 +1049,10 @@ Reran r0 charge_70, r0 discharge_mains, r1 charge_70, r2 charge_70 (40 cells, un
 
 ## 2026-11-11 - cleanup of extra worktrees
 Removed the git worktrees `OBJECTIVE2/b1_worktree` (B1 diagnostic) and `OBJECTIVE2/full_run_worktree` (a `pipeline.py --stage all` run that stopped in the `doe` stage when the PC went to sleep, about 12 h in; never finished, no results taken from it). Everything of mine in `objective2-rajasthan/` and `objective2-assam/` was already in `main`; the B1 numbers are in `results/b1_*.csv|json`. Branches `o2-b1-boundary-test` and `o2-full-pipeline-run` still exist and can be deleted with `git branch -D`. The full pipeline run has not been done.
+
+## 2026-11-14 - Objective 4 follow-up on the capsule constants (documentation entry; no Objective 2 file other than docs changed)
+
+What was done (in `Objective--4_software-in-loop/Rajasthan/`): diagnosis of which capsule constant explains a 4.5-4.9 K warm bias against Amanowicz and Turski 2025 (found: none, it was a one-sphere-per-cuboid mapping); fit of c on that benchmark with
+Tan 2009 and Dong 2022 held out (c = 5.03, null; one-sphere mapping gives 40 and fails the held-out cases); campaigns with c = 5.03 and c = 7.1 next to the frozen one (hold time +0.0 / +0.4 to +1.7 h, window energy +-0.3 / -12 to +2 kWh);
+attribution of the 0.080 % sub-step change (sensible-heat hours, not melting hours); supercooling proxy; pump energy from the Ergun head (0.005 Wh per year). Frozen c = 5, F = 2 unchanged. Details: `docs/07_OPENFOAM_VALIDATION.md` section 5.
+Also recorded: the Monte-Carlo percentage and manifest discrepancy for the Objective 1 file (`docs/05_LIMITATIONS_AND_OPEN_ITEMS.md`).

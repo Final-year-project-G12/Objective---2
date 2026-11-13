@@ -108,3 +108,20 @@
 - Open (e): method citations to source before submission: Sobol sequence, XGBoost, committee-disagreement active learning, expected-improvement Bayesian optimisation. Do not cite Bradford 2018 for g20.
 - Open: `docs/O2_Rajasthan_Pipeline_Report.docx` has not been updated by this pass (a .docx is outside the edit scope).
 - Experimental validation does not exist (Objective 4); the CFD work is a model cross-check that stopped at the literature benchmark.
+
+## Added 2026-11-14 (Objective 4 follow-up; documentation only)
+
+- **Capsule model.** The frozen lumped capsule (c = 5, F = 2) matches a tank-level cool-down test (Amanowicz and Turski 2025) to 1.1-1.4 K once the capsule surface/volume is matched; the earlier
+  4.5-4.9 K bias was a one-sphere-per-cuboid mapping error, not a constant. A fit of c on that test gives 5.03. Single spheres in a bath (Tan 2009, Dong 2022) are still melted faster by the experiments
+  (1.3-1.8 times), and the two disagree on the direction of any change in c. `07_OPENFOAM_VALIDATION.md` section 5.
+- **Retention (hold-time) caveat, corrected.** Objective 4's hold times use these constants. A faster-capsule run (c = 7.1, a bound) lengthens the 45 C hold by 0.4-1.7 h, so the frozen hold times are
+  slightly short rather than optimistic. Hold times are model values with this range, not measurements; the design has no experimental validation.
+- **Retention figures from the literature are not this project's measurements.** The 17.1 / 29.6 / 31.7 h of Chen et al. 2025 are at a 30 C threshold on a 30 L/day RT35HC system with no controller;
+  Singh 2025 has a related 24 h paraffin entry; "12 h without PCM" is not printed in Chen and "24-48 h with PCM plus AI" has no source. Objective 2's own hold times (`g16_serve_r*.csv`, 45 C, 300 L/day)
+  are 52-59 h in Rajasthan with the PCM and 44-50 h for the same-volume water-only tank (23-28 h for the smaller 40 L water tank): quote them with threshold, demand and the 72 h cap, and quote the gain over the water-only tank (+8.6 to +10.3 h), never one comparison with Chen's hours.
+- **Objective 1 inputs.** The Monte-Carlo top-3 inclusion in `configs/states/rajasthan.yaml` and `data/objective1/mcdm_topk_by_cluster.csv` (14 Sep 2026) is 99.3 / 93.6 / 56.1 % for cluster 1; the Objective 1
+  repository's own file (28 Oct 2026) gives 95.58 / 93.72 / 55.84 %. Ranks and the cluster 1 shortlist are identical; cluster 2's candidate list differs between the files. `data/objective1/manifest.json`
+  lists this file as 935 bytes (sha 276c5a42...), the file on disk is 10 322 bytes (sha 6fd249b0...): the manifest is stale. Not edited here.
+- **Time step.** On the Objective 4 twin (2023, always-charge, 50 L, PureTemp 60) halving the 150 s step changes annual delivered energy by 0.080 %, above the 0.05 % gate used in `g2_*`; it comes from the sensible-heat hours,
+  not the melting hours (melting hours already sub-step at 25 s), and the water-only tank changes by 0.66 %. The `g2_timestep_convergence_*` results on Objective 2's own weather are unchanged.
+- **Supercooling** (listed above as not done): a proxy (melt band moved 2 K down at the start of a hold) changes the 45 C hold by under 1 h; a kinetic delay is still not modelled.

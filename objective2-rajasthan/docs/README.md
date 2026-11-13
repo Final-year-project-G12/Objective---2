@@ -7,6 +7,13 @@ These documents describe what is in the code and the saved results (`docs/PROGRE
 > (now labelled used). A 40 % cap / 50 mm radius test was run on 2026-11-10 as a diagnostic on explore/select years only (fronts still touch the new bounds; v3 stays the approved design space; `docs/PROGRESS.md` section 'B1 boundary test', `results/b1_*`). Sections 1b and 5b-5f of `04_RESULTS.md` are the six-issue diagnostics, run on
 > the v1 designs and not re-run on v3.
 
+## Follow-up notes 2026-11-14 (from Objective 4; documentation only, no Objective 2 code or result touched)
+
+- Capsule constants: a tank-level benchmark (Amanowicz and Turski 2025) supports the frozen c = 5, F = 2 once capsule geometry is mapped correctly; calibration on it gives c = 5.03 (null); the earlier "model too slow" reading was a mapping artefact. Single-sphere experiments (Tan 2009, Dong 2022) are still faster than the model. `07_OPENFOAM_VALIDATION.md` section 5.
+- Retention figures: the 31.7 h of Chen et al. 2025 is at 30 C on 30 L/day with no controller and is not this project's measurement; this project's hold times are at 45 C on 300 L/day. `05_LIMITATIONS_AND_OPEN_ITEMS.md` (section added 2026-11-14).
+- Objective 1 inputs: Monte-Carlo percentages in the state config and the data/objective1 copy (99.3 / 93.6 / 56.1) differ from the Objective 1 repository's later file (95.58 / 93.72 / 55.84); `manifest.json` is stale for that file.
+- `O2_Rajasthan_Pipeline_Report.docx` has not been updated (a .docx is outside the edit scope of this pass).
+
 ## Corrections applied 2026-11-10
 
 Source: `.claude/Objective_1_and_Objective_2_corrected_methodology_.docx`, each item checked against the file named. **Documentation and comments only:** no pipeline stage was re-run, no result file or the held-out lock was touched. The only code edits were the held-out error message in `src/weather/roles.py` (it said 2024-2025; the test years are 2011-2015, now derived from `YEAR_ROLES`) and a figure title in `src/plots/make_plots_results.py` (the already-rendered PNG still carries the old title until the plots are regenerated). 90 tests pass.
