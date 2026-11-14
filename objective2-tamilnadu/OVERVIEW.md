@@ -118,7 +118,7 @@ the enthalpy-porosity model built in.
 | `ansys/` | Fluent cases, meshes, the live demo, `figures/` |
 | `docs/` | results, CFD history, how to run, data provenance |
 | `tests/` | 89 tests |
-| `archive/` | superseded work — nothing deleted, only retired |
+| `archive/` | only `superseded_obj3_contract_2026-10-27/` is kept (read by `src/handoff/build_obj3_contract_tamilnadu.py`); the rest of the retired work was removed and is in git history |
 
 ### Start here
 
