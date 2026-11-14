@@ -514,6 +514,20 @@ def fig35_chen_benchmark():
     save(fig, "fig35_chen_benchmark")
 
 
+def fig36_grid_check_all_pairs():
+    """G9 dense-grid check for all nine (regime, PCM rank) pairs (rank 2 and 3 added by the supplementary grid runs)."""
+    g = csv("g9_grid_check_all_pairs.csv")
+    fig, ax = plt.subplots(figsize=(10, 4))
+    x = np.arange(len(g)); w = .27
+    for i, o in enumerate(("g_window", "g_annual", "d_overheat")):
+        ax.bar(x + (i - 1) * w, g[f"eps_{o}"].clip(lower=0) / g[f"band_{o}"], w, label=o)
+    ax.axhline(1.0, color="k", ls="--", lw=1)
+    ax.set_xticks(x, g.pair)
+    ax.set(ylabel="epsilon gap / band", title=f"G9 grid check, all nine pairs: {int(g.within_band.astype(bool).sum())} of {len(g)} inside the band (negative gaps shown as 0)")
+    ax.legend(fontsize=8)
+    save(fig, "fig36_grid_check_all_pairs")
+
+
 def _melt(case):
     f = OF / "runs" / case / "meltAndTemp.dat"
     d = pd.read_csv(f, comment="#", sep=r"\s+", header=None, names=["t", "T", "f"])
@@ -613,7 +627,7 @@ NEW = [(f.__name__, f) for f in (fig10_chosen_designs, fig11_heldout_by_year, fi
                                   fig15_search_learning, fig16_seed_stability, fig17_doe_distribution, fig18_screening_anova, fig19_surrogate_heatmap,
                                   fig20_band_decomposition, fig21_boundary_retest, fig22_sensitivity_blocks, fig23_controls, fig24_stack_anchor,
                                   fig25_shield_split, fig26_night_serve, fig27_widened_box, fig28_sizing, fig29_sensitivity_tornado, fig30_flow_fr,
-                                  fig31_gpbo_vs_nsga, fig32_box_vertex, fig33_b1_retest, fig34_night_hold, fig35_chen_benchmark,
+                                  fig31_gpbo_vs_nsga, fig32_box_vertex, fig33_b1_retest, fig34_night_hold, fig35_chen_benchmark, fig36_grid_check_all_pairs,
                                   fig40_of_melt_curves, fig41_of_lumped_vs_cfd, fig42_of_mesh_and_freeze, fig50_weather_inputs)]
 
 

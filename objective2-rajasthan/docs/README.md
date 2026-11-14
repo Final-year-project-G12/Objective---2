@@ -12,6 +12,7 @@ These documents describe what is in the code and the saved results (`docs/PROGRE
 - Capsule constants: a tank-level benchmark (Amanowicz and Turski 2025) supports the frozen c = 5, F = 2 once capsule geometry is mapped correctly; calibration on it gives c = 5.03 (null); the earlier "model too slow" reading was a mapping artefact. Single-sphere experiments (Tan 2009, Dong 2022) are still faster than the model. `07_OPENFOAM_VALIDATION.md` section 5.
 - Retention figures: the 31.7 h of Chen et al. 2025 is at 30 C on 30 L/day with no controller and is not this project's measurement; this project's hold times are at 45 C on 300 L/day. `05_LIMITATIONS_AND_OPEN_ITEMS.md` (section added 2026-11-14).
 - Objective 1 inputs: Monte-Carlo percentages in the state config and the data/objective1 copy (99.3 / 93.6 / 56.1) differ from the Objective 1 repository's later file (95.58 / 93.72 / 55.84); `manifest.json` is stale for that file.
+- Objective 4 re-ran its handoff export for Rajasthan (14 Nov 2026): byte-identical to the existing exports. Its twin's tank volume, collector area, PCM mass and flow equal this folder's design (50 L, 1.5 m2, 13.3826 kg, 0.0492621 kg/s, from `system_config_shared.yaml` and `g10_selection_r1.json`); 33.3 L/m2 is still below IS 12976:2023.
 - `O2_Rajasthan_Pipeline_Report.docx` has not been updated (a .docx is outside the edit scope of this pass).
 
 ## Corrections applied 2026-11-10
