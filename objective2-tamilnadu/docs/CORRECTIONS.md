@@ -745,3 +745,15 @@ after an earlier deletion.
 `g12_verify_docs` now reports **391 references over 8 documents, 0 missing**,
 exit 0 — and 23 rather than 79 of those references are unresolvable on a fresh
 clone, the remainder being material deliberately excluded (O2-17).
+
+## 2026-11-13 — per-year weather files regenerated
+
+`data/weather/weather_regime_tamilnadu_cluster{0,1,2}_hourly_{2011..2025}.csv` (45 files)
+still carried the pre-fix +5 h shift (GHI peak at UTC hour 11; 8760 rows even in leap
+years). They had been split from the multiyear CSV before the 2026-10-29 LST->UTC rebuild
+and never re-split. `point_years/` and `*_hourly_multiyear.csv` were already correct.
+Regenerated with `scripts/tn_regen_per_year_files.py` from the verified point-years (all 3
+regimes, 2011-2025); every file now peaks at UTC hour 6 with no GHI in the local-night band,
+and 2016-2025 match the multiyear files exactly. Old files kept in
+`data/weather/_stale_per_year_backup_2026-11-13/`. Nothing in `src/` reads these per-year
+files, so no result changes.
