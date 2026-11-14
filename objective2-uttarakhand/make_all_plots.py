@@ -10,6 +10,7 @@ Port of objective2-rajasthan/make_all_plots.py (Rajasthan commit 7f2f701) to the
     held-out years 2024-2025, weather points UKP_*.
   * fig1 ... fig9   the nine figures of src/plots/make_plots_results.py (imported, so there is one definition of each).
   * fig10 ... fig50 the further figures, drawn from the Uttarakhand result files.
+    fig36 (added from Rajasthan's later version) shows the rank-1 PCM pairs: no rank-2/3 dense-grid runs exist for Uttarakhand.
   * Figures whose study was never run for Uttarakhand are SKIPPED, not drawn (no result file exists, nothing is invented):
     fig28 sizing (g21), fig29 input sensitivity (g22), fig30 flow F_R (g24), fig31 GP-BO (g20), fig32 search variants (g18),
     fig33 B1 widened box, fig35 Chen benchmark (g23), fig41/fig42 OpenFOAM closure and mesh studies.
@@ -488,6 +489,24 @@ def fig35_chen_benchmark():
     """G23 Chen 2025 benchmark."""
     need("g23_chen_benchmark_r0.csv")
 
+def fig36_grid_check_all_pairs():
+    """G9 dense-grid check per (regime, PCM rank) pair: epsilon gap over the band (all pairs if the supplementary grid runs exist)."""
+    if (RD / "g9_grid_check_all_pairs.csv").exists():
+        g, scope = csv("g9_grid_check_all_pairs.csv"), "all pairs"
+    else:
+        need("g9_grid_check.csv")
+        g, scope = csv("g9_grid_check.csv"), "rank-1 PCM pairs only (no rank-2/3 grid runs for Uttarakhand)"
+    fig, ax = plt.subplots(figsize=(max(7, 1.1 * len(g) + 3), 4))
+    x = np.arange(len(g)); w = .27
+    for i, o in enumerate(("g_window", "g_annual", "d_overheat")):
+        ax.bar(x + (i - 1) * w, g[f"eps_{o}"].clip(lower=0) / g[f"band_{o}"], w, label=o)
+    ax.axhline(1.0, color="k", ls="--", lw=1)
+    ax.set_xticks(x, g.pair)
+    ax.set(ylabel="epsilon gap / band",
+           title=f"G9 grid check, {scope}\n{int(g.within_band.astype(bool).sum())} of {len(g)} inside the band (negative gaps shown as 0)")
+    ax.legend(fontsize=8)
+    save(fig, "fig36_grid_check_all_pairs")
+
 
 def fig40_of_capsule():
     """OpenFOAM single-capsule case(s) that were run for Uttarakhand: melt times, and the grey-box model's t90 against the CFD."""
@@ -565,7 +584,7 @@ NEW = [(f.__name__, f) for f in (fig10_chosen_designs, fig11_heldout_by_year, fi
                                   fig15_search_learning, fig16_seed_stability, fig17_doe_distribution, fig18_screening_anova, fig19_surrogate_heatmap,
                                   fig20_band_decomposition, fig21_boundary_retest, fig22_sensitivity_blocks, fig23_controls, fig24_stack_anchor,
                                   fig25_shield_split, fig26_night_serve, fig27_widened_box, fig28_sizing, fig29_sensitivity_tornado, fig30_flow_fr,
-                                  fig31_gpbo_vs_nsga, fig32_box_vertex, fig33_b1_retest, fig34_night_hold, fig35_chen_benchmark,
+                                  fig31_gpbo_vs_nsga, fig32_box_vertex, fig33_b1_retest, fig34_night_hold, fig35_chen_benchmark, fig36_grid_check_all_pairs,
                                   fig40_of_capsule, fig41_of_lumped_vs_cfd, fig42_of_mesh_and_freeze, fig50_weather_inputs)]
 
 
