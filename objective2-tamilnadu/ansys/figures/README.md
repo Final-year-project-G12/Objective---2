@@ -94,7 +94,28 @@ is identical. First order is used because it is the only setting under which
 all four PCMs solve, and a comparison is only meaningful when every run shares
 the same settings.
 
+**Scope limit — regime 0 only.** All four PCMs are melted on regime 0's mesh
+and capsule size (that is what makes it a material-only comparison). So this
+figure says nothing about regime 1 or 2 geometry (their capsule size and flow
+differ); it compares materials, not regimes.
+
 Regenerate with `python plot_v4_pcm_comparison.py`.
+
+---
+
+## discharge/ and tank_discharge/ — the PCM giving heat back
+
+Reverse of charging: capsule(s) start melted at 70 °C, water starts at 30 °C,
+no sun; the PCM solidifies and warms the water.
+
+- `tank_discharge/` — whole tank, 34 capsules, regime 0 / PureTemp 58 only
+  (`fluent_tank_discharge.py`). **Run length: 2 h** (script default; recorded in
+  commit 7fd7ed7: tank water 30 → 36.4 °C over 2 h, capsules to 27 % liquid).
+- `discharge/` — single capsule per regime 0/1/2 (`fluent_discharge_demo.py`).
+  No run log was kept; the script default is 2 h, so 2 h is assumed unless it
+  was launched with `--hours`. Re-run with `--hours N` to confirm.
+
+Label slides "after 2 h of discharge", not "end of run".
 
 ---
 

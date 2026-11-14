@@ -18,7 +18,7 @@ Method, in one phrase: a surrogate-assisted, constrained multi-objective search 
 objective2-uttarakhand/
 ├── pipeline.py               # entry point for the current chain (stages: status, verify ... plots; see its docstring)
 ├── run_all_uttarakhand.py    # tests + report + handoff + plots from saved results; --full runs the whole chain (hours)
-├── make_all_plots.py         # one command for every figure: python make_all_plots.py  ->  results/plots/ (30 drawn, 9 skipped: study not run; --list shows them)
+├── make_all_plots.py         # one command for every figure: python make_all_plots.py  ->  results/plots/ (31 drawn, 9 skipped: study not run; --list shows them)
 ├── config.py                 # shared paths
 ├── configs/
 │   ├── system_config_shared.yaml   # shared system config (tank, collector, safety limits, solver step 150 s)

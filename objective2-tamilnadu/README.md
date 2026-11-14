@@ -3,7 +3,7 @@
 Determines the optimal PCM thickness, capsule arrangement, number of
 capsules, and flow rate for a solar-water-heater tank, per climate regime,
 using **Objective 1's own shortlisted PCMs** (material choice is never
-re-derived here — see `archive/old_implementation/_archive/docs/` for the decision that settled it).
+re-derived here — the decision is recorded in `docs/CORRECTIONS.md`).
 
 The pipeline is state-agnostic: nothing in `src/` knows which state it is
 running for, only `configs/states/<state>.yaml` does.
@@ -21,7 +21,7 @@ stacked ensemble in place of XGBoost.
 |---|---|
 | Optimal designs | `results/tn_optimal_designs.csv` |
 | Acceptance gates | `results/tn_threshold_report.csv` — **9/9 pairs pass** |
-| Figures | `results/plots/` — **all 9** |
+| Figures | `results/plots/` — **36** (`python make_all_plots.py`) |
 | Report | `O2_TamilNadu_Pipeline_Report.docx` (11 tables) |
 | Why two simulators | `docs/SIMULATOR_AND_CFD.md` |
 | CFD | `ansys/` — see `ansys/HOW_TO_RUN_ANSYS.md` |
@@ -58,7 +58,7 @@ Run everything from the project root.
 ```bash
 python scripts/tn_run_all.py --all --keep-going --workers 6   # full pipeline
 python scripts/tn_final_summary.py                            # designs + gates
-python -m src.plots.make_plots_results                        # figures
+python make_all_plots.py                                       # all 36 figures -> results/plots/
 python -m pytest tests/ -q                                    # 88 tests
 
 cd ansys && python fluent_live_demo.py                        # live melting demo
@@ -69,6 +69,7 @@ cd ansys && python fluent_live_demo.py                        # live melting dem
 ```
 .
 ├── config.py        paths and STATE; every path derives from this file
+├── make_all_plots.py  regenerates all 36 result figures from saved files
 ├── configs/         per-state YAML (regimes, PCM shortlists, mains temps)
 ├── data/            frozen inputs: objective1/, weather/, demand/
 ├── scripts/         pipeline stages (g2 ... g24) + tn_* helpers
@@ -78,8 +79,8 @@ cd ansys && python fluent_live_demo.py                        # live melting dem
 ├── figures/         phase2-8 figures from the earlier implementation
 ├── docs/            RESULTS.md, CFD_VERIFICATION.md, HOW_TO_RUN.md, ...
 ├── ansys/           ANSYS Fluent cases, meshes, live demo
-├── tools/           report builder (node) and maintenance scripts
-└── archive/         superseded work — nothing here is deleted
+├── tools/           report builders (node)
+└── archive/         one superseded Objective-3 contract (still read by src/handoff); other retired work removed, see git history
 ```
 
 > **A note on the history.** Until 2026-10-30 this pipeline lived in a
@@ -87,7 +88,7 @@ cd ansys && python fluent_live_demo.py                        # live melting dem
 > Rajasthan build — and made the project look like it was about Rajasthan. It
 > is not: every input, design and result is Tamil Nadu. That directory was the
 > whole working pipeline, so it was promoted to the root and the older
-> implementation moved to `archive/old_implementation/`.
+> implementation was later removed (see git history).
 
 | | |
 |---|---|
@@ -239,12 +240,11 @@ src/
 results/<state>/         current outputs + results_registry.csv
 tests/                   physics invariants
 objective3/              Objective-3 hand-off (kept out of results/)
-_archive/                superseded material — nothing here is current
+archive/                  one superseded Objective-3 contract only; everything else retired was removed
 ```
 
-`archive/old_implementation/_archive/results_pre_shield_fix/` holds outputs computed **before** the *(this directory was **deleted** — the pre-shield outputs were not retained)*
-2026-10-28 shield fix and the v3.0 design space. Those numbers are wrong,
-not merely old.
+Outputs computed **before** theP26-10-28 shield fix and the v3.0 design space were wrong,
+not merely old, and were not retained.
 
 ---
 

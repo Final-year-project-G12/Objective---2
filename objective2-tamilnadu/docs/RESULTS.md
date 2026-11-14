@@ -68,11 +68,14 @@ stacked, XGBoost.
 
 ### What is NOT in these numbers
 
-- **The held-out test (2011–2015) has not been run.** It is no longer
-  *blocked* — see below — but it is a one-shot and the lock is unspent by
-  choice. Results above are explore (2016–2020) + select (2021–2023) only.
-- Three figures needing held-out results are not produced; six of nine are in
-  `results/plots/`.
+- **Held-out test: this banner was written before it ran.** It was later run
+  once and locked (`run_id heldout_2da11230bfb5`, 2026-10-30T09:56:22Z;
+  `results/g10_heldout_results.csv`, 9 designs × 5 years; 9/9 beat plain water).
+  The authoritative held-out numbers are in `docs/04_RESULTS.md` §2 and
+  `docs/CORRECTIONS.md` O2-2. The design/gate numbers above are explore
+  (2016–2020) + select (2021–2023) only.
+- The "three figures needing held-out results are not produced" note is
+  likewise stale; check `results/plots/` for the current set.
 
 ### 2026-10-30 — the held-out years are unblocked
 
@@ -97,8 +100,8 @@ The inventory records their provenance as `LST->UTC(-5h, measured)`, **not**
 `UTC`. The original defect survived because provenance metadata was trusted
 without being checked, so the distinction is kept visible.
 
-`g10_test` can now be run. It takes a lock and can never be re-run, so it is
-left unspent pending an explicit decision.
+`g10_test` was subsequently run (2026-10-30) and its lock is spent; it can
+never be re-run.
 
 ---
 
