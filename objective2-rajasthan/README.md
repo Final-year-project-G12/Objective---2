@@ -115,20 +115,20 @@ Keep N at 3 or below on a normal machine: 9 parallel jobs ran out of memory once
 |---|---|---|---|---|---|---|
 | 1 | `verify` | G6 | `python pipeline.py --state rajasthan --stage verify` | `g6_phase4_o1.py` | `phase4_verification_o1_pcms.txt` | minutes |
 | 2 | `sensitivity` | G7 | `... --stage sensitivity` | `g7_sensitivity.py <regime>` ×3, `g7_flow_baseline_and_packing.py` | `g7_sensitivity_r*.csv`, `g7_sensitivity_paired.csv`, `g7_flow_same_flow_gain.csv`, `g7_plain_flow_baseline.csv`, `g7_max_packing_fraction.csv` | ~1 h |
-| 3 | `baseline` 🔒 | G8 | `... --stage baseline --allow-invalidate` | `g8_build_plain_baseline.py <regime>` ×3 | `plain_baseline_*_r*.csv` | ~30 min |
-| 4 | `screening` 🔒 | G8 S1 | `... --stage screening --allow-invalidate` | `g8_s1_screening.py <regime> <rank>` ×9 | `g8_s1_r*_p*.csv`, `g8_s1_anova_r*_p*.csv` | ~1 h |
-| 5 | `doe` 🔒 | G8 S2 | `... --stage doe --allow-invalidate` | `g8_s2_doe.py <regime> <rank>` ×9, then `g8_s2_repair.py` | `g8_s2_r*_p*.csv` | hours |
-| 6 | `surrogate` 🔒 | G8 S3 | `... --stage surrogate --allow-invalidate` | `g8_s3_compare.py` | `g8_s3_comparison.csv`, `g8_s3_selection.csv` | ~30 min |
-| 7 | `band` 🔒 | G9 | `... --stage band --allow-invalidate` | `g9_band.py <regime>` ×3 | `wp6_band.csv` | ~30 min |
-| 8 | `optimize` 🔒 | G9 S4–S6 | `... --stage optimize --allow-invalidate` | `g9_s4_s5.py` ×9, again with `G9_WARM=1 G9_VERTICES=1` ×9, `g9_s6_grid.py <regime> 1` ×3, `g9_assess.py` | `g9_*_r*_p*.csv`, `*_ext2.csv`, `g9_s6_grid_r*_p1.csv`, `g9_grid_check.csv`, `g9_boundary_check.csv` | many hours |
-| 9 | `select` 🔒 | G10 | `... --stage select --allow-invalidate` | `g10_select.py <regime>` ×3 | `g10_selection_r*.json`, `g10_selection_candidates_r*.csv` | ~30 min |
-| — | `heldout` ⛔ | G10 S8 | **do not run** (already used; the lock refuses it) | `g10_test.py --confirm-run-once` | `g10_heldout_results.csv`, `held_out_test.lock` | — |
+| 3 | `baseline` (locked) | G8 | `... --stage baseline --allow-invalidate` | `g8_build_plain_baseline.py <regime>` ×3 | `plain_baseline_*_r*.csv` | ~30 min |
+| 4 | `screening` (locked) | G8 S1 | `... --stage screening --allow-invalidate` | `g8_s1_screening.py <regime> <rank>` ×9 | `g8_s1_r*_p*.csv`, `g8_s1_anova_r*_p*.csv` | ~1 h |
+| 5 | `doe` (locked) | G8 S2 | `... --stage doe --allow-invalidate` | `g8_s2_doe.py <regime> <rank>` ×9, then `g8_s2_repair.py` | `g8_s2_r*_p*.csv` | hours |
+| 6 | `surrogate` (locked) | G8 S3 | `... --stage surrogate --allow-invalidate` | `g8_s3_compare.py` | `g8_s3_comparison.csv`, `g8_s3_selection.csv` | ~30 min |
+| 7 | `band` (locked) | G9 | `... --stage band --allow-invalidate` | `g9_band.py <regime>` ×3 | `wp6_band.csv` | ~30 min |
+| 8 | `optimize` (locked) | G9 S4–S6 | `... --stage optimize --allow-invalidate` | `g9_s4_s5.py` ×9, again with `G9_WARM=1 G9_VERTICES=1` ×9, `g9_s6_grid.py <regime> 1` ×3, `g9_assess.py` | `g9_*_r*_p*.csv`, `*_ext2.csv`, `g9_s6_grid_r*_p1.csv`, `g9_grid_check.csv`, `g9_boundary_check.csv` | many hours |
+| 9 | `select` (locked) | G10 | `... --stage select --allow-invalidate` | `g10_select.py <regime>` ×3 | `g10_selection_r*.json`, `g10_selection_candidates_r*.csv` | ~30 min |
+| — | `heldout` (never rerun) | G10 S8 | **do not run** (already used; the lock refuses it) | `g10_test.py --confirm-run-once` | `g10_heldout_results.csv`, `held_out_test.lock` | — |
 | 10 | `ablation` | G11 | `... --stage ablation` | `g11_ablation.py <regime>` ×3 | `g11_ablation_r*.csv` | ~1 h |
 | 11 | `report` | G12 | `... --stage report` | `g12_registry.py`, `g12_results_doc.py`, `g12_verify_docs.py` | `results_registry.csv`, `docs/04_RESULTS.md` | seconds |
 | 12 | `handoff` | G12 | `... --stage handoff` | `src.handoff.build_obj3_contract_v2` | `obj3_environment_contract_rajasthan_v2.json` | seconds |
 | 13 | `plots` | G12 | `... --stage plots` | `src.plots.make_plots_results` | `plots/fig1…fig9.png` | seconds |
 
-🔒 = a deciding stage, refused while the lock exists unless you pass `--allow-invalidate`. ⛔ = never run again.
+"(locked)" marks a deciding stage, refused while the lock exists unless you pass `--allow-invalidate`. "(never rerun)" marks a stage that must not be run again.
 
 Run the whole chain in order (stops at the first failure; never includes `heldout`):
 

@@ -10,6 +10,30 @@ The framework combines a physics-based grey-box thermal simulator, design-of-exp
 
 ---
 
+## State folders and headline results
+
+Each state has its own folder with its own `config.py`, pipeline, `docs/` and `results/`. Do not mix numbers across states. Gains are paired differences against a water-only tank in kWh/yr of energy delivered at or above the target between 18:00 and 09:00, on held-out years that were tested once.
+
+| Folder | Status | Tank · collector | Held-out years | Held-out gain per regime (kWh/yr) | Start here |
+|---|---|---|---|---|---|
+| `objective2-rajasthan/` | Current method (v3, reference state) | 50 L · 1.5 m² | 2011–2015 | 137.5 / 145.7 / 149.3 | `README.md`, `docs/04_RESULTS.md` |
+| `objective2-tamilnadu/` | Current method (ported from Rajasthan) | 100 L · 2.5 m² | 2011–2015 | 284.2 / 223.3 / 269.9 | `README.md`, `OVERVIEW.md`, `docs/04_RESULTS.md` |
+| `objective2-uttarakhand/` | Current method (ported), K = 4, 50 °C target | 50 L · 1.5 m² | 2024–2025 | 76.0 / 61.8 / 56.4 / −6.1 (no PCM gain in regime 3) | `README.md`, `docs/04_RESULTS.md` |
+| `objective2-assam/` | Being rebuilt on a 500 L, 5 m² chain; results pending | 500 L · 5 m² | not yet run | n/a | `README.md`, `docs/00_MASTER_OVERVIEW.md` |
+
+Common findings: every chosen design sits at the edge of the searched box (capsule radius 39.5–40 mm, PCM fraction 28–30%), so each is the best inside the declared box, not a proven optimum; the highest PCM temperature in any held-out run is 64.2 °C against the 65 °C limit; a surrogate is used only to rank designs, and the simulator produces every reported number.
+
+## CFD cross-checks (not validation)
+
+- **OpenFOAM** (`openfoam_cfd/`, `objective2-rajasthan/rj_openfoam/`, `objective2-uttarakhand/openfoam_cfd/`): single-capsule melting. Neither Tan 2009 nor Dong 2022 is reproduced and the mesh is not grid-independent, so the CFD is an unvalidated upper bound.
+- **ANSYS Fluent** (`objective2-tamilnadu/ansys/`): four PCMs in one capsule, a flow sweep, whole-tank and single-capsule discharge demos, regime contours, and a criteria study that runs 7 designs (optimal, maximum, minimum, 80 capsules, 30 capsules, 10%, 50%) through a 60-minute whole-tank discharge. Videos and figures are under `ansys/videos/` and `ansys/figures/`; see `ansys/CRITERIA_STUDY_README.md` and `ansys/HOW_TO_RUN_ANSYS.md`. Fluent never chooses a design.
+
+## Where to read the results
+
+The documentation portal shows all of this with figures and videos: [https://Final-year-project-G12.github.io/Documentation-Portal](https://Final-year-project-G12.github.io/Documentation-Portal).
+
+---
+
 ## 1. Objective 2
 
 Objective 1 determines **which PCM is suitable for a given climate regime**.
@@ -524,83 +548,29 @@ A slightly lower nominal-energy design may be preferred if it provides substanti
 ## 17. Repository Structure
 
 ```text
-pcm-design-optimization/
-│
-├── data/
-│   ├── climate/
-│   ├── pcm/
-│   ├── demand/
-│   └── system/
-│
-├── configs/
-│   ├── system.yaml
-│   ├── climate.yaml
-│   ├── pcm.yaml
-│   └── optimization.yaml
-│
-├── src/
-│   │
-│   ├── design/
-│   │   ├── schema.py
-│   │   ├── geometry.py
-│   │   ├── constraints.py
-│   │   └── generate_doe.py
-│   │
-│   ├── sim/
-│   │   ├── tank_model.py
-│   │   ├── capsule_model.py
-│   │   ├── heat_transfer.py
-│   │   ├── collector_model.py
-│   │   ├── demand_profile.py
-│   │   ├── run_design.py
-│   │   └── energy_balance.py
-│   │
-│   ├── surrogate/
-│   │   ├── features.py
-│   │   ├── train.py
-│   │   ├── evaluate.py
-│   │   ├── uncertainty.py
-│   │   └── active_learning.py
-│   │
-│   ├── optimize/
-│   │   ├── pareto.py
-│   │   └── select_design.py
-│   │
-│   ├── validate/
-│   │   ├── simulator_tests.py
-│   │   ├── surrogate_tests.py
-│   │   ├── robustness.py
-│   │   └── compare_baseline.py
-│   │
-│   └── viz/
-│       ├── pareto_plots.py
-│       ├── thermal_history.py
-│       ├── energy_balance.py
-│       └── recommendation_cards.py
-│
-├── experiments/
-│   ├── doe/
-│   ├── surrogate/
-│   ├── optimization/
-│   └── robustness/
-│
-├── models/
-│   └── surrogate/
-│
-├── results/
-│   ├── simulations/
-│   ├── pareto/
-│   ├── validation/
-│   └── recommendations/
-│
-├── tests/
-│
-├── requirements.txt
-├── README.md
-└── LICENSE
+Objective---2/
+├── config.py, references.bib, openfoam_commands.md
+├── data/                      shared inputs (Objective 1 outputs, PCM table)
+├── openfoam_cfd/              shared OpenFOAM case files
+├── obj2_revised/              earlier revised plan material
+├── Objective2 Consolidated plan.md, O2_O3_COMPREHENSIVE_AUDIT_REPORT.md
+├── objective2-rajasthan/      reference state
+├── objective2-tamilnadu/      adds ansys/ (Fluent) and objective3/ hand-off
+├── objective2-uttarakhand/    K = 4 regimes, adds openfoam_cfd/
+└── objective2-assam/          500 L chain, results pending
+
+each objective2-<state>/
+├── config.py                  all constants for that state
+├── pipeline.py / run_all_<state>.py   end-to-end runner (see its README for --stage options)
+├── src/                       design space, geometry, simulator, surrogate, optimiser, validation
+├── scripts/                   stage scripts and checks
+├── tests/                     unit tests
+├── data/, results/            inputs and generated outputs
+├── docs/                      numbered write-up: model, weather, pipeline, results, limitations, Objective 3 hand-off
+└── make_all_plots.py          regenerates the result figures
 ```
 
-This structure follows the suggested repository implementation in the Objective 2 guide.
+The end-to-end `--stage all` run has not been executed for every state; each state's `docs/05_LIMITATIONS_AND_OPEN_ITEMS.md` lists what is still open.
 
 ---
 
@@ -743,64 +713,25 @@ Objective 3 can then use these parameters for real-time charge, discharge, and b
 
 ## 22. Current Status
 
-> **Implementation status:** [PLACEHOLDER — Update with current implementation stage]
+Updated 2026-11-15.
 
-Suggested status:
+| Stage | Rajasthan | Tamil Nadu | Uttarakhand | Assam |
+|---|---|---|---|---|
+| Objective 1 inputs integrated | done | done | done (K = 4) | done (K = 3) |
+| Grey-box simulator and verification gates | done | done | done | in rebuild |
+| Taguchi screening, Sobol DOE, surrogate comparison | done | done | done | pending |
+| NSGA-II with active learning, dense-grid check | done | done | done | pending |
+| One-shot held-out test | done | done | done | pending |
+| CFD cross-check | OpenFOAM (unvalidated upper bound) | ANSYS Fluent (consistency check) | OpenFOAM, 1 of 10 capsule cases run | pending |
+| Objective 3 hand-off (contract v3) | written | written | written | not a valid input |
 
-```text
-[ ] Objective 1 outputs integrated
-[ ] Climate-regime input pipeline
-[ ] PCM database integration
-[ ] Geometry generator
-[ ] Constraint engine
-[ ] Grey-box enthalpy simulator
-[ ] Simulator verification
-[ ] DOE generation
-[ ] AI surrogate
-[ ] Surrogate validation
-[ ] Active learning
-[ ] Multi-objective optimization
-[ ] Physics-based re-evaluation
-[ ] Robustness analysis
-[ ] Final design selection
-[ ] Objective 3 interface
-```
+Open items shared by all states: designs sit at the search-box edge, sizing is below IS 12976:2023 for the 50 L states, monthly mains temperature, PCM volume change and supercooling are not modelled, and there are no hardware measurements.
 
 ---
 
 ## 23. Results
 
-### Key Results
-
-[PLACEHOLDER: Add final optimized design for each climate regime]
-
-[PLACEHOLDER: Add selected PCM and competing candidates]
-
-[PLACEHOLDER: Add useful-energy improvement over baseline]
-
-[PLACEHOLDER: Add solar-fraction improvement]
-
-[PLACEHOLDER: Add reduction in unmet hot-water demand]
-
-[PLACEHOLDER: Add pumping-energy comparison]
-
-[PLACEHOLDER: Add robustness/reliability results]
-
-### Required Plots
-
-[PLACEHOLDER: Simulator vs surrogate parity plot]
-
-[PLACEHOLDER: Pareto front — useful energy vs PCM mass]
-
-[PLACEHOLDER: Pareto front — useful energy vs pumping energy]
-
-[PLACEHOLDER: Water/PCM temperature history]
-
-[PLACEHOLDER: PCM melt-fraction history]
-
-[PLACEHOLDER: Energy-balance validation plot]
-
-[PLACEHOLDER: Robustness/Monte Carlo distribution]
+Headline numbers are in the state table near the top of this file. Full per-regime tables are in each state's `docs/04_RESULTS.md`, and the result figures (chosen designs, held-out PCM comparison, held-out gain by year, search front against dense grid, ablations, response to PCM fraction) are generated by each state's `make_all_plots.py`. The documentation portal shows them side by side: [https://Final-year-project-G12.github.io/Documentation-Portal](https://Final-year-project-G12.github.io/Documentation-Portal).
 
 ---
 
@@ -829,3 +760,14 @@ The AI surrogate is therefore an **acceleration and search mechanism**, while th
 This repository implements the methodology specified in the **Objective 2: AI-Driven PCM Design Optimization Implementation Guide**.
 
 Further experimental and material-property studies are required before assigning numerical bounds that are not explicitly supported by the project data.
+
+## Project links
+
+| Part | Repository |
+|---|---|
+| Objective 1: PCM selection | [https://github.com/Final-year-project-G12/PCM-Selection-ML-model](https://github.com/Final-year-project-G12/PCM-Selection-ML-model) |
+| Objective 2: design optimisation | [https://github.com/Final-year-project-G12/Objective---2](https://github.com/Final-year-project-G12/Objective---2) |
+| Objective 3: DRL controller | [https://github.com/Final-year-project-G12/solar-pcm-control--Objective3](https://github.com/Final-year-project-G12/solar-pcm-control--Objective3) |
+| Objective 4: software-in-the-loop | [https://github.com/Final-year-project-G12/Objective--4_software-in-loop](https://github.com/Final-year-project-G12/Objective--4_software-in-loop) |
+| Documentation portal | [https://github.com/Final-year-project-G12/Documentation-Portal](https://github.com/Final-year-project-G12/Documentation-Portal) · [live site](https://Final-year-project-G12.github.io/Documentation-Portal) |
+| Objective 3 live dashboard | [Streamlit app](https://solar-pcm-control--objective3-ohrrdnt9lzp2fgngxmmjdb.streamlit.app/) |
