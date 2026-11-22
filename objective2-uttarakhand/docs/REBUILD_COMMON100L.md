@@ -63,6 +63,26 @@ on 2026-11-14/15 and are in the archive; g18 (search variants) and B1 (widened b
 - Input manifest (gate G0): `results/l2_input_manifest.json`, plant hash `ad1135145a63`, 67 files hashed; test lock path
   `results/locks/o2_test_ad1135145a63.lock`.
 
+## 3c. L3 findings (2026-11-22; `scripts/r3_verification.py`, `results/l3_*.csv`)
+
+Four regimes, rank-1 PCM, flow 0.030, 10-node tank, explore year 2018; designs V30 (R 30 mm, 30 %) and V40 (R 30 mm, 40 %), staggered.
+
+- **Energy closure:** largest residual 5e-11 % of collector energy (limit 0.1 %). Pass.
+- **Time step:** change per halving of the primary metric E_del45_window, worst case: 0.088 % (150->75), 0.044 % (75->37.5),
+  0.022 % (37.5->18.75); annual useful energy 0.136 / 0.076 / 0.037 %. Feasibility identical at every step (PCM peak up to 1.7 K
+  higher at 150 s). Decision (plan R5 default): search at 150 s, confirm and report at 37.5 s.
+- **Nodes 10 -> 20** (37.5 s): useful energy +2.4 to +2.6 %, paired gain 2-8 kWh/yr more negative; much larger than on the 50 L tank
+  (0.7-1.0 %), so it is a large band component.
+- **IS 12976 standing loss** (100 L water-only, 60 C start, 16 h): 4.8 K at 20 C ambient (limit 8 K, pass, all regimes); with each
+  regime's coldest explore-year hour held for 16 h: 6.9 / 7.4 / 7.6 K (regimes 0-2, pass) and **9.4 K in regime 3 at -18.3 C (fail)**.
+  The standard gives no ambient for the check; the 20 C case is the reference, the cold case is reported as a cold-climate limitation.
+- **PCM gain on the common plant (`scripts/r3_probe_pcm_gain.py`, exploratory, 2018 only):** no design gains. Both verification designs
+  are below the water-only tank in every regime (-7 to -25 kWh/yr; more PCM is worse). Over 108 designs (R 20/40 mm; 5/15/30 %;
+  single-layer/staggered; bottom/centre/top) the best is -0.5 kWh/yr in regimes 0 and 1 and +4.2 kWh/yr in regime 3 (5 % PCM, top).
+  Diagnostic (regimes 1 and 3, R 40 mm staggered centre, 5/15/30 % PCM): regime 1 gains only once the draw exceeds the tank
+  (150 L/day: +3 / +10 / +15; 300 L/day: +3 / +15 / +25 kWh/yr) and is about zero at 50 C; regime 3 is negative in every case.
+  Reading: at 100 L/day a 100 L tank with 2.0 m2 already stores a full day's hot water, so PCM only displaces water.
+
 ## 4. Open items
 
 - Collector parameters and area basis for 2.0 m2 (needs a source before the L3 gate is signed).
@@ -79,7 +99,7 @@ before the band is computed.
 | L0 | decide and freeze; archive legacy; new results namespace | done 2026-11-22 |
 | L1 | O1 alignment (Option B, manifest hashes) | done 2026-11-22: `results/o1_manifest_uttarakhand.json` (`scripts/r1_o1_manifest.py`) |
 | L2 | config, weather (incl. 2006-2010), year roles, locks, hashes | done 2026-11-22: section 3b; 94 tests pass, 5 skip (need the L4 baseline) |
-| L3 | simulator verification (geometry 2-40 %, dt halving to 18.75 s, 10 vs 20 nodes, energy closure, IS 12976 standing loss) | |
+| L3 | simulator verification (geometry 2-40 %, dt halving to 18.75 s, 10 vs 20 nodes, energy closure, IS 12976 standing loss) | done 2026-11-22: section 3c (gate passed; regime-3 cold standing-loss case fails, reported). Collector area basis still open |
 | L4 | baselines and sensitivity; Taguchi L9 | |
 | L5 | Sobol DOE, surrogates, cheap-vs-full fidelity screen | |
 | L6 | NSGA-II + active learning; Pareto fronts | |

@@ -216,3 +216,13 @@ are not installed on this machine; `scripts/run_all_cases.ps1` runs everything w
   2016-2025 (real cloud/aerosol difference, not a data defect; split kept). Details: `docs/REBUILD_COMMON100L.md` section 3b.
 - Tests updated to the rebuild (roles, locks, 40 % cap, pump range, 2.0 m2 in the F_R hand calculation, the 50 L CFD draw case pinned
   to 50 L): 94 passed, 5 skipped.
+
+## 2026-11-22 - Rebuild L3 (simulator verification, gate G1)
+
+- `scripts/r3_verification.py` (4 regimes): energy closure, time-step halving 150 -> 18.75 s, 10 vs 20 nodes, IS 12976 standing loss.
+  Search at 150 s, confirm/report at 37.5 s. Node effect 2.4-2.6 % on useful energy (large band term). Standing loss passes at 20 C;
+  regime 3 at its coldest hour (-18.3 C held 16 h) loses 9.4 K (> 8 K), reported. Outputs `results/l3_timestep.csv`,
+  `l3_nodes.csv`, `l3_standing_loss.csv`.
+- `scripts/r3_probe_pcm_gain.py` (exploratory, 2018): on the common plant no PCM design beats the water-only tank (best +4.2 kWh/yr,
+  regime 3); PCM gains in regime 1 only at 150-300 L/day. Details: `docs/REBUILD_COMMON100L.md` section 3c. Decision on how to
+  continue (L4-L9) pending with the student.
