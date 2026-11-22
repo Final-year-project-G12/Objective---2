@@ -203,3 +203,16 @@ are not installed on this machine; `scripts/run_all_cases.ps1` runs everything w
 - `results/o1_manifest_uttarakhand.json`: per regime the medoid, member point ids, population, shortlist (checked equal to the state
   yaml and to `mcdm_topk_by_cluster.csv`), Tm target and mains estimate, plus SHA-256 of the five O1 files. Regimes: 10 / 23 / 9 / 3
   points; medoids UKP_0014 / UKP_0029 / UKP_0025 / UKP_0041, each a member of its own regime. Shortlists unchanged (Option B).
+
+## 2026-11-22 - Rebuild L2 (config, weather, year roles, locks, hashes; gate G0)
+
+- Plant: `configs/system_config_shared.yaml` tank 100 L, collector 2.0 m2 (area basis still open), delivery 45 C primary with
+  `secondary_report_temp_C: 50`; demand 100 L/day (`configs/states/uttarakhand.yaml`, profile rescaled, 300 L/day file in `data/legacy/`).
+- Design space: fraction cap 40 %, flow fixed 0.030 kg/s in the search, `robust_anchors: [bottom, center, top]`, `report_timestep_s: 37.5`,
+  capsule-count bound 10000. `src/io_utils.load_design_bounds` now takes the validity flow range from the pump (0.010-0.050).
+- Year roles (`src/weather/roles.py`, plan R3): 2016-2019 explore, 2020-2021 select, 2022-2025 report-only (need the O2 test lock),
+  2006-2010 test; lock `results/locks/o2_test_<plant hash>.lock`, never the archived legacy lock.
+- 2006-2010 weather fetched and inventoried (60 point-years, all accepted). Weather-only audit: the test years are sunnier than
+  2016-2025 (real cloud/aerosol difference, not a data defect; split kept). Details: `docs/REBUILD_COMMON100L.md` section 3b.
+- Tests updated to the rebuild (roles, locks, 40 % cap, pump range, 2.0 m2 in the F_R hand calculation, the 50 L CFD draw case pinned
+  to 50 L): 94 passed, 5 skipped.

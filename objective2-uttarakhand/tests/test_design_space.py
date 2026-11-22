@@ -24,30 +24,33 @@ from src.simulation.run_case import run_case
 def test_approved_ranges_are_what_the_user_approved():
     v = space.load_space()["variables"]
     assert v["inner_radius_m"] == {"min": 0.010, "max": 0.040}
-    assert v["pcm_volume_fraction"] == {"min": 0.02, "max": 0.30}
-    assert v["flow_rate_kg_s"] == {"min": 0.010, "max": 0.050}
+    assert v["pcm_volume_fraction"] == {"min": 0.02, "max": 0.40}          # rebuild, plan R4
+    assert v["flow_rate_kg_s"] == {"min": 0.030, "max": 0.030}            # rebuild, plan R6: fixed, not searched
+    assert space.geometry_bounds()["flow_rate_kg_s"] == {"min": 0.010, "max": 0.050}   # the pump range still judges validity
     assert v["arrangement"] == ["single-layer", "staggered", "radial"]
     assert space.load_space()["constraints"]["pcm_peak_limit_C"] == 65.0
     assert space.load_space()["model"]["n_nodes"] == 10
 
 
 @pytest.mark.parametrize("r", [0.010, 0.0175, 0.025, 0.040])
-@pytest.mark.parametrize("f", [0.02, 0.05, 0.12, 0.20, 0.30])
-def test_count_rule_keeps_the_fraction_inside_2_to_30_percent(r, f):
+@pytest.mark.parametrize("f", [0.02, 0.05, 0.12, 0.20, 0.30, 0.40])
+def test_count_rule_keeps_the_fraction_inside_2_to_40_percent(r, f):
     dv = space.to_design(r, f, 0.03, "staggered")
     frac = dv.n_capsule * space.capsule_outer_volume_m3(r) / space.v_tank_m3()
-    assert 0.02 - 1e-9 <= frac <= 0.30 + 1e-9
+    assert 0.02 - 1e-9 <= frac <= 0.40 + 1e-9
     assert dv.capsule_diameter_m == pytest.approx(2 * (r + 0.0008))
 
 
 def test_geometry_engine_is_still_the_judge_of_feasibility():
     cfg = load_system_config()
-    bad = [(r, f, a) for r in (0.010, 0.025, 0.030, 0.040) for f in (0.02, 0.30)
-           for a in space.ARRANGEMENTS
-           if not check_design(space.to_design(r, f, 0.03, a), cfg, space.geometry_bounds())["valid"]]
-    # radial packing cannot reach 30 % at the larger radii (G7: max feasible 15.4 % at R=30 mm); the engine must say so
-    assert ("radial" in {a for _, _, a in bad}) and all(a == "radial" for _, _, a in bad)
-    assert (0.030, 0.30, "radial") in bad
+    res = {(r, f, a): check_design(space.to_design(r, f, 0.03, a), cfg, space.geometry_bounds())
+           for r in (0.010, 0.025, 0.030, 0.040) for f in (0.02, 0.30, 0.40) for a in space.ARRANGEMENTS}
+    bad = {k: v["reason"] for k, v in res.items() if not v["valid"]}
+    # 100 L tank (rebuild): only packing rejects designs (the blocked flow passage), never an administrative count bound
+    assert set(bad.values()) == {"passage_blocked"}
+    assert (0.030, 0.30, "radial") in bad and (0.040, 0.40, "radial") in bad
+    assert not any(f == 0.02 for (_, f, _) in bad)                              # 2 % always packs
+    assert all(not bad.get((r, 0.40, "staggered")) for r in (0.025, 0.030, 0.040))   # the 40 % cap is reachable
 
 
 # Rebuild (2026-11-22): the water-only baseline grids are rebuilt at plan level L4 on the 100 L plant; until then these tests skip.
@@ -81,6 +84,7 @@ def test_evaluate_design_returns_paired_objectives_and_feasibility():
     assert res["g_annual"] > 0
 
 
+@needs_baseline
 def test_infeasible_geometry_is_reported_not_simulated():
     res = evaluate.evaluate_design(1, "PureTemp 58", 0.030, 0.20, 0.03, "radial", purpose="explore", years=[2018])
     assert not res["valid"] and res["reason"] and "per_year" not in res

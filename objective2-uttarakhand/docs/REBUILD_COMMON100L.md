@@ -43,11 +43,29 @@ on 2026-11-14/15 and are in the archive; g18 (search variants) and B1 (widened b
 - **Repeatability band:** components fixed before any run (section 5). The stack anchor is in the objective (R7), so it is **not**
   also a band component.
 - **Pareto front:** paired gain, overheating and PCM mass. No cost source exists, so "cost" is not used.
+- **Flow:** fixed at 0.030 kg/s in the SEARCH only (`configs/design_space.yaml` variables). The geometry/validity check uses the pump's
+  physical range 0.010-0.050 kg/s (`src/io_utils.load_design_bounds`), so sensitivity and verification cases at other flows stay valid.
+- **50 C secondary:** the delivery target enters only the accounting in the kernel (delivered, unmet and recoverable energy), never the
+  physics, so the 50 C numbers are obtained by re-running a design with `delivery.target_temp_C` overridden to 50 (identical temperatures).
+
+## 3b. L2 findings (2026-11-22)
+
+- 2006-2010 fetched (`scripts/r2_fetch_test_weather.py`, 20 files); all 60 point-years (4 medoids x 15 years) pass the acceptance rule
+  (`data/weather/point_years/weather_inventory.csv`); the 40 existing 2016-2025 hourly files are byte-identical after the rebuild.
+- Demand: 100 L/day with the same hourly shape (peak at hour 19); the 300 L/day profile is `data/legacy/demand_profile_uttarakhand_300L.csv`.
+- `geometry_engine.capsule_count` max raised 5000 -> 10000: at 100 L the old bound (meant never to bind) rejected 10 mm capsules at
+  30-40 % (5700-7600 capsules). Now only packing rejects designs (radial at 30-40 %, single-layer 10 mm at 40 %: passage blocked).
+- **Weather-only audit (plan 7.3; `results/l2_weather_audit_*.csv`): the 2006-2010 test years are sunnier than 2016-2025 in every regime**
+  (annual GHI +31 to +64 kWh/m2 on the period mean; 2009, the Indian monsoon-drought year, and 2006 are the sunniest, z up to +5 in
+  regime 0). Clear-sky GHI is only about 1 % higher, clearness about 2.5 % higher, and clearness also falls within 2016-2025 (regime 0:
+  0.855 in 2016 to 0.816 in 2025): fewer clouds and less aerosol, a real climate/aerosol difference, not a data defect. Per plan 7.3
+  the split is kept as declared; the test is reported as somewhat sunnier than the design years (not a harsher-than-average test).
+- Input manifest (gate G0): `results/l2_input_manifest.json`, plant hash `ad1135145a63`, 67 files hashed; test lock path
+  `results/locks/o2_test_ad1135145a63.lock`.
 
 ## 4. Open items
 
 - Collector parameters and area basis for 2.0 m2 (needs a source before the L3 gate is signed).
-- Hourly 2006-2010 weather: to be fetched (L2).
 
 ## 5. Repeatability band recipe (to be frozen at L7, before the select-year evaluation)
 
@@ -60,7 +78,7 @@ before the band is computed.
 |---|---|---|
 | L0 | decide and freeze; archive legacy; new results namespace | done 2026-11-22 |
 | L1 | O1 alignment (Option B, manifest hashes) | done 2026-11-22: `results/o1_manifest_uttarakhand.json` (`scripts/r1_o1_manifest.py`) |
-| L2 | config, weather (incl. 2006-2010), year roles, locks, hashes | |
+| L2 | config, weather (incl. 2006-2010), year roles, locks, hashes | done 2026-11-22: section 3b; 94 tests pass, 5 skip (need the L4 baseline) |
 | L3 | simulator verification (geometry 2-40 %, dt halving to 18.75 s, 10 vs 20 nodes, energy closure, IS 12976 standing loss) | |
 | L4 | baselines and sensitivity; Taguchi L9 | |
 | L5 | Sobol DOE, surrogates, cheap-vs-full fidelity screen | |
