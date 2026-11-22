@@ -59,7 +59,7 @@ before the band is computed.
 | Level | Content | Status |
 |---|---|---|
 | L0 | decide and freeze; archive legacy; new results namespace | done 2026-11-22 |
-| L1 | O1 alignment (Option B, manifest hashes) | |
+| L1 | O1 alignment (Option B, manifest hashes) | done 2026-11-22: `results/o1_manifest_uttarakhand.json` (`scripts/r1_o1_manifest.py`) |
 | L2 | config, weather (incl. 2006-2010), year roles, locks, hashes | |
 | L3 | simulator verification (geometry 2-40 %, dt halving to 18.75 s, 10 vs 20 nodes, energy closure, IS 12976 standing loss) | |
 | L4 | baselines and sensitivity; Taguchi L9 | |

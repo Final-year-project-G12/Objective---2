@@ -194,3 +194,12 @@ are not installed on this machine; `scripts/run_all_cases.ps1` runs everything w
   draws fig28-fig31 and fig35 for real (they were stubs that only checked the input file), so the legacy set has 36 figures
   (`results_legacy_50L_v3/plots/`; fig32, fig33, fig41, fig42 need studies never run). `scripts/g18_issue1_compare.py`: the
   Rajasthan-only r0_p1 special case removed (it pointed at a file Uttarakhand never had).
+
+## 2026-11-22 - Rebuild L1 (O1 alignment, Option B)
+
+- `scripts/r1_o1_manifest.py --copy` copied Objective 1's `cluster_assignments_uttarakhand.csv` (O1 project, `K_FINAL = 4`) into
+  `data/objective1/` after checking it belongs to the same O1 run as the profiles already here (values agree to 3.6e-15; the only
+  differences are float noise and two columns the O2 port added; elevations identical).
+- `results/o1_manifest_uttarakhand.json`: per regime the medoid, member point ids, population, shortlist (checked equal to the state
+  yaml and to `mcdm_topk_by_cluster.csv`), Tm target and mains estimate, plus SHA-256 of the five O1 files. Regimes: 10 / 23 / 9 / 3
+  points; medoids UKP_0014 / UKP_0029 / UKP_0025 / UKP_0041, each a member of its own regime. Shortlists unchanged (Option B).
