@@ -443,33 +443,98 @@ def fig27_widened_box():
 
 
 def fig28_sizing():
-    """G21 tank-sizing study."""
+    """G21: gain of the frozen designs when only the tank volume changes (collector fixed, explore years)."""
     need("g21_sizing_r0.csv")
+    fig, ax = plt.subplots(figsize=(8, 4.3))
+    for r in REG:
+        d = csv(f"g21_sizing_r{r}.csv")
+        d = d[d.valid.astype(bool)]
+        for v, ls in (("same_fraction", "-"), ("same_count", "--")):
+            g = d[d.variant == v].sort_values("tank_L")
+            ax.plot(g.tank_L, g.g_window, ls=ls, marker="o", ms=4, color=RC[r], label=f"R{r} {v.replace('_', ' ')}")
+    ax.axhline(0, color="k", lw=.8)
+    ax.set(xlabel="tank volume (L) at the fixed collector", ylabel="g_window (kWh/yr)", title="G21 sizing study (diagnostic of direction, not a design)")
+    ax.legend(fontsize=6.5, ncol=2)
+    save(fig, "fig28_sizing")
 
 
 def fig29_sensitivity_tornado():
-    """G22 model-input sensitivity."""
+    """G22: change in g_window for each model-input perturbation, against the band."""
     need("g22_sensitivity_r0.csv")
+    fig, ax = row_axes(5, 4.2)
+    for i, r in enumerate(REG):
+        d = csv(f"g22_sensitivity_r{r}.csv")
+        d = d[d.variant != "base"].copy()
+        d = d.reindex(d.delta_g_window.abs().sort_values(ascending=False).index)
+        ax[i].barh(d.variant, d.delta_g_window, color=["#c0392b" if b else "#95a5a6" for b in d.beyond_band.astype(bool)])
+        ax[i].axvspan(-band(r), band(r), color=BAND_C, alpha=.2); ax[i].axvline(0, color="k", lw=.8)
+        ax[i].invert_yaxis(); ax[i].tick_params(axis="y", labelsize=7)
+        ax[i].set(title=f"Regime {r}", xlabel="change in g_window (kWh/yr)")
+    fig.suptitle("G22 input sensitivity of the chosen design: red = beyond the band")
+    save(fig, "fig29_sensitivity_tornado")
 
 
 def fig30_flow_fr():
-    """G24 flow-dependent collector F_R study."""
+    """G24: gain against flow with and without a flow-dependent collector factor F_R."""
     need("g24_flow_fr_r0.csv")
+    fig, ax = plt.subplots(figsize=(8, 4.2))
+    mx = 0.0
+    for r in REG:
+        d = csv(f"g24_flow_fr_r{r}.csv")
+        for flag, ls in ((False, "-"), (True, "--")):
+            g = d[d.flow_dependent_fr.astype(bool) == flag].sort_values("flow")
+            ax.plot(g.flow, g.g_window, ls=ls, marker="o", ms=3, color=RC[r], label=f"R{r} " + ("flow-dependent F_R" if flag else "constant F_R"))
+        mx = max(mx, d.pivot(index="flow", columns="flow_dependent_fr", values="g_window").diff(axis=1).abs().max().max())
+    ax.set(xlabel="flow (kg/s)", ylabel="g_window (kWh/yr)", title=f"G24: a flow-dependent F_R changes g_window by at most {mx:.1f} kWh/yr")
+    ax.legend(fontsize=6.5, ncol=2)
+    save(fig, "fig30_flow_fr")
 
 
 def fig31_gpbo_vs_nsga():
-    """G20 GP Bayesian search against NSGA-II."""
+    """G20: best feasible g_window found so far by an independent GP Bayesian search, against the NSGA-II chosen design (explore years)."""
     need("g20_gpbo_r0_p1.csv")
+    fig, ax = row_axes(3.8, 3.5)
+    for i, r in enumerate(REG):
+        g = csv(f"g20_gpbo_r{r}_p1.csv")
+        best = g.g_window.where(g.feasible.astype(bool)).cummax().ffill()      # infeasible designs keep the best value so far
+        ax[i].plot(np.arange(1, len(g) + 1), best, color=RC[r], label="GP-BO best so far")
+        c = chosen(r)
+        ref = c.get("explore_g_window", c["g_window"])
+        ax[i].axhline(ref, color="k", ls="--", label="NSGA-II chosen (explore)")
+        ax[i].axhspan(ref - band(r), ref + band(r), color=BAND_C, alpha=.2, label="band")
+        ax[i].set(title=f"Regime {r}", xlabel="simulated designs", ylabel="g_window (kWh/yr)")
+        ax[i].legend(fontsize=6.5, loc="lower right")
+    fig.suptitle("G20: independent GP Bayesian search (60 simulations, rank-1 PCM) against the NSGA-II chosen design, explore years")
+    save(fig, "fig31_gpbo_vs_nsga")
 
 
 def fig32_box_vertex():
-    """G18 search variants."""
+    """G18: front hypervolume of the three search variants (base, extra rounds, box vertices + extra rounds), relative to the best."""
     need("g18_issue1_with_without.csv")
+    d = csv("g18_issue1_with_without.csv")
+    t = d.pivot(index="pair", columns="state", values="hv_rel_to_best_state")
+    t = t[[c for c in ("base", "novert", "vert") if c in t.columns]]
+    fig, ax = plt.subplots(figsize=(11, 4))
+    t.plot.bar(ax=ax, rot=45, color=["#95a5a6", "#2980b9", "#e67e22"][:t.shape[1]])
+    ax.set(ylim=(t.min().min() - .02, 1.005), ylabel="hypervolume / best of the states", title=f"G18 search variants: lowest relative hypervolume {t.min().min():.3f}")
+    ax.legend(fontsize=8, ncol=3)
+    save(fig, "fig32_box_vertex")
 
 
 def fig33_b1_retest():
-    """B1 widened-box re-test."""
+    """B1: select-year gain and the design chosen in the v3 box against the widened box (radius to 50 mm, fraction to 40 %)."""
     need("b1_selection_r0.json")
+    fig, ax = plt.subplots(figsize=(9, 4.2))
+    for r in REG:
+        a = chosen(r)
+        b = json.load(open(RD / f"b1_selection_r{r}.json", encoding="utf-8"))["chosen"]
+        ax.bar(r * 3, a["g_window"], 1, color="#95a5a6", label="v3 box" if r == REG[0] else None)
+        ax.bar(r * 3 + 1, b["g_window"], 1, color="#e67e22", label="B1 widened box" if r == REG[0] else None)
+    ax.set_xticks([r * 3 + .5 for r in REG], [f"Regime {r}" for r in REG])
+    ax.axhline(0, color="k", lw=.7)
+    ax.set(ylabel="g_window, select years (kWh/yr)", title="B1 re-test: v3 box against the widened box")
+    ax.legend(fontsize=8)
+    save(fig, "fig33_b1_retest")
 
 
 def fig34_night_hold():
@@ -486,8 +551,22 @@ def fig34_night_hold():
 
 
 def fig35_chen_benchmark():
-    """G23 Chen 2025 benchmark."""
+    """G23: simulated hold-time gain against PCM fraction, with the published Chen 2025 simulated and measured gain."""
     need("g23_chen_benchmark_r0.csv")
+    fig, ax = plt.subplots(figsize=(7, 4))
+    for r in REG:
+        f = RD / f"g23_chen_benchmark_r{r}.csv"
+        if not f.exists():
+            continue
+        d = pd.read_csv(f).sort_values("pcm_fraction")
+        ax.plot(d.pcm_fraction * 100, d.gain_pct, marker="o", color=RC[r], label=f"R{r}")
+    d = csv("g23_chen_benchmark_r0.csv")
+    ax.axhline(d.chen_gain_sim_pct.iloc[0], color="k", ls="--", lw=1, label="Chen 2025 simulated")
+    ax.axhline(d.chen_gain_exp_pct.iloc[0], color="k", ls=":", lw=1, label="Chen 2025 measured")
+    ax.set(xlabel="PCM fraction (%)", ylabel="gain in hold time above 30 C (%)", title="G23 trend check against the published benchmark")
+    ax.legend(fontsize=7)
+    save(fig, "fig35_chen_benchmark")
+
 
 def fig36_grid_check_all_pairs():
     """G9 dense-grid check per (regime, PCM rank) pair: epsilon gap over the band (all pairs if the supplementary grid runs exist)."""

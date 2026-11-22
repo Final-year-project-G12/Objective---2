@@ -183,3 +183,14 @@ are not installed on this machine; `scripts/run_all_cases.ps1` runs everything w
   simulator (c = 5, F = 2 kept, `cfd_closure_v1` off); not comparable with Rajasthan's fixed-wall ratios. Rajasthan's colon-filename generator bug,
   CRLF and space-in-path problems do not affect this folder (checked). `docs/README.md`: OpenFOAM status stated (1 of 10 capsule cases run).
 - No code, case or result changed.
+
+## 2026-11-22 - Common-plant rebuild, L0 (decide and freeze)
+
+- The student adopted the Unified O2+O3 Rebuild Plan (Revision 13): 100 L / 2.0 m2 / 100 L/day, 45 C primary + 50 C secondary,
+  flow 0.030 kg/s, PCM fraction 2-40 %, robust stack anchor, 2006-2010 one-shot test. Student choices: inner radius kept at 10-40 mm,
+  legacy results archived, commit per level. Decision record and level tracker: `docs/REBUILD_COMMON100L.md`.
+- `results/` moved to `results_legacy_50L_v3/` (233 files, the spent lock included); a fresh `results/` holds the rebuild.
+- Legacy supplementary studies g20-g24 (finished 2026-11-14/15, all 20 jobs exit 0) archived with the rest; `make_all_plots.py` now
+  draws fig28-fig31 and fig35 for real (they were stubs that only checked the input file), so the legacy set has 36 figures
+  (`results_legacy_50L_v3/plots/`; fig32, fig33, fig41, fig42 need studies never run). `scripts/g18_issue1_compare.py`: the
+  Rajasthan-only r0_p1 special case removed (it pointed at a file Uttarakhand never had).
