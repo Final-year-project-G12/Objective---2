@@ -8,8 +8,11 @@ G9 assessment (plan WP5 acceptance, WP6 band). Reads the S4/S5/S6 outputs and wr
   results/g9_grid_check.csv      NSGA-II/AL front vs the dense-grid front (epsilon indicator vs the band)
   results/g9_boundary_check.csv  share of final-front designs sitting at a bound (boundary-artefact detector)
 
-Band definition: the rebuild recipe frozen in docs/REBUILD_COMMON100L.md section 5 (see band_table below): year scatter, time step
-(37.5 vs 18.75 s), node count, PCM properties, medoid versus member points, demand and mains.
+Band definition (documented choice): band_k = sqrt( (sd_year,k / sqrt(5))^2 + d_dt,k^2 + d_nodes,k^2 + d_prop,k^2 )
+ sd_year  mean over measured designs of the per-year sd of the paired gain (standard error of a 5-year mean)
+ d_dt     RMS change of the 5-year paired gain when dt goes 150 s -> 75 s
+ d_nodes  RMS change when N goes 10 -> 20
+ d_prop   largest RMS change over latent heat +-10 % and conductivity +-20 %
 Objectives are g_window [kWh/yr], g_annual [kWh/yr], d_overheat [h/yr].
 """
 
@@ -42,25 +45,18 @@ def F_of(df):
 
 
 def band_table():
-    """Rebuild band (recipe frozen in docs/REBUILD_COMMON100L.md section 5): per scope and objective,
-    band = sqrt(sd_year^2 + d_dt^2 + d_nodes^2 + d_prop^2 + d_member^2 + d_demand^2 + d_mains^2), each term the RMS over designs of
-    the change against its reference variant; sd_year = mean per-year sd / sqrt(2) (selection judges 2-year means)."""
-    b = pd.concat([pd.read_csv(f) for f in sorted(glob.glob(str(OUT / "g9_band_r[0-9].csv")))])
+    b = pd.concat([pd.read_csv(f) for f in sorted(glob.glob(str(OUT / "g9_band_r*.csv")))])
     rows = []
     for scope, g in [("all", b)] + [(f"r{r}", d) for r, d in b.groupby("regime")]:
         for o in OBJ:
             go = g[g.objective == o]
             base = go[go.variant == "base"]
-            sd_year = float(base.year_sd.mean() / np.sqrt(2))
-            rms = lambda pred: float(np.sqrt((go[pred(go.variant)].delta ** 2).mean())) if pred(go.variant).any() else 0.0  # noqa: E731
-            terms = {"sd_year_se": sd_year,
-                     "d_dt": rms(lambda v: v == "dt18p75"),
-                     "d_nodes": rms(lambda v: v == "nodes20_37p5"),
-                     "d_prop": max(rms(lambda v: v.isin(["latent-10", "latent+10"])), rms(lambda v: v.isin(["cond-20", "cond+20"]))),
-                     "d_member": rms(lambda v: v.str.startswith("member:")),
-                     "d_demand": rms(lambda v: v.isin(["demand0.8", "demand1.2"])),
-                     "d_mains": rms(lambda v: v.isin(["mains-2", "mains+2"]))}
-            rows.append({"scope": scope, "objective": o, **terms, "band": float(np.sqrt(sum(t ** 2 for t in terms.values()))),
+            sd_year = float(base.year_sd.mean() / np.sqrt(5))
+            rms = lambda names: float(np.sqrt((go[go.variant.isin(names)].delta ** 2).mean()))  # noqa: E731
+            d_dt, d_nodes = rms(["dt75"]), rms(["nodes20"])
+            d_prop = max(rms(["latent-10", "latent+10"]), rms(["cond-20", "cond+20"]))
+            rows.append({"scope": scope, "objective": o, "sd_year_se": sd_year, "d_dt": d_dt, "d_nodes": d_nodes,
+                         "d_prop": d_prop, "band": float(np.sqrt(sd_year ** 2 + d_dt ** 2 + d_nodes ** 2 + d_prop ** 2)),
                          "n_designs": int(base.shape[0])})
     t = pd.DataFrame(rows)
     t.to_csv(OUT / "wp6_band.csv", index=False)
@@ -104,7 +100,9 @@ def main():
         front = ok[non_dominated_mask(F_of(ok))]
         for name, mask in {
             "R_in at 10 mm end (<=11 mm)": front.R_in_m <= 0.011, "R_in at 40 mm end (>=39 mm)": front.R_in_m >= 0.039,
-            "fraction at 2 % floor (<=2.5 %)": front.fraction <= 0.025, "fraction at 40 % cap (>=39.5 %)": front.fraction >= 0.395}.items():
+            "fraction at 2 % floor (<=2.5 %)": front.fraction <= 0.025, "fraction at 30 % cap (>=29.5 %)": front.fraction >= 0.295,
+            "flow at 0.010 floor (<=0.0125)  [MODEL ARTEFACT]": front.flow <= 0.0125,
+            "flow at 0.050 cap (>=0.0475)": front.flow >= 0.0475}.items():
             bound_rows.append({"pair": tag, "bound": name, "share_of_front": float(mask.mean()), "n_front": len(front)})
     pd.DataFrame(seed_rows).to_csv(OUT / "g9_seed_stability.csv", index=False)
     pd.DataFrame(al_rows).to_csv(OUT / "g9_al_summary.csv", index=False)

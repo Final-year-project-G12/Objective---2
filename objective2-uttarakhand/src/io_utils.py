@@ -95,11 +95,8 @@ def load_system_config():
 @functools.lru_cache(maxsize=None)
 def load_design_bounds():
     """Bounds dict for the exact geometry check: the `geometry_engine` block of configs/design_space.yaml, with the
-    PCM fraction cap taken from the approved variables. The flow range is the PUMP's physical range (system_config pump block):
-    rebuild 2026-11-22, flow is fixed at 0.030 kg/s in the SEARCH (design_space variables, src.design.space.in_space), but a
-    design at another flow (F_R(flow) sensitivity, verification cases) is still a physically valid design."""
+    PCM fraction cap and the flow range taken from the approved variables."""
     sp = _load_yaml(CONFIGS_DIR / "design_space.yaml")
-    pump = _load_yaml(CONFIGS_DIR / "system_config_shared.yaml")["pump"]
     ge, v = sp["geometry_engine"], sp["variables"]
     return {
         "version": sp["version"],
@@ -109,7 +106,7 @@ def load_design_bounds():
         "capsule_diameter_m": dict(ge["capsule_diameter_m"]),
         "capsule_count": dict(ge["capsule_count"]),
         "pcm_volume_fraction": {"min": ge["pcm_volume_fraction_min"], "max": v["pcm_volume_fraction"]["max"]},
-        "flow_rate_kg_s": {"min": float(pump["flow_min_kg_s"]), "max": float(pump["flow_max_kg_s"])},
+        "flow_rate_kg_s": dict(v["flow_rate_kg_s"]),
         "geometry": {"spacing_min_m": ge["spacing_min_m"], "passage_min_fraction": ge["passage_min_fraction"]},
     }
 

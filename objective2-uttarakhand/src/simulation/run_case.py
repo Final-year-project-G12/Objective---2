@@ -167,8 +167,6 @@ def run_case(state: str, cluster_id: int, pcm_name: str, design: DesignVector,
     metrics["mean_f_melt"] = result.summary["mean_f_melt"]
     metrics["min_f_melt"] = result.summary["min_f_melt"]
     metrics["max_f_melt"] = result.summary["max_f_melt"]
-    # rebuild M1 (2026-11-23): initial stored energy, so an external tool can close the energy balance from the hourly record alone
-    metrics["E_stored_initial_kWh"] = result.summary.get("E_stored_initial_kWh", float("nan"))
 
     out = {"geometry": geom, "valid": True, "reason": None, "metrics": metrics, "hourly": result.hourly}
     if compute_tes_metrics:

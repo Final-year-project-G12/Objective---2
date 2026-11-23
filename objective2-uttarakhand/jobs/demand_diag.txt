@@ -1,2 +1,0 @@
-results/supp_case_d175.csv scripts/r10_supplementary.py cases d175
-results/supp_case_d200.csv scripts/r10_supplementary.py cases d200

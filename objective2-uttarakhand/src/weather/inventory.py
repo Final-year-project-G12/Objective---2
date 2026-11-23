@@ -14,9 +14,6 @@ Acceptance rule (decision D6): a point-year is accepted if >= 98 % of its hours 
 to 3 h are filled by linear interpolation and flagged in the hourly file (`filled`).
 Rejected point-years stay in the inventory with their reason; nothing is silently dropped.
 
-The 2006-2010 confirmatory-test years (rebuild, plan rule R3) come from data/weather/raw_test_2006_2010/, downloaded with the
-same NASA POWER request as O1 used for 2016-2025, and pass through exactly the same acceptance rule and cleaning.
-
 Hourly resolution is verified per file: the timestamp keys must form an unbroken hourly
 UTC sequence Jan 1 00:00 .. Dec 31 23:00.
 """
@@ -34,8 +31,7 @@ from src.weather.roles import INVENTORY_PATH, WEATHER_POINT_YEARS_DIR, point_yea
 RAW_DIR = OBJ1_RAW_POWER_DIR
 CURRENT_MEDOIDS = {0: "UKP_0014", 1: "UKP_0029", 2: "UKP_0025", 3: "UKP_0041"}   # O1 K=4 medoids, verified against cluster_assignments
 REGIMES = tuple(sorted(CURRENT_MEDOIDS))
-TEST_RAW_DIR = Path(__file__).resolve().parents[2] / "data" / "weather" / "raw_test_2006_2010"   # rebuild L2, scripts/r2_fetch_test_weather.py
-YEARS = list(range(2006, 2011)) + list(range(2016, 2026))
+YEARS = range(2016, 2026)
 MIN_VALID_FRACTION = 0.98
 MAX_FILLABLE_GAP_H = 3
 RENAME = {"ALLSKY_SFC_SW_DWN": "GHI_Wm2", "CLRSKY_SFC_SW_DWN": "GHI_clearsky_Wm2", "T2M": "T_amb_C",
@@ -137,7 +133,7 @@ def build_inventory(write: bool = True, years=None) -> pd.DataFrame:
     rows = []
     for cid, pid in CURRENT_MEDOIDS.items():
         for y in (YEARS if years is None else years):
-            r, _ = build_point_year(cid, pid, y, raw_dir=TEST_RAW_DIR if y < 2016 else RAW_DIR, write=write)
+            r, _ = build_point_year(cid, pid, y, raw_dir=RAW_DIR, write=write)
             rows.append(r)
     inv = pd.DataFrame(rows)
     if years is not None and INVENTORY_PATH.exists():

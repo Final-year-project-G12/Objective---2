@@ -264,3 +264,15 @@ are not installed on this machine; `scripts/run_all_cases.ps1` runs everything w
   water-only result; PCM pays only when the daily draw exceeds the tank volume. Details `docs/REBUILD_COMMON100L.md` section 3i.
 - `pipeline.py` and `run_all_uttarakhand.py` rewritten for the rebuild chain; `docs/README.md` separates rebuild and legacy documents;
   `scripts/r11_output_manifest.py` hashes every output (plan R20).
+
+## 2026-11-23 - Back to the 50 L pipeline (student decision); the rebuild is kept on a branch
+
+- The student chose to continue with the earlier 50 L / 1.5 m2 / 300 L/day pipeline (PCM in regimes 0-2), after seeing that the
+  common-plant rebuild gives water-only at 100 L/day and PCM in regimes 0 and 2 only at 150-200 L/day.
+- The complete rebuild (L0-L9, M1, supplementary studies, demand diagnostics) is preserved on branch `uttarakhand-o2-common100L`
+  (commit dc3d3d0). On `main` the Uttarakhand folder was restored to the last 50 L state (commit f3000aa), plus the later 50 L work:
+  the g20-g24 study outputs and their figures (36 figures in `results/plots/`), `make_all_plots.py` with real fig28-fig35, the g18
+  fix and the g20-g24 scripts. 243 result files are byte-identical to the archive; 25 added. Tests: 95 passed.
+- Objective 3 uses `results/obj3_environment_contract_uttarakhand_v3.json`. Note for the report: the unified plan's common plant and
+  its findings (`docs/REBUILD_COMMON100L.md` on the branch) can be cited as a sensitivity: PCM pays only when the daily draw exceeds the
+  tank volume.

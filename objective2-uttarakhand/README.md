@@ -1,9 +1,9 @@
 # Objective 2 — Uttarakhand
 
-> **Common-plant rebuild COMPLETE (2026-11-23): water-only is recommended in all four regimes.** Objective 2 is being rebuilt on the common 100 L / 2.0 m2 / 100 L/day plant of the
-> project's Unified Rebuild Plan (45 C primary, 50 C secondary, flow 0.030 kg/s, PCM fraction 2-40 %, 2006-2010 one-shot test).
-> Status and frozen decisions: [`docs/REBUILD_COMMON100L.md`](docs/REBUILD_COMMON100L.md). Everything below describes the finished
-> **legacy** 50 L / 1.5 m2 / 300 L/day run, whose outputs moved from `results/` to `results_legacy_50L_v3/`.
+> **Active pipeline: the 50 L / 1.5 m2 / 300 L/day run (chosen by the student on 2026-11-23).** The common-plant rebuild of the
+> Unified Rebuild Plan (100 L / 2.0 m2 / 100 L/day; water-only in all regimes; at 175 L/day PCM in regimes 0 and 2 only) is kept
+> complete on the git branch `uttarakhand-o2-common100L` (decision record `docs/REBUILD_COMMON100L.md` there). Objective 3 uses
+> `results/obj3_environment_contract_uttarakhand_v3.json` (this pipeline).
 
 Design optimisation of the PCM storage unit (capsule inner radius, PCM amount via capsule count, flow rate, arrangement) for
 Uttarakhand's four Objective 1 climate regimes (K = 4), on a grey-box simulator.

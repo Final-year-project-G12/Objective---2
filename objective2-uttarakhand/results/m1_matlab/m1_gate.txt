@@ -1,4 +1,0 @@
-M1 gate (plan section 0.2): PASS
-runs 16 | numbers match 16 | balance closed 16 | ranking identical 16
-largest relative difference 4.88e-14 | largest MATLAB closure 5.04e-11 %
-MATLAB 26.2.0.3433840 (R2026b) Update 1

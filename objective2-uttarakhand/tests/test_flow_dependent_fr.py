@@ -43,12 +43,9 @@ def test_heat_removal_factor_rises_with_flow_and_stays_below_one():
 
 
 def test_hand_calculated_value():
-    # A from the config (2.0 m2 on the common plant), U_L = 5.0, F' = 0.84, cp = 4186, m = 0.030:
-    # x = A*5*0.84/(0.030*4186); F_R = F' * (1 - exp(-x))/x
+    # A = 1.5 m2, U_L = 5.0, F' = 0.84, cp = 4186, m = 0.030: x = 1.5*5*0.84/(0.030*4186) = 0.050167; F_R = F' * (1 - exp(-x))/x
     import math
-    A = _cfg(True)["collector"]["area_m2"]
-    assert A == 2.0
-    x = A * 5.0 * 0.84 / (0.030 * 4186.0)
+    x = 1.5 * 5.0 * 0.84 / (0.030 * 4186.0)
     assert heat_removal_factor(0.030, _cfg(True)) == pytest.approx(0.84 * (1 - math.exp(-x)) / x, rel=1e-12)
 
 

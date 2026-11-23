@@ -97,7 +97,6 @@ def _cfd_draw_volume_l(n_nodes, hot_fraction=0.6, hot_c=55.0, cold_c=25.0, unifo
     out = rc.run_case("uttarakhand", 0, None, DV, tank_model="multinode", n_nodes=n_nodes, mains_temp_override_C=25.0,
                       initial_state={"T_nodes": T, "h_nodes": np.zeros(n_nodes), "T_w_C": float(T.mean())},
                       system_config_overrides={"solver": {"timestep_s": 30},
-                                               "tank": {"volume_L": 50.0},        # the shared CFD draw case is a 50 L tank
                                                "delivery": {"target_temp_C": 45.0}},   # the CFD case counts litres >= 45 C
                       record_hourly=True)
     return float(out["hourly"]["vol_ge_target_kg"].iloc[0])

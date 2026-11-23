@@ -1,11 +1,11 @@
-# Objective 2 - Uttarakhand: legacy 50 L pipeline (2026-10-28) and the common-plant rebuild
+# Objective 2 - Uttarakhand: current pipeline (2026-10-28)
 
-> **Common-plant rebuild COMPLETE (2026-11-23): water-only is recommended in all four regimes.** Objective 2 is being rebuilt on the common 100 L / 2.0 m2 / 100 L/day plant of the
-> project's Unified Rebuild Plan (45 C primary, 50 C secondary, flow 0.030 kg/s, PCM fraction 2-40 %, 2006-2010 one-shot test).
-> Status and frozen decisions: [`docs/REBUILD_COMMON100L.md`](REBUILD_COMMON100L.md). Everything below describes the finished
-> **legacy** 50 L / 1.5 m2 / 300 L/day run, whose outputs moved from `results/` to `results_legacy_50L_v3/`.
+> **Active pipeline: the 50 L / 1.5 m2 / 300 L/day run (chosen by the student on 2026-11-23).** The common-plant rebuild of the
+> Unified Rebuild Plan (100 L / 2.0 m2 / 100 L/day; water-only in all regimes; at 175 L/day PCM in regimes 0 and 2 only) is kept
+> complete on the git branch `uttarakhand-o2-common100L` (decision record `docs/REBUILD_COMMON100L.md` there). Objective 3 uses
+> `results/obj3_environment_contract_uttarakhand_v3.json` (this pipeline).
 
-**Status (legacy run): complete.** Port of the Rajasthan current chain (v3, PCM fraction cap 30 %) to Uttarakhand with Objective 1's K = 4 regimes (final, confirmed 2026-11-12; see the corrections section below).
+**Status: current.** Port of the Rajasthan current chain (v3, PCM fraction cap 30 %) to Uttarakhand with Objective 1's K = 4 regimes (final, confirmed 2026-11-12; see the corrections section below).
 `docs/PROGRESS.md` is the log of the port and every gate. The legacy K = 5 chain (UTC-indexed demand, single-node tank) was removed in the
 cleanup of 2026-10-28, as in Rajasthan; it is in git history only. The full report is `Objective2_Uttarakhand_Report_v3.docx` (PDF beside it). `Objective2_Uttarakhand_Algorithms_Explained.docx` (PDF beside it) explains what the simulation includes, every algorithm, why it was chosen over the alternatives, and how to run the steps in parallel and faster; `Objective2_Uttarakhand_Summary.docx` (PDF beside it) is its 3-page summary.
 
@@ -28,17 +28,6 @@ Scope: this folder only. Fixed and not optimised: 50 L tank, collector area, the
 (`configs/system_config_shared.yaml`). Held-out test years 2024-2025, used once. Nothing is committed to git by this work.
 
 ## Contents
-
-**Common-plant rebuild (current):**
-
-| File | What it covers |
-|---|---|
-| [`REBUILD_COMMON100L.md`](REBUILD_COMMON100L.md) | decision record, frozen protocols (search, band, funnel), results of every level L0-L9, M1 and the supplementary studies |
-| [`07_OBJECTIVE3_HANDOFF_COMMON100L.md`](07_OBJECTIVE3_HANDOFF_COMMON100L.md) | the Objective 3 contract on the common plant (water-only in all regimes) |
-| `../results/plots_common100L/`, `../results/m1_matlab/figures/` | rebuild figures and the MATLAB M1 checkpoint |
-| `../pipeline.py` | the rebuild chain, stage by stage (`--stage status` shows what exists) |
-
-**Legacy 50 L run (archived in `../results_legacy_50L_v3/`; the files below describe that run, not the rebuild):**
 
 | File | What it covers |
 |---|---|

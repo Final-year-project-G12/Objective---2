@@ -12,7 +12,7 @@
 # state must re-run from DOE onward (framework doc, Phase 0 gate).
 # ============================================================================
 
-version: "config_common100L_v1_2026-11-22_uttarakhand"   # rebuild: Unified Rebuild Plan rule R1/R2 (legacy: config_v1.1_..._uttarakhand-delivery50)
+version: "config_v1.1_2026-09-13-safety-shield_uttarakhand-delivery50"
 # Bumped from v1.0_2026-09-05: the safety_shield block (below) was added on
 # 2026-09-13 (docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md §6/§7) without a
 # version bump at the time, so a run pinned to v1.0 could not be told apart
@@ -21,8 +21,7 @@ version: "config_common100L_v1_2026-11-22_uttarakhand"   # rebuild: Unified Rebu
 
 collector:
   type: flat_plate
-  area_m2: 2.0                     # common plant (plan R1: 100 L / 2.0 m2 / 100 L/day). Legacy 1.5 [Singh et al. 2025, §3].
-                                   # AREA BASIS OPEN: the F_R values below have no stated aperture/absorber basis (docs/REBUILD_COMMON100L.md)
+  area_m2: 1.5                     # domestic SWH baseline [Singh et al. 2025, §3]
   fr_tau_alpha: 0.75                # F_R*(τα), combined optical/removal efficiency [typical FPC]
   fr_ul_W_m2K: 4.5                  # F_R*U_L, typical flat-plate loss coefficient (3.5-6 W/m2K range)
   min_irradiance_cutoff_Wm2: 10.0   # below this, pump assumed off -> zero collector coupling (Gate 2)
@@ -36,7 +35,7 @@ collector:
     reference_flow_kg_s: 0.030      # ASSUMPTION: the flow at which the project's F_R values (0.75, 4.5) are taken to hold; not stated in any source read
 
 tank:
-  volume_L: 100.0                  # common plant (plan R1). Legacy 50 L [Chen et al. 2025, Table 1]
+  volume_L: 50.0                   # domestic standard [Chen et al. 2025, Table 1]
   height_to_diameter_ratio: 2.0     # standard vertical domestic tank proportion (assumption)
   insulation_m: 0.05                # 5 cm foam
   U_tank_W_m2K: 0.8                 # tank-wall U-value [framework doc §3.1]
@@ -82,7 +81,6 @@ safety_shield:
   bypass_pcm_C: 62.0                  # max_pcm_temp_C - 3.0 C guard band
 
 delivery:
-  # LEGACY (50 L run, results_legacy_50L_v3/): the block below explains why that run used 50 C. The rebuild uses 45 C primary.
   # UTTARAKHAND: 50.0, not the 45.0 of the other states (kept from this state's
   # earlier config). Objective 1's 04b_climate_signature.py uses T_DELIVERY_C=50.0
   # for Uttarakhand, which derives the Tm_target_C=57.0 that the whole MCDM PCM
@@ -92,10 +90,7 @@ delivery:
   # Everything else in this file is byte-identical to objective2-rajasthan's copy
   # (safety_shield block adopted 2026-10-28 with the current-chain port; the OFF-by-default
   # collector.flow_dependent_fr block added 2026-11-11, so both states expose the same options).
-  target_temp_C: 45.0                # PRIMARY service threshold, every state (plan R2; selection uses this)
-  secondary_report_temp_C: 50.0      # Uttarakhand-only SECONDARY report (plan R2): the target enters only the accounting, not
-                                     # the physics, so it is reported by re-running a design with target_temp_C overridden to 50;
-                                     # 50 C kWh are never pooled with 45 C kWh
+  target_temp_C: 50.0                # usable hot water, matches Obj1's T_DELIVERY_C
 
 water:
   cp_J_kgK: 4186.0

@@ -2,13 +2,12 @@
 scripts/g8_s3_compare.py
 ===========================
 G8 / S3 - surrogate selection on the S2 DOE, per (regime, O1 PCM) pair. Usage: python scripts/g8_s3_compare.py
-Two validations, both WITHIN a pair (never pooled across regimes):
-  designs  : 5-fold cross-validation over designs, target = the cheap-fidelity value (mean over the robust anchors)
-  top_half : the same out-of-fold predictions scored only on the better half of the designs by simulated g_window, where ranking
-             decides the search (rebuild 2026-11-23: replaces leave-one-year-out, which a one-year cheap DOE cannot support;
-             year generalisation is tested by the cheap-vs-full check on the finalists, docs/REBUILD_COMMON100L.md section 3d)
-Reported per (pair, target, family): RMSE, RMSE / (spread scale of that target), Spearman rho, and global R^2 (contrast only).
-Families: nn_ensemble, xgboost, rsm_quadratic, gp_ard, stacked (plan R10).
+Two validations, both WITHIN a pair (never pooled across regimes, which is what inflated R^2 before):
+  designs : 5-fold cross-validation over designs, target = mean over the 5 explore years
+  years   : leave-one-year-out x design folds -- train on designs of 4 years' mean, test on held-out designs'
+            gain in the left-out year (generalisation to an unseen weather year)
+Reported per (pair, target, family): RMSE, RMSE / (mean year-to-year sd of that target = the repeatability scale),
+Spearman rho of predicted vs simulated ranking, and global R^2 (for contrast only; NOT used to choose).
 Selection rule: highest mean Spearman over targets and validations, ties (within 0.02) broken by lower relative RMSE.
 Writes results/g8_s3_comparison.csv and g8_s3_selection.csv.
 """
@@ -26,6 +25,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from src.optimize.surrogates import FAMILIES, TARGETS, feature_matrix
 
+YEARS = (2016, 2017, 2018, 2019, 2020)
 
 
 def metrics(y_true, y_pred, scale):
@@ -38,20 +38,34 @@ def metrics(y_true, y_pred, scale):
 def run_pair(df, tag):
     ok = df[(df.status == "ok") & df.valid].reset_index(drop=True)
     X = feature_matrix(ok)
-    Y = ok[list(TARGETS)].to_numpy(float)
-    scale = {t: float(ok[t].std()) for t in TARGETS}               # one-year DOE: the design-to-design spread is the scale
-    top = (ok["g_window"] >= ok["g_window"].median()).to_numpy()
+    Ymean = ok[list(TARGETS)].to_numpy(float)
+    scale = {t: float(ok[t + "_sd"].mean()) if t + "_sd" in ok else float(ok[[f"{t}_{y}" for y in YEARS]].std(axis=1).mean())
+             for t in TARGETS}
     kf = KFold(5, shuffle=True, random_state=7)
     rows = []
     for fam, cls in FAMILIES.items():
-        pred = np.zeros_like(Y)
+        # --- design folds
+        pred = np.zeros_like(Ymean)
         for tr, te in kf.split(X):
-            pred[te] = cls().fit(X[tr], Y[tr]).predict(X[te])
+            pred[te] = cls().fit(X[tr], Ymean[tr]).predict(X[te])
         for j, t in enumerate(TARGETS):
-            for val, mask in (("designs_5fold", np.ones(len(ok), bool)), ("top_half", top)):
-                rmse, rel, rho, r2 = metrics(Y[mask, j], pred[mask, j], scale[t])
-                rows.append({"pair": tag, "validation": val, "family": fam, "target": t, "n": int(mask.sum()),
-                             "rmse": rmse, "rmse_over_spread": rel, "spearman": rho, "r2_global": r2})
+            rmse, rel, rho, r2 = metrics(Ymean[:, j], pred[:, j], scale[t])
+            rows.append({"pair": tag, "validation": "designs_5fold", "family": fam, "target": t, "n": len(ok),
+                         "rmse": rmse, "rmse_over_year_sd": rel, "spearman": rho, "r2_global": r2})
+        # --- leave-one-year-out (unseen weather year, unseen designs): one multi-target fit per (year, fold)
+        y_all = {t: np.column_stack([ok[f"{t}_{y}"].to_numpy(float) for y in YEARS]) for t in TARGETS}
+        res = {t: [] for t in TARGETS}
+        for yi, y in enumerate(YEARS):
+            Ytrain = np.column_stack([np.delete(y_all[t], yi, axis=1).mean(axis=1) for t in TARGETS])
+            P = np.zeros((len(ok), len(TARGETS)))
+            for tr, te in kf.split(X):
+                P[te] = cls().fit(X[tr], Ytrain[tr]).predict(X[te])
+            for j, t in enumerate(TARGETS):
+                res[t].append(metrics(y_all[t][:, yi], P[:, j], scale[t]))
+        for t in TARGETS:
+            a = np.nanmean(np.array(res[t]), axis=0)
+            rows.append({"pair": tag, "validation": "leave_one_year_out", "family": fam, "target": t, "n": len(ok),
+                         "rmse": a[0], "rmse_over_year_sd": a[1], "spearman": a[2], "r2_global": a[3]})
         print(tag, fam, "done", flush=True)
     return pd.DataFrame(rows)
 
@@ -66,12 +80,12 @@ def _job(f):
 
 def main():
     from concurrent.futures import ProcessPoolExecutor
-    files = sorted(f for f in glob.glob("results/g8_s2_r*_p*.csv") if not f.endswith(".partial.csv"))
-    with ProcessPoolExecutor(max_workers=3) as ex:        # memory: never more than 3 (2026-11-14)
+    files = sorted(glob.glob("results/g8_s2_r*_p*.csv"))
+    with ProcessPoolExecutor(max_workers=9) as ex:
         out = [o for o in ex.map(_job, files) if o is not None]
     comp = pd.concat(out)
     comp.to_csv("results/g8_s3_comparison.csv", index=False)
-    g = comp.groupby(["pair", "family"]).agg(spearman=("spearman", "mean"), rel_rmse=("rmse_over_spread", "mean")).reset_index()
+    g = comp.groupby(["pair", "family"]).agg(spearman=("spearman", "mean"), rel_rmse=("rmse_over_year_sd", "mean")).reset_index()
     sel = []
     for pair, h in g.groupby("pair"):
         best = h.spearman.max()

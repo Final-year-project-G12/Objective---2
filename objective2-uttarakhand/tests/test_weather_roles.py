@@ -1,7 +1,7 @@
 """
 tests/test_weather_roles.py
 ==============================
-G5 (O2, 2026-10-26; common-plant rebuild roles 2026-11-22) — year-role enforcement, the confirmatory-test lock, gap
+G5 (O2, 2026-10-26) — year-role enforcement, the held-out-test lock, gap
 handling of the weather inventory, and agreement with the existing regime weather files.
 """
 
@@ -22,14 +22,11 @@ from src.io_utils import load_hourly_weather
 
 
 def test_year_roles_split():
-    """Common-plant rebuild, plan rule R3."""
-    assert roles.years_for("explore") == [2016, 2017, 2018, 2019]
-    assert roles.years_for("select") == [2020, 2021]
-    assert roles.years_for("report") == [2022, 2023, 2024, 2025]
-    assert roles.years_for("test") == [2006, 2007, 2008, 2009, 2010]
-    for y in (2005, 2011, 2015, 2026):
-        with pytest.raises(ValueError):
-            roles.role_of(y)
+    assert roles.years_for("explore") == [2016, 2017, 2018, 2019, 2020]
+    assert roles.years_for("select") == [2021, 2022, 2023]
+    assert roles.years_for("test") == [2024, 2025]
+    with pytest.raises(ValueError):
+        roles.role_of(2015)
     with pytest.raises(ValueError):
         roles.years_for("anything")
 
@@ -38,87 +35,65 @@ def test_purpose_must_match_role():
     with pytest.raises(PermissionError):
         roles.load_point_year("uttarakhand", 0, "UKP_0014", 2018, purpose="select")
     with pytest.raises(PermissionError):
-        roles.load_point_year("uttarakhand", 0, "UKP_0014", 2020, purpose="explore")
-    with pytest.raises(PermissionError):                         # the legacy test years are now report-only
-        roles.load_point_year("uttarakhand", 0, "UKP_0014", 2024, purpose="test")
-    assert len(roles.load_point_year("uttarakhand", 0, "UKP_0014", 2018, purpose="explore")) == 8760
-    assert len(roles.load_point_year("uttarakhand", 0, "UKP_0014", 2021, purpose="select")) == 8760
+        roles.load_point_year("uttarakhand", 0, "UKP_0014", 2022, purpose="explore")
+    df = roles.load_point_year("uttarakhand", 0, "UKP_0014", 2018, purpose="explore")
+    assert len(df) == 8760
 
 
-def test_test_and_report_years_need_the_lock_and_the_lock_is_single_use(tmp_path, monkeypatch):
-    monkeypatch.setattr(roles, "LOCK_DIR", tmp_path)
+def test_test_years_need_the_lock_and_the_lock_is_single_use(tmp_path, monkeypatch):
+    monkeypatch.setattr(roles, "TEST_LOCK_PATH", tmp_path / "held_out_test.lock")
     monkeypatch.setattr(roles, "_lock_held_by_this_process", False)
     with pytest.raises(roles.HeldOutLockError):
-        roles.load_point_year("uttarakhand", 0, "UKP_0014", 2008, purpose="test")
-    with pytest.raises(roles.HeldOutLockError):                  # report-only years wait for the frozen, tested design
-        roles.load_point_year("uttarakhand", 0, "UKP_0014", 2023, purpose="report")
-    path = roles.acquire_test_lock("run-001", "abc123")
-    lock = json.loads(path.read_text())
-    assert lock["run_id"] == "run-001" and lock["plant_hash"] == roles.plant_hash()
-    assert len(roles.load_point_year("uttarakhand", 0, "UKP_0014", 2008, purpose="test")) == 8760
-    assert len(roles.load_point_year("uttarakhand", 0, "UKP_0014", 2023, purpose="report")) == 8760
-    for p in ("explore", "select", "report"):                     # test years are never available to the other purposes
+        roles.load_point_year("uttarakhand", 0, "UKP_0014", 2024, purpose="test")
+    roles.acquire_test_lock("run-001", "abc123")
+    assert json.loads((tmp_path / "held_out_test.lock").read_text())["run_id"] == "run-001"
+    assert len(roles.load_point_year("uttarakhand", 0, "UKP_0014", 2024, purpose="test")) == 8760
+    for p in ("explore", "select"):                                # test years are never available to the other purposes
         with pytest.raises(PermissionError):
-            roles.load_point_year("uttarakhand", 0, "UKP_0014", 2010, purpose=p)
+            roles.load_point_year("uttarakhand", 0, "UKP_0014", 2025, purpose=p)
     with pytest.raises(roles.HeldOutLockError):                  # second acquisition refused
         roles.acquire_test_lock("run-002", "abc123")
+    # a fresh process (flag reset) still cannot load test years while the lock file exists unowned
     monkeypatch.setattr(roles, "_lock_held_by_this_process", False)
-    with pytest.raises(roles.HeldOutLockError):                  # a fresh process cannot load test years while the lock exists
-        roles.load_point_year("uttarakhand", 0, "UKP_0014", 2006, purpose="test")
-
-
-def test_workers_can_only_join_the_one_locked_run(tmp_path, monkeypatch):
-    """g10_test.py: the parent acquires the lock; workers join by run id. Joining never creates a lock, a wrong id is refused,
-    and a second acquisition is still refused."""
-    monkeypatch.setattr(roles, "LOCK_DIR", tmp_path)
-    monkeypatch.setattr(roles, "_lock_held_by_this_process", False)
-    with pytest.raises(roles.HeldOutLockError):                  # nothing to join before the test starts
-        roles.join_test_lock("run-A")
-    assert not roles.test_lock_path().exists()
-    roles.acquire_test_lock("run-A", "fp")
-    monkeypatch.setattr(roles, "_lock_held_by_this_process", False)   # a fresh worker process
     with pytest.raises(roles.HeldOutLockError):
-        roles.join_test_lock("run-B")
-    roles.join_test_lock("run-A")
-    assert len(roles.load_point_year("uttarakhand", 1, "UKP_0029", 2009, purpose="test")) == 8760
+        roles.load_point_year("uttarakhand", 0, "UKP_0014", 2025, purpose="test")
+
+
+def test_real_lock_records_the_single_held_out_run():
+    """After G10 (2026-10-27) the real lock exists. It must name the run that produced g10_heldout_results.csv and refuse a second run."""
+    import json as _json
+    if not roles.TEST_LOCK_PATH.exists():
+        pytest.skip("held-out test not run yet")
+    lock = _json.loads(roles.TEST_LOCK_PATH.read_text())
+    held = pd.read_csv(roles.TEST_LOCK_PATH.parent / "g10_heldout_results.csv")
+    assert set(held.run_id) == {lock["run_id"]}
     with pytest.raises(roles.HeldOutLockError):
-        roles.acquire_test_lock("run-C", "fp")
-
-
-def test_lock_path_is_keyed_to_the_plant_and_never_the_legacy_lock():
-    """Plan section 7.5: the new lock lives under results/locks/ and its name carries the plant hash; the spent legacy lock
-    (archived with the 50 L results) is a different file and is never consulted."""
-    p = roles.test_lock_path()
-    assert p.parent == roles.LOCK_DIR and roles.plant_hash() in p.name
-    legacy = REPO_ROOT / "results_legacy_50L_v3" / "held_out_test.lock"
-    assert legacy.exists() and p.resolve() != legacy.resolve()
-    assert json.loads(legacy.read_text())["run_id"] == "heldout_c75ac0e6fb78"
+        roles.acquire_test_lock("another-run", "x")
 
 
 def test_inventory_meets_acceptance_rule():
     inv = pd.read_csv(roles.INVENTORY_PATH)
-    assert len(inv) == 60 and set(inv.cluster_id) == {0, 1, 2, 3}
-    assert set(inv.year) == set(range(2006, 2011)) | set(range(2016, 2026))
+    assert len(inv) == 40 and set(inv.cluster_id) == {0, 1, 2, 3}
     assert inv["accepted"].all()
     assert (inv["pct_valid"] >= 98.0).all() and (inv["max_gap_h"] <= 3).all()
     assert inv["hourly_sequence_ok"].all() and (inv["n_hours_after_leap_drop"] == 8760).all()
-    assert (inv.role == inv.year.map(roles.role_of)).all()
+    assert set(inv.groupby("year").role.first()) == {"explore", "select", "test"}
     for _, r in inv.iterrows():
         assert roles.point_year_path("uttarakhand", r.cluster_id, r.point_id, r.year).exists()
 
 
-def test_test_years_come_from_the_same_source_as_the_rest():
-    """The 2006-2010 raw files were fetched with O1's NASA POWER request (scripts/r2_fetch_test_weather.py): same parameters,
-    same UTC time standard, same point coordinates as the 2016-2025 raw files."""
+def test_test_years_are_below_average_ghi_in_every_cluster():
+    """Rajasthan's plan claim ("2024-2025 are the two lowest-GHI years") does NOT hold for Uttarakhand: 2023 is lower
+    than 2024 in regime 0 and the lowest year of all in regime 3. What does hold, and is stated instead: 2025 is the
+    lowest-GHI year in regimes 0-2, and the test years' mean GHI is below the explore+select mean in every regime,
+    so the held-out test is harsher than average."""
     inv = pd.read_csv(roles.INVENTORY_PATH)
-    assert set(inv.time_standard) == {"UTC"}
-    raw = REPO_ROOT / "data" / "weather" / "raw_test_2006_2010"
-    for pid in inv.point_id.unique():
-        d = json.loads((raw / f"power_{pid}_2006.json").read_text())
-        assert set(d["properties"]["parameter"]) == {"ALLSKY_SFC_SW_DWN", "CLRSKY_SFC_SW_DWN", "T2M", "RH2M", "WS10M"}
-        pts = pd.read_csv(REPO_ROOT / "data" / "objective1" / "cluster_assignments_uttarakhand.csv").set_index("point_id")
-        lon, lat = d["geometry"]["coordinates"][:2]
-        assert (lat, lon) == (pts.loc[pid, "lat"], pts.loc[pid, "lon"])
+    for c, g in inv.groupby("cluster_id"):
+        test = g[g.role == "test"].GHI_annual_kWh_m2.mean()
+        rest = g[g.role != "test"].GHI_annual_kWh_m2.mean()
+        assert test < rest
+        if c != 3:
+            assert int(g.loc[g.GHI_annual_kWh_m2.idxmin(), "year"]) == 2025
 
 
 def _synthetic_raw(tmp_path, year=2019, gaps=(), missing_frac=0.0):

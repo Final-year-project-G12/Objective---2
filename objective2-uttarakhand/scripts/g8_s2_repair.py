@@ -1,9 +1,11 @@
 """
 scripts/g8_s2_repair.py
 ==========================
-G8 / S2 - re-run DOE rows whose status is 'error' (e.g. MemoryError from too many parallel jobs) with the SAME Sobol points and
-replace them in place. Geometry-rejected rows are left as they are. Usage: python scripts/g8_s2_repair.py
+G8 / S2 - re-run the DOE rows whose status is 'error' (all four were MemoryError from nine parallel jobs plus other
+memory use, not design-related) with the SAME Sobol points, and replace them in place. Rows that were rejected by the
+exact geometry gate are left as they are. Usage: python scripts/g8_s2_repair.py
 """
+
 import glob
 import sys
 from pathlib import Path
@@ -12,8 +14,9 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from scripts.g8_s2_doe import evaluate_u, sobol_points  # noqa: E402
-from src.io_utils import get_regime                     # noqa: E402
+from scripts.g8_s2_doe import design_from_u, sobol_points  # noqa: E402
+from src.io_utils import get_regime  # noqa: E402
+from src.optimize.evaluate import evaluate_design, flatten  # noqa: E402
 
 
 def main():
@@ -27,12 +30,17 @@ def main():
         pcm = get_regime("uttarakhand", cid)["pcm_shortlist"][rank - 1]
         for i in bad:
             did = int(df.loc[i, "design_id"])
-            row = evaluate_u(cid, pcm, U[did])
-            row.update({"design_id": did, "u0": U[did][0], "u1": U[did][1], "u2": U[did][2], "runtime_s": float("nan")})
-            for c in set(row) - set(df.columns):
-                df[c] = float("nan")
+            u = U[did]
+            r, fr, q, arr = design_from_u(u)
+            res = evaluate_design(cid, pcm, r, fr, q, arr, purpose="explore")
+            row = flatten(res)
+            row["status"] = "ok" if res["valid"] else "geometry_rejected"
+            for yr in res.get("per_year", []):
+                for k in ("g_window", "g_annual", "g_useful", "d_overheat", "t_pcm_max"):
+                    row[f"{k}_{yr['year']}"] = yr[k]
+            row.update({"design_id": did, "u0": u[0], "u1": u[1], "u2": u[2], "u3": u[3], "runtime_s": float("nan")})
             for c in df.columns:
-                df.loc[i, c] = row.get(c, float("nan"))
+                df.loc[i, c] = row.get(c, float("nan")) if c in row else float("nan")
             print("repaired", Path(f).name, did, row["status"], flush=True)
         df.to_csv(f, index=False)
 
