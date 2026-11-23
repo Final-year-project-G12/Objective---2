@@ -198,6 +198,8 @@ the band is the main plant's, so these are diagnostics of direction). Best worst
 | main plant: 100 L, 2.0 m2, 100 L/day | -0.6 | -0.8 | -0.7 | -1.3 | no (water-only) |
 | 100 L, 2.0 m2, 70 L/day | -0.1 | -0.2 | -0.1 | -0.2 | no |
 | 100 L, 2.0 m2, 150 L/day | +27.8 | +5.4 | +31.6 | -7.3 | yes in r0 and r2 |
+| 100 L, 2.0 m2, 175 L/day (plan's 45 C reading of a 100 LPD unit) | +37.3 | +3.1 | +36.7 | -9.1 | yes in r0 and r2 |
+| 100 L, 2.0 m2, 200 L/day | +42.1 | +3.5 | +42.9 | -10.5 | yes in r0 and r2 |
 | legacy 2.5 m2, 300 L/day (100 L tank) | +118.6 | +69.5 | +112.6 | -10.4 | yes in r0-r2 |
 | 150 L tank, 2.0 m2, 150 L/day | -3.6 | -4.5 | -2.7 | -3.2 | no |
 

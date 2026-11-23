@@ -12,7 +12,8 @@ selection, test and contract are not touched.
   aux <c>       plan 4.3 cold-regime item (iii): an auxiliary-heater-enabled system as a SEPARATE scenario. An ideal in-line booster tops
                 every draw up to the delivery threshold; its energy is the simulator's unmet energy. Water-only tank vs the frozen best PCM
                 design (three anchors), select years 2020-2021 at 37.5 s, at 45 C and at 50 C. Not a PCM benefit claim.
-  cases <name>  plan decision 12 optional plant cases: d70 (70 L/day), d150 (150 L/day), legacy (2.5 m2, 300 L/day), t150 (150 L tank,
+  cases <name>  plan decision 12 optional plant cases: d70 (70 L/day), d150 (150 L/day), d175 / d200 (175 / 200 L/day; 175 L/day at 45 C is
+                the plan's own reading of a 100 LPD unit rated at 60 C, Revision 9), legacy (2.5 m2, 300 L/day), t150 (150 L tank,
                 150 L/day). Per regime a fixed design set (each O1 PCM x PCM fraction 5/10/20/30/40 % x inner radius 25/40 mm, staggered),
                 three anchors, the representative explore year at 150 s. Diagnostic of direction only: the band is the main plant's.
   boundary      plan O2-11 bound-contact diagnostic: the picks sit at the 2 % fraction floor, so the box is extended below it
@@ -143,7 +144,7 @@ def aux(cid):
     pd.DataFrame(rows).to_csv(RES / f"supp_aux_heater_r{cid}.csv", index=False)
 
 
-CASES = {"d70": {"vol": 0.7}, "d150": {"vol": 1.5},
+CASES = {"d70": {"vol": 0.7}, "d150": {"vol": 1.5}, "d175": {"vol": 1.75}, "d200": {"vol": 2.0},
          "legacy": {"vol": 3.0, "sys_over": {"collector": {"area_m2": 2.5}}},
          "t150": {"vol": 1.5, "sys_over": {"tank": {"volume_L": 150.0}}, "tank_L": 150.0}}
 
