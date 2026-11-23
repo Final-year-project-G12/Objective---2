@@ -67,6 +67,24 @@ def test_test_and_report_years_need_the_lock_and_the_lock_is_single_use(tmp_path
         roles.load_point_year("uttarakhand", 0, "UKP_0014", 2006, purpose="test")
 
 
+def test_workers_can_only_join_the_one_locked_run(tmp_path, monkeypatch):
+    """g10_test.py: the parent acquires the lock; workers join by run id. Joining never creates a lock, a wrong id is refused,
+    and a second acquisition is still refused."""
+    monkeypatch.setattr(roles, "LOCK_DIR", tmp_path)
+    monkeypatch.setattr(roles, "_lock_held_by_this_process", False)
+    with pytest.raises(roles.HeldOutLockError):                  # nothing to join before the test starts
+        roles.join_test_lock("run-A")
+    assert not roles.test_lock_path().exists()
+    roles.acquire_test_lock("run-A", "fp")
+    monkeypatch.setattr(roles, "_lock_held_by_this_process", False)   # a fresh worker process
+    with pytest.raises(roles.HeldOutLockError):
+        roles.join_test_lock("run-B")
+    roles.join_test_lock("run-A")
+    assert len(roles.load_point_year("uttarakhand", 1, "UKP_0029", 2009, purpose="test")) == 8760
+    with pytest.raises(roles.HeldOutLockError):
+        roles.acquire_test_lock("run-C", "fp")
+
+
 def test_lock_path_is_keyed_to_the_plant_and_never_the_legacy_lock():
     """Plan section 7.5: the new lock lives under results/locks/ and its name carries the plant hash; the spent legacy lock
     (archived with the 50 L results) is a different file and is never consulted."""

@@ -83,14 +83,70 @@ Four regimes, rank-1 PCM, flow 0.030, 10-node tank, explore year 2018; designs V
   (150 L/day: +3 / +10 / +15; 300 L/day: +3 / +15 / +25 kWh/yr) and is about zero at 50 C; regime 3 is negative in every case.
   Reading: at 100 L/day a 100 L tank with 2.0 m2 already stores a full day's hot water, so PCM only displaces water.
 
+## 3d. Search protocol, declared 2026-11-23 BEFORE any L4-L7 run (`src/design/box.py`)
+
+- **Fidelities:** cheap = 150 s on the representative explore year (closest annual GHI to the 2016-2019 mean, weather only:
+  regime 0 -> 2018, 1 -> 2018, 2 -> 2017, 3 -> 2018); full = 37.5 s on every year of the role. Screening (L9) uses all four explore
+  years at 150 s; DOE, NSGA-II and the dense grid use cheap; finalists, selection, test and report years use full.
+- **Cheap-vs-full acceptance:** on the finalists the Spearman correlation of the mean paired g_window, cheap against full, must be
+  >= 0.7; otherwise the cheap screen is not used for selection and the finalists are re-ranked at full fidelity only.
+- **Robust anchor (R7):** every PCM evaluation at bottom, centre and top; objectives are means over anchors (and years); the
+  worst-anchor gain is stored. The water-only twin does not depend on the anchor and is simulated once per year (exact, flow 0.030).
+- **Search objectives** (unchanged method, rebuild box): maximise mean g_window and g_annual, minimise d_overheat; the Pareto front is
+  reported with PCM mass. Surrogates: nn_ensemble, xgboost, rsm_quadratic, gp_ard, stacked (R10); validated by 5-fold over designs and
+  by rank quality on the better half of the designs (a leave-one-year-out check is not possible on the one-year cheap DOE; year
+  generalisation is tested by the cheap-vs-full check).
+
+## 3e. Selection funnel, frozen 2026-11-23 BEFORE any select-year evaluation (`scripts/g10_select.py`)
+
+1. Finalists: per (regime, PCM) the non-dominated feasible cheap-fidelity designs (g_window, g_annual, d_overheat), thinned evenly
+   along g_annual to at most 12; each re-simulated at the FULL fidelity on 2020-2021 at all three anchors.
+2. Hard constraints on the select years: PCM peak <= 65 C and water peak <= 75 C in every year at every anchor; exact geometry.
+3. Plan R7: a design is eligible as "better than water-only" only if its worst-anchor mean select-year g_window exceeds the regime
+   band (section 5). If no design is eligible, the regime's recommendation is **water-only** (plan decision 4); the funnel below
+   is then applied to all feasible finalists and its pick is recorded and tested as the "best PCM design", not as a recommendation.
+4. Funnel on the eligible (or, if none, the feasible) set: S0 = within band(g_window) of the best mean g_window; S1 = those within
+   band(d_overheat) of the lowest overheating; S2 = those within the measured tau_serve standard error of the best tau_serve gain
+   (night scenarios at 37.5 s, centre anchor, top 12 by g_window); pick the lowest PCM mass, then fewest capsules, then the largest
+   margin to 65 C. Everything left in S0 is reported as indistinguishable.
+5. Frozen for the test: the pick plus the best g_window design of every other O1 PCM of the regime; SHA-256 fingerprint per regime.
+6. Cheap-vs-full: Spearman(cheap g_window, full select-year g_window) over the finalists >= 0.7, else the cheap screen is reported
+   as not usable for selection.
+
+## 3f. L4-L5 findings (2026-11-23)
+
+- **Baseline** (`scripts/g8_build_plain_baseline.py`): exact water-only runs at 0.030 kg/s, explore and select roles, 150 s and 37.5 s.
+- **Taguchi L9** (`scripts/g8_s1_screening.py`, 12 pairs, 2016-2019, three anchors): PCM fraction carries 68-98 % of the g_window
+  variance in every pair, inner radius 9-22 %, arrangement 10-16 %, anchor 0-4 %. Two of the nine L9 runs (radial at 10 mm / 40 % and
+  at 40 mm / 21 %) cannot be packed in the 100 L tank, so the array is unbalanced and the per-factor sums of squares overlap (the
+  "error" share comes out negative); the shares are indicative only. The ranking itself (fraction first) is the same in every pair.
+- **Sobol DOE** (`scripts/g8_s2_doe.py`, 128 points x 12 pairs, cheap fidelity, three anchors): 116 of 128 simulated per pair, 12
+  geometry-rejected, no errors. Best mean g_window over all 1,392 designs: +1.7 kWh/yr (regime 3, PureTemp 53); best in regimes
+  0-2: -0.2 / -0.2 / +0.8 kWh/yr; median design -2 to -18 kWh/yr. This confirms the L3 probe: on the common plant no PCM design
+  delivers meaningfully more than the water-only tank at 45 C. The search (L6) and selection continue as declared.
+- Compute: one cheap design about 15 s (three anchors); the PC slept 10:05-11:57 on 2026-11-23 and the jobs resumed unharmed.
+
 ## 4. Open items
 
 - Collector parameters and area basis for 2.0 m2 (needs a source before the L3 gate is signed).
 
 ## 5. Repeatability band recipe (to be frozen at L7, before the select-year evaluation)
 
-Placeholder: year scatter, time step, node count, PCM properties, medoid versus member points, demand and mains. To be written in full
-before the band is computed.
+Frozen 2026-11-23, before the band is computed and before any select-year evaluation (`scripts/g9_band.py`):
+
+- **Designs:** per regime, 4 designs of the rank-1 PCM from the cheap DOE: the 20 %, 50 % and 80 % quantiles of g_annual among
+  feasible designs, and the best feasible g_window. All at the centre anchor (the anchor is in the objective, not the band), flow
+  0.030, the four explore years 2016-2019, 150 s unless the term says otherwise. Every variant's water-only twin gets the same change.
+- **Terms** (each the RMS over the 4 designs of the change in the 4-year mean paired gain against the base variant):
+  1. year scatter: mean over designs of the per-year sd of the paired gain divided by sqrt(2) (the selection judges 2-year means);
+  2. time step: 37.5 s against 18.75 s (the remaining discretisation error at the report step);
+  3. node count: 10 against 20 nodes, at 37.5 s;
+  4. PCM properties: the larger of latent heat +-10 % and conductivity +-20 %;
+  5. medoid versus member points: the same design on the two most-populated non-medoid members of the regime
+     (`scripts/r7_member_weather.py`, `data/weather/point_years/member_inventory.csv`);
+  6. demand: 100 L/day x 0.8 and x 1.2; 7. mains: regime estimate -2 K and +2 K.
+- **Band** = sqrt(sum of the squared terms), per regime and pooled ("all"), for g_window, g_annual and d_overheat. A gain counts as
+  meaningful only if it exceeds the band (plan section 5). Stack position is not a term (R7 puts it in the objective).
 
 ## 6. Level tracker
 
@@ -100,8 +156,8 @@ before the band is computed.
 | L1 | O1 alignment (Option B, manifest hashes) | done 2026-11-22: `results/o1_manifest_uttarakhand.json` (`scripts/r1_o1_manifest.py`) |
 | L2 | config, weather (incl. 2006-2010), year roles, locks, hashes | done 2026-11-22: section 3b; 94 tests pass, 5 skip (need the L4 baseline) |
 | L3 | simulator verification (geometry 2-40 %, dt halving to 18.75 s, 10 vs 20 nodes, energy closure, IS 12976 standing loss) | done 2026-11-22: section 3c (gate passed; regime-3 cold standing-loss case fails, reported). Collector area basis still open |
-| L4 | baselines and sensitivity; Taguchi L9 | |
-| L5 | Sobol DOE, surrogates, cheap-vs-full fidelity screen | |
+| L4 | baselines and sensitivity; Taguchi L9 | done 2026-11-23: section 3f |
+| L5 | Sobol DOE, surrogates, cheap-vs-full fidelity screen | DOE done 2026-11-23 (section 3f); surrogates running |
 | L6 | NSGA-II + active learning; Pareto fronts | |
 | L7 | 720-point grid, band, funnel frozen | |
 | L8 | (Tamil Nadu only: ANSYS Fluent) | n/a |

@@ -17,6 +17,16 @@ Rule (decisions D9/D10, plan section 6A):
 Frozen for the one-shot held-out test (g10_test.py): the chosen design per regime plus the best g_window design of every
 other O1 PCM of that regime, so the test is not a one-design cherry pick. The selection log carries a SHA-256 fingerprint.
 Usage: python scripts/g10_select.py <cluster_id>      -> results/g10_selection_r<c>.json and _candidates.csv
+
+Common-plant rebuild (2026-11-23; funnel frozen in docs/REBUILD_COMMON100L.md section 3e before any select-year run):
+  * select years 2020-2021 at the FULL fidelity (37.5 s, both years, every robust anchor); finalists = the non-dominated feasible
+    cheap-fidelity designs of each pair, thinned to <= 12 per pair (cost), plus nothing else;
+  * plan R7: a design is "better than water-only" only if its WORST-anchor select-year g_window exceeds the band; the funnel S0-S2
+    and the picks run on those eligible designs. If none is eligible the regime's recommendation is WATER-ONLY (plan decision 4):
+    the best design by the same funnel over all feasible finalists is still recorded (chosen) and tested, never hidden;
+  * cheap-vs-full check: Spearman of the finalists' cheap g_window against their full select-year g_window; >= 0.7 or the cheap
+    screen is reported as not usable for selection (the selection itself always uses the full values);
+  * night tie-breaker (tau_serve) at the full time step, centre anchor.
 """
 
 import hashlib
@@ -29,12 +39,15 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from scipy.stats import spearmanr
+
+from src.design.box import CHEAP_FULL_RHO_MIN, full_dt
 from src.io_utils import get_regime
 from src.optimize.evaluate import evaluate_design, evaluate_night
 from src.optimize.nsga2 import non_dominated_mask
 
 OUT = Path("results")
-MAX_PER_PAIR = 30
+MAX_PER_PAIR = 12             # rebuild: full-fidelity finalists per pair (cost; section 3e)
 NIGHT_TOP = 12                  # tau_serve is computed for the best-g_window candidates only (cost)
 
 
@@ -43,7 +56,7 @@ def front_candidates(cid, rank):
                 if (OUT / f"g9_points_r{cid}_p{rank}{suf}.csv").exists()))      # latest G9 state of the pair (see progress log 11.1-11.3)
     print("candidates from", src.name, flush=True)
     pts = pd.read_csv(src)
-    ok = pts[pts.feasible == True].drop_duplicates(subset=["R_in_m", "N", "flow", "arrangement"])  # noqa: E712
+    ok = pts[pts.feasible == True].drop_duplicates(subset=["R_in_m", "N", "arrangement"])  # noqa: E712
     F = np.column_stack([-ok.g_window, -ok.g_annual, ok.d_overheat])
     fr = ok[non_dominated_mask(F)].sort_values("g_annual")
     if len(fr) > MAX_PER_PAIR:
@@ -63,6 +76,7 @@ def main(cid):
                 continue
             rows.append({"pcm": pcm, "pcm_rank": rank, "R_in_m": c.R_in_m, "fraction": res["fraction"], "N": res["N"],
                          "flow": c.flow, "arrangement": c.arrangement, "g_window": res["g_window"], "g_annual": res["g_annual"],
+                         "g_window_worst_anchor": res["g_window_worst_anchor"], "worst_anchor": res["worst_anchor"],
                          "d_overheat": res["d_overheat"], "g_window_sd": res["g_window_sd"], "t_pcm_max": res["t_pcm_max"],
                          "t_water_max": res["t_water_max"], "feasible_select": res["feasible"], "pcm_mass_kg": res["pcm_mass_kg"],
                          "explore_g_window": c.g_window, "explore_g_annual": c.g_annual})
@@ -73,7 +87,7 @@ def main(cid):
     top = best.head(NIGHT_TOP)
     tau = []
     for r in top.itertuples():
-        nm = evaluate_night(cid, r.pcm, r.R_in_m, r.fraction, r.flow, r.arrangement, "select", stride=15)
+        nm = evaluate_night(cid, r.pcm, r.R_in_m, r.fraction, r.flow, r.arrangement, "select", stride=15, dt=full_dt())
         d = pd.DataFrame(nm)
         tau.append({"idx": r.Index, "gain_tau_serve_h": d.gain_tau_serve_mean_h.mean(),
                     "gain_tau_serve_se": d.gain_tau_serve_mean_h.std(ddof=1) / np.sqrt(len(d)),
@@ -83,8 +97,15 @@ def main(cid):
     feas = cand[cand.feasible_select].copy()                      # re-take after the join so the tau columns are present
     best = feas.sort_values("g_window", ascending=False)
 
+    rho = float(spearmanr(cand.explore_g_window, cand.g_window)[0]) if len(cand) > 2 else float("nan")
     log = {"regime": cid, "n_candidates": int(len(cand)), "n_feasible_select": int(len(feas)),
-           "band": {k: float(v) for k, v in b.items()}}
+           "band": {k: float(v) for k, v in b.items()},
+           "cheap_vs_full_spearman": rho, "cheap_screen_usable": bool(rho >= CHEAP_FULL_RHO_MIN)}
+    eligible = feas[feas.g_window_worst_anchor > b["g_window"]]
+    log["n_eligible_worst_anchor_above_band"] = int(len(eligible))
+    log["recommendation"] = "pcm" if len(eligible) else "water_only"
+    if len(eligible):
+        best = eligible.sort_values("g_window", ascending=False)
     if feas.empty:
         log.update(verdict="no feasible candidate on the select years")
     else:
@@ -96,13 +117,15 @@ def main(cid):
         s2 = s1t[s1t.gain_tau_serve_h >= s1t.gain_tau_serve_h.max() - tau_band] if len(s1t) else s1
         pick = s2.sort_values(["pcm_mass_kg", "N", "t_pcm_max"]).iloc[0]
         log.update({
-            "meaningful_on_primary_metric": bool(pick.g_window > b["g_window"]),
+            "meaningful_on_primary_metric": bool(pick.g_window > b["g_window"] and pick.g_window_worst_anchor > b["g_window"]),
             "chosen": {k: (v.item() if hasattr(v, "item") else v) for k, v in pick.items() if not k.startswith("gain_") or pd.notna(v)},
             "n_S0_indistinguishable_on_g_window": int(len(s0)), "n_S1": int(len(s1)), "n_S2": int(len(s2)),
             "tau_serve_band_h": tau_band,
             "alternatives_best_per_pcm": [
                 {k: (v.item() if hasattr(v, "item") else v) for k, v in best[best.pcm == p].iloc[0].items()}
-                for p in pcms if (best.pcm == p).any()],
+                for p in pcms if (best.pcm == p).any()] if len(eligible) else [
+                {k: (v.item() if hasattr(v, "item") else v) for k, v in
+                 feas[feas.pcm == p].sort_values("g_window", ascending=False).iloc[0].items()} for p in pcms if (feas.pcm == p).any()],
         })
     body = json.dumps(log, sort_keys=True, default=str)
     log["fingerprint_sha256"] = hashlib.sha256((body + cand.round(9).to_csv()).encode()).hexdigest()

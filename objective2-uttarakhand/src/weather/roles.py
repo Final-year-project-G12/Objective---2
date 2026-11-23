@@ -93,6 +93,20 @@ def acquire_test_lock(run_id: str, selection_fingerprint: str) -> Path:
     return path
 
 
+def join_test_lock(run_id: str) -> Path:
+    """For a worker process of the ONE locked test run: allowed only if the lock exists and names this run_id (the parent created it
+    with acquire_test_lock in the same run). It never creates a lock, so it cannot be used to start a second test."""
+    global _lock_held_by_this_process
+    path = test_lock_path()
+    if not path.exists():
+        raise HeldOutLockError("no test lock: the test run has not been started (acquire_test_lock)")
+    lock = json.loads(path.read_text())
+    if lock.get("run_id") != run_id:
+        raise HeldOutLockError(f"the lock belongs to run {lock.get('run_id')!r}, not {run_id!r}")
+    _lock_held_by_this_process = True
+    return path
+
+
 def point_year_path(state: str, cluster_id: int, point_id: str, year: int) -> Path:
     return WEATHER_POINT_YEARS_DIR / state / f"cluster{cluster_id}_{point_id}_{year}.csv"
 

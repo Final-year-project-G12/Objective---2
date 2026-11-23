@@ -53,40 +53,44 @@ def test_geometry_engine_is_still_the_judge_of_feasibility():
     assert all(not bad.get((r, 0.40, "staggered")) for r in (0.025, 0.030, 0.040))   # the 40 % cap is reachable
 
 
-# Rebuild (2026-11-22): the water-only baseline grids are rebuilt at plan level L4 on the 100 L plant; until then these tests skip.
+# Rebuild (2026-11-23): the water-only baseline is EXACT runs at the fixed flow 0.030 kg/s (scripts/g8_build_plain_baseline.py, L4).
 needs_baseline = pytest.mark.skipif(not baseline.grid_path("explore", 0).exists(),
                                     reason="rebuild: plain baseline not built yet (plan level L4)")
 
+
 @needs_baseline
-@pytest.mark.parametrize("cid,year,flow", [(0, 2018, 0.0225), (1, 2019, 0.0375)])
-def test_plain_baseline_interpolation_matches_an_exact_plain_run(cid, year, flow):
+@pytest.mark.parametrize("cid,year", [(0, 2018), (1, 2019)])
+def test_cached_baseline_equals_an_exact_plain_run_at_the_fixed_flow(cid, year):
+    from src.design.box import flow_fixed
     from src.weather import roles
     from src.weather.inventory import CURRENT_MEDOIDS
     w = roles.load_point_year("uttarakhand", cid, CURRENT_MEDOIDS[cid], year, "explore")
-    exact = run_case("uttarakhand", cid, None, space.to_design(0.02, 0.05, flow, "staggered"),
+    exact = run_case("uttarakhand", cid, None, space.to_design(0.02, 0.05, flow_fixed(), "staggered"),
                      design_bounds=space.geometry_bounds(), weather=w, tank_model="multinode",
-                     compute_tes_metrics=True, night_day_stride=0)
-    est = baseline.plain_at(cid, year, flow, "explore")
-    assert est["E_del45_annual_kWh"] == pytest.approx(exact["tes"]["E_del45_annual_kWh"], rel=1e-4)
-    assert est["useful_energy_kWh"] == pytest.approx(exact["metrics"]["useful_energy_kWh"], rel=1e-4)
+                     compute_tes_metrics=True, night_day_stride=0, system_config_overrides={"solver": {"timestep_s": 150}})
+    est = baseline.plain_at(cid, year, flow_fixed(), "explore", dt=150)
+    assert est["E_del45_window_kWh"] == pytest.approx(exact["tes"]["E_del45_window_kWh"], rel=1e-12)
+    assert est["useful_energy_kWh"] == pytest.approx(exact["metrics"]["useful_energy_kWh"], rel=1e-12)
 
 
 @needs_baseline
-def test_evaluate_design_returns_paired_objectives_and_feasibility():
-    res = evaluate.evaluate_design(1, "PureTemp 58", 0.020, 0.10, 0.03, "staggered", purpose="explore",
-                                   years=[2018, 2019])
-    assert res["valid"] and len(res["per_year"]) == 2
-    for k in evaluate.OBJECTIVE_KEYS + ("t_pcm_max", "pcm_mass_kg", "feasible"):
+def test_evaluate_design_returns_robust_anchor_objectives_and_feasibility():
+    res = evaluate.evaluate_design(1, "PureTemp 58", 0.020, 0.10, 0.03, "staggered", purpose="explore", years=[2018, 2019])
+    assert res["valid"] and len(res["per_year"]) == 2 * 3                      # 2 years x 3 robust anchors
+    for k in evaluate.OBJECTIVE_KEYS + ("t_pcm_max", "pcm_mass_kg", "feasible", "g_window_worst_anchor", "worst_anchor"):
         assert k in res
     assert res["residual_pct"] < 1e-3
-    assert res["feasible"] == (res["t_pcm_max"] <= 65.0)
-    # a PCM tank at 10 % fraction should add delivered energy over the same-flow water tank (G7 sign)
-    assert res["g_annual"] > 0
+    assert res["feasible"] == (res["t_pcm_max"] <= 65.0 and res["t_water_max"] <= 75.0)
+    per_anchor = [res[f"g_window_{a}"] for a in ("bottom", "center", "top")]
+    assert res["g_window_worst_anchor"] == pytest.approx(min(per_anchor))
+    assert res["g_window"] == pytest.approx(np.mean(per_anchor))
+    # NOTE: the legacy assertion "10 % PCM gains over water-only" held on the 50 L / 300 L/day plant and does NOT hold on the common
+    # 100 L / 100 L/day plant (docs/REBUILD_COMMON100L.md section 3c), so it is not asserted.
 
 
 @needs_baseline
 def test_infeasible_geometry_is_reported_not_simulated():
-    res = evaluate.evaluate_design(1, "PureTemp 58", 0.030, 0.20, 0.03, "radial", purpose="explore", years=[2018])
+    res = evaluate.evaluate_design(1, "PureTemp 58", 0.040, 0.40, 0.03, "radial", purpose="explore", years=[2018])
     assert not res["valid"] and res["reason"] and "per_year" not in res
 
 
@@ -94,5 +98,6 @@ def test_infeasible_geometry_is_reported_not_simulated():
 def test_select_and_explore_baselines_exist_but_no_test_baseline():
     from src.weather.inventory import REGIMES
     for c in REGIMES:
-        assert baseline.grid_path("explore", c).exists() and baseline.grid_path("select", c).exists()
-        assert not baseline.grid_path("test", c).exists()
+        for dt in (150, 37.5):
+            assert baseline.grid_path("explore", c, dt).exists() and baseline.grid_path("select", c, dt).exists()
+            assert not baseline.grid_path("test", c, dt).exists() and not baseline.grid_path("report", c, dt).exists()

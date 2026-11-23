@@ -1,0 +1,4 @@
+results/g10_selection_r0.json scripts/g10_select.py 0
+results/g10_selection_r1.json scripts/g10_select.py 1
+results/g10_selection_r2.json scripts/g10_select.py 2
+results/g10_selection_r3.json scripts/g10_select.py 3

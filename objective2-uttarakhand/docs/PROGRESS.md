@@ -226,3 +226,13 @@ are not installed on this machine; `scripts/run_all_cases.ps1` runs everything w
 - `scripts/r3_probe_pcm_gain.py` (exploratory, 2018): on the common plant no PCM design beats the water-only tank (best +4.2 kWh/yr,
   regime 3); PCM gains in regime 1 only at 150-300 L/day. Details: `docs/REBUILD_COMMON100L.md` section 3c. Decision on how to
   continue (L4-L9) pending with the student.
+
+## 2026-11-23 - Rebuild L4-L5 (baseline, screening, DOE) and the search code
+
+- Code for L4-L9 on the rebuild box: `src/design/box.py` (box, fidelities, robust anchors, hygiene), exact fixed-flow baseline
+  (`src/optimize/baseline.py`), `evaluate_design` with fidelity and robust anchors, surrogates + gp_ard + stacked, stage scripts
+  g8/g9/g10 ported (3-D box, vertices from the start, 720-run grid, rebuild band recipe, funnel with the R7 rule and a water-only
+  verdict, one-shot 2006-2010 test with worker processes that can only join the locked run). Protocols frozen before the runs:
+  `docs/REBUILD_COMMON100L.md` sections 3d, 3e and 5. `scripts/run_jobs.py` runs at most 3 jobs.
+- Results: baseline 4 regimes; L9 12 pairs; DOE 12 pairs (1,392 designs). No design beats the water-only tank meaningfully
+  (best +1.7 kWh/yr). Section 3f. Tests: 31 design-space tests and 16 role/lock tests pass.
