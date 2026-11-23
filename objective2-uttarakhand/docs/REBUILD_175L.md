@@ -74,12 +74,28 @@ Consequences, declared now:
 - Verification designs V30 / V40 (R 30 mm, staggered, centre, 2018, 37.5 s): g_window +47 / +52 (regime 0), +18 / +18 (1),
   +8 / +6 (2), -48 / -65 (3) kWh/yr. Physics check only, not a design result.
 
+## 5c. L4-L7 result at 175 L/day (2026-11-24; `results/g10_selection_r*.json`, `results/wp6_band.csv`)
+
+Band (g_window, kWh/yr, recipe unchanged incl. demand term): r0 20.8, r1 17.2, r2 14.0, r3 15.4.
+Frozen funnel on 2020-2021 at 18.75 s, three anchors (R7: worst-anchor gain must exceed the band):
+
+| Regime | Verdict | Design | mean g_window | worst-anchor g_window | band |
+|---|---|---|---|---|---|
+| 0 | **PCM** | PureTemp 58, R 40 mm, 39.8 %, N 140, staggered (33.4 kg) | +75.2 | +60.7 (bottom) | 20.8 |
+| 1 | **PCM** | PureTemp 58, R 40 mm, 39.8 %, N 140, single-layer (33.4 kg) | +40.9 | +34.1 (bottom) | 17.2 |
+| 2 | **PCM** | savE OM55, R 36.1 mm, 40.0 %, N 190, radial (35.0 kg) | +71.3 | +71.3 | 14.0 |
+| 3 | water-only | best candidate PureTemp 53, 2 %: -0.5 mean, -2.9 worst anchor | -0.5 | -2.9 | 15.4 |
+
+Against the pre-run expectation (section 4): regimes 0, 2 and 3 as expected; regime 1 came out PCM, not borderline (the DOE /
+NSGA-II reached designs the coarse diagnostic grid did not). All three PCM picks sit at the 40 % upper fraction bound (reported;
+the bound is frozen and not moved after results).
+
 ## 6. Level tracker
 
 | Level | Status |
 |---|---|
 | L0 decision record (this file) | done 2026-11-23 |
 | L1-L3 o1 / weather / verify | done 2026-11-23: section 5b (report step 18.75 s by the R5 gate) |
-| L4-L7 baseline ... select | pending |
+| L4-L7 baseline ... select | done 2026-11-24: section 5c (PCM r0, r1, r2; water-only r3) |
 | L9 test, report, handoff | pending |
 | M1, figures, supplementary, manifest | pending |

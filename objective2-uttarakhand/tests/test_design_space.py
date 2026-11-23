@@ -15,6 +15,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
 from src.design import space
+from src.design.box import full_dt
 from src.design.constraints import check_design
 from src.io_utils import load_system_config
 from src.optimize import baseline, evaluate
@@ -98,6 +99,6 @@ def test_infeasible_geometry_is_reported_not_simulated():
 def test_select_and_explore_baselines_exist_but_no_test_baseline():
     from src.weather.inventory import REGIMES
     for c in REGIMES:
-        for dt in (150, 37.5):
+        for dt in (150, full_dt()):
             assert baseline.grid_path("explore", c, dt).exists() and baseline.grid_path("select", c, dt).exists()
             assert not baseline.grid_path("test", c, dt).exists() and not baseline.grid_path("report", c, dt).exists()

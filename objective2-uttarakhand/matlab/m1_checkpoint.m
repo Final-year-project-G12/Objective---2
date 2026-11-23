@@ -8,7 +8,7 @@ function m1_checkpoint(root)
 % with water temperature, PCM temperature and liquid fraction, heat exchanged with the PCM, and the energy balance.
 %
 % Input: results/m1_matlab/hourly_r<c>_<case>.csv and summary.csv, written by scripts/m1_export.py from the O2 multi-node kernel
-% (select year 2021, 37.5 s, centre anchor). MATLAB does NOT re-simulate the tank; it recomputes every checked number from the hourly
+% (select year 2021, report time step, centre anchor). MATLAB does NOT re-simulate the tank; it recomputes every checked number from the hourly
 % records alone and compares it with the kernel's own summary.
 %
 % Gate (plan M1): the MATLAB numbers match the O2 node-model numbers
@@ -99,7 +99,7 @@ for r = unique(S.regime)'
         plot(t, W.I_t_Wm2(idx), 'k'); ylabel('irradiance (W/m2)'); yyaxis right; bar(t, W.draw_kg(idx), 'FaceAlpha', .4);
         ylabel('draw (kg/h)'); xlabel('hours from 05:00 local');
     end
-    title(tl, sprintf('M1 checkpoint, regime %d, 2021, always-charge B0 (O2 kernel, 37.5 s, centre anchor)', r));
+    title(tl, sprintf('M1 checkpoint, regime %d, 2021, always-charge B0 (O2 kernel, report time step, centre anchor)', r));
     exportgraphics(f, fullfile(fig, sprintf('m1_r%d_days.png', r)), 'Resolution', 130); close(f);
 
     f = figure('Visible', 'off', 'Position', [50 50 1300 450]); lightTheme(f);

@@ -9,9 +9,10 @@ configs/*.yaml, results/g10_selection_r*.json, wp6_band.csv, the one-shot test (
 
 What changed against the legacy 50 L contract (results_legacy_50L_v3/obj3_environment_contract_uttarakhand_v3.json): the plant, the
 45 C primary threshold (50 C secondary), flow fixed at 0.030 kg/s, the robust-anchor design rule, the year roles (plan R3), and the
-O2 result: **water-only is recommended in every regime** (no PCM design's worst-anchor gain exceeds the band), so each regime's
-installed design is the water-only tank and the best PCM design is recorded for reference only. Objective 3 then controls ENABLE /
-BYPASS of the collector loop on a plain 100 L tank (plan 8.3); its goal is fewer shield-hours at >= 95 % of B0 delivery (plan 8.5).
+O2 result, read from the frozen selections: a regime gets a PCM design only where its worst-anchor gain exceeds the band, otherwise
+the water-only tank (best PCM design recorded for reference). Branch uttarakhand-o2-175L: same plant at 175 L/day
+(docs/REBUILD_175L.md); at 100 L/day every regime was water-only. Objective 3 controls ENABLE / BYPASS of the collector loop
+(plan 8.3); its goal is fewer shield-hours at >= 95 % of B0 delivery (plan 8.5).
 Static text that still applies (observation fields, reset scenarios, acceptance tests, shield details) is copied from the legacy
 contract and marked as such. Run: PYTHONPATH=. python -m src.handoff.build_obj3_contract_common100L
 """
@@ -78,9 +79,7 @@ def build() -> Path:
                    "docs/REBUILD_COMMON100L.md."),
         "supersession_note": ("SUPERSEDES the legacy 50 L / 1.5 m2 / 300 L/day contracts (results_legacy_50L_v3/), which must not be used "
                               "for the common plant (plan 2.2)."),
-        "o2_result": ("WATER-ONLY in every regime: on the common plant no PCM design's worst-anchor select-year paired gain exceeds the "
-                      "repeatability band (plan R7, decision 4). Each regime's installed design is the water-only 100 L tank; the best "
-                      "PCM design per regime is recorded under best_pcm_design_reference and was tested, but is NOT a recommendation."),
+        "o2_result": None,     # filled below from the frozen selections (no outcome is typed by hand)
         "global_limits": {
             "delivery_target_temp_C": cfg["delivery"]["target_temp_C"],
             "secondary_report_temp_C": cfg["delivery"]["secondary_report_temp_C"],
@@ -145,13 +144,20 @@ def build() -> Path:
                 "longest_gap_days": int(test_plain_h[test_plain_h.regime == k].hyg_longest_gap_days.max())},
         })
     c["static_design_per_regime"] = designs
+    pcm_r = [d["regime_id"] for d in designs if d["recommendation"] != "water_only"]
+    wo_r = [d["regime_id"] for d in designs if d["recommendation"] == "water_only"]
+    c["o2_result"] = (f"PCM recommended in regime(s) {pcm_r or 'none'}; WATER-ONLY in regime(s) {wo_r or 'none'}. A PCM design is "
+                      "recommended only where its worst-anchor select-year paired g_window exceeds the regime's repeatability band "
+                      "(plan R7, decision 4); elsewhere the installed design is the water-only 100 L tank and the best PCM design is "
+                      "recorded under best_pcm_design_reference as tested, NOT recommended.")
 
     c["o2_confirmatory_test"] = {
         "status": "COMPLETED AND LOCKED by O2 (one shot) - Objective 3 runs its OWN separate 2006-2010 test under its own lock",
         "years": roles.years_for("test"), "run_id": lock["run_id"], "locked_utc": lock["utc"], "plant_hash": lock["plant_hash"],
-        "selection_fingerprint": lock["selection_fingerprint"], "fidelity": "37.5 s, every year, bottom / centre / top anchors",
-        "exposure_note": ("2006-2010 is unseen for Objective 2. It was used by the OLD Uttarakhand Objective 3 test (50 L plant), so it is "
-                          "not unseen for Objective 3; declare this in the Objective 3 report (plan 1.5, 7.2)."),
+        "selection_fingerprint": lock["selection_fingerprint"], "fidelity": f"{sp['model']['report_timestep_s']:g} s, every year, bottom / centre / top anchors",
+        "exposure_note": ("2006-2010 was used once before by Objective 2, on the 100 L/day plant (water-only verdict; docs/REBUILD_175L.md "
+                          "section 3), and by the OLD Uttarakhand Objective 3 test (50 L plant). It is therefore not an untouched test for "
+                          "either objective; declare this in both reports (plan 1.5, 7.2)."),
     }
     c["weather_sequences"] = {
         "o3_roles_plan_R3": {"train": [2016, 2017, 2018, 2019], "validate": [2020, 2021],
@@ -162,7 +168,7 @@ def build() -> Path:
         "enforcement": "src/weather/roles.py refuses a year whose role differs from the purpose; test years need the lock",
     }
     c["time_step_s"] = {"search": 150, "report_and_test": sp["model"]["report_timestep_s"],
-                        "note": "L3 gate: 37.5 s passes the halving criterion on the primary metric (docs/REBUILD_COMMON100L.md 3c)"}
+                        "note": "L3 gate at 175 L/day: 37.5 s fails and 18.75 s passes the halving criterion on the primary metric (docs/REBUILD_175L.md 5b)"}
     c["action_space"] = {"actions": ["ENABLE", "BYPASS"],
                          "note": ("Plan 8.3: two physical actions; IDLE is physically identical to BYPASS in this loop. Flow is fixed; "
                                   "the shield inside the kernel overrides ENABLE above the guards and cannot be disabled."),
@@ -189,9 +195,9 @@ def build() -> Path:
                                                      "pcm_volume_fraction": [sp["variables"]["pcm_volume_fraction"]["min"], sp["variables"]["pcm_volume_fraction"]["max"]],
                                                      "flow_kg_s_fixed": sp["variables"]["flow_rate_kg_s"]["min"],
                                                      "arrangement": bounds["capsule_arrangement"]},
-                                 "why_water_only": ("at 100 L/day a 100 L tank on 2.0 m2 already stores a full day's hot water; capsules displace water "
-                                                    "and the PCM guard adds shield hours. PCM gains appear in regime 1 only above about 150 L/day "
-                                                    "(docs/REBUILD_COMMON100L.md 3c, exploratory).")}
+                                 "demand_note": ("at 100 L/day the 100 L tank stores a full day's hot water and every regime was water-only "
+                                                 "(branch uttarakhand-o2-common100L); at 175 L/day the draw exceeds the tank, which is where PCM "
+                                                 "can add evening delivery. Regime 3 (cold) is negative at every tested demand.")}
     c["verification_status"] = {"simulator_verification": "L3 gate passed (docs/REBUILD_COMMON100L.md 3c); results/l3_*.csv",
                                 "cfd_cross_check": "none on the common plant (OpenFOAM optional, plan section 6); legacy 50 L case only",
                                 "experimental_validation": {"status": "NOT DONE", "scope": "Objective 4 / hardware"},

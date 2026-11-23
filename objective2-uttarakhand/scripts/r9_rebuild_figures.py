@@ -25,6 +25,10 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 from src.optimize.nsga2 import non_dominated_mask       # noqa: E402
+from src.design.box import full_dt                       # noqa: E402
+from src.io_utils import load_state_config               # noqa: E402
+
+DEMAND_L = float(load_state_config("uttarakhand")["demand_profile"]["daily_total_L"])
 
 RD = ROOT / "results"
 OUT = RD / "plots_common100L"
@@ -70,7 +74,7 @@ def rb1():
                   ylabel="mean paired g_window (kWh/yr)")
         ax[i].legend(fontsize=6.5, loc="lower left")
         fig.colorbar(sc, ax=ax[i], label="PCM mass (kg)")
-    fig.suptitle("Pareto fronts on the common 100 L plant (cheap fidelity, all simulated designs of the three O1 PCMs)")
+    fig.suptitle(f"Pareto fronts, 100 L / 2.0 m2 / {DEMAND_L:g} L/day (cheap fidelity, all simulated designs of the three O1 PCMs)")
     save(fig, "rb1_pareto_fronts")
 
 
@@ -86,7 +90,7 @@ def rb2():
         ax[i].axhline(0, color="k", lw=.7)
         ax[i].set(title=f"Regime {r} (grey = worst anchor)", xlabel="PCM fraction (%)", ylabel="paired g_window (kWh/yr)")
         ax[i].legend(fontsize=6.5, loc="lower left")
-    fig.suptitle("Sobol DOE: more PCM delivers less evening hot water than the water-only 100 L tank at 100 L/day")
+    fig.suptitle(f"Sobol DOE at {DEMAND_L:g} L/day: paired evening gain against the water-only 100 L tank")
     save(fig, "rb2_gain_vs_fraction")
 
 
@@ -122,7 +126,7 @@ def rb4():
         ax[i].set(title=f"Regime {r}", xlabel="test year", ylabel="paired g_window (kWh/yr)")
         ax[i].set_xticks(sorted(d.year.unique()))
         ax[i].legend(fontsize=6.5)
-    fig.suptitle("One-shot 2006-2010 test (37.5 s, three anchors): no PCM design leaves the band")
+    fig.suptitle(f"One-shot 2006-2010 test ({full_dt():g} s, three anchors) against the repeatability band")
     save(fig, "rb4_test_years")
 
 
@@ -136,7 +140,7 @@ def rb5():
         a.axhline(.05, color="k", lw=1)
         a.set_xscale("log"); a.invert_xaxis()
         a.set(xlabel="time step reached by halving (s)", ylabel="|change| (%)", title=title)
-    fig.suptitle("L3 time-step gate on the 100 L plant (colour = regime; solid plain, dashed 30 %, dotted 40 % PCM)")
+    fig.suptitle(f"L3 time-step gate, 100 L at {DEMAND_L:g} L/day (colour = regime; solid plain, dashed 30 %, dotted 40 % PCM)")
     save(fig, "rb5_timestep")
 
 

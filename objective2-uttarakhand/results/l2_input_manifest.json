@@ -1,9 +1,9 @@
 {
  "level": "L2 input/config freeze (plan gate G0)",
- "generated_utc": "2026-11-23T16:41:47.610021+00:00",
- "code_commit_at_generation": "42c6c9f96b4cef95915c7904d8755a7768601ce6",
- "plant_hash": "672763eebb7c",
- "test_lock_path": "results\\locks\\o2_test_672763eebb7c.lock",
+ "generated_utc": "2026-11-23T16:51:15.896849+00:00",
+ "code_commit_at_generation": "fb77a1055e038622e2d9c9b4fe83edc9b1cfa7bf",
+ "plant_hash": "2a12f61b697e",
+ "test_lock_path": "results\\locks\\o2_test_2a12f61b697e.lock",
  "year_roles": {
   "2006": "test",
   "2007": "test",
@@ -23,11 +23,11 @@
  },
  "files_sha256": {
   "configs/system_config_shared.yaml": "8a8e6f27038a33e82f0b37d4cd64f28677202963898838cc49f74c03b7f16db6",
-  "configs/design_space.yaml": "0fb4763b40e6eaf2bf1ee2cca33ea703151176ff4103bdc44638309143cdd6ce",
+  "configs/design_space.yaml": "31b767a4483c6c37808b7feddb719e6537cd1febef69610114446cc4b200346c",
   "configs/states/uttarakhand.yaml": "2e8e9cf0f40e6949c92e068d1a1780e2717f47f7b1ca7140b8f200de08c4d9f9",
   "configs/cfd_closure_v1.yaml": "b5657f802202bc581e2d62388d14bc3cf1a4ec986004ac684490a59ca7da8428",
   "data/demand/demand_profile_uttarakhand.csv": "186196459f9566ddb5cd6c19b10350f0c215b9380006d6c4b63a050558b1dc64",
-  "results/o1_manifest_uttarakhand.json": "058ae7221f7badf5432059f0778898698022b99a440dec6907f764b30153fcf4",
+  "results/o1_manifest_uttarakhand.json": "b82665c8dddc35e4f5c8acfbe4661c2ed857e1aa1412882c002de49fe23f1766",
   "data/weather/point_years/weather_inventory.csv": "4d7ace2602e9b106d8f2f427260a98236f496fa520729a238301fff204f5bd34",
   "data/weather/point_years/uttarakhand/cluster0_UKP_0014_2006.csv": "6dd13e2cb36620373d4524747d2ebc135a725d8b7473d09e42a34380ea2f3823",
   "data/weather/point_years/uttarakhand/cluster0_UKP_0014_2007.csv": "c57f0cd255cdc940cfe06af17f476c8dba2250e978f1522517e32804b7f71b8c",
