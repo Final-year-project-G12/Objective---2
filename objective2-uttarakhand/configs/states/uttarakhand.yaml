@@ -31,7 +31,9 @@ shared_config:
 pareto_tolerance_pct: 5.0
 demand_profile:
   file: data/demand/demand_profile_uttarakhand.csv
-  daily_total_L: 100.0              # common plant (plan R1); legacy 300 L/day profile: data/legacy/demand_profile_uttarakhand_300L.csv
+  daily_total_L: 175.0              # 175 L/day at 45 C = the plan's own 45 C reading of a 100 LPD unit rated at ~60 C (Rev 9, sec 1.1);
+                                    # user/team decision 2026-11-23, docs/REBUILD_175L.md. Same hourly shape as the 100 L/day profile x 1.75.
+                                    # 100 L/day profile: data/legacy/demand_profile_uttarakhand_100L.csv; 300 L/day: ..._300L.csv
   documented_reason: 'Matches 04b_climate_signature.py''s DRAW_VOLUME_L=300 assumption (Avargani et al.
     2021) so Objective 1''s L_required figures and Objective 2''s simulated solar fraction evaluate the
     same household. See build_demand_profile.py docstring.

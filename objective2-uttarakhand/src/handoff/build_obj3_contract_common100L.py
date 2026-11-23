@@ -30,8 +30,8 @@ from src.weather import roles
 
 RES = BASE_DIR / "results"
 LEGACY = BASE_DIR / "results_legacy_50L_v3" / "obj3_environment_contract_uttarakhand_v3.json"
-OUT = RES / "obj3_environment_contract_uttarakhand_common100L.json"
-VERSION = "obj3_contract_v3.0_uttarakhand_common100L_2026-11-23"
+OUT = RES / "obj3_environment_contract_uttarakhand_100L_d175.json"
+VERSION = "obj3_contract_v3.0_uttarakhand_100L_d175_2026-11-23"
 
 
 def _sha(p):
@@ -72,7 +72,7 @@ def build() -> Path:
     c = {
         "state": "uttarakhand", "contract_version": VERSION, "generated_utc": datetime.now(timezone.utc).isoformat(),
         "validated_simulator_version": cfg["version"],
-        "plant": "common 100 L / 2.0 m2 / 100 L/day (Unified Rebuild Plan R1)",
+        "plant": f"100 L / 2.0 m2 / {state['demand_profile']['daily_total_L']:g} L/day (plan R1 plant; demand per docs/REBUILD_175L.md)",
         "source": ("Objective 2 Uttarakhand rebuild on the common plant: results/g10_selection_r*.json, wp6_band.csv, o2_test_2006_2010*.csv, "
                    "o2_report_2022_2025*.csv, results/locks/, o1_manifest_uttarakhand.json, configs/*.yaml. Decision record: "
                    "docs/REBUILD_COMMON100L.md."),
@@ -214,7 +214,7 @@ def verify_against_sources(c=None):
     cfg = load_system_config()
     assert c["fixed_system"]["tank_volume_L"] == cfg["tank"]["volume_L"] == 100.0
     assert c["fixed_system"]["collector_area_m2"] == cfg["collector"]["area_m2"] == 2.0
-    assert c["fixed_system"]["demand_daily_total_L"] == 100.0
+    assert c["fixed_system"]["demand_daily_total_L"] == load_state_config("uttarakhand")["demand_profile"]["daily_total_L"] == 175.0
     assert c["global_limits"]["delivery_target_temp_C"] == 45.0
     n = 4
     for d in c["static_design_per_regime"]:

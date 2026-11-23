@@ -144,9 +144,11 @@ def aux(cid):
     pd.DataFrame(rows).to_csv(RES / f"supp_aux_heater_r{cid}.csv", index=False)
 
 
-CASES = {"d70": {"vol": 0.7}, "d150": {"vol": 1.5}, "d175": {"vol": 1.75}, "d200": {"vol": 2.0},
-         "legacy": {"vol": 3.0, "sys_over": {"collector": {"area_m2": 2.5}}},
-         "t150": {"vol": 1.5, "sys_over": {"tank": {"volume_L": 150.0}}, "tank_L": 150.0}}
+_MAIN_L = float(load_state_config("uttarakhand")["demand_profile"]["daily_total_L"])    # 175 L/day on branch uttarakhand-o2-175L
+# demand cases in ABSOLUTE litres per day (vol = multiplier on the main profile), so the names stay true when the main demand changes
+CASES = {"d70": {"vol": 70 / _MAIN_L}, "d100": {"vol": 100 / _MAIN_L}, "d150": {"vol": 150 / _MAIN_L}, "d200": {"vol": 200 / _MAIN_L},
+         "legacy": {"vol": 300 / _MAIN_L, "sys_over": {"collector": {"area_m2": 2.5}}},
+         "t150": {"vol": 150 / _MAIN_L, "sys_over": {"tank": {"volume_L": 150.0}}, "tank_L": 150.0}}
 
 
 def cases(name):

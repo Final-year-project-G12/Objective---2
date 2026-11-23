@@ -34,7 +34,7 @@ WEATHER_POINT_YEARS_DIR = BASE_DIR / "data" / "weather/point_years"
 INVENTORY_PATH = WEATHER_POINT_YEARS_DIR / "weather_inventory.csv"
 LOCK_DIR = BASE_DIR / "results" / "locks"
 PLANT_FILES = [BASE_DIR / "configs" / "system_config_shared.yaml", BASE_DIR / "configs" / "design_space.yaml",
-               BASE_DIR / "configs" / "states" / "uttarakhand.yaml"]
+               BASE_DIR / "configs" / "states" / "uttarakhand.yaml", BASE_DIR / "data" / "demand" / "demand_profile_uttarakhand.csv"]
 
 YEAR_ROLES = {**{y: "test" for y in range(2006, 2011)},
               **{y: "explore" for y in range(2016, 2020)},

@@ -110,7 +110,7 @@ def commands(stage, matlab="matlab"):
         return [[cmd(s + "r9_rebuild_figures.py")]]
     if stage == "supplementary":
         return [[cmd(s + "r10_supplementary.py", "sens", c) for c in REGIMES] +
-                [cmd(s + "r10_supplementary.py", "cases", n) for n in ("d70", "d150", "legacy", "t150")] +
+                [cmd(s + "r10_supplementary.py", "cases", n) for n in ("d70", "d100", "d150", "d200", "legacy", "t150")] +
                 [cmd(s + "r10_supplementary.py", "aux", c) for c in REGIMES] + [cmd(s + "r10_supplementary.py", "boundary")]]
     if stage == "manifest":
         return [[cmd(s + "r11_output_manifest.py")]]
@@ -152,7 +152,7 @@ def stage_status():
               "baseline": "plain_baseline_select_dt37p5_r0.csv", "screening": "g8_s1_r0_p1.csv", "doe": "g8_s2_r0_p1.csv",
               "surrogate": "g8_s3_selection.csv", "optimize": "g9_points_r0_p1.csv", "grid": "g9_s6_grid_r0_p1.csv",
               "band": "g9_band_r0.csv", "assess": "wp6_band.csv", "select": "g10_selection_r0.json", "test": "o2_test_2006_2010.csv",
-              "report": "o2_report_2022_2025.csv", "handoff": "obj3_environment_contract_uttarakhand_common100L.json",
+              "report": "o2_report_2022_2025.csv", "handoff": "obj3_environment_contract_uttarakhand_100L_d175.json",
               "m1": "m1_matlab/m1_gate.txt", "figures": "plots_common100L/rb1_pareto_fronts.png",
               "supplementary": "supp_boundary_below_2pct.csv", "manifest": "o2_output_manifest.json"}
     for k, f in checks.items():
