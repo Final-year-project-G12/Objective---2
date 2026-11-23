@@ -90,6 +90,22 @@ Against the pre-run expectation (section 4): regimes 0, 2 and 3 as expected; reg
 NSGA-II reached designs the coarse diagnostic grid did not). All three PCM picks sit at the 40 % upper fraction bound (reported;
 the bound is frozen and not moved after results).
 
+## 5d. L9 confirmatory test and report years (2026-11-24; `results/o2_test_2006_2010.csv`, `results/o2_report_2022_2025.csv`)
+
+Frozen designs only, 18.75 s, three anchors. 2006-2010 is a confirmatory test with prior O2 exposure on the 100 L/day plant
+(section 3). g_window in kWh/yr:
+
+| Regime | Verdict | test mean | test worst anchor | test year range | report 2022-25 mean | report worst anchor | band |
+|---|---|---|---|---|---|---|---|
+| 0 | PCM | +77.1 | +62.7 | +65.8 to +89.6 | +68.0 | +53.8 | 20.8 |
+| 1 | PCM | +44.4 | +38.3 | +20.7 to +61.6 | +29.0 | +22.7 | 17.2 |
+| 2 | PCM | +71.3 | +71.3 | +64.3 to +89.7 | +50.8 | +50.8 | 14.0 |
+| 3 | water-only | -0.7 | -3.1 | -1.6 to +0.2 | -1.6 | -3.3 | 15.4 |
+
+The selection holds in both: the worst-anchor gain of every PCM pick stays above its band, and regime 3 stays negative. Regime 1 is the
+weakest (report-year worst anchor +22.7 against a band of 17.2). M1 MATLAB checkpoint: PASS (14/14 runs, largest relative difference
+1.4e-13). Objective 3 contract: `results/obj3_environment_contract_uttarakhand_100L_d175.json`.
+
 ## 6. Level tracker
 
 | Level | Status |
@@ -97,5 +113,5 @@ the bound is frozen and not moved after results).
 | L0 decision record (this file) | done 2026-11-23 |
 | L1-L3 o1 / weather / verify | done 2026-11-23: section 5b (report step 18.75 s by the R5 gate) |
 | L4-L7 baseline ... select | done 2026-11-24: section 5c (PCM r0, r1, r2; water-only r3) |
-| L9 test, report, handoff | pending |
-| M1, figures, supplementary, manifest | pending |
+| L9 test, report, handoff | done 2026-11-24: section 5d (selection confirmed in every regime) |
+| M1, figures, supplementary, manifest | done 2026-11-24: M1 PASS; `results/plots_common100L/`, `results/supp_*`, `results/o2_output_manifest.json` |

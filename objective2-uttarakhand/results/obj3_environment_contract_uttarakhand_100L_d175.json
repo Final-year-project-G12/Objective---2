@@ -1,0 +1,1220 @@
+{
+ "state": "uttarakhand",
+ "contract_version": "obj3_contract_v3.0_uttarakhand_100L_d175_2026-11-23",
+ "generated_utc": "2026-11-23T21:13:08.555481+00:00",
+ "validated_simulator_version": "config_common100L_v1_2026-11-22_uttarakhand",
+ "plant": "100 L / 2.0 m2 / 175 L/day (plan R1 plant; demand per docs/REBUILD_175L.md)",
+ "source": "Objective 2 Uttarakhand rebuild on the common plant: results/g10_selection_r*.json, wp6_band.csv, o2_test_2006_2010*.csv, o2_report_2022_2025*.csv, results/locks/, o1_manifest_uttarakhand.json, configs/*.yaml. Decision record: docs/REBUILD_COMMON100L.md.",
+ "supersession_note": "SUPERSEDES the legacy 50 L / 1.5 m2 / 300 L/day contracts (results_legacy_50L_v3/), which must not be used for the common plant (plan 2.2).",
+ "o2_result": "PCM recommended in regime(s) [0, 1, 2]; WATER-ONLY in regime(s) [3]. A PCM design is recommended only where its worst-anchor select-year paired g_window exceeds the regime's repeatability band (plan R7, decision 4); elsewhere the installed design is the water-only 100 L tank and the best PCM design is recorded under best_pcm_design_reference as tested, NOT recommended.",
+ "global_limits": {
+  "delivery_target_temp_C": 45.0,
+  "secondary_report_temp_C": 50.0,
+  "max_safe_water_temp_C": 75.0,
+  "max_safe_pcm_temp_C": 65.0,
+  "max_pressure_bar": 3.5,
+  "min_irradiance_cutoff_Wm2": 10.0,
+  "flow_fixed_kg_s": 0.03,
+  "pump_flow_range_kg_s": [
+   0.01,
+   0.05
+  ],
+  "note": "45 C is the primary service threshold (plan R2); 50 C is a secondary Uttarakhand-only report, never pooled. Flow is FIXED at the design value (plan R6): Objective 3 does not control flow."
+ },
+ "fixed_system": {
+  "tank_volume_L": 100.0,
+  "tank_height_to_diameter_ratio": 2.0,
+  "tank_insulation_m": 0.05,
+  "tank_U_W_m2K": 0.8,
+  "collector_area_m2": 2.0,
+  "collector_area_basis": "OPEN (no source for aperture vs absorber)",
+  "collector_fr_tau_alpha": 0.75,
+  "collector_fr_ul_W_m2K": 4.5,
+  "collector_flow_dependent_fr_enabled": false,
+  "n_nodes": 10,
+  "demand_daily_total_L": 175.0,
+  "demand_profile_file": "data/demand/demand_profile_uttarakhand.csv"
+ },
+ "static_design_per_regime": [
+  {
+   "regime_id": 0,
+   "label": "warmest, lowest elevation (~320 m), highest clearness, medoid UKP_0014 (10 pts, Ta_mean 23.8 C, GHI 4.75 kWh/m2/day)",
+   "medoid_point_id": "UKP_0014",
+   "member_point_ids": [
+    "UKP_0001",
+    "UKP_0003",
+    "UKP_0009",
+    "UKP_0010",
+    "UKP_0012",
+    "UKP_0013",
+    "UKP_0014",
+    "UKP_0016",
+    "UKP_0017",
+    "UKP_0034"
+   ],
+   "n_points": 10,
+   "population_covered": 3700876.474001467,
+   "T_mains_est_C": 21.821,
+   "o1_pcm_shortlist": [
+    "PureTemp 58",
+    "n-Octacosane (C28)",
+    "PlusICE A58"
+   ],
+   "o1_Tm_target_C": 57.00000000000001,
+   "recommendation": "pcm",
+   "installed_design": {
+    "type": "pcm",
+    "pcm": "PureTemp 58",
+    "capsule_inner_radius_m": 0.04,
+    "pcm_volume_fraction": 0.3982879197374298,
+    "n_capsules": 140,
+    "arrangement": "staggered"
+   },
+   "best_pcm_design_reference": {
+    "status": "recommended",
+    "pcm": "PureTemp 58",
+    "capsule_inner_radius_m": 0.04,
+    "pcm_volume_fraction": 0.3982879197374298,
+    "n_capsules": 140,
+    "arrangement": "staggered",
+    "pcm_mass_kg": 33.4030886090486,
+    "select_2020_2021": {
+     "g_window_mean_kWh_yr": 75.2061,
+     "g_window_worst_anchor_kWh_yr": 60.727,
+     "g_annual_kWh_yr": 87.2046,
+     "d_overheat_h_yr": 478.2,
+     "t_pcm_max_C": 62.15,
+     "t_water_max_C": 72.06
+    },
+    "test_2006_2010": {
+     "g_window_mean_kWh_yr": 77.0515,
+     "g_window_worst_anchor_kWh_yr": 62.7153,
+     "worst_anchor": "bottom",
+     "g_annual_mean_kWh_yr": 88.4698,
+     "d_overheat_mean_h_yr": 514.8,
+     "g_window_50C_mean_kWh_yr": 98.6211,
+     "t_pcm_max_C": 62.16,
+     "t_water_max_C": 72.06,
+     "per_year": {
+      "2006": {
+       "g_window": 89.6085,
+       "g_window_50C": 112.7362,
+       "t_pcm_max": 62.1513,
+       "t_water_max": 72.044
+      },
+      "2007": {
+       "g_window": 72.27,
+       "g_window_50C": 92.4098,
+       "t_pcm_max": 62.1509,
+       "t_water_max": 72.0448
+      },
+      "2008": {
+       "g_window": 65.7956,
+       "g_window_50C": 81.7333,
+       "t_pcm_max": 62.1553,
+       "t_water_max": 72.039
+      },
+      "2009": {
+       "g_window": 85.9533,
+       "g_window_50C": 111.5841,
+       "t_pcm_max": 62.1571,
+       "t_water_max": 72.0551
+      },
+      "2010": {
+       "g_window": 71.6301,
+       "g_window_50C": 94.6421,
+       "t_pcm_max": 62.1498,
+       "t_water_max": 72.0448
+      }
+     },
+     "hygiene_share_days_ge60C_1h": 0.7795,
+     "hygiene_longest_gap_days": 24
+    },
+    "report_2022_2025": {
+     "g_window_mean_kWh_yr": 67.9644,
+     "g_window_worst_anchor_kWh_yr": 53.7803,
+     "worst_anchor": "bottom",
+     "g_annual_mean_kWh_yr": 80.0116,
+     "d_overheat_mean_h_yr": 450.0,
+     "g_window_50C_mean_kWh_yr": 86.6147,
+     "t_pcm_max_C": 62.15,
+     "t_water_max_C": 72.04,
+     "per_year": {
+      "2022": {
+       "g_window": 76.8509,
+       "g_window_50C": 98.375,
+       "t_pcm_max": 62.1507,
+       "t_water_max": 72.0426
+      },
+      "2023": {
+       "g_window": 67.5511,
+       "g_window_50C": 85.3903,
+       "t_pcm_max": 62.153,
+       "t_water_max": 72.0391
+      },
+      "2024": {
+       "g_window": 64.731,
+       "g_window_50C": 84.4167,
+       "t_pcm_max": 62.1549,
+       "t_water_max": 72.0431
+      },
+      "2025": {
+       "g_window": 62.7246,
+       "g_window_50C": 78.2768,
+       "t_pcm_max": 62.1545,
+       "t_water_max": 72.0444
+      }
+     },
+     "hygiene_share_days_ge60C_1h": 0.7443,
+     "hygiene_longest_gap_days": 35
+    }
+   },
+   "repeatability_band": {
+    "g_window": 20.7878,
+    "g_annual": 21.8248,
+    "d_overheat": 176.4973
+   },
+   "selection_funnel": {
+    "n_candidates": 20,
+    "n_feasible_select": 20,
+    "n_eligible_worst_anchor_above_band": 10,
+    "n_S0_indistinguishable_on_g_window": 9,
+    "n_S1": 7,
+    "n_S2": 2,
+    "cheap_vs_full_spearman": 0.9684210526315788,
+    "cheap_screen_usable": true
+   },
+   "selection_fingerprint_sha256": "14d90cd81e7be44a400f57806c3e946fd5f97b162ea111c52e6aea4102dda8db",
+   "alternatives_tested": [
+    {
+     "pcm": "PlusICE A58",
+     "pcm_volume_fraction": 0.3982879197374298,
+     "capsule_inner_radius_m": 0.04,
+     "arrangement": "single-layer",
+     "test_2006_2010": {
+      "g_window_mean_kWh_yr": 71.3822,
+      "g_window_worst_anchor_kWh_yr": 68.2008,
+      "worst_anchor": "bottom",
+      "g_annual_mean_kWh_yr": 82.6373,
+      "d_overheat_mean_h_yr": 830.7,
+      "g_window_50C_mean_kWh_yr": 93.6777,
+      "t_pcm_max_C": 62.19,
+      "t_water_max_C": 72.04,
+      "per_year": {
+       "2006": {
+        "g_window": 83.9885,
+        "g_window_50C": 107.9302,
+        "t_pcm_max": 62.1675,
+        "t_water_max": 72.0333
+       },
+       "2007": {
+        "g_window": 66.8497,
+        "g_window_50C": 87.718,
+        "t_pcm_max": 62.186,
+        "t_water_max": 72.0364
+       },
+       "2008": {
+        "g_window": 61.1547,
+        "g_window_50C": 78.1631,
+        "t_pcm_max": 62.1747,
+        "t_water_max": 72.0364
+       },
+       "2009": {
+        "g_window": 79.3999,
+        "g_window_50C": 105.4094,
+        "t_pcm_max": 62.1771,
+        "t_water_max": 72.0348
+       },
+       "2010": {
+        "g_window": 65.5183,
+        "g_window_50C": 89.1678,
+        "t_pcm_max": 62.1735,
+        "t_water_max": 72.0381
+       }
+      },
+      "hygiene_share_days_ge60C_1h": 0.787,
+      "hygiene_longest_gap_days": 23
+     }
+    }
+   ],
+   "water_only_tank_hygiene_2006_2010": {
+    "share_days_ge60C_1h": 0.686,
+    "longest_gap_days": 46
+   }
+  },
+  {
+   "regime_id": 1,
+   "label": "mid-hills (~1,090 m), largest population regime, medoid UKP_0029 (23 pts, Ta_mean 20.6 C, GHI 4.84 kWh/m2/day)",
+   "medoid_point_id": "UKP_0029",
+   "member_point_ids": [
+    "UKP_0004",
+    "UKP_0005",
+    "UKP_0006",
+    "UKP_0007",
+    "UKP_0015",
+    "UKP_0018",
+    "UKP_0019",
+    "UKP_0020",
+    "UKP_0022",
+    "UKP_0027",
+    "UKP_0028",
+    "UKP_0029",
+    "UKP_0030",
+    "UKP_0031",
+    "UKP_0032",
+    "UKP_0035",
+    "UKP_0037",
+    "UKP_0038",
+    "UKP_0039",
+    "UKP_0042",
+    "UKP_0043",
+    "UKP_0044",
+    "UKP_0045"
+   ],
+   "n_points": 23,
+   "population_covered": 3993013.4691689797,
+   "T_mains_est_C": 18.581,
+   "o1_pcm_shortlist": [
+    "PureTemp 58",
+    "n-Octacosane (C28)",
+    "PlusICE A58"
+   ],
+   "o1_Tm_target_C": 56.99999999999999,
+   "recommendation": "pcm",
+   "installed_design": {
+    "type": "pcm",
+    "pcm": "PureTemp 58",
+    "capsule_inner_radius_m": 0.04,
+    "pcm_volume_fraction": 0.3982879197374298,
+    "n_capsules": 140,
+    "arrangement": "single-layer"
+   },
+   "best_pcm_design_reference": {
+    "status": "recommended",
+    "pcm": "PureTemp 58",
+    "capsule_inner_radius_m": 0.04,
+    "pcm_volume_fraction": 0.3982879197374298,
+    "n_capsules": 140,
+    "arrangement": "single-layer",
+    "pcm_mass_kg": 33.4030886090486,
+    "select_2020_2021": {
+     "g_window_mean_kWh_yr": 40.9228,
+     "g_window_worst_anchor_kWh_yr": 34.0763,
+     "g_annual_kWh_yr": 54.9719,
+     "d_overheat_h_yr": 500.5,
+     "t_pcm_max_C": 62.13,
+     "t_water_max_C": 72.02
+    },
+    "test_2006_2010": {
+     "g_window_mean_kWh_yr": 44.4385,
+     "g_window_worst_anchor_kWh_yr": 38.3163,
+     "worst_anchor": "bottom",
+     "g_annual_mean_kWh_yr": 58.0412,
+     "d_overheat_mean_h_yr": 559.9,
+     "g_window_50C_mean_kWh_yr": 51.0158,
+     "t_pcm_max_C": 62.15,
+     "t_water_max_C": 72.03,
+     "per_year": {
+      "2006": {
+       "g_window": 52.298,
+       "g_window_50C": 58.3973,
+       "t_pcm_max": 62.1374,
+       "t_water_max": 72.0262
+      },
+      "2007": {
+       "g_window": 39.2364,
+       "g_window_50C": 45.202,
+       "t_pcm_max": 62.1456,
+       "t_water_max": 72.0349
+      },
+      "2008": {
+       "g_window": 20.7046,
+       "g_window_50C": 22.1125,
+       "t_pcm_max": 62.1401,
+       "t_water_max": 72.0283
+      },
+      "2009": {
+       "g_window": 61.5771,
+       "g_window_50C": 71.4094,
+       "t_pcm_max": 62.1482,
+       "t_water_max": 72.0288
+      },
+      "2010": {
+       "g_window": 48.3761,
+       "g_window_50C": 57.9579,
+       "t_pcm_max": 62.1177,
+       "t_water_max": 72.0212
+      }
+     },
+     "hygiene_share_days_ge60C_1h": 0.6902,
+     "hygiene_longest_gap_days": 40
+    },
+    "report_2022_2025": {
+     "g_window_mean_kWh_yr": 29.0145,
+     "g_window_worst_anchor_kWh_yr": 22.7186,
+     "worst_anchor": "bottom",
+     "g_annual_mean_kWh_yr": 42.4991,
+     "d_overheat_mean_h_yr": 465.5,
+     "g_window_50C_mean_kWh_yr": 32.9077,
+     "t_pcm_max_C": 62.15,
+     "t_water_max_C": 72.03,
+     "per_year": {
+      "2022": {
+       "g_window": 41.688,
+       "g_window_50C": 48.9535,
+       "t_pcm_max": 62.1377,
+       "t_water_max": 72.0178
+      },
+      "2023": {
+       "g_window": 30.8239,
+       "g_window_50C": 33.189,
+       "t_pcm_max": 62.142,
+       "t_water_max": 72.0327
+      },
+      "2024": {
+       "g_window": 26.3016,
+       "g_window_50C": 32.5436,
+       "t_pcm_max": 62.1457,
+       "t_water_max": 72.0317
+      },
+      "2025": {
+       "g_window": 17.2444,
+       "g_window_50C": 16.9448,
+       "t_pcm_max": 62.1081,
+       "t_water_max": 72.0126
+      }
+     },
+     "hygiene_share_days_ge60C_1h": 0.6479,
+     "hygiene_longest_gap_days": 39
+    }
+   },
+   "repeatability_band": {
+    "g_window": 17.2366,
+    "g_annual": 17.5687,
+    "d_overheat": 208.3932
+   },
+   "selection_funnel": {
+    "n_candidates": 32,
+    "n_feasible_select": 32,
+    "n_eligible_worst_anchor_above_band": 6,
+    "n_S0_indistinguishable_on_g_window": 6,
+    "n_S1": 5,
+    "n_S2": 3,
+    "cheap_vs_full_spearman": 0.9904692082111435,
+    "cheap_screen_usable": true
+   },
+   "selection_fingerprint_sha256": "fc79d8653944436bafc6f6cf2c2bb10ce1fdeac418194e0a0651b66f111950d5",
+   "alternatives_tested": [
+    {
+     "pcm": "PlusICE A58",
+     "pcm_volume_fraction": 0.3982879197374298,
+     "capsule_inner_radius_m": 0.04,
+     "arrangement": "single-layer",
+     "test_2006_2010": {
+      "g_window_mean_kWh_yr": 34.4007,
+      "g_window_worst_anchor_kWh_yr": 28.7033,
+      "worst_anchor": "bottom",
+      "g_annual_mean_kWh_yr": 47.9225,
+      "d_overheat_mean_h_yr": 634.1,
+      "g_window_50C_mean_kWh_yr": 42.844,
+      "t_pcm_max_C": 62.18,
+      "t_water_max_C": 72.03,
+      "per_year": {
+       "2006": {
+        "g_window": 42.0924,
+        "g_window_50C": 50.0722,
+        "t_pcm_max": 62.1761,
+        "t_water_max": 72.0318
+       },
+       "2007": {
+        "g_window": 29.377,
+        "g_window_50C": 37.3155,
+        "t_pcm_max": 62.1778,
+        "t_water_max": 72.0335
+       },
+       "2008": {
+        "g_window": 10.9266,
+        "g_window_50C": 14.4989,
+        "t_pcm_max": 62.1795,
+        "t_water_max": 72.0306
+       },
+       "2009": {
+        "g_window": 51.2007,
+        "g_window_50C": 62.7408,
+        "t_pcm_max": 62.1805,
+        "t_water_max": 72.0261
+       },
+       "2010": {
+        "g_window": 38.4066,
+        "g_window_50C": 49.5924,
+        "t_pcm_max": 62.1754,
+        "t_water_max": 72.0347
+       }
+      },
+      "hygiene_share_days_ge60C_1h": 0.7036,
+      "hygiene_longest_gap_days": 35
+     }
+    }
+   ],
+   "water_only_tank_hygiene_2006_2010": {
+    "share_days_ge60C_1h": 0.5721,
+    "longest_gap_days": 56
+   }
+  },
+  {
+   "regime_id": 2,
+   "label": "higher hills (~1,300 m), cloudiest of the three warm regimes, medoid UKP_0025 (9 pts, Ta_mean 19.0 C, GHI 4.90 kWh/m2/day)",
+   "medoid_point_id": "UKP_0025",
+   "member_point_ids": [
+    "UKP_0002",
+    "UKP_0008",
+    "UKP_0011",
+    "UKP_0021",
+    "UKP_0024",
+    "UKP_0025",
+    "UKP_0026",
+    "UKP_0033",
+    "UKP_0036"
+   ],
+   "n_points": 9,
+   "population_covered": 2451043.880002752,
+   "T_mains_est_C": 17.006,
+   "o1_pcm_shortlist": [
+    "PureTemp 58",
+    "savE\u00ae OM55",
+    "n-Hexacosane (C26)"
+   ],
+   "o1_Tm_target_C": 56.51005239671504,
+   "recommendation": "pcm",
+   "installed_design": {
+    "type": "pcm",
+    "pcm": "savE\u00ae OM55",
+    "capsule_inner_radius_m": 0.0361025323410012,
+    "pcm_volume_fraction": 0.3999546209106367,
+    "n_capsules": 190,
+    "arrangement": "radial"
+   },
+   "best_pcm_design_reference": {
+    "status": "recommended",
+    "pcm": "savE\u00ae OM55",
+    "capsule_inner_radius_m": 0.0361025323410012,
+    "pcm_volume_fraction": 0.3999546209106367,
+    "n_capsules": 190,
+    "arrangement": "radial",
+    "pcm_mass_kg": 35.016022949550376,
+    "select_2020_2021": {
+     "g_window_mean_kWh_yr": 71.3069,
+     "g_window_worst_anchor_kWh_yr": 71.3069,
+     "g_annual_kWh_yr": 87.3936,
+     "d_overheat_h_yr": 528.1,
+     "t_pcm_max_C": 62.11,
+     "t_water_max_C": 72.04
+    },
+    "test_2006_2010": {
+     "g_window_mean_kWh_yr": 71.342,
+     "g_window_worst_anchor_kWh_yr": 71.342,
+     "worst_anchor": "bottom",
+     "g_annual_mean_kWh_yr": 87.1018,
+     "d_overheat_mean_h_yr": 564.1,
+     "g_window_50C_mean_kWh_yr": 66.7952,
+     "t_pcm_max_C": 62.11,
+     "t_water_max_C": 72.05,
+     "per_year": {
+      "2006": {
+       "g_window": 64.5461,
+       "g_window_50C": 58.8092,
+       "t_pcm_max": 62.1093,
+       "t_water_max": 72.0424
+      },
+      "2007": {
+       "g_window": 70.2047,
+       "g_window_50C": 64.5174,
+       "t_pcm_max": 62.1068,
+       "t_water_max": 72.037
+      },
+      "2008": {
+       "g_window": 64.3312,
+       "g_window_50C": 57.1795,
+       "t_pcm_max": 62.1056,
+       "t_water_max": 72.0472
+      },
+      "2009": {
+       "g_window": 89.7391,
+       "g_window_50C": 88.4149,
+       "t_pcm_max": 62.1048,
+       "t_water_max": 72.0441
+      },
+      "2010": {
+       "g_window": 67.889,
+       "g_window_50C": 65.0549,
+       "t_pcm_max": 62.1117,
+       "t_water_max": 72.0393
+      }
+     },
+     "hygiene_share_days_ge60C_1h": 0.6099,
+     "hygiene_longest_gap_days": 54
+    },
+    "report_2022_2025": {
+     "g_window_mean_kWh_yr": 50.7626,
+     "g_window_worst_anchor_kWh_yr": 50.7626,
+     "worst_anchor": "bottom",
+     "g_annual_mean_kWh_yr": 66.5077,
+     "d_overheat_mean_h_yr": 431.0,
+     "g_window_50C_mean_kWh_yr": 43.7319,
+     "t_pcm_max_C": 62.12,
+     "t_water_max_C": 72.05,
+     "per_year": {
+      "2022": {
+       "g_window": 65.9482,
+       "g_window_50C": 61.6679,
+       "t_pcm_max": 62.1085,
+       "t_water_max": 72.0412
+      },
+      "2023": {
+       "g_window": 46.8728,
+       "g_window_50C": 38.6153,
+       "t_pcm_max": 62.1142,
+       "t_water_max": 72.0505
+      },
+      "2024": {
+       "g_window": 55.1857,
+       "g_window_50C": 49.0107,
+       "t_pcm_max": 62.1162,
+       "t_water_max": 72.043
+      },
+      "2025": {
+       "g_window": 35.0436,
+       "g_window_50C": 25.6335,
+       "t_pcm_max": 62.1056,
+       "t_water_max": 72.0451
+      }
+     },
+     "hygiene_share_days_ge60C_1h": 0.5514,
+     "hygiene_longest_gap_days": 57
+    }
+   },
+   "repeatability_band": {
+    "g_window": 13.9571,
+    "g_annual": 14.1087,
+    "d_overheat": 158.7753
+   },
+   "selection_funnel": {
+    "n_candidates": 29,
+    "n_feasible_select": 29,
+    "n_eligible_worst_anchor_above_band": 9,
+    "n_S0_indistinguishable_on_g_window": 5,
+    "n_S1": 5,
+    "n_S2": 1,
+    "cheap_vs_full_spearman": 0.9600985221674873,
+    "cheap_screen_usable": true
+   },
+   "selection_fingerprint_sha256": "b3d51b8b3dfe2a964ea1535858bcd3430eaa6904225e16b68ae5c145a8b42ded",
+   "alternatives_tested": [
+    {
+     "pcm": "PureTemp 58",
+     "pcm_volume_fraction": 0.3999978437189432,
+     "capsule_inner_radius_m": 0.0398655732531558,
+     "arrangement": "single-layer",
+     "test_2006_2010": {
+      "g_window_mean_kWh_yr": 32.9485,
+      "g_window_worst_anchor_kWh_yr": 26.0712,
+      "worst_anchor": "bottom",
+      "g_annual_mean_kWh_yr": 47.4706,
+      "d_overheat_mean_h_yr": 467.9,
+      "g_window_50C_mean_kWh_yr": 36.8986,
+      "t_pcm_max_C": 62.15,
+      "t_water_max_C": 72.03,
+      "per_year": {
+       "2006": {
+        "g_window": 25.1163,
+        "g_window_50C": 27.8386,
+        "t_pcm_max": 62.1468,
+        "t_water_max": 72.0302
+       },
+       "2007": {
+        "g_window": 30.0717,
+        "g_window_50C": 32.9725,
+        "t_pcm_max": 62.1502,
+        "t_water_max": 72.0304
+       },
+       "2008": {
+        "g_window": 23.6977,
+        "g_window_50C": 24.6735,
+        "t_pcm_max": 62.1168,
+        "t_water_max": 72.0306
+       },
+       "2009": {
+        "g_window": 54.2496,
+        "g_window_50C": 61.9626,
+        "t_pcm_max": 62.1305,
+        "t_water_max": 72.0279
+       },
+       "2010": {
+        "g_window": 31.6073,
+        "g_window_50C": 37.0456,
+        "t_pcm_max": 62.1247,
+        "t_water_max": 72.0269
+       }
+      },
+      "hygiene_share_days_ge60C_1h": 0.6555,
+      "hygiene_longest_gap_days": 40
+     }
+    },
+    {
+     "pcm": "n-Hexacosane (C26)",
+     "pcm_volume_fraction": 0.3982879197374298,
+     "capsule_inner_radius_m": 0.04,
+     "arrangement": "single-layer",
+     "test_2006_2010": {
+      "g_window_mean_kWh_yr": 25.2752,
+      "g_window_worst_anchor_kWh_yr": 18.5349,
+      "worst_anchor": "bottom",
+      "g_annual_mean_kWh_yr": 40.6202,
+      "d_overheat_mean_h_yr": 691.8,
+      "g_window_50C_mean_kWh_yr": 32.4087,
+      "t_pcm_max_C": 62.21,
+      "t_water_max_C": 72.05,
+      "per_year": {
+       "2006": {
+        "g_window": 17.4898,
+        "g_window_50C": 23.5754,
+        "t_pcm_max": 62.1983,
+        "t_water_max": 72.036
+       },
+       "2007": {
+        "g_window": 23.5937,
+        "g_window_50C": 29.6909,
+        "t_pcm_max": 62.2023,
+        "t_water_max": 72.0313
+       },
+       "2008": {
+        "g_window": 17.0191,
+        "g_window_50C": 21.676,
+        "t_pcm_max": 62.201,
+        "t_water_max": 72.0493
+       },
+       "2009": {
+        "g_window": 45.4896,
+        "g_window_50C": 55.8443,
+        "t_pcm_max": 62.2018,
+        "t_water_max": 72.0398
+       },
+       "2010": {
+        "g_window": 22.784,
+        "g_window_50C": 31.2567,
+        "t_pcm_max": 62.2073,
+        "t_water_max": 72.0455
+       }
+      },
+      "hygiene_share_days_ge60C_1h": 0.6539,
+      "hygiene_longest_gap_days": 41
+     }
+    }
+   ],
+   "water_only_tank_hygiene_2006_2010": {
+    "share_days_ge60C_1h": 0.5501,
+    "longest_gap_days": 62
+   }
+  },
+  {
+   "regime_id": 3,
+   "label": "cold high-altitude (~2,220 m), coldest mains water, medoid UKP_0041 (3 pts, Ta_mean 9.4 C, GHI 4.57 kWh/m2/day)",
+   "medoid_point_id": "UKP_0041",
+   "member_point_ids": [
+    "UKP_0023",
+    "UKP_0040",
+    "UKP_0041"
+   ],
+   "n_points": 3,
+   "population_covered": 330779.7217432335,
+   "T_mains_est_C": 7.447,
+   "o1_pcm_shortlist": [
+    "PureTemp 53",
+    "n-Hexacosane (C26)",
+    "Myristic acid (C14)"
+   ],
+   "o1_Tm_target_C": 55.16109721700209,
+   "recommendation": "water_only",
+   "installed_design": {
+    "type": "water_only_tank",
+    "pcm": null,
+    "n_capsules": 0,
+    "tank_volume_L": 100.0
+   },
+   "best_pcm_design_reference": {
+    "status": "tested reference, NOT recommended",
+    "pcm": "PureTemp 53",
+    "capsule_inner_radius_m": 0.024358334270752,
+    "pcm_volume_fraction": 0.020010388176837195,
+    "n_capsules": 30,
+    "arrangement": "staggered",
+    "pcm_mass_kg": 1.6708614896796048,
+    "select_2020_2021": {
+     "g_window_mean_kWh_yr": -0.4958,
+     "g_window_worst_anchor_kWh_yr": -2.9349,
+     "g_annual_kWh_yr": 0.5017,
+     "d_overheat_h_yr": 156.8,
+     "t_pcm_max_C": 62.24,
+     "t_water_max_C": 72.06
+    },
+    "test_2006_2010": {
+     "g_window_mean_kWh_yr": -0.6804,
+     "g_window_worst_anchor_kWh_yr": -3.1054,
+     "worst_anchor": "bottom",
+     "g_annual_mean_kWh_yr": 0.3477,
+     "d_overheat_mean_h_yr": 170.4,
+     "g_window_50C_mean_kWh_yr": -0.4341,
+     "t_pcm_max_C": 62.22,
+     "t_water_max_C": 72.05,
+     "per_year": {
+      "2006": {
+       "g_window": -0.8941,
+       "g_window_50C": -0.6296,
+       "t_pcm_max": 62.2012,
+       "t_water_max": 72.0328
+      },
+      "2007": {
+       "g_window": -0.6186,
+       "g_window_50C": -0.4256,
+       "t_pcm_max": 62.1457,
+       "t_water_max": 72.0294
+      },
+      "2008": {
+       "g_window": -1.632,
+       "g_window_50C": -1.2572,
+       "t_pcm_max": 62.2033,
+       "t_water_max": 72.0482
+      },
+      "2009": {
+       "g_window": 0.1691,
+       "g_window_50C": 0.3813,
+       "t_pcm_max": 62.2101,
+       "t_water_max": 72.0521
+      },
+      "2010": {
+       "g_window": -0.4261,
+       "g_window_50C": -0.2392,
+       "t_pcm_max": 62.2191,
+       "t_water_max": 72.0425
+      }
+     },
+     "hygiene_share_days_ge60C_1h": 0.194,
+     "hygiene_longest_gap_days": 112
+    },
+    "report_2022_2025": {
+     "g_window_mean_kWh_yr": -1.6094,
+     "g_window_worst_anchor_kWh_yr": -3.2705,
+     "worst_anchor": "bottom",
+     "g_annual_mean_kWh_yr": -0.5504,
+     "d_overheat_mean_h_yr": 130.8,
+     "g_window_50C_mean_kWh_yr": -1.3265,
+     "t_pcm_max_C": 62.23,
+     "t_water_max_C": 72.05,
+     "per_year": {
+      "2022": {
+       "g_window": -0.4025,
+       "g_window_50C": -0.2042,
+       "t_pcm_max": 62.2325,
+       "t_water_max": 72.0452
+      },
+      "2023": {
+       "g_window": -1.9787,
+       "g_window_50C": -1.7477,
+       "t_pcm_max": 62.1514,
+       "t_water_max": 71.6145
+      },
+      "2024": {
+       "g_window": -1.5044,
+       "g_window_50C": -1.222,
+       "t_pcm_max": 62.2167,
+       "t_water_max": 72.0448
+      },
+      "2025": {
+       "g_window": -2.5519,
+       "g_window_50C": -2.1322,
+       "t_pcm_max": 62.2289,
+       "t_water_max": 72.0375
+      }
+     },
+     "hygiene_share_days_ge60C_1h": 0.1498,
+     "hygiene_longest_gap_days": 113
+    }
+   },
+   "repeatability_band": {
+    "g_window": 15.4096,
+    "g_annual": 13.2472,
+    "d_overheat": 133.4874
+   },
+   "selection_funnel": {
+    "n_candidates": 36,
+    "n_feasible_select": 36,
+    "n_eligible_worst_anchor_above_band": 0,
+    "n_S0_indistinguishable_on_g_window": 26,
+    "n_S1": 26,
+    "n_S2": 4,
+    "cheap_vs_full_spearman": 0.9971685971685972,
+    "cheap_screen_usable": true
+   },
+   "selection_fingerprint_sha256": "8ff011050357560c456a8c06d558e97fe260d41a798475a09c2b17e05ebb6602",
+   "alternatives_tested": [
+    {
+     "pcm": "n-Hexacosane (C26)",
+     "pcm_volume_fraction": 0.020000003611188838,
+     "capsule_inner_radius_m": 0.0262963051377955,
+     "arrangement": "staggered",
+     "test_2006_2010": {
+      "g_window_mean_kWh_yr": -4.2949,
+      "g_window_worst_anchor_kWh_yr": -5.4147,
+      "worst_anchor": "bottom",
+      "g_annual_mean_kWh_yr": -3.1251,
+      "d_overheat_mean_h_yr": 144.5,
+      "g_window_50C_mean_kWh_yr": -3.7482,
+      "t_pcm_max_C": 62.4,
+      "t_water_max_C": 72.06,
+      "per_year": {
+       "2006": {
+        "g_window": -4.5601,
+        "g_window_50C": -3.9918,
+        "t_pcm_max": 62.3752,
+        "t_water_max": 72.0356
+       },
+       "2007": {
+        "g_window": -4.1577,
+        "g_window_50C": -3.6839,
+        "t_pcm_max": 62.3504,
+        "t_water_max": 72.0366
+       },
+       "2008": {
+        "g_window": -5.1438,
+        "g_window_50C": -4.4776,
+        "t_pcm_max": 62.3661,
+        "t_water_max": 72.0503
+       },
+       "2009": {
+        "g_window": -3.3658,
+        "g_window_50C": -2.8137,
+        "t_pcm_max": 62.3999,
+        "t_water_max": 72.0562
+       },
+       "2010": {
+        "g_window": -4.2472,
+        "g_window_50C": -3.7738,
+        "t_pcm_max": 62.3972,
+        "t_water_max": 72.0397
+       }
+      },
+      "hygiene_share_days_ge60C_1h": 0.1989,
+      "hygiene_longest_gap_days": 112
+     }
+    },
+    {
+     "pcm": "Myristic acid (C14)",
+     "pcm_volume_fraction": 0.020005849200289662,
+     "capsule_inner_radius_m": 0.0275323781032802,
+     "arrangement": "staggered",
+     "test_2006_2010": {
+      "g_window_mean_kWh_yr": -2.3428,
+      "g_window_worst_anchor_kWh_yr": -4.4965,
+      "worst_anchor": "bottom",
+      "g_annual_mean_kWh_yr": -1.1335,
+      "d_overheat_mean_h_yr": 169.9,
+      "g_window_50C_mean_kWh_yr": -2.0563,
+      "t_pcm_max_C": 62.26,
+      "t_water_max_C": 72.05,
+      "per_year": {
+       "2006": {
+        "g_window": -2.5497,
+        "g_window_50C": -2.2343,
+        "t_pcm_max": 62.2095,
+        "t_water_max": 72.0355
+       },
+       "2007": {
+        "g_window": -2.2528,
+        "g_window_50C": -2.0337,
+        "t_pcm_max": 62.1945,
+        "t_water_max": 72.0309
+       },
+       "2008": {
+        "g_window": -3.2335,
+        "g_window_50C": -2.7745,
+        "t_pcm_max": 62.2489,
+        "t_water_max": 72.0507
+       },
+       "2009": {
+        "g_window": -1.5703,
+        "g_window_50C": -1.3392,
+        "t_pcm_max": 62.2215,
+        "t_water_max": 72.0507
+       },
+       "2010": {
+        "g_window": -2.1075,
+        "g_window_50C": -1.8995,
+        "t_pcm_max": 62.2554,
+        "t_water_max": 72.0401
+       }
+      },
+      "hygiene_share_days_ge60C_1h": 0.196,
+      "hygiene_longest_gap_days": 112
+     }
+    }
+   ],
+   "water_only_tank_hygiene_2006_2010": {
+    "share_days_ge60C_1h": 0.2,
+    "longest_gap_days": 112
+   }
+  }
+ ],
+ "o2_confirmatory_test": {
+  "status": "COMPLETED AND LOCKED by O2 (one shot) - Objective 3 runs its OWN separate 2006-2010 test under its own lock",
+  "years": [
+   2006,
+   2007,
+   2008,
+   2009,
+   2010
+  ],
+  "run_id": "o2test_ddcba14a8015",
+  "locked_utc": "2026-11-23T20:28:43.542963+00:00",
+  "plant_hash": "2a12f61b697e",
+  "selection_fingerprint": "ddcba14a80152ad06aba9626f790a890dd6b74aa8b5e888cbc18dab9062c185e",
+  "fidelity": "18.75 s, every year, bottom / centre / top anchors",
+  "exposure_note": "2006-2010 was used once before by Objective 2, on the 100 L/day plant (water-only verdict; docs/REBUILD_175L.md section 3), and by the OLD Uttarakhand Objective 3 test (50 L plant). It is therefore not an untouched test for either objective; declare this in both reports (plan 1.5, 7.2)."
+ },
+ "weather_sequences": {
+  "o3_roles_plan_R3": {
+   "train": [
+    2016,
+    2017,
+    2018,
+    2019
+   ],
+   "validate": [
+    2020,
+    2021
+   ],
+   "extra_train_after_o2_freeze": [
+    2022,
+    2023
+   ],
+   "report_only": [
+    2024,
+    2025
+   ],
+   "confirmatory_test_own_lock": [
+    2006,
+    2007,
+    2008,
+    2009,
+    2010
+   ]
+  },
+  "points": {
+   "0": "UKP_0014",
+   "1": "UKP_0029",
+   "2": "UKP_0025",
+   "3": "UKP_0041"
+  },
+  "weather_files": "data/weather/point_years/uttarakhand/cluster<c>_<point>_<year>.csv (inventory: weather_inventory.csv)",
+  "enforcement": "src/weather/roles.py refuses a year whose role differs from the purpose; test years need the lock"
+ },
+ "time_step_s": {
+  "search": 150,
+  "report_and_test": 18.75,
+  "note": "L3 gate at 175 L/day: 37.5 s fails and 18.75 s passes the halving criterion on the primary metric (docs/REBUILD_175L.md 5b)"
+ },
+ "action_space": {
+  "actions": [
+   "ENABLE",
+   "BYPASS"
+  ],
+  "note": "Plan 8.3: two physical actions; IDLE is physically identical to BYPASS in this loop. Flow is fixed; the shield inside the kernel overrides ENABLE above the guards and cannot be disabled.",
+  "hard_rule": "the controller must never command a flow or temperature outside this regime's flow_envelope_kg_s / max_water_temp_C / max_pcm_temp_C \u2014 the safety shield below overrides the policy if it tries"
+ },
+ "dynamic_state_schema": {
+  "description": "One observation per control timestep. Fields marked measurable=false need an estimator (energy-balance + calibrated melt-fraction observer), not a raw sensor. T_pcm_C and f_melt are degenerate for the plain-tank regimes (no PCM) but kept in the vector for a state-invariant contract across future PCM-bearing states.",
+  "fields": [
+   {
+    "name": "GHI_Wm2",
+    "unit": "W/m2",
+    "measurable": true,
+    "source": "pyranometer or weather feed"
+   },
+   {
+    "name": "T_amb_C",
+    "unit": "C",
+    "measurable": true,
+    "source": "ambient sensor"
+   },
+   {
+    "name": "T_water_C",
+    "unit": "C",
+    "measurable": true,
+    "source": "tank thermocouple"
+   },
+   {
+    "name": "T_pcm_C",
+    "unit": "C",
+    "measurable": false,
+    "source": "estimator (no direct PCM sensor assumed)"
+   },
+   {
+    "name": "f_melt",
+    "unit": "fraction [0,1]",
+    "measurable": false,
+    "source": "estimator, derived from T_pcm_C via the frozen enthalpy model"
+   },
+   {
+    "name": "T_mains_C",
+    "unit": "C",
+    "measurable": true,
+    "source": "mains/inlet sensor"
+   },
+   {
+    "name": "draw_mass_kg_now",
+    "unit": "kg",
+    "measurable": true,
+    "source": "flow meter at the draw-off point"
+   },
+   {
+    "name": "hour_of_day",
+    "unit": "hour [0,24)",
+    "measurable": true,
+    "source": "clock"
+   },
+   {
+    "name": "minutes_since_last_draw",
+    "unit": "minutes",
+    "measurable": true,
+    "source": "derived from draw sensor history"
+   },
+   {
+    "name": "store_energy_above_mains_kWh",
+    "unit": "kWh (cumulative)",
+    "measurable": false,
+    "source": "estimator, from T_water_C/T_pcm_C vs T_mains_C"
+   },
+   {
+    "name": "T_water_top_C",
+    "unit": "C",
+    "measurable": true,
+    "source": "sensor at the tank outlet"
+   },
+   {
+    "name": "T_water_bottom_C",
+    "unit": "C",
+    "measurable": true,
+    "source": "sensor at the collector return"
+   },
+   {
+    "name": "recoverable_energy_above_45C_kWh",
+    "unit": "kWh",
+    "measurable": false,
+    "source": "estimator (WP1 E_rec,45)"
+   }
+  ],
+  "state_vector_order": [
+   "T_water_top_C",
+   "T_water_bottom_C",
+   "T_water_mean_C",
+   "T_pcm_C",
+   "f_melt",
+   "GHI_Wm2",
+   "T_amb_C",
+   "hour_of_day",
+   "draw_mass_kg_now",
+   "T_mains_C",
+   "store_energy_above_mains_kWh",
+   "recoverable_energy_above_45C_kWh",
+   "minutes_since_last_draw"
+  ],
+  "stratification_note": "The tank is stratified: delivery temperature is the TOP node, the collector inlet is the BOTTOM node. recoverable_energy_above_45C_kWh is the WP1 E_rec,45 quantity (in Uttarakhand the threshold is the 50 C delivery target; the field keeps its cross-state name) and needs an estimator (not a raw sensor). Loop flow sets stratification, not collector heat, in this model.",
+  "rebuild_note": "copied from the legacy contract; on the water-only installed design T_pcm_C and f_melt are degenerate (no PCM) and kept for a state-invariant schema"
+ },
+ "reset_scenarios": [
+  {
+   "name": "fully_solid",
+   "initial_pcm_state": "solid",
+   "initial_water_temp_C": 30.0,
+   "note": "matches src/simulation/tank_model.py's default cold-start condition"
+  },
+  {
+   "name": "partially_charged",
+   "initial_pcm_state": "mid",
+   "initial_water_temp_C": 30.0,
+   "note": "PCM initialized at Tm_C (roughly 50% notional charge state)"
+  },
+  {
+   "name": "fully_liquid",
+   "initial_pcm_state": "liquid",
+   "initial_water_temp_C": 30.0,
+   "note": "stresses discharge-heavy policies from a fully-charged start"
+  }
+ ],
+ "acceptance_test_before_drl_training": [
+  "every action stays within flow_envelope_kg_s / temperature limits above",
+  "charge/discharge/bypass transitions are physically valid",
+  "the environment conserves energy (reuse Phase 4 Gate 1's <0.1% residual check)",
+  "the safety shield cannot be bypassed by the policy",
+  "the same seed reproduces the same trajectory",
+  "simulator output matches this Objective 2 re-evaluation for identical actions"
+ ],
+ "safety_shield": {
+  "enabled": true,
+  "bypass_water_C": 72.0,
+  "bypass_pcm_C": 62.0,
+  "hard_water_C": 75.0,
+  "hard_pcm_C": 65.0,
+  "enforced_in": "src/simulation/tank_model_multinode.py (inside the kernel, not the policy)",
+  "hygiene_guardrail_plan_R9": "report share of days with stored water >= 60 C for >= 1 h and the longest gap; not worse than B0 by more than the band"
+ },
+ "reward_function": {
+  "status": "FORM FIXED BY THE PLAN (8.5); WEIGHTS NOT CHOSEN (Objective 3 pre-registers them before training)",
+  "formula": "w_d * normalized_delivered_energy - w_u * normalized_unmet_demand + w_r * normalized_evening_retention - w_c * physical_switching_cost - w_b * unnecessary_bypass_cost",
+  "safety": "a constraint (shield + cost critic), not a huge scalar penalty",
+  "acceptance_plan_R12": "zero hard violations; annual delivery >= 95 % of B0 in every regime; then the largest shield-hour cut",
+  "headroom_gate_H2": "near-oracle minus B0, computed before any DRL training (plan 8.5)"
+ },
+ "design_space_caveats": {
+  "statement": "best within the declared box (plan R17); not a global optimum",
+  "searched_bounds": {
+   "capsule_inner_radius_m": [
+    0.01,
+    0.04
+   ],
+   "pcm_volume_fraction": [
+    0.02,
+    0.4
+   ],
+   "flow_kg_s_fixed": 0.03,
+   "arrangement": [
+    "single-layer",
+    "staggered",
+    "radial"
+   ]
+  },
+  "demand_note": "at 100 L/day the 100 L tank stores a full day's hot water and every regime was water-only (branch uttarakhand-o2-common100L); at 175 L/day the draw exceeds the tank, which is where PCM can add evening delivery. Regime 3 (cold) is negative at every tested demand."
+ },
+ "verification_status": {
+  "simulator_verification": "L3 gate passed (docs/REBUILD_COMMON100L.md 3c); results/l3_*.csv",
+  "cfd_cross_check": "none on the common plant (OpenFOAM optional, plan section 6); legacy 50 L case only",
+  "experimental_validation": {
+   "status": "NOT DONE",
+   "scope": "Objective 4 / hardware"
+  },
+  "wording_rule": "never 'CFD-validated' (plan R17)"
+ },
+ "objective_boundary": "Objective 2 fixed the plant and the (water-only) design. Objective 3 may not change the tank, collector, PCM, capsules, flow, safety limits or physics; it controls ENABLE / BYPASS only.",
+ "provenance": {
+  "configs/system_config_shared.yaml": "8a8e6f27038a33e82f0b37d4cd64f28677202963898838cc49f74c03b7f16db6",
+  "configs/design_space.yaml": "31b767a4483c6c37808b7feddb719e6537cd1febef69610114446cc4b200346c",
+  "configs/states/uttarakhand.yaml": "2e8e9cf0f40e6949c92e068d1a1780e2717f47f7b1ca7140b8f200de08c4d9f9",
+  "wp6_band.csv": "e096f0c04cbf0459aebf7ad0d8dab0309442844dbdc20eccff3e812448ad440b",
+  "o2_test_2006_2010.csv": "1a57d5a7eadafe65f321853b4a4ec2a8e17a83ad5f1c0dcad4c0ed70fb8eb22b",
+  "test_lock": "cdb53bad7aa2c8848da2e6e37d056ae972e99709f8e1b9134755adf0f0154694",
+  "o1_manifest_uttarakhand.json": "b82665c8dddc35e4f5c8acfbe4661c2ed857e1aa1412882c002de49fe23f1766",
+  "g10_selection_r0.json": "c9f85918dba013c8332f0e4dcf57a471e56ed7abf1341b189d15a80576695d41",
+  "g10_selection_r1.json": "2ed2448ad6fa28da0e676b364b3b2b33b651ec0f501ec456aabe0829ea6d2563",
+  "g10_selection_r2.json": "3cea648147f1ddf65efed1ec71215445462f652136c0149cd6f5b9a0041a2d5f",
+  "g10_selection_r3.json": "9d2387999a505a315bcc8d44c43df242d405bbcc584bded3e11a870fb1741c2f"
+ }
+}
