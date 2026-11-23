@@ -29,6 +29,17 @@ Scope: this folder only. Fixed and not optimised: 50 L tank, collector area, the
 
 ## Contents
 
+**Common-plant rebuild (current):**
+
+| File | What it covers |
+|---|---|
+| [`REBUILD_COMMON100L.md`](REBUILD_COMMON100L.md) | decision record, frozen protocols (search, band, funnel), results of every level L0-L9, M1 and the supplementary studies |
+| [`07_OBJECTIVE3_HANDOFF_COMMON100L.md`](07_OBJECTIVE3_HANDOFF_COMMON100L.md) | the Objective 3 contract on the common plant (water-only in all regimes) |
+| `../results/plots_common100L/`, `../results/m1_matlab/figures/` | rebuild figures and the MATLAB M1 checkpoint |
+| `../pipeline.py` | the rebuild chain, stage by stage (`--stage status` shows what exists) |
+
+**Legacy 50 L run (archived in `../results_legacy_50L_v3/`; the files below describe that run, not the rebuild):**
+
 | File | What it covers |
 |---|---|
 | [`01_MODEL_AND_METRICS.md`](01_MODEL_AND_METRICS.md) | simulator, repairs, WP1 metrics at the 50 C target, paired baseline |

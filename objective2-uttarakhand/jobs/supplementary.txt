@@ -1,0 +1,13 @@
+results/supp_sensitivity_r0.csv scripts/r10_supplementary.py sens 0
+results/supp_sensitivity_r1.csv scripts/r10_supplementary.py sens 1
+results/supp_sensitivity_r2.csv scripts/r10_supplementary.py sens 2
+results/supp_sensitivity_r3.csv scripts/r10_supplementary.py sens 3
+results/supp_case_d150.csv scripts/r10_supplementary.py cases d150
+results/supp_case_legacy.csv scripts/r10_supplementary.py cases legacy
+results/supp_case_t150.csv scripts/r10_supplementary.py cases t150
+results/supp_case_d70.csv scripts/r10_supplementary.py cases d70
+results/supp_aux_heater_r0.csv scripts/r10_supplementary.py aux 0
+results/supp_aux_heater_r1.csv scripts/r10_supplementary.py aux 1
+results/supp_aux_heater_r2.csv scripts/r10_supplementary.py aux 2
+results/supp_aux_heater_r3.csv scripts/r10_supplementary.py aux 3
+results/supp_boundary_below_2pct.csv scripts/r10_supplementary.py boundary

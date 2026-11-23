@@ -162,6 +162,50 @@ Four regimes, rank-1 PCM, flow 0.030, 10-node tank, explore year 2018; designs V
 - **Timing note:** the test was launched at 15:15, about one minute before the commit holding the selection files was pushed; the
   selection files were final at 15:14 and the test verified their SHA-256 fingerprints before it took the lock.
 
+## 3i. Post-result items of the plan (2026-11-23; never used for selection)
+
+**MATLAB checkpoint M1** (plan 0.2 / R18; `scripts/m1_export.py`, `matlab/m1_checkpoint.m`, MATLAB R2026b): the frozen designs of every
+regime (water-only, the pick and the alternatives; 16 runs) on 2021 at 37.5 s, centre anchor, always-charge B0, exported from the O2
+kernel; MATLAB recomputes annual useful energy, annual and window delivery at 45 C and the energy balance from the hourly records alone.
+**Gate PASS:** 16 of 16 runs match the kernel (largest relative difference 4.9e-14), MATLAB closure <= 5.0e-11 %, ranking identical in
+every regime (`results/m1_matlab/m1_gate.txt`). Figures `results/m1_matlab/figures/` (clearest and 10th-percentile day: top/bottom
+water temperature, PCM temperature and liquid fraction, heat exchanged with the PCM, sun and draw; annual balance and ranking). MATLAB
+shows and re-checks the kernel output; it does not re-simulate the tank (the plan drives M1 from the O2 multi-node kernel). The MATLAB
+on this PC runs a trial licence.
+
+**One-at-a-time sensitivity on the common plant** (O2-6 / O2-12; `results/supp_sensitivity_r*.csv`), around each regime's frozen best
+PCM design, 2016-2019, three anchors: collector F_R(tau alpha) x0.9/x1.1, F_R U_L x0.8/x1.2; F_R(flow) ON at 0.010-0.050 kg/s;
+capsule wall 0.6/1.0 mm, inner radius -+0.5 mm, PCM fill 95 %; state-coldest mains 7.5 C and mains -4 K; GHI x0.85. Worst-anchor
+g_window stays between -2.8 and +0.5 kWh/yr in every case (band 5.3-6.2): **no variant changes the water-only recommendation**, no
+variant is infeasible. The flow-dependent F_R does not open a flow optimum for PCM (flow 0.010-0.050 all within -2.8 to -0.1).
+
+**Auxiliary-heater scenario** (plan 4.3 cold-regime item (iii), a separate system boundary; `results/supp_aux_heater_r*.csv`): an ideal
+in-line booster that tops every draw up to the threshold would need, with the water-only tank on 2020-2021, 45 / 73 / 91 / 292 kWh/yr
+at 45 C and 93 / 135 / 159 / 421 kWh/yr at 50 C (regimes 0-3). The best PCM designs save -0.1 to +3.4 kWh/yr of it at 45 C (up to
+9.8 at 50 C in regime 3): PCM is no substitute for auxiliary heat in the cold regime. Not a PCM benefit claim.
+
+**Bound-contact diagnostic** (O2-11; `results/supp_boundary_below_2pct.csv`): the picks sit at the 2 % floor, so the box was extended
+below it (1 capsule up to the pick's count). In regimes 0-2 the gain goes smoothly to 0 as the capsule count goes to 1 (worst anchor
+-0.06 to -0.08 kWh/yr at one capsule): the optimum continues to "no PCM", i.e. water-only. In regime 3 even one capsule shows about
++1 kWh/yr, which no single capsule can deliver: it is an offset of the node layout the kernel uses when capsules are present (well
+inside the band), so regime 3's small positive gains (+1 to +2 kWh/yr) are mostly this offset, not a PCM effect.
+
+**Plant sensitivity cases** (decision 12; `results/supp_case_*.csv`; a fixed design set per regime, representative year, three anchors;
+the band is the main plant's, so these are diagnostics of direction). Best worst-anchor g_window, regimes 0 / 1 / 2 / 3 (kWh/yr):
+
+| Case | r0 | r1 | r2 | r3 | PCM beyond the band? |
+|---|---|---|---|---|---|
+| main plant: 100 L, 2.0 m2, 100 L/day | -0.6 | -0.8 | -0.7 | -1.3 | no (water-only) |
+| 100 L, 2.0 m2, 70 L/day | -0.1 | -0.2 | -0.1 | -0.2 | no |
+| 100 L, 2.0 m2, 150 L/day | +27.8 | +5.4 | +31.6 | -7.3 | yes in r0 and r2 |
+| legacy 2.5 m2, 300 L/day (100 L tank) | +118.6 | +69.5 | +112.6 | -10.4 | yes in r0-r2 |
+| 150 L tank, 2.0 m2, 150 L/day | -3.6 | -4.5 | -2.7 | -3.2 | no |
+
+Reading: PCM pays only when the daily draw exceeds the tank volume (150 L/day or 300 L/day on 100 L); with the draw at or below the
+tank volume (70-100 L/day on 100 L, 150 L/day on 150 L) the water already stores the day's hot water. The cold regime 3 never gains.
+This is the evidence for the team's choice of common demand; it does not change the frozen Uttarakhand result (plan: sensitivity
+cases are never used for selection).
+
 ## 4. Open items
 
 - Collector parameters and area basis for 2.0 m2: still no source (F_R(tau alpha) 0.75, F_R U_L 4.5 are typical flat-plate values).
@@ -199,3 +243,4 @@ Frozen 2026-11-23, before the band is computed and before any select-year evalua
 | L7 | 720-point grid, band, funnel frozen | done 2026-11-23: sections 3e, 3g, 5; selection: water-only in all regimes |
 | L8 | (Tamil Nadu only: ANSYS Fluent) | n/a |
 | L9 | one-shot 2006-2010 test, report-only years, O3 contract | done 2026-11-23: section 3h. **Objective 2 rebuild complete** |
+| M1 + post-result items | MATLAB checkpoint, sensitivities, auxiliary heater, bound diagnostic, plant cases, output manifest | done 2026-11-23: section 3i |

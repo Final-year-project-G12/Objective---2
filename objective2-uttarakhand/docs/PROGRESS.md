@@ -254,3 +254,13 @@ are not installed on this machine; `scripts/run_all_cases.ps1` runs everything w
   before that commit was pushed. The selection files were already final (15:14) and their fingerprints were verified by the test.
 - Released `results/obj3_environment_contract_uttarakhand_common100L.json` and `docs/07_OBJECTIVE3_HANDOFF_COMMON100L.md`.
   Figures `results/plots_common100L/`. Details `docs/REBUILD_COMMON100L.md` section 3h.
+
+## 2026-11-23 - Rebuild: M1 MATLAB checkpoint and the post-result items of the plan
+
+- M1 (`scripts/m1_export.py` + `matlab/m1_checkpoint.m`, MATLAB R2026b, trial licence): gate PASS (16 runs, numbers match to 4.9e-14,
+  closure <= 5e-11 %, ranking identical). `src/simulation/run_case.py` now also returns `E_stored_initial_kWh` (additive; no number changed).
+- `scripts/r10_supplementary.py`: one-at-a-time sensitivity (collector, F_R(flow), manufacturing, cold mains, low sun), auxiliary-heater
+  scenario, bound diagnostic below 2 %, plant cases 70 / 150 L/day, legacy 2.5 m2 / 300 L/day, 150 L tank. Nothing changes the
+  water-only result; PCM pays only when the daily draw exceeds the tank volume. Details `docs/REBUILD_COMMON100L.md` section 3i.
+- `pipeline.py` and `run_all_uttarakhand.py` rewritten for the rebuild chain; `docs/README.md` separates rebuild and legacy documents;
+  `scripts/r11_output_manifest.py` hashes every output (plan R20).

@@ -33,5 +33,8 @@ legacy 50 L contracts in `results_legacy_50L_v3/` (plan section 2.2), which must
 
 - Collector area basis (aperture vs absorber) and a source for F_R(tau alpha) 0.75 / F_R U_L 4.5.
 - No CFD on the common plant (OpenFOAM optional per plan section 6); no hardware validation (Objective 4 / hardware).
-- PCM becomes useful only with a heavier draw (regime 1 gains +10 to +25 kWh/yr at 150-300 L/day, exploratory, `REBUILD_COMMON100L.md`
-  3c). The plan's demand sensitivity cases (70 / 150 L/day) are run only after the main result and never for selection.
+- MATLAB checkpoint M1 passed (results/m1_matlab/m1_gate.txt); M2 is built after the Objective 3 agent is trained.
+- Auxiliary heat: an ideal booster would need 45-292 kWh/yr at 45 C on the water-only tank (regime 3 the most); PCM does not reduce it.
+- PCM becomes useful only when the daily draw exceeds the tank volume: at 150 L/day on the 100 L tank the best worst-anchor gains are
+  +28 / +5 / +32 / -7 kWh/yr (regimes 0-3), on the legacy 2.5 m2 / 300 L/day plant +119 / +70 / +113 / -10, while 70 L/day and a
+  150 L tank at 150 L/day stay water-only (`REBUILD_COMMON100L.md` 3i; sensitivity cases, never used for selection).
