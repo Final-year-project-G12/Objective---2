@@ -59,14 +59,14 @@ READDIR = Path("results")                  # saved states are always read from h
 OUTDIR = Path(os.environ.get("G9_OUTDIR") or ("results/_smoke" if os.environ.get("G9_FAST") else "results"))   # G9_OUTDIR: issue-1 diagnostic runs write elsewhere
 ARR = ("single-layer", "staggered", "radial")
 COMMITTEE = ("nn_ensemble", "xgboost", "rsm_quadratic", "gp_ard")
-(R0, R1), (F0, F1) = r_bounds(), f_bounds()
+(RMIN, RMAX), (FMIN, FMAX) = r_bounds(), f_bounds()     # not F0: main() uses F0 for the objective matrix
 Q = flow_fixed()
 _geom_cache = {}
 
 
 def decode(u):
-    r = R0 + (R1 - R0) * u[0]
-    f = F0 + (F1 - F0) * u[1]    # rebuild box: 2-40 %
+    r = RMIN + (RMAX - RMIN) * u[0]
+    f = FMIN + (FMAX - FMIN) * u[1]    # rebuild box: 2-40 %
     q = Q                        # fixed (plan R6)
     arr = ARR[min(int(u[2] * 3), 2)]
     n = count_for_fraction(r, f)
@@ -211,7 +211,7 @@ def main(cid, rank):
         unc = committee_uncertainty(train, cand)
         cand = cand.assign(unc=unc).sort_values("unc", ascending=False)
         sel = []
-        z = np.column_stack([(cand.R_in_m - R0) / (R1 - R0), (cand.fraction - F0) / (F1 - F0),
+        z = np.column_stack([(cand.R_in_m - RMIN) / (RMAX - RMIN), (cand.fraction - FMIN) / (FMAX - FMIN),
                              cand.arrangement.map({a: i for i, a in enumerate(ARR)}) / 2.0])
         for i in range(len(cand)):
             if all(np.linalg.norm(z[i] - z[j]) > 0.05 for j in sel):

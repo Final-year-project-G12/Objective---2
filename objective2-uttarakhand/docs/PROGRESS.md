@@ -236,3 +236,12 @@ are not installed on this machine; `scripts/run_all_cases.ps1` runs everything w
   `docs/REBUILD_COMMON100L.md` sections 3d, 3e and 5. `scripts/run_jobs.py` runs at most 3 jobs.
 - Results: baseline 4 regimes; L9 12 pairs; DOE 12 pairs (1,392 designs). No design beats the water-only tank meaningfully
   (best +1.7 kWh/yr). Section 3f. Tests: 31 design-space tests and 16 role/lock tests pass.
+
+## 2026-11-23 - Rebuild L5-L7 and the selection funnel
+
+- Surrogates (5 families), NSGA-II + active learning (12 pairs), 720-run dense grid and the rebuild band (4 regimes), assessment,
+  selection on 2020-2021 at full fidelity. First search launch crashed in all 12 pairs (variable name clash F0 in g9_s4_s5.py after
+  the vertex step, no result written); fixed (box bounds renamed RMIN/RMAX/FMIN/FMAX), smoke-tested and re-run; the other jobs were
+  unaffected. Grid and seed checks pass; cheap-vs-full Spearman 0.88-0.98.
+- Selection: water-only recommended in all four regimes (no worst-anchor gain above the band). Details `docs/REBUILD_COMMON100L.md` 3g.
+- The one-shot 2006-2010 test was started after this commit.

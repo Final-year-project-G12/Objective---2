@@ -126,6 +126,22 @@ Four regimes, rank-1 PCM, flow 0.030, 10-node tank, explore year 2018; designs V
   delivers meaningfully more than the water-only tank at 45 C. The search (L6) and selection continue as declared.
 - Compute: one cheap design about 15 s (three anchors); the PC slept 10:05-11:57 on 2026-11-23 and the jobs resumed unharmed.
 
+## 3g. L5-L7 and selection (2026-11-23)
+
+- **Surrogates** (`results/g8_s3_comparison.csv`, `g8_s3_selection.csv`): five families per pair; the per-pair winner drives NSGA-II.
+- **Search** (`scripts/g9_s4_s5.py`, 12 pairs): box vertices + 3-4 active-learning rounds each, stopped by the front-stability rule
+  (hypervolume change < 1 % twice); 150-165 simulated designs per pair. A name clash in the first launch (the fraction bound and the
+  objective matrix both called F0) crashed all 12 pairs after the vertex step; fixed and re-run (logged in PROGRESS).
+- **Checks** (`scripts/g9_assess.py`): dense 720-run grid vs the search front within the band in all 4 regimes; seed spread within the
+  band in 12 of 12 pairs.
+- **Band** (`results/wp6_band.csv`, recipe section 5), g_window per regime: 5.25 / 6.22 / 6.09 / 5.25 kWh/yr; the largest term is
+  demand +-20 % (about 5 kWh/yr), then node count (0.9-4.3) and member points (about 1-2). d_overheat band about 300-475 h/yr.
+- **Selection** (`results/g10_selection_r*.json`, funnel section 3e): 36 finalists per regime, all feasible; cheap-vs-full Spearman
+  0.98 / 0.96 / 0.98 / 0.88 (>= 0.7, the cheap screen is usable). **No finalist's worst-anchor select-year g_window exceeds the band in
+  any regime, so the recommendation is WATER-ONLY in all four regimes.** Best PCM designs recorded and taken to the test
+  (mean / worst-anchor g_window, kWh/yr): r0 PureTemp 58 2 % R 37 mm -0.3 / -0.6; r1 PureTemp 58 2 % R 34 mm -0.2 / -0.7;
+  r2 savE OM55 2 % R 32 mm +0.4 / -0.7; r3 PureTemp 53 8.4 % R 15 mm +2.0 / -1.2. These PCM designs add 440-1030 guard hours a year.
+
 ## 4. Open items
 
 - Collector parameters and area basis for 2.0 m2 (needs a source before the L3 gate is signed).
@@ -157,8 +173,8 @@ Frozen 2026-11-23, before the band is computed and before any select-year evalua
 | L2 | config, weather (incl. 2006-2010), year roles, locks, hashes | done 2026-11-22: section 3b; 94 tests pass, 5 skip (need the L4 baseline) |
 | L3 | simulator verification (geometry 2-40 %, dt halving to 18.75 s, 10 vs 20 nodes, energy closure, IS 12976 standing loss) | done 2026-11-22: section 3c (gate passed; regime-3 cold standing-loss case fails, reported). Collector area basis still open |
 | L4 | baselines and sensitivity; Taguchi L9 | done 2026-11-23: section 3f |
-| L5 | Sobol DOE, surrogates, cheap-vs-full fidelity screen | DOE done 2026-11-23 (section 3f); surrogates running |
-| L6 | NSGA-II + active learning; Pareto fronts | |
-| L7 | 720-point grid, band, funnel frozen | |
+| L5 | Sobol DOE, surrogates, cheap-vs-full fidelity screen | done 2026-11-23: sections 3f, 3g |
+| L6 | NSGA-II + active learning; Pareto fronts | done 2026-11-23: section 3g |
+| L7 | 720-point grid, band, funnel frozen | done 2026-11-23: sections 3e, 3g, 5; selection: water-only in all regimes |
 | L8 | (Tamil Nadu only: ANSYS Fluent) | n/a |
 | L9 | one-shot 2006-2010 test, report-only years, O3 contract | |
