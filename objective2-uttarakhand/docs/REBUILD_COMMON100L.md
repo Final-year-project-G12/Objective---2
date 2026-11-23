@@ -142,9 +142,30 @@ Four regimes, rank-1 PCM, flow 0.030, 10-node tank, explore year 2018; designs V
   (mean / worst-anchor g_window, kWh/yr): r0 PureTemp 58 2 % R 37 mm -0.3 / -0.6; r1 PureTemp 58 2 % R 34 mm -0.2 / -0.7;
   r2 savE OM55 2 % R 32 mm +0.4 / -0.7; r3 PureTemp 53 8.4 % R 15 mm +2.0 / -1.2. These PCM designs add 440-1030 guard hours a year.
 
+## 3h. L9: one-shot 2006-2010 test, report-only years and release (2026-11-23)
+
+- **Test** (`scripts/g10_test.py --confirm-run-once`, run id `o2test_b04c9c047f2f`, lock `results/locks/o2_test_ad1135145a63.lock`):
+  the 12 frozen designs (pick + best of every other O1 PCM per regime), 37.5 s, 2006-2010, three anchors, 180 rows; energy residual
+  <= 6e-11 %. Mean paired g_window of the picks (kWh/yr, mean / worst anchor; band): r0 -0.27 / -0.56 (5.25); r1 -0.29 / -0.77 (6.22);
+  r2 +0.31 / -0.78 (6.09); r3 +1.85 / -1.31 (5.25). Every design and every year stays inside the band; **water-only confirmed in all
+  four regimes.** Peaks: PCM <= 63.2 C, water <= 72.4 C (zero hard-limit violations). Night scenarios: tau_hold +0.2 to +3.7 h for
+  the picks, tau_serve about 0 (regime 3 +0.45 h).
+- **50 C secondary** (not pooled, not used for selection): picks +1.4 / +1.8 / +2.0 / +7.7 kWh/yr. The band was measured at 45 C, so the
+  regime-3 value above 5.25 is not a PCM recommendation; it is reported as a secondary observation.
+- **Hygiene** (R9; share of days with the top layer >= 60 C for >= 1 h / longest gap): water-only tank 0.76 / 0.68 / 0.65 / 0.33 with
+  gaps of 24 / 40 / 46 / 90 days; the PCM designs are within 0.01-0.05 of the water-only tank. Regime 3 is a hygiene concern in its
+  own right (about one day in three) and is flagged for Objective 3 (plan R9: a scheduled hygiene cycle may be needed).
+- **Report-only 2022-2025** (after the lock, `o2_report_2022_2025*.csv`): same picture (picks -0.41 to +0.27 kWh/yr).
+- **Release:** `results/obj3_environment_contract_uttarakhand_common100L.json` (`src/handoff/build_obj3_contract_common100L.py`,
+  20 fields re-verified against their sources); hand-off notes in `docs/07_OBJECTIVE3_HANDOFF_COMMON100L.md`. Figures:
+  `results/plots_common100L/` (`scripts/r9_rebuild_figures.py`).
+- **Timing note:** the test was launched at 15:15, about one minute before the commit holding the selection files was pushed; the
+  selection files were final at 15:14 and the test verified their SHA-256 fingerprints before it took the lock.
+
 ## 4. Open items
 
-- Collector parameters and area basis for 2.0 m2 (needs a source before the L3 gate is signed).
+- Collector parameters and area basis for 2.0 m2: still no source (F_R(tau alpha) 0.75, F_R U_L 4.5 are typical flat-plate values).
+  Carried into the Objective 3 contract as an open item; it does not change the water-only conclusion, which holds over a wide band.
 
 ## 5. Repeatability band recipe (to be frozen at L7, before the select-year evaluation)
 
@@ -177,4 +198,4 @@ Frozen 2026-11-23, before the band is computed and before any select-year evalua
 | L6 | NSGA-II + active learning; Pareto fronts | done 2026-11-23: section 3g |
 | L7 | 720-point grid, band, funnel frozen | done 2026-11-23: sections 3e, 3g, 5; selection: water-only in all regimes |
 | L8 | (Tamil Nadu only: ANSYS Fluent) | n/a |
-| L9 | one-shot 2006-2010 test, report-only years, O3 contract | |
+| L9 | one-shot 2006-2010 test, report-only years, O3 contract | done 2026-11-23: section 3h. **Objective 2 rebuild complete** |

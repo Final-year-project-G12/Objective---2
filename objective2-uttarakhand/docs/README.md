@@ -1,6 +1,6 @@
 # Objective 2 - Uttarakhand: legacy 50 L pipeline (2026-10-28) and the common-plant rebuild
 
-> **Rebuild in progress (from 2026-11-22).** Objective 2 is being rebuilt on the common 100 L / 2.0 m2 / 100 L/day plant of the
+> **Common-plant rebuild COMPLETE (2026-11-23): water-only is recommended in all four regimes.** Objective 2 is being rebuilt on the common 100 L / 2.0 m2 / 100 L/day plant of the
 > project's Unified Rebuild Plan (45 C primary, 50 C secondary, flow 0.030 kg/s, PCM fraction 2-40 %, 2006-2010 one-shot test).
 > Status and frozen decisions: [`docs/REBUILD_COMMON100L.md`](REBUILD_COMMON100L.md). Everything below describes the finished
 > **legacy** 50 L / 1.5 m2 / 300 L/day run, whose outputs moved from `results/` to `results_legacy_50L_v3/`.

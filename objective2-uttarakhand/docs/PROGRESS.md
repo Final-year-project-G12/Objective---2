@@ -245,3 +245,12 @@ are not installed on this machine; `scripts/run_all_cases.ps1` runs everything w
   unaffected. Grid and seed checks pass; cheap-vs-full Spearman 0.88-0.98.
 - Selection: water-only recommended in all four regimes (no worst-anchor gain above the band). Details `docs/REBUILD_COMMON100L.md` 3g.
 - The one-shot 2006-2010 test was started after this commit.
+
+## 2026-11-23 - Rebuild L9: one-shot 2006-2010 test, report-only years, Objective 3 contract (Objective 2 rebuild complete)
+
+- One-shot test run `o2test_b04c9c047f2f` (lock `results/locks/o2_test_ad1135145a63.lock`): 12 frozen designs, 2006-2010, 37.5 s, three
+  anchors. Water-only confirmed in all four regimes (every gain inside the band; zero hard-limit violations). Report-only 2022-2025 agree.
+- Correction to the previous entry: it says the test was started after the selection commit; it was launched at 15:15, about one minute
+  before that commit was pushed. The selection files were already final (15:14) and their fingerprints were verified by the test.
+- Released `results/obj3_environment_contract_uttarakhand_common100L.json` and `docs/07_OBJECTIVE3_HANDOFF_COMMON100L.md`.
+  Figures `results/plots_common100L/`. Details `docs/REBUILD_COMMON100L.md` section 3h.
