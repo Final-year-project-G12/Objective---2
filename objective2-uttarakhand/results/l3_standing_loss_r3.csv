@@ -1,0 +1,3 @@
+regime,ambient,T_amb_C,drop_16h_K,limit_K,pass
+3,20 C reference,20.0,4.82483227912234,8.0,True
+3,coldest explore-year hour,-18.3,9.444609186378926,8.0,False

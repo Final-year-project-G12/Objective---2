@@ -56,12 +56,30 @@ Consequences, declared now:
 - `src/handoff/build_obj3_contract_common100L.py`: writes `obj3_environment_contract_uttarakhand_100L_d175.json`.
 - `results/` of the 100 L/day run moved to `results_archive_100Lday/` (git mv; untouched).
 
+## 5b. L1-L3 findings at 175 L/day (2026-11-23; `results/l3_*.csv`)
+
+- L1 / L2: O1 manifest and weather inventory regenerated (inputs unchanged; new plant hash `672763eebb7c` before the step change below).
+- **Energy closure:** residual 0.0 % of collector energy in every case. Pass.
+- **Time step (plan R5 / 4.2, gate < 0.05 % per halving of E_del45_window):** 37.5 -> 18.75 s changes the water-only tank by
+  **0.057 %** in regime 0 (0.047 / 0.042 / 0.003 % in regimes 1-3; PCM designs <= 0.012 %), so **37.5 s fails the gate** at
+  175 L/day (it passed at 100 L/day). One more halving (`scripts/r3b_timestep_extend.py`): 18.75 -> 9.375 s changes it by at most
+  0.028 % -> **18.75 s passes**. Applied by the frozen rule: the report / selection / test step is **18.75 s**
+  (`configs/design_space.yaml` model.report_timestep_s); the search (cheap) step stays 150 s. The band's time-step term becomes the
+  report step against its half (18.75 vs 9.375 s) and its node term is measured at 18.75 s (`scripts/g9_band.py` variants dt_report,
+  dt_half, nodes20_report) - same recipe as section 5 of REBUILD_COMMON100L.md, "the remaining discretisation error at the report step".
+- **Nodes 10 -> 20** (37.5 s, informational; the band re-measures it at 18.75 s): paired gain +4.6 to +8.6 kWh/yr in regimes 0-2,
+  -4.3 to -4.7 in regime 3. A large band component again.
+- **IS 12976 standing loss:** unchanged by demand (no draw): 4.8 K at 20 C (pass); cold case 6.9 / 7.4 / 7.6 K pass, 9.4 K in
+  regime 3 at -18.3 C (fail, cold-climate limitation, reported).
+- Verification designs V30 / V40 (R 30 mm, staggered, centre, 2018, 37.5 s): g_window +47 / +52 (regime 0), +18 / +18 (1),
+  +8 / +6 (2), -48 / -65 (3) kWh/yr. Physics check only, not a design result.
+
 ## 6. Level tracker
 
 | Level | Status |
 |---|---|
 | L0 decision record (this file) | done 2026-11-23 |
-| L1-L3 o1 / weather / verify | pending |
+| L1-L3 o1 / weather / verify | done 2026-11-23: section 5b (report step 18.75 s by the R5 gate) |
 | L4-L7 baseline ... select | pending |
 | L9 test, report, handoff | pending |
 | M1, figures, supplementary, manifest | pending |

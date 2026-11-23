@@ -8,8 +8,8 @@ Usage: python scripts/g9_band.py <cluster_id>
 
 Variants (each paired with a water-only twin that gets the SAME change):
   base            150 s, 10 nodes                                   (also gives the per-year sd -> year-scatter term)
-  dt37p5, dt18p75 time step 37.5 s and 18.75 s                      -> term: 37.5 vs 18.75 s
-  nodes20_37p5    20 nodes at 37.5 s (against dt37p5, 10 nodes)     -> term: node count at the report step
+  dt_report, dt_half  report step R = full_dt() (18.75 s at 175 L/day) and R/2 -> term: R vs R/2 (discretisation at the report step)
+  nodes20_report  20 nodes at R (against dt_report, 10 nodes)       -> term: node count at the report step
   latent+-10, cond+-20                                              -> term: PCM properties (larger of the two)
   member:<pid>    the two most-populated non-medoid member points   -> term: medoid versus member points
   demand0.8/1.2   volume multiplier                                 -> term: demand
@@ -24,7 +24,7 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from src.design.box import flow_fixed                     # noqa: E402
+from src.design.box import flow_fixed, full_dt            # noqa: E402
 from src.design.space import geometry_bounds, to_design   # noqa: E402
 from src.io_utils import get_pcm_properties, get_regime   # noqa: E402
 from src.simulation.run_case import run_case               # noqa: E402
@@ -64,8 +64,8 @@ def main(cid):
     years = roles.years_for("explore")
     variants = {  # name: (kwargs, reference variant for the delta)
         "base": ({}, "base"),
-        "dt37p5": ({"dt": 37.5}, "base"), "dt18p75": ({"dt": 18.75}, "dt37p5"),
-        "nodes20_37p5": ({"dt": 37.5, "n_nodes": 20}, "dt37p5"),
+        "dt_report": ({"dt": full_dt()}, "base"), "dt_half": ({"dt": full_dt() / 2}, "dt_report"),
+        "nodes20_report": ({"dt": full_dt(), "n_nodes": 20}, "dt_report"),
         "latent-10": ({"pcm_over": {"latent_heat_kJ_kg": rec["latent_heat_kJ_kg"] * 0.9}}, "base"),
         "latent+10": ({"pcm_over": {"latent_heat_kJ_kg": rec["latent_heat_kJ_kg"] * 1.1}}, "base"),
         "cond-20": ({"pcm_over": {"TC_W_mK": rec["TC_W_mK"] * 0.8}}, "base"),

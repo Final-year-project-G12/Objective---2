@@ -1,0 +1,134 @@
+{
+ "plan": "Unified O2+O3 Rebuild Plan, Revision 13; level L1, Option B (shortlists kept, 45 C only as the O2 service threshold)",
+ "generated_utc": "2026-11-23T16:41:16.770901+00:00",
+ "o1_source": {
+  "path": "D:\\PCM-Selection-ML-model\\era5-uttarakhand",
+  "note": "O1 project, K_FINAL = 4 (05_cluster_uttarakhand.py)"
+ },
+ "files_sha256": {
+  "cluster_assignments_uttarakhand.csv": "7722f6bdf471e19aaf300572d243fd2b015b516ef06f3e3423a2f431de31b811",
+  "cluster_profiles_uttarakhand.csv": "62760705743f5916260e1f742eeba189abe73a9d9bda1fe406f93d87cb44170b",
+  "climate_signature_uttarakhand.csv": "d1921140a3b96d4b3fc376858254c524bef1fd73d8c929432ea7cf3de7696fe6",
+  "mcdm_topk_by_cluster.csv": "967c166f68ed83b763b115b750cb7bcd1c9a84b554d5be8fb83c68182b499f32",
+  "pcm_database_uttarakhand.csv": "d61e95c2b17b395e9828820e44f41a21cb0de53bf7a57eb7848171e4fe4cc757"
+ },
+ "regimes": [
+  {
+   "state_id": "uttarakhand",
+   "regime_id": 0,
+   "label": "warmest, lowest elevation (~320 m), highest clearness, medoid UKP_0014 (10 pts, Ta_mean 23.8 C, GHI 4.75 kWh/m2/day)",
+   "medoid": "UKP_0014",
+   "member_point_ids": [
+    "UKP_0001",
+    "UKP_0003",
+    "UKP_0009",
+    "UKP_0010",
+    "UKP_0012",
+    "UKP_0013",
+    "UKP_0014",
+    "UKP_0016",
+    "UKP_0017",
+    "UKP_0034"
+   ],
+   "n_points": 10,
+   "population_covered": 3700876.474001467,
+   "min_membership_prob": 0.9999999999999988,
+   "pcm_shortlist": [
+    "PureTemp 58",
+    "n-Octacosane (C28)",
+    "PlusICE A58"
+   ],
+   "Tm_target_C": 57.00000000000001,
+   "T_mains_est_C": 21.821
+  },
+  {
+   "state_id": "uttarakhand",
+   "regime_id": 1,
+   "label": "mid-hills (~1,090 m), largest population regime, medoid UKP_0029 (23 pts, Ta_mean 20.6 C, GHI 4.84 kWh/m2/day)",
+   "medoid": "UKP_0029",
+   "member_point_ids": [
+    "UKP_0004",
+    "UKP_0005",
+    "UKP_0006",
+    "UKP_0007",
+    "UKP_0015",
+    "UKP_0018",
+    "UKP_0019",
+    "UKP_0020",
+    "UKP_0022",
+    "UKP_0027",
+    "UKP_0028",
+    "UKP_0029",
+    "UKP_0030",
+    "UKP_0031",
+    "UKP_0032",
+    "UKP_0035",
+    "UKP_0037",
+    "UKP_0038",
+    "UKP_0039",
+    "UKP_0042",
+    "UKP_0043",
+    "UKP_0044",
+    "UKP_0045"
+   ],
+   "n_points": 23,
+   "population_covered": 3993013.4691689797,
+   "min_membership_prob": 1.0,
+   "pcm_shortlist": [
+    "PureTemp 58",
+    "n-Octacosane (C28)",
+    "PlusICE A58"
+   ],
+   "Tm_target_C": 56.99999999999999,
+   "T_mains_est_C": 18.581
+  },
+  {
+   "state_id": "uttarakhand",
+   "regime_id": 2,
+   "label": "higher hills (~1,300 m), cloudiest of the three warm regimes, medoid UKP_0025 (9 pts, Ta_mean 19.0 C, GHI 4.90 kWh/m2/day)",
+   "medoid": "UKP_0025",
+   "member_point_ids": [
+    "UKP_0002",
+    "UKP_0008",
+    "UKP_0011",
+    "UKP_0021",
+    "UKP_0024",
+    "UKP_0025",
+    "UKP_0026",
+    "UKP_0033",
+    "UKP_0036"
+   ],
+   "n_points": 9,
+   "population_covered": 2451043.880002752,
+   "min_membership_prob": 1.0,
+   "pcm_shortlist": [
+    "PureTemp 58",
+    "savE\u00ae OM55",
+    "n-Hexacosane (C26)"
+   ],
+   "Tm_target_C": 56.51005239671504,
+   "T_mains_est_C": 17.006
+  },
+  {
+   "state_id": "uttarakhand",
+   "regime_id": 3,
+   "label": "cold high-altitude (~2,220 m), coldest mains water, medoid UKP_0041 (3 pts, Ta_mean 9.4 C, GHI 4.57 kWh/m2/day)",
+   "medoid": "UKP_0041",
+   "member_point_ids": [
+    "UKP_0023",
+    "UKP_0040",
+    "UKP_0041"
+   ],
+   "n_points": 3,
+   "population_covered": 330779.7217432335,
+   "min_membership_prob": 1.0,
+   "pcm_shortlist": [
+    "PureTemp 53",
+    "n-Hexacosane (C26)",
+    "Myristic acid (C14)"
+   ],
+   "Tm_target_C": 55.16109721700209,
+   "T_mains_est_C": 7.447
+  }
+ ]
+}

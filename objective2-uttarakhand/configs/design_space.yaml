@@ -27,7 +27,7 @@ model:
   stack_anchor: center         # single-anchor runs (screening, verification)
   robust_anchors: [bottom, center, top]   # plan R7: the search objective is the mean paired gain over these; a design whose worst-anchor
                                            # gain is below zero or inside the band is rejected
-  report_timestep_s: 37.5      # plan R5: confirmation and report runs, unless the L3 halving gate says otherwise
+  report_timestep_s: 18.75     # plan R5 L3 gate at 175 L/day: 37.5->18.75 s changes E_del45_window by 0.057 % (regime 0, > 0.05 %); 18.75->9.375 s by <= 0.028 % (pass). docs/REBUILD_175L.md
   timestep_s: 150              # same value as solver.timestep_s in system_config_shared.yaml
 
 baseline: "water-only tank at the SAME flow, weather year, demand, shield and tank model (user decision)"

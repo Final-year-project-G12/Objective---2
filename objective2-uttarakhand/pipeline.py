@@ -10,7 +10,7 @@ Every stage runs the script that produced the saved results, so this file states
   o1           L1   O1 manifest (Option B): scripts/r1_o1_manifest.py
   weather      L2   2006-2010 fetch, inventory, member-point weather, weather-only audit + input manifest
   verify       L3   simulator verification on the 100 L plant (dt halving, nodes, closure, IS 12976 standing loss), 4 regimes
-  baseline     L4   exact water-only runs at the fixed flow (explore + select, 150 s and 37.5 s), 4 regimes
+  baseline     L4   exact water-only runs at the fixed flow (explore + select, 150 s and the report step), 4 regimes
   screening    L4   Taguchi L9, 12 (regime, PCM) pairs, explore years, three anchors
   doe          L5   Sobol DOE (128 points, cheap fidelity, three anchors), 12 pairs, then repair of memory errors
   surrogate    L5   five surrogate families per pair (nn_ensemble, xgboost, rsm_quadratic, gp_ard, stacked)
@@ -149,7 +149,7 @@ def stage_status():
     lk = lock_path()
     print("O2 test lock:", "SET " + json.loads(lk.read_text())["run_id"] if lk.exists() else "not set", f"({lk.name})")
     checks = {"o1": "o1_manifest_uttarakhand.json", "weather": "l2_input_manifest.json", "verify": "l3_timestep.csv",
-              "baseline": "plain_baseline_select_dt37p5_r0.csv", "screening": "g8_s1_r0_p1.csv", "doe": "g8_s2_r0_p1.csv",
+              "baseline": "plain_baseline_select_dt18p75_r0.csv", "screening": "g8_s1_r0_p1.csv", "doe": "g8_s2_r0_p1.csv",
               "surrogate": "g8_s3_selection.csv", "optimize": "g9_points_r0_p1.csv", "grid": "g9_s6_grid_r0_p1.csv",
               "band": "g9_band_r0.csv", "assess": "wp6_band.csv", "select": "g10_selection_r0.json", "test": "o2_test_2006_2010.csv",
               "report": "o2_report_2022_2025.csv", "handoff": "obj3_environment_contract_uttarakhand_100L_d175.json",

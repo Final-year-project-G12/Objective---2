@@ -9,7 +9,7 @@ G9 assessment (plan WP5 acceptance, WP6 band). Reads the S4/S5/S6 outputs and wr
   results/g9_boundary_check.csv  share of final-front designs sitting at a bound (boundary-artefact detector)
 
 Band definition: the rebuild recipe frozen in docs/REBUILD_COMMON100L.md section 5 (see band_table below): year scatter, time step
-(37.5 vs 18.75 s), node count, PCM properties, medoid versus member points, demand and mains.
+(report step vs half of it), node count, PCM properties, medoid versus member points, demand and mains.
 Objectives are g_window [kWh/yr], g_annual [kWh/yr], d_overheat [h/yr].
 """
 
@@ -54,8 +54,8 @@ def band_table():
             sd_year = float(base.year_sd.mean() / np.sqrt(2))
             rms = lambda pred: float(np.sqrt((go[pred(go.variant)].delta ** 2).mean())) if pred(go.variant).any() else 0.0  # noqa: E731
             terms = {"sd_year_se": sd_year,
-                     "d_dt": rms(lambda v: v == "dt18p75"),
-                     "d_nodes": rms(lambda v: v == "nodes20_37p5"),
+                     "d_dt": rms(lambda v: v == "dt_half"),
+                     "d_nodes": rms(lambda v: v == "nodes20_report"),
                      "d_prop": max(rms(lambda v: v.isin(["latent-10", "latent+10"])), rms(lambda v: v.isin(["cond-20", "cond+20"]))),
                      "d_member": rms(lambda v: v.str.startswith("member:")),
                      "d_demand": rms(lambda v: v.isin(["demand0.8", "demand1.2"])),
