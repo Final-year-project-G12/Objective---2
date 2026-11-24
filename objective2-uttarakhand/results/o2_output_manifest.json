@@ -1,7 +1,7 @@
 {
  "plan_rule": "R20 (hash the config, kernel, weather, demand, contract and every output file)",
- "generated_utc": "2026-11-23T21:46:46.789696+00:00",
- "git_commit_at_generation": "00be92c566ba9b73a4a7b561821de5cb3cb75dc3",
+ "generated_utc": "2026-11-24T02:01:50.922806+00:00",
+ "git_commit_at_generation": "84e46b6d29bd5a216130a9dc1df49601aed3de7c",
  "plant_hash": "2a12f61b697e",
  "o2_test_run_id": "o2test_ddcba14a8015",
  "n_output_files": 195,
@@ -635,8 +635,8 @@
    "bytes": 29341
   },
   "results/obj3_environment_contract_uttarakhand_100L_d175.json": {
-   "sha256": "38fe74857141ab145c0d78c119a4cb357c3155013d38e2dca1991ab5fdb79aeb",
-   "bytes": 37637
+   "sha256": "b1fee996739ea19082bf5114ce790dbb96f3a0325162709d9cb10cdf89780e5b",
+   "bytes": 37800
   },
   "results/plain_baseline_explore_dt150_r0.csv": {
    "sha256": "7348e30ee58af08ed8f3ec4189a3d462122d4cf1c82ed444566231cd71ff48a4",
@@ -1065,8 +1065,8 @@
    "bytes": 0
   },
   "src/handoff/build_obj3_contract_common100L.py": {
-   "sha256": "2f7f50140144b91821a2c7e0111d3c0101cb744d19f0463919866cafd38675d2",
-   "bytes": 18829
+   "sha256": "8b462c505f4d21394cb741261c60be4accc30dda8a08c7877e9cc45f827bcad1",
+   "bytes": 18992
   },
   "src/handoff/build_obj3_contract_uttarakhand_v3.py": {
    "sha256": "dd6b2320720c60bb6db0b1c555391e26445604956049746d43da88da36697992",

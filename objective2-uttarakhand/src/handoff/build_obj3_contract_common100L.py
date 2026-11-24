@@ -76,7 +76,7 @@ def build() -> Path:
         "plant": f"100 L / 2.0 m2 / {state['demand_profile']['daily_total_L']:g} L/day (plan R1 plant; demand per docs/REBUILD_175L.md)",
         "source": ("Objective 2 Uttarakhand rebuild on the common plant: results/g10_selection_r*.json, wp6_band.csv, o2_test_2006_2010*.csv, "
                    "o2_report_2022_2025*.csv, results/locks/, o1_manifest_uttarakhand.json, configs/*.yaml. Decision record: "
-                   "docs/REBUILD_COMMON100L.md."),
+                   "docs/REBUILD_175L.md (175 L/day deviation and results) on top of docs/REBUILD_COMMON100L.md (frozen protocols)."),
         "supersession_note": ("SUPERSEDES the legacy 50 L / 1.5 m2 / 300 L/day contracts (results_legacy_50L_v3/), which must not be used "
                               "for the common plant (plan 2.2)."),
         "o2_result": None,     # filled below from the frozen selections (no outcome is typed by hand)
@@ -198,11 +198,11 @@ def build() -> Path:
                                  "demand_note": ("at 100 L/day the 100 L tank stores a full day's hot water and every regime was water-only "
                                                  "(branch uttarakhand-o2-common100L); at 175 L/day the draw exceeds the tank, which is where PCM "
                                                  "can add evening delivery. Regime 3 (cold) is negative at every tested demand.")}
-    c["verification_status"] = {"simulator_verification": "L3 gate passed (docs/REBUILD_COMMON100L.md 3c); results/l3_*.csv",
+    c["verification_status"] = {"simulator_verification": "L3 gate passed at 175 L/day with the report step 18.75 s (docs/REBUILD_175L.md 5b); results/l3_*.csv",
                                 "cfd_cross_check": "none on the common plant (OpenFOAM optional, plan section 6); legacy 50 L case only",
                                 "experimental_validation": {"status": "NOT DONE", "scope": "Objective 4 / hardware"},
                                 "wording_rule": "never 'CFD-validated' (plan R17)"}
-    c["objective_boundary"] = ("Objective 2 fixed the plant and the (water-only) design. Objective 3 may not change the tank, collector, "
+    c["objective_boundary"] = ("Objective 2 fixed the plant and the design per regime (PCM in regimes 0-2, water-only in regime 3). Objective 3 may not change the tank, collector, "
                                "PCM, capsules, flow, safety limits or physics; it controls ENABLE / BYPASS only.")
     c["provenance"] = {"configs/system_config_shared.yaml": _sha(BASE_DIR / "configs" / "system_config_shared.yaml"),
                        "configs/design_space.yaml": _sha(BASE_DIR / "configs" / "design_space.yaml"),

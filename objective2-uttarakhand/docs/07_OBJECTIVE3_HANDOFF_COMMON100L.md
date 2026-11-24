@@ -1,5 +1,7 @@
 # 07 - Objective 3 hand-off on the common 100 L plant (Uttarakhand)
 
+> **Superseded on branch `uttarakhand-o2-175L` by [`08_OBJECTIVE3_HANDOFF_175L.md`](08_OBJECTIVE3_HANDOFF_175L.md)** (175 L/day; PCM in regimes 0-2). This file describes the 100 L/day result; its contract is in `results_archive_100Lday/`.
+
 **Contract:** `results/obj3_environment_contract_uttarakhand_common100L.json`, written by
 `src/handoff/build_obj3_contract_common100L.py` (`PYTHONPATH=. python -m src.handoff.build_obj3_contract_common100L`). It supersedes the
 legacy 50 L contracts in `results_legacy_50L_v3/` (plan section 2.2), which must not be used. Full record: `REBUILD_COMMON100L.md`.

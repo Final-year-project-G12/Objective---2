@@ -1,10 +1,10 @@
 {
  "state": "uttarakhand",
  "contract_version": "obj3_contract_v3.0_uttarakhand_100L_d175_2026-11-23",
- "generated_utc": "2026-11-23T21:13:08.555481+00:00",
+ "generated_utc": "2026-11-24T02:00:59.548274+00:00",
  "validated_simulator_version": "config_common100L_v1_2026-11-22_uttarakhand",
  "plant": "100 L / 2.0 m2 / 175 L/day (plan R1 plant; demand per docs/REBUILD_175L.md)",
- "source": "Objective 2 Uttarakhand rebuild on the common plant: results/g10_selection_r*.json, wp6_band.csv, o2_test_2006_2010*.csv, o2_report_2022_2025*.csv, results/locks/, o1_manifest_uttarakhand.json, configs/*.yaml. Decision record: docs/REBUILD_COMMON100L.md.",
+ "source": "Objective 2 Uttarakhand rebuild on the common plant: results/g10_selection_r*.json, wp6_band.csv, o2_test_2006_2010*.csv, o2_report_2022_2025*.csv, results/locks/, o1_manifest_uttarakhand.json, configs/*.yaml. Decision record: docs/REBUILD_175L.md (175 L/day deviation and results) on top of docs/REBUILD_COMMON100L.md (frozen protocols).",
  "supersession_note": "SUPERSEDES the legacy 50 L / 1.5 m2 / 300 L/day contracts (results_legacy_50L_v3/), which must not be used for the common plant (plan 2.2).",
  "o2_result": "PCM recommended in regime(s) [0, 1, 2]; WATER-ONLY in regime(s) [3]. A PCM design is recommended only where its worst-anchor select-year paired g_window exceeds the regime's repeatability band (plan R7, decision 4); elsewhere the installed design is the water-only 100 L tank and the best PCM design is recorded under best_pcm_design_reference as tested, NOT recommended.",
  "global_limits": {
@@ -1195,7 +1195,7 @@
   "demand_note": "at 100 L/day the 100 L tank stores a full day's hot water and every regime was water-only (branch uttarakhand-o2-common100L); at 175 L/day the draw exceeds the tank, which is where PCM can add evening delivery. Regime 3 (cold) is negative at every tested demand."
  },
  "verification_status": {
-  "simulator_verification": "L3 gate passed (docs/REBUILD_COMMON100L.md 3c); results/l3_*.csv",
+  "simulator_verification": "L3 gate passed at 175 L/day with the report step 18.75 s (docs/REBUILD_175L.md 5b); results/l3_*.csv",
   "cfd_cross_check": "none on the common plant (OpenFOAM optional, plan section 6); legacy 50 L case only",
   "experimental_validation": {
    "status": "NOT DONE",
@@ -1203,7 +1203,7 @@
   },
   "wording_rule": "never 'CFD-validated' (plan R17)"
  },
- "objective_boundary": "Objective 2 fixed the plant and the (water-only) design. Objective 3 may not change the tank, collector, PCM, capsules, flow, safety limits or physics; it controls ENABLE / BYPASS only.",
+ "objective_boundary": "Objective 2 fixed the plant and the design per regime (PCM in regimes 0-2, water-only in regime 3). Objective 3 may not change the tank, collector, PCM, capsules, flow, safety limits or physics; it controls ENABLE / BYPASS only.",
  "provenance": {
   "configs/system_config_shared.yaml": "8a8e6f27038a33e82f0b37d4cd64f28677202963898838cc49f74c03b7f16db6",
   "configs/design_space.yaml": "31b767a4483c6c37808b7feddb719e6537cd1febef69610114446cc4b200346c",

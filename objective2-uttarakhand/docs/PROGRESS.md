@@ -264,3 +264,15 @@ are not installed on this machine; `scripts/run_all_cases.ps1` runs everything w
   water-only result; PCM pays only when the daily draw exceeds the tank volume. Details `docs/REBUILD_COMMON100L.md` section 3i.
 - `pipeline.py` and `run_all_uttarakhand.py` rewritten for the rebuild chain; `docs/README.md` separates rebuild and legacy documents;
   `scripts/r11_output_manifest.py` hashes every output (plan R20).
+
+## 2026-11-23 / 24 - Objective 2 at 175 L/day (branch `uttarakhand-o2-175L`)
+
+- Decision (user / team, G12): keep the 100 L / 2.0 m2 plant and raise demand to 175 L/day (plan Revision 9 section 1.1: the 45 C
+  reading of a 100 LPD unit). Decision record written before any run: `docs/REBUILD_175L.md` (deviation from R1, prior exposure).
+- L1-L3: 37.5 s fails the R5 halving gate at 175 L/day (0.057 %), 18.75 s passes; report step set to 18.75 s, band dt/node terms moved.
+- L4-L7: band 20.8 / 17.2 / 14.0 / 15.4 kWh/yr (demand term kept). Selection: PCM in regimes 0-2 (PureTemp 58, PureTemp 58,
+  savE OM55, all 40 %), water-only in regime 3.
+- L9: one-shot 2006-2010 test (run `o2test_ddcba14a8015`, plant hash `2a12f61b697e`) and report years 2022-2025 confirm every verdict.
+  Contract `results/obj3_environment_contract_uttarakhand_100L_d175.json`, `docs/08_OBJECTIVE3_HANDOFF_175L.md`.
+- M1 PASS (14 runs, 1.4e-13); figures, supplementary (d70 / d100 / d150 / d200 / legacy / t150, sensitivity, aux heater) and manifest.
+  `tests/test_design_space.py` reads the report step from config. 100 tests pass.

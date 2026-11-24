@@ -1,6 +1,12 @@
 # Objective 2 - Uttarakhand: legacy 50 L pipeline (2026-10-28) and the common-plant rebuild
 
-> **Common-plant rebuild COMPLETE (2026-11-23): water-only is recommended in all four regimes.** Objective 2 is being rebuilt on the common 100 L / 2.0 m2 / 100 L/day plant of the
+> **Objective 2 at 175 L/day COMPLETE (2026-11-24, branch `uttarakhand-o2-175L`): PCM in regimes 0, 1 and 2, water-only in regime 3.**
+> Plant 100 L / 2.0 m2 / 175 L/day (the plan's 45 C reading of the 100 LPD unit; a declared deviation from rule R1), 45 C primary, 50 C
+> secondary, flow 0.030 kg/s, PCM fraction 2-40 %, report step 18.75 s. Picks: PureTemp 58 (r0, r1), savE OM55 (r2), all at 40 %.
+> Record: [`docs/REBUILD_175L.md`](REBUILD_175L.md); Objective 3: [`docs/08_OBJECTIVE3_HANDOFF_175L.md`](08_OBJECTIVE3_HANDOFF_175L.md).
+> The 100 L/day common-plant run (water-only in all four regimes) is kept in `results_archive_100Lday/` and [`docs/REBUILD_COMMON100L.md`](REBUILD_COMMON100L.md).
+>
+> Earlier banner: **Common-plant rebuild COMPLETE (2026-11-23): water-only is recommended in all four regimes.** Objective 2 is being rebuilt on the common 100 L / 2.0 m2 / 100 L/day plant of the
 > project's Unified Rebuild Plan (45 C primary, 50 C secondary, flow 0.030 kg/s, PCM fraction 2-40 %, 2006-2010 one-shot test).
 > Status and frozen decisions: [`docs/REBUILD_COMMON100L.md`](REBUILD_COMMON100L.md). Everything below describes the finished
 > **legacy** 50 L / 1.5 m2 / 300 L/day run, whose outputs moved from `results/` to `results_legacy_50L_v3/`.
@@ -33,6 +39,8 @@ Scope: this folder only. Fixed and not optimised: 50 L tank, collector area, the
 
 | File | What it covers |
 |---|---|
+| [`REBUILD_175L.md`](REBUILD_175L.md) | 175 L/day decision record (deviation from R1, prior exposure), L1-L9 results: PCM r0-r2, water-only r3 |
+| [`08_OBJECTIVE3_HANDOFF_175L.md`](08_OBJECTIVE3_HANDOFF_175L.md) | the Objective 3 contract at 175 L/day |
 | [`REBUILD_COMMON100L.md`](REBUILD_COMMON100L.md) | decision record, frozen protocols (search, band, funnel), results of every level L0-L9, M1 and the supplementary studies |
 | [`07_OBJECTIVE3_HANDOFF_COMMON100L.md`](07_OBJECTIVE3_HANDOFF_COMMON100L.md) | the Objective 3 contract on the common plant (water-only in all regimes) |
 | `../results/plots_common100L/`, `../results/m1_matlab/figures/` | rebuild figures and the MATLAB M1 checkpoint |
