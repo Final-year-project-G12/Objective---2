@@ -31,10 +31,11 @@ from config import WEATHER_DIR, STATE   # noqa: E402
 
 POINT_YEARS_DIR = WEATHER_DIR / "point_years"
 MEDOIDS = {0: "TNP_0006", 1: "TNP_0007", 2: "TNP_0001"}
-YEAR_ROLES = {**{y: "test" for y in range(2011, 2016)},
-              **{y: "explore" for y in range(2016, 2021)},
-              **{y: "select" for y in range(2021, 2024)},
-              **{y: "used_test_v1" for y in (2024, 2025)}}
+YEAR_ROLES = {**{y: "test" for y in range(2006, 2011)},
+              **{y: "legacy" for y in range(2011, 2016)},
+              **{y: "explore" for y in range(2016, 2020)},
+              **{y: "select" for y in range(2020, 2022)},
+              **{y: "report" for y in range(2022, 2026)}}   # common-plant roles (rule R3); keep in sync with src/weather/roles.py
 
 
 def main():

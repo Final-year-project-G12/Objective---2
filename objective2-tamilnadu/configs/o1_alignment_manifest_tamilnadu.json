@@ -1,0 +1,62 @@
+{
+  "manifest": "O1 alignment manifest (level L1)",
+  "state": "tamilnadu",
+  "created": "2026-11-20",
+  "decision": "FINAL (user, 2026-11-20): PCMs come ONLY from Objective 1's shortlist (Option B). No 45 C candidates are added in O2. 45 C is the O2/O3 service threshold.",
+  "o1_source": "tamilnadu_pipeline/data/processed (files dated 2026-11-10)",
+  "regimes": [
+    {
+      "regime_id": 0,
+      "medoid_point_id": "TNP_0006",
+      "n_points": 46,
+      "population": 20468849.964220837,
+      "pcm_shortlist": [
+        "RT57HC",
+        "n-Hexacosane (C26)",
+        "PureTemp 58"
+      ],
+      "n_points_tied_at_max_membership": 24,
+      "medoid_in_tied_set": true
+    },
+    {
+      "regime_id": 1,
+      "medoid_point_id": "TNP_0007",
+      "n_points": 41,
+      "population": 20422159.05920069,
+      "pcm_shortlist": [
+        "RT57HC",
+        "n-Hexacosane (C26)",
+        "n-Pentacosane (C25)"
+      ],
+      "n_points_tied_at_max_membership": 22,
+      "medoid_in_tied_set": true
+    },
+    {
+      "regime_id": 2,
+      "medoid_point_id": "TNP_0001",
+      "n_points": 46,
+      "population": 30335761.424428895,
+      "pcm_shortlist": [
+        "RT57HC",
+        "n-Pentacosane (C25)",
+        "n-Hexacosane (C26)"
+      ],
+      "n_points_tied_at_max_membership": 43,
+      "medoid_in_tied_set": true
+    }
+  ],
+  "note_medoid_tie": "O1's own 'medoid' = idxmax of membership probability, so with a 24-way tie in regime 0 it is just the first tied point (TNP_0006 in the 2026-10-29 run, TNP_0011 in the 2026-11-10 run). Hard cluster labels are identical in both runs. O2 keeps TNP_0006/0007/0001 (all in their tied sets); regime-0 representativeness is a stated limitation.",
+  "note_physics_rank": "O1 rank-vs-physics Spearman mean changed 0.169 -> -0.069 between runs (different regime-0 medoid weather). Either way weak and not significant: do not call the shortlist physics-validated.",
+  "open_items": [
+    "O1 code uses T_DELIVERY 50 C (Tamil Nadu) vs O2 45 C: documented difference",
+    "K=5 history in tamilnadu_pipeline: current authoritative K=3 (labels 0/1/2 above)"
+  ],
+  "file_sha256": {
+    "climate_signature_tamilnadu.csv": "da731beac4ac94b1c3824073110fbeb80d506b47727e32e6d5a36c241f0f605c",
+    "cluster_assignments_tamilnadu.csv": "f89049eb1d318769ff7129948e7b3c8938139b4d340aec966578604e3d3eb20f",
+    "cluster_profiles_tamilnadu.csv": "b656dad25f015c13356b29cff9b5d065fd7fd9c7b30167df55c2139a82ca8477",
+    "mcdm_topk_by_cluster.csv": "2cde1ebda0f5f2c4d5530174d94e0bbc67186c32a9b66fd963adc4c4fd18ee02",
+    "pcm_database_tamilnadu.csv": "56dc3f6461e1581ee979e59ae9bfb41a636f6081eaad035fb9af9d1c8bca7fa0"
+  },
+  "known_limitation": "A 45 C screen (results/c2_pcm_identity_45C_r*.csv, fixed design, 2 explore years) found the O1 PCMs (Tm 54-58 C) give ~0 paired gain while 44-47 C PCMs gave +1.6..+5.8 kWh/yr. Not acted on by decision; report as a limitation and as a suggestion for an Objective 1 re-run at 45 C."
+}

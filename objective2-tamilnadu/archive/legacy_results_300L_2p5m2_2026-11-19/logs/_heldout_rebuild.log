@@ -1,0 +1,26 @@
+
+=== cluster 0 (TNP_0006) ===
+  TNP_0006: LST->UTC shift -5 h (agreed across 10 overlap years, min corr 1.00000)
+    2011: geometry OK (365 days bracket sunrise/sunset within 90 min)
+    2012: geometry OK (366 days bracket sunrise/sunset within 90 min)
+    2013: geometry OK (365 days bracket sunrise/sunset within 90 min)
+    2014: geometry OK (365 days bracket sunrise/sunset within 90 min)
+    2015: geometry OK (365 days bracket sunrise/sunset within 90 min)
+
+=== cluster 1 (TNP_0007) ===
+  TNP_0007: LST->UTC shift -5 h (agreed across 10 overlap years, min corr 1.00000)
+    2011: geometry OK (365 days bracket sunrise/sunset within 90 min)
+    2012: geometry OK (366 days bracket sunrise/sunset within 90 min)
+    2013: geometry OK (365 days bracket sunrise/sunset within 90 min)
+    2014: geometry OK (365 days bracket sunrise/sunset within 90 min)
+    2015: geometry OK (365 days bracket sunrise/sunset within 90 min)
+
+=== cluster 2 (TNP_0001) ===
+  TNP_0001: LST->UTC shift -5 h (agreed across 10 overlap years, min corr 1.00000)
+    2011: geometry OK (365 days bracket sunrise/sunset within 90 min)
+    2012: geometry OK (366 days bracket sunrise/sunset within 90 min)
+    2013: geometry OK (365 days bracket sunrise/sunset within 90 min)
+    2014: geometry OK (365 days bracket sunrise/sunset within 90 min)
+    2015: geometry OK (365 days bracket sunrise/sunset within 90 min)
+
+wrote 15 held-out point-years.

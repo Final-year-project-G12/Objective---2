@@ -12,7 +12,7 @@
 # state must re-run from DOE onward (framework doc, Phase 0 gate).
 # ============================================================================
 
-version: "config_v1.1_2026-09-13-safety-shield"
+version: "config_v2.0_2026-11-20-common-100L-2p0m2"
 # Bumped from v1.0_2026-09-05: the safety_shield block (below) was added on
 # 2026-09-13 (docs/09_LIMITATIONS_AND_KNOWN_DIVERGENCES.md §6/§7) without a
 # version bump at the time, so a run pinned to v1.0 could not be told apart
@@ -21,10 +21,11 @@ version: "config_v1.1_2026-09-13-safety-shield"
 
 collector:
   type: flat_plate
-  area_m2: 2.5                     # TAMIL NADU: scaled with the 100 L tank to hold
-                                    # 40 L/m2, the low end of IS 12976:2023 4.2 (40-100).
-                                    # Hers is 1.5 m2 on 50 L = 33.3 L/m2, which her own
-                                    # report flags as below that band (decision D8).
+  area_m2: 2.0                     # COMMON PLANT (Revision 9, 2026-11-19): 100 L tank / 2.0 m2 / 100 L/day in every state.
+                                    # 50 L/m2, the market + MNRE pairing for a 100 LPD unit, inside IS 12976:2023 4.2 (40-100 L/m2).
+                                    # Replaces the legacy 2.5 m2 (40 L/m2), kept only as a labelled sensitivity case.
+                                    # AREA BASIS: absorber area (makers quote 2 m2 absorber, ~2.13 m2 gross); F_R(tau-alpha) and
+                                    # F_R*U_L below are carried from the legacy fit and must be re-checked on this basis.
   fr_tau_alpha: 0.75                # F_R*(τα), combined optical/removal efficiency [typical FPC]
   fr_ul_W_m2K: 4.5                  # F_R*U_L, typical flat-plate loss coefficient (3.5-6 W/m2K range)
   min_irradiance_cutoff_Wm2: 10.0   # below this, pump assumed off -> zero collector coupling (Gate 2)
@@ -38,7 +39,7 @@ collector:
     reference_flow_kg_s: 0.030      # ASSUMPTION: the flow at which the project's F_R values (0.75, 4.5) are taken to hold; not stated in any source read
 
 tank:
-  volume_L: 100.0                  # TAMIL NADU: project instruction (hers is 50 L).
+  volume_L: 100.0                  # COMMON PLANT: 100 L in all four states.
                                     # Keeps H/D = 2.0, so D = 0.399 m, H = 0.799 m.
   height_to_diameter_ratio: 2.0     # standard vertical domestic tank proportion (assumption)
   insulation_m: 0.05                # 5 cm foam

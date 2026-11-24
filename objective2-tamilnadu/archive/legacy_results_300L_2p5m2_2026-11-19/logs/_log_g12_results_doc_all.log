@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\scripts\g12_results_doc.py", line 287, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\scripts\g12_results_doc.py", line 270, in main
+    x = w1[(w1.pair == tag) & (w1.state == st)].iloc[0]
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\pandas\core\indexing.py", line 1192, in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\pandas\core\indexing.py", line 1753, in _getitem_axis
+    self._validate_integer(key, axis)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\pandas\core\indexing.py", line 1686, in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+IndexError: single positional indexer is out-of-bounds

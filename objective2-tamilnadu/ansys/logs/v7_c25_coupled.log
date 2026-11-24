@@ -1,0 +1,1479 @@
+Launching Fluent for c25 (Tm=54.0C, convection=False)...
+Connected.
+
+=== read case ===
+'file' is deprecated. Use 'settings.file' instead.
+Fast-loading "C:\PROGRA~1\ANSYSI~1\ANSYSS~1\v261\fluent\fluent26.1.0\\addons\afd\lib\hdfio.bin"
+Done.
+
+Reading from Jaswita:"C:\fluent_work\regime0_v3_mesh_only.cas.h5" in NODE0 mode ...
+  Reading mesh ...
+        2690 cells,     2 cell zones ...
+           1585 triangular cells,  zone id: 1
+           1105 triangular cells,  zone id: 2
+        4106 faces,     9 face zones ...
+           2298 2D interior faces,  zone id: 3
+             10 2D wall faces,  zone id: 4
+             20 2D wall faces,  zone id: 5
+             48 2D wall faces,  zone id: 6
+             20 2D wall faces,  zone id: 7
+             51 2D interior faces,  zone id: 8
+             10 2D wall faces,  zone id: 9
+           1615 2D interior faces,  zone id: 10
+             34 2D wall faces,  zone id: 11
+        1417 nodes,     1 node zone  ...
+  Done.
+
+
+Building...
+     mesh
+	auto partitioning mesh by Metis (fast),
+	distributing mesh
+		parts..,
+		faces..,
+		nodes..,
+		cells..,
+        bandwidth reduction using Reverse Cuthill-McKee: 772/23 = 33.5652
+     materials,
+     interface,
+     domains,
+	mixture
+     zones,
+	2_l_5
+	default_interior-9
+	2_l_7
+	interface-2_l_6
+	2_l_11
+	2_l_8
+	2_l_10
+	2_l_9
+	default_interior-8
+	3_s_2
+	3_s_1
+     parallel,
+Done.
+OK: read case
+
+=== set planar ===
+'setup' is deprecated. Use 'settings.setup' instead.
+OK: set planar
+
+=== enable energy ===
+OK: enable energy
+
+=== set laminar ===
+OK: set laminar
+
+=== enable solidification-melting (TUI) ===
+
+Mushy Zone Parameter
+
+Material air:
+  New property "Pure Solvent Melting Heat" has been added.
+  Selecting constant method for "Pure Solvent Melting Heat" -- data required.
+  New property "Solidus Temperature" has been added.
+  Selecting constant method for "Solidus Temperature" -- data required.
+  New property "Liquidus Temperature" has been added.
+  Selecting constant method for "Liquidus Temperature" -- data required.
+
+
+Available material properties or methods have changed.
+Please confirm the property values before continuing.
+
+OK: enable solidification-melting (TUI)
+
+=== create c25 (Tm=54.0C, 10K mushy band) ===
+OK: create c25 (Tm=54.0C, 10K mushy band)
+
+=== copy + edit water-liquid properties ===
+
+Material water-liquid:
+  New property "Pure Solvent Melting Heat" has been added.
+  Selecting constant method for "Pure Solvent Melting Heat" -- data required.
+  New property "Solidus Temperature" has been added.
+  Selecting constant method for "Solidus Temperature" -- data required.
+  New property "Liquidus Temperature" has been added.
+  Selecting constant method for "Liquidus Temperature" -- data required.
+
+Material 'water-liquid' copied from 'fluent-database' database.
+
+OK: copy + edit water-liquid properties
+
+=== assign materials (3_s_1=water, 3_s_2=c25) ===
+OK: assign materials (3_s_1=water, 3_s_2=c25)
+
+=== retype boundaries (inlet=2_l_7, outlet=2_l_9, axis=['2_l_10', '2_l_11', '2_l_5']) ===
+Warning: The use of axis boundary conditions is not appropriate for
+         a 2D/3D flow problem. Please consider changing the zone
+         type to symmetry or wall, or the problem to axisymmetric.
+
+Warning: The use of axis boundary conditions is not appropriate for
+         a 2D/3D flow problem. Please consider changing the zone
+         type to symmetry or wall, or the problem to axisymmetric.
+
+OK: retype boundaries (inlet=2_l_7, outlet=2_l_9, axis=['2_l_10', '2_l_11', '2_l_5'])
+
+=== set inlet (5.5815e-05 m/s, 343.15K) ===
+Warning: The use of axis boundary conditions is not appropriate for
+         a 2D/3D flow problem. Please consider changing the zone
+         type to symmetry or wall, or the problem to axisymmetric.
+
+OK: set inlet (5.5815e-05 m/s, 343.15K)
+
+=== set outlet (backflow 343.15K) ===
+OK: set outlet (backflow 343.15K)
+
+=== set wall_outer adiabatic ===
+OK: set wall_outer adiabatic
+
+=== standard initialize domain at 343.15K (water hot) ===
+'solution' is deprecated. Use 'settings.solution' instead.
+OK: standard initialize domain at 343.15K (water hot)
+
+=== patch capsule to 303.15K and VERIFY ===
+The following solver settings object method could also be used to execute the above command:
+<solver_session>.settings.solution.initialization.patch.calculate_patch(domain = '', cell_zones = ["3_s_2"], registers = [], variable = 'temperature', reference_frame = 'Relative to Cell Zone', use_custom_field_function = False, custom_field_function_name = '', value = 303.15)
+'solution' is deprecated. Use 'settings.solution' instead.
+
+     chk_temperature
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           3_s_2              303.15
+  verified: capsule temperature = 303.1500
+OK: patch capsule to 303.15K and VERIFY
+
+=== verify capsule is fully solid at t=0 ===
+
+ chk_liquid_fraction
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                           3_s_2                   0
+  verified: capsule liquid-fraction = 0.000000 (fully solid)
+OK: verify capsule is fully solid at t=0
+
+=== pressure-velocity coupling / discretisation ===
+  p-v coupling = Coupled
+Warning: The use of axis boundary conditions is not appropriate for
+         a 2D/3D flow problem. Please consider changing the zone
+         type to symmetry or wall, or the problem to axisymmetric.
+
+A newer syntax is available to perform the last operation:
+solver.settings.solution.methods.spatial_discretization.discretization_scheme['mom'] = 'first-order-upwind'
+
+Execute the following code to suppress future warnings like the above:
+
+>>> import warnings
+>>> warnings.filterwarnings("ignore", category=DeprecatedSettingWarning)
+A newer syntax is available to perform the last operation:
+solver.settings.solution.methods.spatial_discretization.discretization_scheme['temperature'] = 'first-order-upwind'
+A newer syntax is available to perform the last operation:
+solver.settings.solution.methods.spatial_discretization.discretization_scheme['pressure'] = 'standard'
+  discretisation = {'mom': 'first-order-upwind', 'pressure': 'standard', 'temperature': 'first-order-upwind'}
+OK: pressure-velocity coupling / discretisation
+
+=== under-relax liquid-fraction update (enthalpy-porosity stability) ===
+  before: {'body-force': 1.0, 'delh': 0.9, 'density': 1, 'temperature': 1.0}
+
+Error: api-create-obj: Object can not be created
+Error Object: "solution/controls/under-relaxation"
+  under-relaxation mom NOT set: RuntimeError: api-create-obj: Object can not be created
+Error Object: solution/controls/under-relaxation
+  after:  {'body-force': 1.0, 'delh': 0.2, 'density': 1, 'temperature': 0.8}
+OK: under-relax liquid-fraction update (enthalpy-porosity stability)
+
+=== configure transient (20.0s x 60 = 1200s physical) ===
+'setup' is deprecated. Use 'settings.setup' instead.
+Warning: The use of axis boundary conditions is not appropriate for
+         a 2D/3D flow problem. Please consider changing the zone
+         type to symmetry or wall, or the problem to axisymmetric.
+
+Warning: The use of axis boundary conditions is not appropriate for
+         a 2D/3D flow problem. Please consider changing the zone
+         type to symmetry or wall, or the problem to axisymmetric.
+
+OK: configure transient (20.0s x 60 = 1200s physical)
+
+=== SOLVE 60 steps, probing the melt curve ===
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+     1  1.0000e+00  1.5518e-06  0.0000e+00  5.2734e-04  0:00:07   39
+     2  1.0000e+00  6.3791e-03  2.8149e-03  1.8843e-04  0:00:07   38
+     3  6.7655e-01  2.2549e-03  9.9723e-04  8.2501e-05  0:00:06   37
+     4  4.0647e-01  1.0118e-03  4.7212e-04  4.2069e-05  0:00:06   36
+     5  2.3747e-01  4.8923e-04  2.3389e-04  2.3589e-05  0:00:05   35
+     6  1.3538e-01  2.4021e-04  1.2308e-04  1.3932e-05  0:00:05   34
+     7  7.9430e-02  1.2560e-04  6.9419e-05  8.5009e-06  0:00:05   33
+     8  4.7075e-02  6.9522e-05  4.0068e-05  5.2954e-06  0:00:05   32
+     9  2.8129e-02  3.9756e-05  2.3818e-05  3.3436e-06  0:00:05   31
+    10  1.6912e-02  2.3258e-05  1.4469e-05  2.1330e-06  0:00:06   30
+    11  1.0236e-02  1.3830e-05  8.8273e-06  1.3698e-06  0:00:05   29
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+    12  6.2257e-03  8.3243e-06  5.4037e-06  8.8465e-07  0:00:05   28
+    13  3.8008e-03  5.0577e-06  3.3177e-06  5.7397e-07  0:00:05   27
+    14  2.3319e-03  3.0943e-06  2.0446e-06  3.7383e-07  0:00:04   26
+    15  1.4366e-03  1.9033e-06  1.2648e-06  2.4429e-07  0:00:04   25
+    16  8.8700e-04  1.1762e-06  7.8590e-07  1.6004e-07  0:00:03   24
+!   16 solution is converged
+Flow time = 20s, time step = 1
+2 more time steps
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+    16  8.8700e-04  1.1762e-06  7.8590e-07  1.6004e-07  0:00:06   40
+!   16 solution is converged
+    17  1.3536e-01  7.0335e-02  9.4803e-03  1.7046e-04  0:00:05   39
+    18  7.9499e-01  1.6503e-02  2.4677e-03  8.6652e-05  0:00:05   38
+    19  5.6089e-01  4.3296e-03  7.6579e-04  4.8583e-05  0:00:05   37
+    20  3.4648e-01  1.1482e-03  3.0503e-04  2.8789e-05  0:00:05   36
+    21  2.0049e-01  3.3957e-04  1.5906e-04  1.7634e-05  0:00:05   35
+    22  1.1443e-01  1.4779e-04  9.4049e-05  1.0960e-05  0:00:05   34
+    23  6.5141e-02  8.6892e-05  5.5700e-05  6.8999e-06  0:00:05   33
+    24  3.8192e-02  5.2972e-05  3.4224e-05  4.4136e-06  0:00:04   32
+    25  2.2656e-02  3.3311e-05  2.1009e-05  2.8411e-06  0:00:04   31
+    26  1.3619e-02  2.1174e-05  1.3127e-05  1.8407e-06  0:00:04   30
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+    27  8.2582e-03  1.3676e-05  8.3430e-06  1.1923e-06  0:00:04   29
+    28  5.0362e-03  9.0137e-06  5.3800e-06  7.7673e-07  0:00:04   28
+    29  3.0858e-03  6.0631e-06  3.5387e-06  5.0730e-07  0:00:04   27
+    30  1.8985e-03  4.1673e-06  2.3861e-06  3.3213e-07  0:00:04   26
+    31  1.1723e-03  2.9210e-06  1.6415e-06  2.1790e-07  0:00:03   25
+    32  7.2559e-04  2.0882e-06  1.1531e-06  1.4322e-07  0:00:03   24
+!   32 solution is converged
+Flow time = 40s, time step = 2
+1 more time step
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+    32  7.2559e-04  2.0882e-06  1.1531e-06  1.4322e-07  0:00:05   40
+    33  8.6792e-02  4.0147e-03  1.3381e-03  9.7243e-05  0:00:04   39
+    34  3.2260e-02  1.1692e-03  4.6024e-04  5.9179e-05  0:00:04   38
+    35  2.1357e-02  3.7120e-04  1.7140e-04  3.4790e-05  0:00:04   37
+    36  1.3955e-02  1.4611e-04  7.5949e-05  2.1704e-05  0:00:05   36
+    37  8.7046e-03  8.2380e-05  4.3434e-05  1.3942e-05  0:00:05   35
+    38  5.4268e-03  6.1106e-05  3.1190e-05  9.0195e-06  0:00:04   34
+    39  3.3091e-03  5.1023e-05  2.5128e-05  5.8634e-06  0:00:04   33
+    40  2.0370e-03  4.3905e-05  2.0934e-05  3.8240e-06  0:00:04   32
+    41  1.2405e-03  3.7298e-05  1.7592e-05  2.5001e-06  0:00:04   31
+    42  7.6550e-04  3.1285e-05  1.4598e-05  1.6378e-06  0:00:04   30
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+    43  4.6845e-04  2.6013e-05  1.2136e-05  1.0747e-06  0:00:04   29
+    44  2.9248e-04  2.1371e-05  9.9331e-06  7.0627e-07  0:00:03   28
+!   44 solution is converged
+Flow time = 60s, time step = 3
+
+ chk_liquid_fraction
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                           3_s_2         0.002212006
+
+     chk_temperature
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           3_s_2           307.76773
+  t=      60s  liquid_fraction=0.0022  T_mean=307.77K
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+    44  2.9248e-04  2.1371e-05  9.9331e-06  7.0627e-07  0:00:05   40
+    45  2.4250e-02  2.4271e-03  7.7025e-04  7.7768e-05  0:00:04   39
+    46  1.1776e-02  7.7098e-04  3.0129e-04  4.6009e-05  0:00:04   38
+    47  1.0208e-02  3.1132e-04  1.4036e-04  2.8565e-05  0:00:04   37
+    48  7.0041e-03  1.8116e-04  8.6389e-05  1.8137e-05  0:00:04   36
+    49  4.4646e-03  1.3580e-04  6.5185e-05  1.1653e-05  0:00:04   35
+    50  2.7875e-03  1.1145e-04  5.3430e-05  7.5380e-06  0:00:04   34
+    51  1.7339e-03  9.3130e-05  4.4426e-05  4.8980e-06  0:00:04   33
+    52  1.0598e-03  7.7586e-05  3.7186e-05  3.1930e-06  0:00:04   32
+    53  6.5145e-04  6.3958e-05  3.0624e-05  2.0868e-06  0:00:04   31
+    54  3.9616e-04  5.2416e-05  2.5280e-05  1.3667e-06  0:00:04   30
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+    55  2.4477e-04  4.2575e-05  2.0539e-05  8.9666e-07  0:00:04   29
+!   55 solution is converged
+Flow time = 80s, time step = 4
+2 more time steps
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+    55  2.4477e-04  4.2575e-05  2.0539e-05  8.9666e-07  0:00:06   40
+    56  1.1622e-02  1.6860e-03  5.6304e-04  6.6784e-05  0:00:05   39
+    57  6.4563e-03  5.8752e-04  2.3924e-04  3.9261e-05  0:00:05   38
+    58  6.1518e-03  2.8024e-04  1.2985e-04  2.4311e-05  0:00:05   37
+    59  4.2744e-03  1.8387e-04  8.9504e-05  1.5412e-05  0:00:04   36
+    60  2.7504e-03  1.4156e-04  7.0023e-05  9.8890e-06  0:00:04   35
+    61  1.6997e-03  1.1443e-04  5.7016e-05  6.3896e-06  0:00:04   34
+    62  1.0393e-03  9.3437e-05  4.6782e-05  4.1476e-06  0:00:04   33
+    63  6.3635e-04  7.6187e-05  3.8277e-05  2.7013e-06  0:00:04   32
+    64  3.9000e-04  6.1694e-05  3.0914e-05  1.7642e-06  0:00:04   31
+    65  2.3857e-04  4.9955e-05  2.5200e-05  1.1548e-06  0:00:03   30
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+    66  1.4665e-04  4.0174e-05  2.0234e-05  7.5741e-07  0:00:03   29
+!   66 solution is converged
+Flow time = 100s, time step = 5
+1 more time step
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+    66  1.4665e-04  4.0174e-05  2.0234e-05  7.5741e-07  0:00:05   40
+    67  7.6329e-03  1.2552e-03  4.4365e-04  5.9108e-05  0:00:04   39
+    68  4.2511e-03  4.5664e-04  1.9337e-04  3.4529e-05  0:00:04   38
+    69  4.1626e-03  2.3149e-04  1.1105e-04  2.1291e-05  0:00:07   37
+    70  2.8349e-03  1.5709e-04  7.8743e-05  1.3426e-05  0:00:06   36
+    71  1.8205e-03  1.2168e-04  6.2022e-05  8.5883e-06  0:00:06   35
+    72  1.1176e-03  9.7917e-05  5.0179e-05  5.5395e-06  0:00:05   34
+    73  6.7754e-04  7.9378e-05  4.0807e-05  3.5874e-06  0:00:05   33
+    74  4.1073e-04  6.4299e-05  3.3119e-05  2.3334e-06  0:00:05   32
+    75  2.5097e-04  5.1946e-05  2.6794e-05  1.5227e-06  0:00:04   31
+    76  1.5349e-04  4.1720e-05  2.1416e-05  9.9620e-07  0:00:04   30
+!   76 solution is converged
+Flow time = 120s, time step = 6
+
+ chk_liquid_fraction
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                           3_s_2        0.0077088216
+
+     chk_temperature
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           3_s_2           309.64845
+  t=     120s  liquid_fraction=0.0077  T_mean=309.65K
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+    76  1.5349e-04  4.1720e-05  2.1416e-05  9.9620e-07  0:00:05   40
+    77  5.5964e-03  9.8682e-04  3.6691e-04  5.3126e-05  0:00:04   39
+    78  3.0792e-03  3.6495e-04  1.5936e-04  3.0925e-05  0:00:04   38
+    79  3.0997e-03  1.8860e-04  9.2679e-05  1.8972e-05  0:00:04   37
+    80  2.1057e-03  1.2900e-04  6.5975e-05  1.1907e-05  0:00:04   36
+    81  1.3602e-03  9.9772e-05  5.1872e-05  7.5878e-06  0:00:04   35
+    82  8.3470e-04  7.9918e-05  4.1765e-05  4.8762e-06  0:00:04   34
+    83  5.0349e-04  6.4536e-05  3.3806e-05  3.1533e-06  0:00:04   33
+    84  3.0304e-04  5.2123e-05  2.7331e-05  2.0480e-06  0:00:04   32
+    85  1.8330e-04  4.2020e-05  2.2042e-05  1.3349e-06  0:00:04   31
+    86  1.1176e-04  3.3806e-05  1.7741e-05  8.7287e-07  0:00:04   30
+!   86 solution is converged
+Flow time = 140s, time step = 7
+2 more time steps
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+    86  1.1176e-04  3.3806e-05  1.7741e-05  8.7287e-07  0:00:05   40
+    87  4.3394e-03  7.9878e-04  3.0823e-04  4.8650e-05  0:00:04   39
+    88  2.3324e-03  2.9545e-04  1.3191e-04  2.8195e-05  0:00:04   38
+    89  2.4172e-03  1.5091e-04  7.5607e-05  1.6985e-05  0:00:04   37
+    90  1.6361e-03  1.0181e-04  5.2893e-05  1.0592e-05  0:00:04   36
+    91  1.0647e-03  7.7737e-05  4.0918e-05  6.7233e-06  0:00:04   35
+    92  6.5230e-04  6.1712e-05  3.2598e-05  4.3108e-06  0:00:04   34
+    93  3.9220e-04  4.9530e-05  2.6192e-05  2.7850e-06  0:00:04   33
+    94  2.3515e-04  3.9808e-05  2.1058e-05  1.8042e-06  0:00:04   32
+    95  1.4194e-04  3.1969e-05  1.6910e-05  1.1748e-06  0:00:04   31
+    96  8.6158e-05  2.5560e-05  1.3453e-05  7.6765e-07  0:00:03   30
+!   96 solution is converged
+Flow time = 160s, time step = 8
+1 more time step
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+    96  8.6158e-05  2.5560e-05  1.3453e-05  7.6765e-07  0:00:05   40
+    97  3.5161e-03  6.6399e-04  2.6361e-04  4.5072e-05  0:00:04   39
+    98  1.8678e-03  2.4171e-04  1.0925e-04  2.5758e-05  0:00:04   38
+    99  1.9568e-03  1.2087e-04  6.1206e-05  1.5402e-05  0:00:04   37
+   100  1.3006e-03  8.0592e-05  4.2287e-05  9.5460e-06  0:00:04   36
+   101  8.5450e-04  6.1089e-05  3.2422e-05  6.0350e-06  0:00:04   35
+   102  5.2370e-04  4.8297e-05  2.5705e-05  3.8605e-06  0:00:04   34
+   103  3.1361e-04  3.8660e-05  2.0589e-05  2.4871e-06  0:00:04   33
+   104  1.8723e-04  3.1029e-05  1.6518e-05  1.6110e-06  0:00:04   32
+   105  1.1247e-04  2.4901e-05  1.3244e-05  1.0482e-06  0:00:04   31
+   106  6.8071e-05  1.9964e-05  1.0612e-05  6.8450e-07  0:00:04   30
+!  106 solution is converged
+Flow time = 180s, time step = 9
+
+ chk_liquid_fraction
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                           3_s_2          0.01209616
+
+     chk_temperature
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           3_s_2           311.04918
+  t=     180s  liquid_fraction=0.0121  T_mean=311.05K
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   106  6.8071e-05  1.9964e-05  1.0612e-05  6.8450e-07  0:00:05   40
+   107  2.9285e-03  5.6543e-04  2.2940e-04  4.2310e-05  0:00:05   39
+   108  1.5390e-03  2.0334e-04  9.2548e-05  2.3872e-05  0:00:10   38
+   109  1.6309e-03  1.0094e-04  5.1116e-05  1.4230e-05  0:00:10   37
+   110  1.0726e-03  6.7700e-05  3.5312e-05  8.7778e-06  0:00:11   36
+   111  7.0553e-04  5.1750e-05  2.7233e-05  5.5271e-06  0:00:11   35
+   112  4.3074e-04  4.1189e-05  2.1712e-05  3.5256e-06  0:00:10   34
+   113  2.5653e-04  3.3136e-05  1.7468e-05  2.2674e-06  0:00:10   33
+   114  1.5214e-04  2.6698e-05  1.4064e-05  1.4671e-06  0:00:11   32
+   115  9.0769e-05  2.1491e-05  1.1309e-05  9.5394e-07  0:00:10   31
+!  115 solution is converged
+Flow time = 200s, time step = 10
+2 more time steps
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   115  9.0769e-05  2.1491e-05  1.1309e-05  9.5394e-07  0:00:13   40
+   116  2.4835e-03  4.9491e-04  2.0486e-04  4.0013e-05  0:00:11   39
+   117  1.3121e-03  1.7923e-04  8.2109e-05  2.2409e-05  0:00:11   38
+   118  1.4026e-03  9.0451e-05  4.5634e-05  1.3288e-05  0:00:11   37
+   119  9.1483e-04  6.1732e-05  3.1831e-05  8.1613e-06  0:00:14   36
+   120  6.0477e-04  4.7672e-05  2.4746e-05  5.1167e-06  0:00:14   35
+   121  3.6953e-04  3.8171e-05  1.9837e-05  3.2545e-06  0:00:14   34
+   122  2.2027e-04  3.0826e-05  1.6010e-05  2.0894e-06  0:00:17   33
+   123  1.3082e-04  2.4902e-05  1.2917e-05  1.3504e-06  0:00:16   32
+   124  7.8123e-05  2.0083e-05  1.0402e-05  8.7755e-07  0:00:17   31
+!  124 solution is converged
+Flow time = 220s, time step = 11
+1 more time step
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   124  7.8123e-05  2.0083e-05  1.0402e-05  8.7755e-07  0:00:22   40
+   125  2.1429e-03  4.3664e-04  1.8373e-04  3.8306e-05  0:00:19   39
+   126  1.1328e-03  1.6100e-04  7.3977e-05  2.1271e-05  0:00:21   38
+   127  1.2259e-03  8.3824e-05  4.1945e-05  1.2528e-05  0:00:22   37
+   128  7.8362e-04  5.8574e-05  2.9848e-05  7.6468e-06  0:00:22   36
+   129  5.1533e-04  4.5759e-05  2.3469e-05  4.7778e-06  0:00:26   35
+   130  3.1371e-04  3.6840e-05  1.8925e-05  3.0304e-06  0:00:22   34
+   131  1.8611e-04  2.9830e-05  1.5324e-05  1.9422e-06  0:00:19   33
+   132  1.1019e-04  2.4131e-05  1.2388e-05  1.2542e-06  0:00:16   32
+   133  6.5635e-05  1.9481e-05  9.9882e-06  8.1473e-07  0:00:13   31
+!  133 solution is converged
+Flow time = 240s, time step = 12
+
+ chk_liquid_fraction
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                           3_s_2         0.016264425
+
+     chk_temperature
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           3_s_2           312.16866
+  t=     240s  liquid_fraction=0.0163  T_mean=312.17K
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   133  6.5635e-05  1.9481e-05  9.9882e-06  8.1473e-07  0:00:17   40
+   134  1.8745e-03  3.8971e-04  1.6684e-04  3.6858e-05  0:00:14   39
+   135  9.9568e-04  1.4705e-04  6.8015e-05  2.0315e-05  0:00:12   38
+   136  1.0904e-03  7.9158e-05  3.9601e-05  1.1882e-05  0:00:11   37
+   137  6.9256e-04  5.6526e-05  2.8693e-05  7.2106e-06  0:00:16   36
+   138  4.5624e-04  4.4560e-05  2.2732e-05  4.4852e-06  0:00:14   35
+   139  2.7732e-04  3.5994e-05  1.8381e-05  2.8370e-06  0:00:15   34
+   140  1.6416e-04  2.9179e-05  1.4897e-05  1.8152e-06  0:00:16   33
+   141  9.7091e-05  2.3614e-05  1.2047e-05  1.1713e-06  0:00:18   32
+   142  5.7849e-05  1.9065e-05  9.7158e-06  7.6068e-07  0:00:18   31
+!  142 solution is converged
+Flow time = 260s, time step = 13
+2 more time steps
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   142  5.7849e-05  1.9065e-05  9.7158e-06  7.6068e-07  0:00:24   40
+   143  1.6609e-03  3.5093e-04  1.5275e-04  3.5591e-05  0:00:20   39
+   144  8.8451e-04  1.3530e-04  6.3180e-05  1.9480e-05  0:00:18   38
+   145  9.7543e-04  7.5058e-05  3.7675e-05  1.1318e-05  0:00:16   37
+   146  6.1855e-04  5.4581e-05  2.7691e-05  6.8316e-06  0:00:14   36
+   147  4.0947e-04  4.3323e-05  2.2078e-05  4.2314e-06  0:00:12   35
+   148  2.4956e-04  3.5064e-05  1.7883e-05  2.6677e-06  0:00:11   34
+   149  1.4811e-04  2.8436e-05  1.4500e-05  1.7039e-06  0:00:10   33
+   150  8.7525e-05  2.3010e-05  1.1724e-05  1.0986e-06  0:00:09   32
+   151  5.2053e-05  1.8573e-05  9.4522e-06  7.1334e-07  0:00:09   31
+!  151 solution is converged
+Flow time = 280s, time step = 14
+1 more time step
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   151  5.2053e-05  1.8573e-05  9.4522e-06  7.1334e-07  0:00:11   40
+   152  1.4875e-03  3.1787e-04  1.4043e-04  3.4463e-05  0:00:09   39
+   153  7.9312e-04  1.2496e-04  5.8889e-05  1.8733e-05  0:00:09   38
+   154  8.7782e-04  7.1143e-05  3.5876e-05  1.0817e-05  0:00:08   37
+   155  5.4768e-04  5.2487e-05  2.6678e-05  6.4944e-06  0:00:15   36
+   156  3.6075e-04  4.1872e-05  2.1353e-05  4.0070e-06  0:00:14   35
+   157  2.1956e-04  3.3947e-05  1.7316e-05  2.5185e-06  0:00:12   34
+   158  1.3019e-04  2.7540e-05  1.4041e-05  1.6049e-06  0:00:10   33
+   159  7.6935e-05  2.2286e-05  1.1350e-05  1.0337e-06  0:00:09   32
+   160  4.5780e-05  1.7989e-05  9.1494e-06  6.7108e-07  0:00:08   31
+!  160 solution is converged
+Flow time = 300s, time step = 15
+
+ chk_liquid_fraction
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                           3_s_2         0.020154336
+
+     chk_temperature
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           3_s_2           313.15258
+  t=     300s  liquid_fraction=0.0202  T_mean=313.15K
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   160  4.5780e-05  1.7989e-05  9.1494e-06  6.7108e-07  0:00:10   40
+   161  1.3412e-03  2.8920e-04  1.2947e-04  3.3451e-05  0:00:09   39
+   162  7.1679e-04  1.1575e-04  5.5156e-05  1.8058e-05  0:00:08   38
+   163  7.9883e-04  6.7356e-05  3.4173e-05  1.0367e-05  0:00:08   37
+   164  5.0010e-04  5.0304e-05  2.5631e-05  6.1956e-06  0:00:07   36
+   165  3.3096e-04  4.0317e-05  2.0566e-05  3.8073e-06  0:00:07   35
+   166  2.0207e-04  3.2738e-05  1.6689e-05  2.3864e-06  0:00:07   34
+   167  1.1996e-04  2.6574e-05  1.3536e-05  1.5178e-06  0:00:06   33
+   168  7.0855e-05  2.1505e-05  1.0939e-05  9.7613e-07  0:00:06   32
+!  168 solution is converged
+Flow time = 320s, time step = 16
+2 more time steps
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   168  7.0855e-05  2.1505e-05  1.0939e-05  9.7613e-07  0:00:08   40
+   169  1.2153e-03  2.6756e-04  1.2138e-04  3.2332e-05  0:00:06   39
+   170  6.5777e-04  1.0909e-04  5.2524e-05  1.7388e-05  0:00:06   38
+   171  7.3474e-04  6.4497e-05  3.2886e-05  9.9439e-06  0:00:06   37
+   172  4.6128e-04  4.8485e-05  2.4752e-05  5.9236e-06  0:00:06   36
+   173  3.0719e-04  3.8932e-05  1.9856e-05  3.6304e-06  0:00:06   35
+   174  1.8797e-04  3.1628e-05  1.6109e-05  2.2691e-06  0:00:06   34
+   175  1.1165e-04  2.5677e-05  1.3058e-05  1.4405e-06  0:00:05   33
+   176  6.5981e-05  2.0784e-05  1.0549e-05  9.2560e-07  0:00:05   32
+!  176 solution is converged
+Flow time = 340s, time step = 17
+1 more time step
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   176  6.5981e-05  2.0784e-05  1.0549e-05  9.2560e-07  0:00:07   40
+   177  1.1086e-03  2.4526e-04  1.1253e-04  3.1505e-05  0:00:06   39
+   178  6.0101e-04  1.0180e-04  4.9405e-05  1.6823e-05  0:00:11   38
+   179  6.7856e-04  6.1269e-05  3.1274e-05  9.5642e-06  0:00:10   37
+   180  4.2464e-04  4.6505e-05  2.3676e-05  5.6709e-06  0:00:09   36
+   181  2.8148e-04  3.7465e-05  1.9001e-05  3.4644e-06  0:00:08   35
+   182  1.7174e-04  3.0459e-05  1.5406e-05  2.1615e-06  0:00:08   34
+   183  1.0188e-04  2.4725e-05  1.2480e-05  1.3700e-06  0:00:07   33
+   184  6.0025e-05  2.0007e-05  1.0078e-05  8.7898e-07  0:00:07   32
+!  184 solution is converged
+Flow time = 360s, time step = 18
+
+ chk_liquid_fraction
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                           3_s_2         0.023617127
+
+     chk_temperature
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           3_s_2           314.03111
+  t=     360s  liquid_fraction=0.0236  T_mean=314.03K
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   184  6.0025e-05  2.0007e-05  1.0078e-05  8.7898e-07  0:00:09   40
+   185  1.0148e-03  2.2536e-04  1.0443e-04  3.0757e-05  0:00:07   39
+   186  5.4970e-04  9.5009e-05  4.6392e-05  1.6317e-05  0:00:07   38
+   187  6.2379e-04  5.8122e-05  2.9697e-05  9.2159e-06  0:00:06   37
+   188  3.9088e-04  4.4468e-05  2.2590e-05  5.4437e-06  0:00:06   36
+   189  2.5927e-04  3.5913e-05  1.8146e-05  3.3170e-06  0:00:05   35
+   190  1.5791e-04  2.9213e-05  1.4715e-05  2.0660e-06  0:00:05   34
+   191  9.3459e-05  2.3713e-05  1.1916e-05  1.3082e-06  0:00:05   33
+   192  5.4963e-05  1.9183e-05  9.6207e-06  8.3799e-07  0:00:05   32
+!  192 solution is converged
+Flow time = 380s, time step = 19
+2 more time steps
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   192  5.4963e-05  1.9183e-05  9.6207e-06  8.3799e-07  0:00:06   40
+   193  9.3322e-04  2.0748e-04  9.7079e-05  3.0077e-05  0:00:05   39
+   194  5.0577e-04  8.8776e-05  4.3619e-05  1.5841e-05  0:00:06   38
+   195  5.7182e-04  5.5122e-05  2.8149e-05  8.8875e-06  0:00:06   37
+   196  3.5779e-04  4.2460e-05  2.1507e-05  5.2271e-06  0:00:06   36
+   197  2.3813e-04  3.4363e-05  1.7284e-05  3.1760e-06  0:00:05   35
+   198  1.4538e-04  2.7966e-05  1.4010e-05  1.9721e-06  0:00:05   34
+   199  8.6084e-05  2.2699e-05  1.1341e-05  1.2469e-06  0:00:05   33
+   200  5.0667e-05  1.8363e-05  9.1519e-06  7.9881e-07  0:00:05   32
+!  200 solution is converged
+Flow time = 400s, time step = 20
+1 more time step
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   200  5.0667e-05  1.8363e-05  9.1519e-06  7.9881e-07  0:00:06   40
+   201  8.6129e-04  1.9144e-04  9.0405e-05  2.9449e-05  0:00:05   39
+   202  4.6653e-04  8.3090e-05  4.0959e-05  1.5392e-05  0:00:06   38
+   203  5.2957e-04  5.2342e-05  2.6634e-05  8.5852e-06  0:00:10   37
+   204  3.2923e-04  4.0584e-05  2.0385e-05  5.0136e-06  0:00:10   36
+   205  2.1947e-04  3.2902e-05  1.6384e-05  3.0352e-06  0:00:09   35
+   206  1.3414e-04  2.6785e-05  1.3271e-05  1.8835e-06  0:00:08   34
+   207  7.9473e-05  2.1739e-05  1.0734e-05  1.1895e-06  0:00:10   33
+   208  4.6771e-05  1.7579e-05  8.6555e-06  7.6120e-07  0:00:09   32
+!  208 solution is converged
+Flow time = 420s, time step = 21
+
+ chk_liquid_fraction
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                           3_s_2         0.026939156
+
+     chk_temperature
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           3_s_2           314.83268
+  t=     420s  liquid_fraction=0.0269  T_mean=314.83K
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   208  4.6771e-05  1.7579e-05  8.6555e-06  7.6120e-07  0:00:11   40
+   209  7.9560e-04  1.7688e-04  8.4268e-05  2.8847e-05  0:00:09   39
+   210  4.3159e-04  7.7843e-05  3.8394e-05  1.4966e-05  0:00:09   38
+   211  4.9091e-04  4.9604e-05  2.5119e-05  8.2771e-06  0:00:09   37
+   212  3.0386e-04  3.8645e-05  1.9259e-05  4.8151e-06  0:00:09   36
+   213  2.0396e-04  3.1337e-05  1.5503e-05  2.9070e-06  0:00:09   35
+   214  1.2486e-04  2.5488e-05  1.2559e-05  1.7989e-06  0:00:09   34
+   215  7.3996e-05  2.0662e-05  1.0160e-05  1.1350e-06  0:00:09   33
+   216  4.3504e-05  1.6693e-05  8.1926e-06  7.2665e-07  0:00:09   32
+!  216 solution is converged
+Flow time = 440s, time step = 22
+2 more time steps
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   216  4.3504e-05  1.6693e-05  8.1926e-06  7.2665e-07  0:00:11   40
+   217  7.3537e-04  1.6350e-04  7.8651e-05  2.8294e-05  0:00:09   39
+   218  3.9982e-04  7.2788e-05  3.6022e-05  1.4528e-05  0:00:09   38
+   219  4.5855e-04  4.6883e-05  2.3739e-05  8.0058e-06  0:00:12   37
+   220  2.8389e-04  3.6722e-05  1.8239e-05  4.6320e-06  0:00:13   36
+   221  1.9218e-04  2.9820e-05  1.4713e-05  2.7859e-06  0:00:12   35
+   222  1.1796e-04  2.4265e-05  1.1929e-05  1.7230e-06  0:00:11   34
+   223  7.0005e-05  1.9675e-05  9.6535e-06  1.0868e-06  0:00:10   33
+   224  4.1246e-05  1.5895e-05  7.7832e-06  6.9569e-07  0:00:09   32
+!  224 solution is converged
+Flow time = 460s, time step = 23
+1 more time step
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   224  4.1246e-05  1.5895e-05  7.7832e-06  6.9569e-07  0:00:11   40
+   225  6.8118e-04  1.5127e-04  7.3508e-05  2.7791e-05  0:00:10   39
+   226  3.7076e-04  6.8182e-05  3.3857e-05  1.4165e-05  0:00:09   38
+   227  4.2522e-04  4.4422e-05  2.2487e-05  7.7480e-06  0:00:09   37
+   228  2.6176e-04  3.5022e-05  1.7360e-05  4.4742e-06  0:00:08   36
+   229  1.7728e-04  2.8516e-05  1.4038e-05  2.6845e-06  0:00:07   35
+   230  1.0874e-04  2.3236e-05  1.1398e-05  1.6584e-06  0:00:07   34
+   231  6.4528e-05  1.8857e-05  9.2328e-06  1.0462e-06  0:00:07   33
+   232  3.8003e-05  1.5245e-05  7.4523e-06  6.7005e-07  0:00:06   32
+!  232 solution is converged
+Flow time = 480s, time step = 24
+
+ chk_liquid_fraction
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                           3_s_2         0.030271228
+
+     chk_temperature
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           3_s_2           315.55877
+  t=     480s  liquid_fraction=0.0303  T_mean=315.56K
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   232  3.8003e-05  1.5245e-05  7.4523e-06  6.7005e-07  0:00:08   40
+   233  6.3106e-04  1.4015e-04  6.8833e-05  2.7343e-05  0:00:06   39
+   234  3.4394e-04  6.4133e-05  3.1933e-05  1.3836e-05  0:00:06   38
+   235  3.9676e-04  4.2382e-05  2.1436e-05  7.5329e-06  0:00:06   37
+   236  2.4557e-04  3.3654e-05  1.6654e-05  4.3367e-06  0:00:05   36
+   237  1.6724e-04  2.7490e-05  1.3514e-05  2.5976e-06  0:00:05   35
+   238  1.0304e-04  2.2438e-05  1.0993e-05  1.6038e-06  0:00:05   34
+   239  6.1298e-05  1.8227e-05  8.9158e-06  1.0119e-06  0:00:05   33
+   240  3.6135e-05  1.4746e-05  7.2024e-06  6.4856e-07  0:00:05   32
+!  240 solution is converged
+Flow time = 500s, time step = 25
+2 more time steps
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   240  3.6135e-05  1.4746e-05  7.2024e-06  6.4856e-07  0:00:06   40
+   241  5.8546e-04  1.3004e-04  6.4575e-05  2.6942e-05  0:00:05   39
+   242  3.1945e-04  6.0600e-05  3.0256e-05  1.3544e-05  0:00:06   38
+   243  3.7109e-04  4.0710e-05  2.0577e-05  7.3432e-06  0:00:06   37
+   244  2.3000e-04  3.2580e-05  1.6105e-05  4.2130e-06  0:00:06   36
+   245  1.5712e-04  2.6700e-05  1.3115e-05  2.5203e-06  0:00:06   35
+   246  9.6911e-05  2.1825e-05  1.0689e-05  1.5555e-06  0:00:06   34
+   247  5.7641e-05  1.7741e-05  8.6780e-06  9.8166e-07  0:00:09   33
+!  247 solution is converged
+Flow time = 520s, time step = 26
+1 more time step
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   247  5.7641e-05  1.7741e-05  8.6780e-06  9.8166e-07  0:00:11   40
+   248  5.4150e-04  1.2358e-04  6.2047e-05  2.6348e-05  0:00:09   39
+   249  3.0186e-04  5.8770e-05  2.9436e-05  1.3219e-05  0:00:08   38
+   250  3.4657e-04  3.9865e-05  2.0138e-05  7.1407e-06  0:00:08   37
+   251  2.1290e-04  3.1953e-05  1.5784e-05  4.0786e-06  0:00:07   36
+   252  1.4485e-04  2.6182e-05  1.2859e-05  2.4366e-06  0:00:07   35
+   253  8.8946e-05  2.1395e-05  1.0481e-05  1.5035e-06  0:00:07   34
+   254  5.2896e-05  1.7387e-05  8.5115e-06  9.4805e-07  0:00:07   33
+!  254 solution is converged
+Flow time = 540s, time step = 27
+
+ chk_liquid_fraction
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                           3_s_2         0.033473927
+
+     chk_temperature
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           3_s_2           316.21877
+  t=     540s  liquid_fraction=0.0335  T_mean=316.22K
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   254  5.2896e-05  1.7387e-05  8.5115e-06  9.4805e-07  0:00:09   40
+   255  5.0205e-04  1.1511e-04  5.8437e-05  2.5995e-05  0:00:07   39
+   256  2.8113e-04  5.5986e-05  2.8123e-05  1.2960e-05  0:00:07   38
+   257  3.2025e-04  3.8672e-05  1.9531e-05  6.9560e-06  0:00:07   37
+   258  1.9631e-04  3.1226e-05  1.5434e-05  3.9647e-06  0:00:06   36
+   259  1.3377e-04  2.5647e-05  1.2618e-05  2.3623e-06  0:00:07   35
+   260  8.2185e-05  2.0971e-05  1.0299e-05  1.4554e-06  0:00:07   34
+   261  4.8803e-05  1.7047e-05  8.3702e-06  9.1861e-07  0:00:07   33
+!  261 solution is converged
+Flow time = 560s, time step = 28
+2 more time steps
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   261  4.8803e-05  1.7047e-05  8.3702e-06  9.1861e-07  0:00:08   40
+   262  4.6572e-04  1.0729e-04  5.5102e-05  2.5678e-05  0:00:07   39
+   263  2.6177e-04  5.3401e-05  2.6904e-05  1.2722e-05  0:00:07   38
+   264  2.9847e-04  3.7557e-05  1.8976e-05  6.7922e-06  0:00:07   37
+   265  1.8342e-04  3.0524e-05  1.5116e-05  3.8564e-06  0:00:06   36
+   266  1.2480e-04  2.5125e-05  1.2394e-05  2.2966e-06  0:00:06   35
+   267  7.6681e-05  2.0557e-05  1.0126e-05  1.4143e-06  0:00:06   34
+   268  4.5523e-05  1.6711e-05  8.2312e-06  8.9300e-07  0:00:06   33
+!  268 solution is converged
+Flow time = 580s, time step = 29
+1 more time step
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   268  4.5523e-05  1.6711e-05  8.2312e-06  8.9300e-07  0:00:08   40
+   269  4.3242e-04  1.0004e-04  5.1992e-05  2.5385e-05  0:00:07   39
+   270  2.4371e-04  5.0957e-05  2.5756e-05  1.2488e-05  0:00:07   38
+   271  2.7834e-04  3.6459e-05  1.8431e-05  6.6368e-06  0:00:07   37
+   272  1.7198e-04  2.9809e-05  1.4786e-05  3.7615e-06  0:00:06   36
+   273  1.1675e-04  2.4586e-05  1.2149e-05  2.2372e-06  0:00:06   35
+   274  7.1789e-05  2.0127e-05  9.9364e-06  1.3780e-06  0:00:06   34
+   275  4.2630e-05  1.6364e-05  8.0793e-06  8.7034e-07  0:00:06   33
+!  275 solution is converged
+Flow time = 600s, time step = 30
+
+ chk_liquid_fraction
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                           3_s_2         0.036659086
+
+     chk_temperature
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           3_s_2           316.82574
+  t=     600s  liquid_fraction=0.0367  T_mean=316.83K
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   275  4.2630e-05  1.6364e-05  8.0793e-06  8.7034e-07  0:00:07   40
+   276  4.0194e-04  9.3296e-05  4.9067e-05  2.5125e-05  0:00:06   39
+   277  2.2695e-04  4.8644e-05  2.4679e-05  1.2297e-05  0:00:06   38
+   278  2.5983e-04  3.5390e-05  1.7900e-05  6.4927e-06  0:00:06   37
+   279  1.6033e-04  2.9116e-05  1.4451e-05  3.6673e-06  0:00:06   36
+   280  1.0922e-04  2.4043e-05  1.1895e-05  2.1742e-06  0:00:05   35
+   281  6.7080e-05  1.9683e-05  9.7313e-06  1.3382e-06  0:00:05   34
+   282  3.9855e-05  1.5998e-05  7.9113e-06  8.4522e-07  0:00:07   33
+!  282 solution is converged
+Flow time = 620s, time step = 31
+2 more time steps
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   282  3.9855e-05  1.5998e-05  7.9113e-06  8.4522e-07  0:00:08   40
+   283  3.7401e-04  8.7007e-05  4.6301e-05  2.4866e-05  0:00:07   39
+   284  2.1121e-04  4.6410e-05  2.3637e-05  1.2090e-05  0:00:09   38
+   285  2.4251e-04  3.4285e-05  1.7372e-05  6.3666e-06  0:00:09   37
+   286  1.4805e-04  2.8387e-05  1.4124e-05  3.5848e-06  0:00:09   36
+   287  1.0218e-04  2.3492e-05  1.1646e-05  2.1250e-06  0:00:08   35
+   288  6.3202e-05  1.9249e-05  9.5350e-06  1.3074e-06  0:00:08   34
+   289  3.7728e-05  1.5653e-05  7.7573e-06  8.2590e-07  0:00:07   33
+!  289 solution is converged
+Flow time = 640s, time step = 32
+1 more time step
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   289  3.7728e-05  1.5653e-05  7.7573e-06  8.2590e-07  0:00:09   40
+   290  3.4796e-04  8.1197e-05  4.3707e-05  2.4642e-05  0:00:08   39
+   291  1.9678e-04  4.4358e-05  2.2683e-05  1.1918e-05  0:00:08   38
+   292  2.2701e-04  3.3308e-05  1.6926e-05  6.2494e-06  0:00:07   37
+   293  1.3770e-04  2.7759e-05  1.3837e-05  3.5113e-06  0:00:07   36
+   294  9.5437e-05  2.3036e-05  1.1447e-05  2.0789e-06  0:00:08   35
+   295  5.9139e-05  1.8899e-05  9.3856e-06  1.2786e-06  0:00:07   34
+   296  3.5325e-05  1.5379e-05  7.6391e-06  8.0786e-07  0:00:07   33
+!  296 solution is converged
+Flow time = 660s, time step = 33
+
+ chk_liquid_fraction
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                           3_s_2         0.039889997
+
+     chk_temperature
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           3_s_2           317.39175
+  t=     660s  liquid_fraction=0.0399  T_mean=317.39K
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   296  3.5325e-05  1.5379e-05  7.6391e-06  8.0786e-07  0:00:09   40
+   297  3.2384e-04  7.5858e-05  4.1292e-05  2.4441e-05  0:00:07   39
+   298  1.8354e-04  4.2518e-05  2.1847e-05  1.1755e-05  0:00:07   38
+   299  2.1141e-04  3.2500e-05  1.6556e-05  6.1485e-06  0:00:06   37
+   300  1.2842e-04  2.7273e-05  1.3627e-05  3.4465e-06  0:00:06   36
+   301  8.9377e-05  2.2691e-05  1.1295e-05  2.0376e-06  0:00:05   35
+   302  5.5457e-05  1.8638e-05  9.2688e-06  1.2526e-06  0:00:05   34
+   303  3.3123e-05  1.5177e-05  7.5466e-06  7.9153e-07  0:00:05   33
+!  303 solution is converged
+Flow time = 680s, time step = 34
+2 more time steps
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   303  3.3123e-05  1.5177e-05  7.5466e-06  7.9153e-07  0:00:06   40
+   304  3.0118e-04  7.0948e-05  3.9049e-05  2.4257e-05  0:00:05   39
+   305  1.7115e-04  4.0909e-05  2.1113e-05  1.1615e-05  0:00:07   38
+   306  1.9712e-04  3.1845e-05  1.6251e-05  6.0530e-06  0:00:08   37
+   307  1.2026e-04  2.6900e-05  1.3452e-05  3.3855e-06  0:00:10   36
+   308  8.3988e-05  2.2439e-05  1.1174e-05  1.9992e-06  0:00:10   35
+   309  5.2216e-05  1.8453e-05  9.1793e-06  1.2281e-06  0:00:09   34
+   310  3.1247e-05  1.5037e-05  7.4784e-06  7.7587e-07  0:00:08   33
+!  310 solution is converged
+Flow time = 700s, time step = 35
+1 more time step
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   310  3.1247e-05  1.5037e-05  7.4784e-06  7.7587e-07  0:00:10   40
+   311  2.8010e-04  6.6424e-05  3.6963e-05  2.4081e-05  0:00:09   39
+   312  1.5970e-04  3.9483e-05  2.0442e-05  1.1484e-05  0:00:09   38
+   313  1.8444e-04  3.1327e-05  1.5991e-05  5.9765e-06  0:00:08   37
+   314  1.1357e-04  2.6626e-05  1.3321e-05  3.3218e-06  0:00:19   36
+   315  7.9845e-05  2.2259e-05  1.1084e-05  1.9573e-06  0:00:17   35
+   316  4.9800e-05  1.8317e-05  9.1061e-06  1.2022e-06  0:00:16   34
+   317  2.9872e-05  1.4930e-05  7.4179e-06  7.5949e-07  0:00:18   33
+!  317 solution is converged
+Flow time = 720s, time step = 36
+
+ chk_liquid_fraction
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                           3_s_2         0.043135507
+
+     chk_temperature
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           3_s_2           317.92635
+  t=     720s  liquid_fraction=0.0431  T_mean=317.93K
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   317  2.9872e-05  1.4930e-05  7.4179e-06  7.5949e-07  0:00:22   40
+   318  2.6083e-04  6.2233e-05  3.5004e-05  2.3909e-05  0:00:17   39
+   319  1.4905e-04  3.8180e-05  1.9814e-05  1.1353e-05  0:00:15   38
+   320  1.7256e-04  3.0831e-05  1.5732e-05  5.8695e-06  0:00:13   37
+   321  1.0693e-04  2.6368e-05  1.3181e-05  3.2670e-06  0:00:12   36
+   322  7.5170e-05  2.2090e-05  1.0989e-05  1.9231e-06  0:00:11   35
+   323  4.6946e-05  1.8196e-05  9.0379e-06  1.1804e-06  0:00:10   34
+   324  2.8215e-05  1.4838e-05  7.3662e-06  7.4611e-07  0:00:09   33
+!  324 solution is converged
+Flow time = 740s, time step = 37
+2 more time steps
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   324  2.8215e-05  1.4838e-05  7.3662e-06  7.4611e-07  0:00:11   40
+   325  2.4304e-04  5.8349e-05  3.3163e-05  2.3755e-05  0:00:09   39
+   326  1.3918e-04  3.6993e-05  1.9252e-05  1.1227e-05  0:00:09   38
+   327  1.6022e-04  3.0420e-05  1.5521e-05  5.7930e-06  0:00:08   37
+   328  9.9176e-05  2.6171e-05  1.3082e-05  3.2159e-06  0:00:08   36
+   329  7.0034e-05  2.1968e-05  1.0925e-05  1.8921e-06  0:00:07   35
+   330  4.3848e-05  1.8109e-05  8.9899e-06  1.1616e-06  0:00:07   34
+   331  2.6422e-05  1.4771e-05  7.3280e-06  7.3371e-07  0:00:08   33
+!  331 solution is converged
+Flow time = 760s, time step = 38
+1 more time step
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   331  2.6422e-05  1.4771e-05  7.3280e-06  7.3371e-07  0:00:10   40
+   332  2.2583e-04  5.4760e-05  3.1438e-05  2.3608e-05  0:00:08   39
+   333  1.3001e-04  3.5912e-05  1.8737e-05  1.1117e-05  0:00:08   38
+   334  1.4897e-04  3.0068e-05  1.5343e-05  5.7173e-06  0:00:07   37
+   335  9.2456e-05  2.6010e-05  1.3004e-05  3.1693e-06  0:00:07   36
+   336  6.5514e-05  2.1876e-05  1.0883e-05  1.8630e-06  0:00:06   35
+   337  4.1123e-05  1.8044e-05  8.9624e-06  1.1422e-06  0:00:06   34
+   338  2.4846e-05  1.4721e-05  7.3081e-06  7.2191e-07  0:00:06   33
+!  338 solution is converged
+Flow time = 780s, time step = 39
+
+ chk_liquid_fraction
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                           3_s_2         0.046401194
+
+     chk_temperature
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           3_s_2           318.43307
+  t=     780s  liquid_fraction=0.0464  T_mean=318.43K
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   338  2.4846e-05  1.4721e-05  7.3081e-06  7.2191e-07  0:00:07   40
+   339  2.0996e-04  5.1442e-05  2.9821e-05  2.3471e-05  0:00:06   39
+   340  1.2146e-04  3.4918e-05  1.8251e-05  1.1016e-05  0:00:05   38
+   341  1.3829e-04  2.9744e-05  1.5167e-05  5.6506e-06  0:00:05   37
+   342  8.6085e-05  2.5861e-05  1.2922e-05  3.1270e-06  0:00:05   36
+   343  6.1215e-05  2.1783e-05  1.0833e-05  1.8367e-06  0:00:04   35
+   344  3.8530e-05  1.7977e-05  8.9264e-06  1.1259e-06  0:00:05   34
+   345  2.3351e-05  1.4669e-05  7.2794e-06  7.1156e-07  0:00:05   33
+!  345 solution is converged
+Flow time = 800s, time step = 40
+2 more time steps
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   345  2.3351e-05  1.4669e-05  7.2794e-06  7.1156e-07  0:00:07   40
+   346  1.9522e-04  4.8359e-05  2.8285e-05  2.3345e-05  0:00:06   39
+   347  1.1347e-04  3.3997e-05  1.7793e-05  1.0922e-05  0:00:06   38
+   348  1.2874e-04  2.9436e-05  1.5003e-05  5.5798e-06  0:00:06   37
+   349  8.0681e-05  2.5708e-05  1.2843e-05  3.0812e-06  0:00:05   36
+   350  5.6359e-05  2.1663e-05  1.0767e-05  1.8076e-06  0:00:05   35
+   351  3.5863e-05  1.7885e-05  8.8684e-06  1.1081e-06  0:00:05   34
+   352  2.1892e-05  1.4595e-05  7.2329e-06  7.0039e-07  0:00:05   33
+!  352 solution is converged
+Flow time = 820s, time step = 41
+1 more time step
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   352  2.1892e-05  1.4595e-05  7.2329e-06  7.0039e-07  0:00:06   40
+   353  1.8167e-04  4.5477e-05  2.6814e-05  2.3216e-05  0:00:06   39
+   354  1.0601e-04  3.3100e-05  1.7340e-05  1.0829e-05  0:00:07   38
+   355  1.1960e-04  2.9112e-05  1.4824e-05  5.5206e-06  0:00:07   37
+   356  7.5206e-05  2.5532e-05  1.2751e-05  3.0410e-06  0:00:07   36
+   357  5.2572e-05  2.1539e-05  1.0706e-05  1.7823e-06  0:00:08   35
+   358  3.3529e-05  1.7786e-05  8.8216e-06  1.0921e-06  0:00:10   34
+   359  2.0532e-05  1.4514e-05  7.1959e-06  6.9023e-07  0:00:09   33
+!  359 solution is converged
+Flow time = 840s, time step = 42
+
+ chk_liquid_fraction
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                           3_s_2         0.049673907
+
+     chk_temperature
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           3_s_2            318.9168
+  t=     840s  liquid_fraction=0.0497  T_mean=318.92K
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   359  2.0532e-05  1.4514e-05  7.1959e-06  6.9023e-07  0:00:11   40
+   360  1.6877e-04  4.2795e-05  2.5441e-05  2.3095e-05  0:00:12   39
+   361  9.9055e-05  3.2242e-05  1.6903e-05  1.0734e-05  0:00:10   38
+   362  1.1113e-04  2.8764e-05  1.4643e-05  5.4588e-06  0:00:08   37
+   363  7.0104e-05  2.5321e-05  1.2656e-05  3.0034e-06  0:00:07   36
+   364  4.9124e-05  2.1379e-05  1.0639e-05  1.7584e-06  0:00:07   35
+   365  3.1459e-05  1.7654e-05  8.7728e-06  1.0771e-06  0:00:06   34
+   366  1.9353e-05  1.4404e-05  7.1567e-06  6.8065e-07  0:00:05   33
+!  366 solution is converged
+Flow time = 860s, time step = 43
+2 more time steps
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   366  1.9353e-05  1.4404e-05  7.1567e-06  6.8065e-07  0:00:06   40
+   367  1.5671e-04  4.0277e-05  2.4137e-05  2.2975e-05  0:00:05   39
+   368  9.2579e-05  3.1385e-05  1.6473e-05  1.0648e-05  0:00:05   38
+   369  1.0298e-04  2.8378e-05  1.4460e-05  5.3947e-06  0:00:05   37
+   370  6.5269e-05  2.5063e-05  1.2547e-05  2.9634e-06  0:00:05   36
+   371  4.5913e-05  2.1179e-05  1.0563e-05  1.7337e-06  0:00:05   35
+   372  2.9476e-05  1.7488e-05  8.7071e-06  1.0618e-06  0:00:05   34
+   373  1.8205e-05  1.4267e-05  7.1006e-06  6.7104e-07  0:00:04   33
+!  373 solution is converged
+Flow time = 880s, time step = 44
+1 more time step
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   373  1.8205e-05  1.4267e-05  7.1006e-06  6.7104e-07  0:00:05   40
+   374  1.4593e-04  3.7920e-05  2.2892e-05  2.2853e-05  0:00:05   39
+   375  8.6507e-05  3.0552e-05  1.6050e-05  1.0558e-05  0:00:05   38
+   376  9.5701e-05  2.7996e-05  1.4264e-05  5.3419e-06  0:00:04   37
+   377  6.1313e-05  2.4813e-05  1.2431e-05  2.9301e-06  0:00:04   36
+   378  4.3213e-05  2.0990e-05  1.0475e-05  1.7124e-06  0:00:04   35
+   379  2.7825e-05  1.7338e-05  8.6379e-06  1.0482e-06  0:00:04   34
+   380  1.7287e-05  1.4145e-05  7.0448e-06  6.6238e-07  0:00:04   33
+!  380 solution is converged
+Flow time = 900s, time step = 45
+
+ chk_liquid_fraction
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                           3_s_2         0.052959136
+
+     chk_temperature
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           3_s_2           319.37919
+  t=     900s  liquid_fraction=0.0530  T_mean=319.38K
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   380  1.7287e-05  1.4145e-05  7.0448e-06  6.6238e-07  0:00:04   40
+   381  1.3584e-04  3.5739e-05  2.1713e-05  2.2743e-05  0:00:04   39
+   382  8.0810e-05  2.9787e-05  1.5648e-05  1.0478e-05  0:00:04   38
+   383  8.8801e-05  2.7632e-05  1.4066e-05  5.2836e-06  0:00:05   37
+   384  5.7326e-05  2.4556e-05  1.2293e-05  2.8919e-06  0:00:05   36
+   385  4.0557e-05  2.0784e-05  1.0363e-05  1.6880e-06  0:00:05   35
+   386  2.6210e-05  1.7165e-05  8.5409e-06  1.0326e-06  0:00:05   34
+   387  1.6386e-05  1.4000e-05  6.9623e-06  6.5207e-07  0:00:05   33
+!  387 solution is converged
+Flow time = 920s, time step = 46
+2 more time steps
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   387  1.6386e-05  1.4000e-05  6.9623e-06  6.5207e-07  0:00:06   40
+   388  1.2642e-04  3.3695e-05  2.0584e-05  2.2624e-05  0:00:05   39
+   389  7.5507e-05  2.9009e-05  1.5225e-05  1.0391e-05  0:00:05   38
+   390  8.2283e-05  2.7244e-05  1.3850e-05  5.2379e-06  0:00:05   37
+   391  5.3518e-05  2.4290e-05  1.2143e-05  2.8595e-06  0:00:05   36
+   392  3.7968e-05  2.0575e-05  1.0245e-05  1.6657e-06  0:00:04   35
+   393  2.4629e-05  1.6994e-05  8.4422e-06  1.0182e-06  0:00:04   34
+   394  1.5516e-05  1.3859e-05  6.8801e-06  6.4304e-07  0:00:04   33
+!  394 solution is converged
+Flow time = 940s, time step = 47
+1 more time step
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   394  1.5516e-05  1.3859e-05  6.8801e-06  6.4304e-07  0:00:05   40
+   395  1.1759e-04  3.1802e-05  1.9513e-05  2.2510e-05  0:00:04   39
+   396  7.0572e-05  2.8313e-05  1.4839e-05  1.0318e-05  0:00:05   38
+   397  7.6323e-05  2.6879e-05  1.3631e-05  5.1779e-06  0:00:05   37
+   398  5.0102e-05  2.4021e-05  1.1981e-05  2.8238e-06  0:00:04   36
+   399  3.5633e-05  2.0360e-05  1.0112e-05  1.6439e-06  0:00:04   35
+   400  2.3244e-05  1.6817e-05  8.3317e-06  1.0041e-06  0:00:04   34
+   401  1.4422e-05  1.3705e-05  6.7893e-06  6.3402e-07  0:00:04   33
+!  401 solution is converged
+Flow time = 960s, time step = 48
+
+ chk_liquid_fraction
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                           3_s_2         0.056264388
+
+     chk_temperature
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           3_s_2           319.82126
+  t=     960s  liquid_fraction=0.0563  T_mean=319.82K
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   401  1.4422e-05  1.3705e-05  6.7893e-06  6.3402e-07  0:00:05   40
+   402  1.0937e-04  3.0036e-05  1.8494e-05  2.2384e-05  0:00:05   39
+   403  6.5993e-05  2.7640e-05  1.4442e-05  1.0227e-05  0:00:06   38
+   404  7.0809e-05  2.6512e-05  1.3391e-05  5.1033e-06  0:00:08   37
+   405  4.6877e-05  2.3739e-05  1.1792e-05  2.7728e-06  0:00:09   36
+   406  3.3416e-05  2.0125e-05  9.9538e-06  1.6130e-06  0:00:09   35
+   407  2.1930e-05  1.6616e-05  8.1976e-06  9.8349e-07  0:00:12   34
+!  407 solution is converged
+Flow time = 980s, time step = 49
+2 more time steps
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   407  2.1930e-05  1.6616e-05  8.1976e-06  9.8349e-07  0:00:14   40
+   408  1.0121e-04  3.0925e-05  1.8789e-05  2.1943e-05  0:00:12   39
+   409  6.3927e-05  2.8120e-05  1.4639e-05  1.0028e-05  0:00:12   38
+   410  6.6368e-05  2.6601e-05  1.3389e-05  5.0269e-06  0:00:23   37
+   411  4.4823e-05  2.3649e-05  1.1711e-05  2.7327e-06  0:00:19   36
+   412  3.2072e-05  1.9986e-05  9.8566e-06  1.5882e-06  0:00:16   35
+   413  2.1115e-05  1.6481e-05  8.1058e-06  9.6932e-07  0:00:14   34
+!  413 solution is converged
+Flow time = 1000s, time step = 50
+1 more time step
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   413  2.1115e-05  1.6481e-05  8.1058e-06  9.6932e-07  0:00:16   40
+   414  9.4063e-05  2.9405e-05  1.7874e-05  2.1826e-05  0:00:13   39
+   415  5.9855e-05  2.7533e-05  1.4284e-05  9.9469e-06  0:00:12   38
+   416  6.1537e-05  2.6288e-05  1.3183e-05  4.9694e-06  0:00:11   37
+   417  4.1896e-05  2.3422e-05  1.1564e-05  2.6991e-06  0:00:10   36
+   418  3.0134e-05  1.9807e-05  9.7407e-06  1.5677e-06  0:00:14   35
+   419  1.9940e-05  1.6333e-05  8.0152e-06  9.5634e-07  0:00:14   34
+!  419 solution is converged
+Flow time = 1020s, time step = 51
+
+ chk_liquid_fraction
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                           3_s_2         0.059385546
+
+     chk_temperature
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           3_s_2           320.22665
+  t=    1020s  liquid_fraction=0.0594  T_mean=320.23K
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   419  1.9940e-05  1.6333e-05  8.0152e-06  9.5634e-07  0:00:16   40
+   420  8.7460e-05  2.7992e-05  1.7016e-05  2.1705e-05  0:00:14   39
+   421  5.5946e-05  2.6972e-05  1.3943e-05  9.8642e-06  0:00:14   38
+   422  5.7090e-05  2.5984e-05  1.2984e-05  4.9192e-06  0:00:12   37
+   423  3.9273e-05  2.3200e-05  1.1422e-05  2.6662e-06  0:00:11   36
+   424  2.8366e-05  1.9631e-05  9.6342e-06  1.5465e-06  0:00:11   35
+   425  1.8528e-05  1.6189e-05  7.9383e-06  9.4262e-07  0:00:10   34
+!  425 solution is converged
+Flow time = 1040s, time step = 52
+2 more time steps
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   425  1.8528e-05  1.6189e-05  7.9383e-06  9.4262e-07  0:00:11   40
+   426  8.1360e-05  2.6681e-05  1.6214e-05  2.1585e-05  0:00:10   39
+   427  5.2299e-05  2.6442e-05  1.3617e-05  9.7881e-06  0:00:09   38
+   428  5.3012e-05  2.5700e-05  1.2801e-05  4.8740e-06  0:00:09   37
+   429  3.6922e-05  2.3001e-05  1.1300e-05  2.6399e-06  0:00:08   36
+   430  2.6832e-05  1.9481e-05  9.5414e-06  1.5290e-06  0:00:08   35
+   431  1.7666e-05  1.6073e-05  7.8650e-06  9.3069e-07  0:00:08   34
+!  431 solution is converged
+Flow time = 1060s, time step = 53
+1 more time step
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   431  1.7666e-05  1.6073e-05  7.8650e-06  9.3069e-07  0:00:09   40
+   432  7.5636e-05  2.5487e-05  1.5466e-05  2.1464e-05  0:00:08   39
+   433  4.8913e-05  2.5986e-05  1.3320e-05  9.7155e-06  0:00:08   38
+   434  4.9344e-05  2.5464e-05  1.2640e-05  4.8172e-06  0:00:08   37
+   435  3.4763e-05  2.2833e-05  1.1190e-05  2.6020e-06  0:00:07   36
+   436  2.5433e-05  1.9351e-05  9.4560e-06  1.5062e-06  0:00:07   35
+   437  1.6880e-05  1.5969e-05  7.7971e-06  9.1682e-07  0:00:09   34
+!  437 solution is converged
+Flow time = 1080s, time step = 54
+
+ chk_liquid_fraction
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                           3_s_2         0.062548595
+
+     chk_temperature
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           3_s_2           320.61383
+  t=    1080s  liquid_fraction=0.0625  T_mean=320.61K
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   437  1.6880e-05  1.5969e-05  7.7971e-06  9.1682e-07  0:00:10   40
+   438  7.0344e-05  2.4390e-05  1.4764e-05  2.1337e-05  0:00:09   39
+   439  4.5735e-05  2.5553e-05  1.3040e-05  9.6344e-06  0:00:08   38
+   440  4.5600e-05  2.5241e-05  1.2489e-05  4.7722e-06  0:00:09   37
+   441  3.2343e-05  2.2684e-05  1.1090e-05  2.5742e-06  0:00:10   36
+   442  2.3816e-05  1.9240e-05  9.3819e-06  1.4888e-06  0:00:10   35
+   443  1.5953e-05  1.5882e-05  7.7395e-06  9.0598e-07  0:00:09   34
+!  443 solution is converged
+Flow time = 1100s, time step = 55
+2 more time steps
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   443  1.5953e-05  1.5882e-05  7.7395e-06  9.0598e-07  0:00:11   40
+   444  6.5374e-05  2.3391e-05  1.4112e-05  2.1208e-05  0:00:09   39
+   445  4.2772e-05  2.5164e-05  1.2786e-05  9.5494e-06  0:00:09   38
+   446  4.2456e-05  2.5050e-05  1.2356e-05  4.7241e-06  0:00:08   37
+   447  3.0410e-05  2.2558e-05  1.1003e-05  2.5460e-06  0:00:08   36
+   448  2.2507e-05  1.9145e-05  9.3165e-06  1.4709e-06  0:00:08   35
+   449  1.5204e-05  1.5806e-05  7.6879e-06  8.9420e-07  0:00:09   34
+!  449 solution is converged
+Flow time = 1120s, time step = 56
+1 more time step
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   449  1.5204e-05  1.5806e-05  7.6879e-06  8.9420e-07  0:00:11   40
+   450  6.0838e-05  2.2476e-05  1.3503e-05  2.1078e-05  0:00:09   39
+   451  3.9997e-05  2.4822e-05  1.2555e-05  9.4736e-06  0:00:09   38
+   452  3.9510e-05  2.4883e-05  1.2235e-05  4.6773e-06  0:00:08   37
+   453  2.8580e-05  2.2441e-05  1.0919e-05  2.5182e-06  0:00:08   36
+   454  2.1278e-05  1.9054e-05  9.2524e-06  1.4541e-06  0:00:08   35
+   455  1.4490e-05  1.5733e-05  7.6369e-06  8.8292e-07  0:00:08   34
+!  455 solution is converged
+Flow time = 1140s, time step = 57
+
+ chk_liquid_fraction
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                           3_s_2         0.065739928
+
+     chk_temperature
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           3_s_2           320.98509
+  t=    1140s  liquid_fraction=0.0657  T_mean=320.99K
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   455  1.4490e-05  1.5733e-05  7.6369e-06  8.8292e-07  0:00:09   40
+   456  5.6603e-05  2.1630e-05  1.2932e-05  2.0944e-05  0:00:08   39
+   457  3.7400e-05  2.4494e-05  1.2339e-05  9.3910e-06  0:00:07   38
+   458  3.6788e-05  2.4722e-05  1.2121e-05  4.6309e-06  0:00:07   37
+   459  2.6812e-05  2.2329e-05  1.0843e-05  2.4900e-06  0:00:07   36
+   460  2.0070e-05  1.8967e-05  9.1959e-06  1.4353e-06  0:00:08   35
+   461  1.3776e-05  1.5663e-05  7.5926e-06  8.7174e-07  0:00:07   34
+!  461 solution is converged
+Flow time = 1160s, time step = 58
+2 more time steps
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   461  1.3776e-05  1.5663e-05  7.5926e-06  8.7174e-07  0:00:09   40
+   462  5.2679e-05  2.0854e-05  1.2401e-05  2.0804e-05  0:00:08   39
+   463  3.4984e-05  2.4206e-05  1.2144e-05  9.3131e-06  0:00:08   38
+   464  3.4308e-05  2.4576e-05  1.2017e-05  4.5776e-06  0:00:08   37
+   465  2.5234e-05  2.2221e-05  1.0771e-05  2.4584e-06  0:00:07   36
+   466  1.9006e-05  1.8879e-05  9.1381e-06  1.4158e-06  0:00:07   35
+   467  1.3146e-05  1.5590e-05  7.5449e-06  8.5941e-07  0:00:07   34
+!  467 solution is converged
+Flow time = 1180s, time step = 59
+1 more time step
+
+Updating solution at time level N...
+ done.
+
+  iter  continuity  x-velocity  y-velocity      energy     time/iter
+   467  1.3146e-05  1.5590e-05  7.5449e-06  8.5941e-07  0:00:08   40
+   468  4.9032e-05  2.0132e-05  1.1900e-05  2.0659e-05  0:00:07   39
+   469  3.2746e-05  2.3917e-05  1.1957e-05  9.2241e-06  0:00:06   38
+   470  3.1981e-05  2.4430e-05  1.1917e-05  4.5310e-06  0:00:06   37
+   471  2.3684e-05  2.2119e-05  1.0704e-05  2.4299e-06  0:00:06   36
+   472  1.7926e-05  1.8801e-05  9.0878e-06  1.3987e-06  0:00:06   35
+   473  1.2521e-05  1.5528e-05  7.5059e-06  8.4865e-07  0:00:06   34
+!  473 solution is converged
+Flow time = 1200s, time step = 60
+
+ chk_liquid_fraction
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                           3_s_2         0.068959067
+
+     chk_temperature
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           3_s_2           321.34134
+  t=    1200s  liquid_fraction=0.0690  T_mean=321.34K
+OK: SOLVE 60 steps, probing the melt curve
+
+=== save case+data ===
+'file' is deprecated. Use 'settings.file' instead.
+
+Writing to Jaswita:"C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\ansys\v7_c25_coupled.cas.h5" in NODE0 mode and compression level 1 ...
+Grouping cells for Laplace smoothing ...
+        2690 cells,     2 zones ...
+        4106 faces,     9 zones ...
+        1417 nodes,     1 zone  ...
+  Done.
+Done.
+
+Writing to Jaswita:"C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\ansys\v7_c25_coupled.dat.h5" in NODE0 mode and compression level 1 ...
+  Writing results.
+Done.
+OK: save case+data
+Clean exit. Melt history -> C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\ansys\v7_c25_coupled_melt_history.csv

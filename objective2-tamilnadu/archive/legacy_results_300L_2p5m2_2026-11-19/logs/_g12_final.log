@@ -1,0 +1,34 @@
+running 3 stage(s), up to 3 processes each
+
+=== g12_registry (once, 1 job(s), 1 at a time) ===
+    start all
+    ok    all  (0.1 min)
+--- g12_registry finished in 0.1 min, 0 failure(s)
+
+=== g12_results_doc (once, 1 job(s), 1 at a time) ===
+    start all
+    FAIL  all  rc=1  (0.1 min)
+--- g12_results_doc finished in 0.1 min, 1 failure(s)
+    [all]     return self._getitem_axis(maybe_callable, axis=axis)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+              File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\pandas\core\indexing.py", line 1753, in _getitem_axis
+                self._validate_integer(key, axis)
+                ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+              File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\pandas\core\indexing.py", line 1686, in _validate_integer
+                raise IndexError("single positional indexer is out-of-bounds")
+            IndexError: single positional indexer is out-of-bounds
+
+=== g12_verify_docs (once, 1 job(s), 1 at a time) ===
+    start all
+    FAIL  all  rc=1  (0.1 min)
+--- g12_verify_docs finished in 0.1 min, 1 failure(s)
+    [all]   MISSING ('RAJASTHAN_METHOD_PORT_PROGRESS.md', 'tank_model.py', 'path not found')
+              MISSING ('RAJASTHAN_METHOD_PORT_PROGRESS.md', '_archive/results_pre_shield_fix/sobol_doe_results_pre_fixedpoint.csv', 'path not found')
+              MISSING ('RAJASTHAN_METHOD_PORT_PROGRESS.md', 'design_bounds_shared.yaml', 'path not found')
+              MISSING ('RAJASTHAN_METHOD_PORT_PROGRESS.md', 'src/design/volume_fraction.py', 'path not found')
+              MISSING ('RAJASTHAN_METHOD_PORT_PROGRESS.md', 'constraints.py', 'path not found')
+              MISSING ('RAJASTHAN_METHOD_PORT_PROGRESS.md', 'src/surrogate/model_zoo.py', 'path not found')
+              MISSING ('RAJASTHAN_METHOD_PORT_PROGRESS.md', 'validate_surrogates.py', 'path not found')
+              MISSING ('RAJASTHAN_METHOD_PORT_PROGRESS.md', 'src/verify/dt_convergence.py', 'path not found')
+
+all requested stages done in 0.3 min

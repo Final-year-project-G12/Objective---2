@@ -1,10 +1,76 @@
 # Objective 2 — Tamil Nadu
 #
-# Policy: push everything — code, docs, images, data, ANSYS cases and the
-# archive — EXCEPT files git cannot take. GitHub warns above 50 MB per file
-# and rejects above 100 MB, so only the oversized files below are excluded.
+# Policy: push everything — code, docs, images, data, ANSYS cases, MATLAB outputs and
+# the archive's text — EXCEPT files git cannot take. GitHub warns above 50 MB per
+# file and rejects above 100 MB, so only the oversized files (last block) are excluded.
+# NOTE: later rules override earlier ones, so the size-limit block is deliberately LAST.
 
-# ── files over 50 MB (git cannot take these) ─────────────────────────────
+# ── never useful in git ──────────────────────────────────────────────────
+tools/node_modules/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.ipynb_checkpoints/
+*.asv
+
+# ── log folders: tracked here ────────────────────────────────────────────
+# The repository-wide .gitignore (one level up, shared with the other states) ignores every directory
+# named logs/ AND every *.log (some OpenFOAM logs reached 285 MB). Here the logs are small and are provenance,
+# so these are un-ignored: ansys/logs/ (the Fluent transcripts that used to sit loose in ansys/), results/logs/
+# (the pipeline's run logs, 1 MB) and the Fluent transcripts of the seven-criteria study (~1 MB). 8 MB in all.
+!ansys/logs/
+!ansys/logs/**
+!results/logs/
+!results/logs/**
+!ansys/criteria_*/fluent_terminal.log
+!ansys/criteria_common/*.log
+
+# ---- superseded work, kept on disk but mostly out of git ---------------
+# archive/ is retired material: the pre-restructure implementation, the
+# OpenFOAM legacy tree, superseded ANSYS cases and voided results. Nothing in
+# it is live and nothing was deleted -- it stays on disk for the record.
+#
+# REVISED 2026-11-10. Excluding archive/ wholesale was wrong in one specific
+# way: 79 of the 373 path references in the checked documents resolve ONLY
+# inside archive/, so `python scripts/g12_verify_docs.py` passed on the author's
+# machine and would have reported 79 missing paths on a fresh clone. Those
+# references are to retired DOCUMENTS and SCRIPTS, not to the heavy data.
+#
+# So: archive's text content is tracked and its bulk is not (hundreds of MB --
+# a 223 MB OpenFOAM run.log, CSVs, interactive HTML, JSON, the 63/81 MB
+# Objective-1 aggregates). `archive/**` rather than `archive/` is deliberate:
+# git does not descend into an excluded DIRECTORY, so the negations below would
+# never be reached.
+archive/**
+!archive/**/
+!archive/**/*.md
+!archive/**/*.py
+!archive/**/*.yaml
+!archive/**/*.yml
+!archive/**/*.rst
+!archive/**/*.txt
+# ...except the logs, which are .txt-adjacent bulk and regenerable.
+archive/**/*.log
+archive/**/run.log
+
+# ADDED 2026-11-24: the DATED archive folders created when the plant changed
+# (archive/<what>_YYYY-MM-DD: the legacy 2.5 m2 / 300 L/day results, the 100 L/day
+# diagnostics, the old O1 inputs copy, the superseded Objective-3 contracts and the
+# superseded Word reports) are small (~22 MB in all) and are tracked in FULL, so the
+# previous results stay on GitHub, in archive/, exactly as they were. The heavy old
+# trees (old_implementation, openfoam_legacy, ...) keep the text-only rule above.
+!archive/legacy_results_300L_2p5m2_2026-11-19/**
+!archive/diagnostics_100Lday_2026-11-23/**
+!archive/l5_doe_partial_100Lday_2026-11-23/**
+!archive/o1_inputs_copy_2026-10-29/**
+!archive/superseded_obj3_contract_2026-10-27/**
+!archive/superseded_obj3_contract_2026-11-09/**
+!archive/superseded_reports_2026-11-11/**
+# (named one by one on purpose: a date glob also matched older folders such as
+#  archive/results_STALE_shifted_weather_2026-10-29, which must stay out of git)
+
+# ── files over 50 MB (git cannot take these) — LAST so nothing above re-includes them ──
 # Measured, not guessed:
 #   archive/openfoam_legacy/openfoam_case/run.log   223 MB  (past the 100 MB hard reject)
 #   data/objective1/suntimes.csv                     80 MB  (past the 100 MB hard reject)
@@ -18,39 +84,3 @@
 
 # Safety net for anything that grows past the limit later.
 *.pkl
-
-# ── never useful in git ──────────────────────────────────────────────────
-tools/node_modules/
-__pycache__/
-*.pyc
-*.pyo
-.pytest_cache/
-.ipynb_checkpoints/
-
-# ---- superseded work, kept on disk but mostly out of git ---------------
-# archive/ is retired material: the pre-restructure implementation, the
-# OpenFOAM legacy tree, superseded ANSYS cases and voided results. Nothing in
-# it is live and nothing was deleted -- it stays on disk for the record.
-#
-# REVISED 2026-11-10. Excluding archive/ wholesale was wrong in one specific
-# way: 79 of the 373 path references in the checked documents resolve ONLY
-# inside archive/, so `python scripts/g12_verify_docs.py` passed on the author's
-# machine and would have reported 79 missing paths on a fresh clone. Those
-# references are to retired DOCUMENTS and SCRIPTS, not to the heavy data.
-#
-# So: archive's text content is tracked (157 files, 1.2 MB) and its bulk is
-# not (713 MB -- a 223 MB OpenFOAM run.log, 185 MB of CSVs, 117 MB of
-# interactive HTML, 85 MB of JSON, the 63/81 MB Objective-1 aggregates).
-# `archive/**` rather than `archive/` is deliberate: git does not descend into
-# an excluded DIRECTORY, so the negations below would never be reached.
-archive/**
-!archive/**/
-!archive/**/*.md
-!archive/**/*.py
-!archive/**/*.yaml
-!archive/**/*.yml
-!archive/**/*.rst
-!archive/**/*.txt
-# ...except the logs, which are .txt-adjacent bulk and regenerable.
-archive/**/*.log
-archive/**/run.log

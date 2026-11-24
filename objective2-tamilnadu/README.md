@@ -10,7 +10,11 @@ running for, only `configs/states/<state>.yaml` does.
 
 ---
 
-## Status — 2026-10-31
+## Status - common plant rebuild (Objective 2, generated)
+
+See `docs/RESULTS_COMMON_PLANT.md` (results), `docs/PLAN_DEVIATIONS.md` (changes from the plan) and `docs/COMMON_PLANT_REBUILD_LOG.md` (history). Plant: 100 L, 2.0 m2, 175 L/day. Everything under the heading 'Status - 2026-10-31' is LEGACY (2.5 m2, 300 L/day).
+
+## Status — 2026-10-31 (LEGACY — old plant, kept for the record)
 
 **Objective 2 is complete — all 30 stages, the held-out test included.** The
 methodology follows the Rajasthan study's pipeline with **ANSYS Fluent as the
@@ -22,7 +26,7 @@ stacked ensemble in place of XGBoost.
 | Optimal designs | `results/tn_optimal_designs.csv` |
 | Acceptance gates | `results/tn_threshold_report.csv` — **9/9 pairs pass** |
 | Figures | `results/plots/` — **36** (`python make_all_plots.py`) |
-| Report | `O2_TamilNadu_Pipeline_Report.docx` (11 tables) |
+| Report | `docs/reports/O2_TamilNadu_Pipeline_Report.docx` (11 tables; LEGACY plant: current report is `docs/reports/O2_TamilNadu_Common_Plant_Report.docx`) |
 | Why two simulators | `docs/SIMULATOR_AND_CFD.md` |
 | CFD | `ansys/` — see `ansys/HOW_TO_RUN_ANSYS.md` |
 

@@ -1,3 +1,5 @@
+> **LEGACY DOCUMENT** - written for the old plant (2.5 m2 collector, 300 L/day, 30 % cap, 2011-2015 test). Current results: `docs/RESULTS_COMMON_PLANT.md`.
+
 # What we simulate with, and why
 
 **The question Objective 2 answers:** for each of Tamil Nadu's three climate

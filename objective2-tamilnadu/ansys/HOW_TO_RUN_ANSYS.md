@@ -59,18 +59,25 @@ The full result: `python fluent_live_demo.py --hours 6` (~30 min wall clock)
 
 Nothing in the demo is typed by hand:
 
-- **PCM identity, capsule radius, fraction, capsule count** — read from
-  `results/tn_optimal_designs.csv`, the optimiser's own output.
+- **PCM identity, capsule radius, fraction, capsule count** — read through
+  `ansys/o2_designs.py` from `results/c16_funnel_winners.csv`, the frozen
+  funnel's winners for the common plant (100 L / 2.0 m² / 175 L/day).
+  (Until 2026-11-24 this was `results/tn_optimal_designs.csv`, which belongs to
+  the legacy plant and has been archived.)
 - **PCM thermal properties** — read from
   `data/objective1/pcm_database_tamilnadu.csv` (densities and specific heats
   averaged over solid and liquid, this project's existing convention).
 
-If `tn_optimal_designs.csv` does not exist yet, the demo says so and falls back
-to the v3 deployable design, so it still runs mid-pipeline:
+The demo always prints where the design came from. Expect:
 
 ```
-  design source: FALLBACK (v3 deployable) -- tn_optimal_designs.csv not written yet
+  design source: results/c16_funnel_winners.csv (common plant)
 ```
+
+If you ever see `HARD-CODED LEGACY FALLBACK`, no current design file was found
+and the demo is running the old v3 table (regime 0 = n-Hexacosane), which is
+**not** the common-plant design: stop and fix the path before showing it.
+The same applies to `fluent_discharge_demo.py` and `fluent_tank_discharge.py`.
 
 ---
 

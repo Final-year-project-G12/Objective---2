@@ -67,11 +67,12 @@ SUNTIMES = REPO_ROOT / "data" / "objective1" / "suntimes.csv"
 POINT_YEARS_DIR = WEATHER_DIR / "point_years" / STATE
 
 MEDOIDS = {0: "TNP_0006", 1: "TNP_0007", 2: "TNP_0001"}
-YEARS = list(range(2016, 2026))
-YEAR_ROLES = {**{y: "test" for y in range(2011, 2016)},
-              **{y: "explore" for y in range(2016, 2021)},
-              **{y: "select" for y in range(2021, 2024)},
-              **{y: "used_test_v1" for y in (2024, 2025)}}
+YEARS = list(range(2006, 2011)) + list(range(2016, 2026))
+YEAR_ROLES = {**{y: "test" for y in range(2006, 2011)},
+              **{y: "legacy" for y in range(2011, 2016)},
+              **{y: "explore" for y in range(2016, 2020)},
+              **{y: "select" for y in range(2020, 2022)},
+              **{y: "report" for y in range(2022, 2026)}}   # common-plant roles (rule R3); keep in sync with src/weather/roles.py
 
 # POWER parameter -> our column name. WS_ms duplicates wind_ms because the
 # existing schema carries both and the simulator reads WS_ms.
@@ -167,6 +168,10 @@ def verify_against_ephemeris(df: pd.DataFrame, point_id: str, year: int) -> None
             f"GEOMETRY CHECK FAILED for {point_id} {year}: on {bad}/{checked} days the "
             f"clearsky window does not bracket true sunrise/sunset (worst {day}, "
             f"off by {off}). The rebuild was NOT written.")
+    if checked == 0:
+        print(f"    WARNING: sunrise/sunset check covered 0 days for {point_id} {year} (suntimes.csv has no rows for "
+              "this year) -- NOT verified here; verify timing independently (e.g. against another year's clear-sky profile)")
+        return
     print(f"    geometry OK ({checked} days bracket sunrise/sunset within 90 min)")
 
 

@@ -1,0 +1,36 @@
++ cd /c/Users/jaswi/OneDrive/Desktop/ALL/SEM_7/project/jammalamadugu/new_obj/objective2_design_optimization/ansys
++ export V4_SCHEME=Coupled
++ V4_SCHEME=Coupled
++ export V4_ORDER=first
++ V4_ORDER=first
++ MESH='C:\fluent_work\regime0_v3_mesh_only.cas.h5'
++ ZONES='3_s_1 3_s_2 2_l_7 2_l_9 2_l_8 2_l_10 2_l_11 2_l_5'
++ DT=20.0
++ NSTEPS=1080
++ run 0p010 1.4386e-05
+++ date
++ echo '=== flow 0p010 kg/s (v=1.4386e-05) starting Fri Oct 30 16:55:37 IST 2026 ==='
+=== flow 0p010 kg/s (v=1.4386e-05) starting Fri Oct 30 16:55:37 IST 2026 ===
++ python pyfluent_v4_melt.py 'C:\fluent_work\regime0_v3_mesh_only.cas.h5' c26 3_s_1 3_s_2 2_l_7 2_l_9 2_l_8 2_l_10 2_l_11 2_l_5 1.4386e-05 20.0 1080 v8_flow_0p010
+++ date
++ echo '=== flow 0p010 done Fri Oct 30 17:15:09 IST 2026, exit=0 ==='
+=== flow 0p010 done Fri Oct 30 17:15:09 IST 2026, exit=0 ===
++ run 0p030 4.3159e-05
+++ date
++ echo '=== flow 0p030 kg/s (v=4.3159e-05) starting Fri Oct 30 17:15:09 IST 2026 ==='
+=== flow 0p030 kg/s (v=4.3159e-05) starting Fri Oct 30 17:15:09 IST 2026 ===
++ python pyfluent_v4_melt.py 'C:\fluent_work\regime0_v3_mesh_only.cas.h5' c26 3_s_1 3_s_2 2_l_7 2_l_9 2_l_8 2_l_10 2_l_11 2_l_5 4.3159e-05 20.0 1080 v8_flow_0p030
+++ date
++ echo '=== flow 0p030 done Fri Oct 30 17:33:18 IST 2026, exit=0 ==='
+=== flow 0p030 done Fri Oct 30 17:33:18 IST 2026, exit=0 ===
++ run 0p050 7.1932e-05
+++ date
++ echo '=== flow 0p050 kg/s (v=7.1932e-05) starting Fri Oct 30 17:33:18 IST 2026 ==='
+=== flow 0p050 kg/s (v=7.1932e-05) starting Fri Oct 30 17:33:18 IST 2026 ===
++ python pyfluent_v4_melt.py 'C:\fluent_work\regime0_v3_mesh_only.cas.h5' c26 3_s_1 3_s_2 2_l_7 2_l_9 2_l_8 2_l_10 2_l_11 2_l_5 7.1932e-05 20.0 1080 v8_flow_0p050
+++ date
++ echo '=== flow 0p050 done Fri Oct 30 17:48:30 IST 2026, exit=0 ==='
+=== flow 0p050 done Fri Oct 30 17:48:30 IST 2026, exit=0 ===
+++ date
++ echo '=== V8 FLOW SWEEP DONE Fri Oct 30 17:48:30 IST 2026 ==='
+=== V8 FLOW SWEEP DONE Fri Oct 30 17:48:30 IST 2026 ===

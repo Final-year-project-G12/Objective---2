@@ -26,12 +26,13 @@ MEDOID0 = CURRENT_MEDOIDS[0]
 
 
 def test_year_roles_split():
-    assert roles.years_for("explore") == [2016, 2017, 2018, 2019, 2020]
-    assert roles.years_for("select") == [2021, 2022, 2023]
-    assert roles.years_for("test") == [2011, 2012, 2013, 2014, 2015]
-    assert roles.role_of(2024) == roles.role_of(2025) == "used_test_v1"      # v1 test years: used, accepted for no purpose
+    assert roles.years_for("explore") == [2016, 2017, 2018, 2019]
+    assert roles.years_for("select") == [2020, 2021]
+    assert roles.years_for("test") == [2006, 2007, 2008, 2009, 2010]          # the single confirmatory set
+    assert roles.years_for("report") == [2022, 2023, 2024, 2025]              # report-only; 2024-2025 project-exposed
+    assert all(roles.role_of(y) == "legacy" for y in range(2011, 2016))       # old spent held-out set: no purpose
     with pytest.raises(ValueError):
-        roles.role_of(2010)
+        roles.role_of(2005)
     with pytest.raises(ValueError):
         roles.years_for("anything")
 
@@ -40,16 +41,16 @@ def test_purpose_must_match_role():
     with pytest.raises(PermissionError):
         roles.load_point_year(STATE, 0, MEDOID0, 2018, purpose="select")
     with pytest.raises(PermissionError):
-        roles.load_point_year(STATE, 0, MEDOID0, 2022, purpose="explore")
+        roles.load_point_year(STATE, 0, MEDOID0, 2020, purpose="explore")
     df = roles.load_point_year(STATE, 0, MEDOID0, 2018, purpose="explore")
     assert len(df) == 8760
 
 
 def test_test_years_need_the_lock_and_the_lock_is_single_use(tmp_path, monkeypatch):
-    monkeypatch.setattr(roles, "TEST_LOCK_PATH", tmp_path / "held_out_test.lock")
+    monkeypatch.setattr(roles, "TEST_LOCK_PATH", tmp_path / "held_out_test.lock")   # real lock is keyed to hardware_hash()
     monkeypatch.setattr(roles, "_lock_held_by_this_process", False)
     with pytest.raises(roles.HeldOutLockError):
-        roles.load_point_year(STATE, 0, MEDOID0, 2013, purpose="test")
+        roles.load_point_year(STATE, 0, MEDOID0, 2008, purpose="test")
     roles.acquire_test_lock("run-001", "abc123")
     assert json.loads((tmp_path / "held_out_test.lock").read_text())["run_id"] == "run-001"
     # With the lock held the gate opens and real data comes back. Between
@@ -57,26 +58,30 @@ def test_test_years_need_the_lock_and_the_lock_is_single_use(tmp_path, monkeypat
     # 2011-2015 were quarantined for want of verifiable raw weather. They were
     # rebuilt from the LST raw set on 2026-10-30 (offset measured, not assumed;
     # every day geometry-checked), so the strict assertion is restored.
-    assert len(roles.load_point_year(STATE, 0, MEDOID0, 2013, purpose="test")) == 8760
-    for p in ("test", "explore", "select"):                       # the used v1 test years can never be loaded again
+    assert len(roles.load_point_year(STATE, 0, MEDOID0, 2008, purpose="test")) == 8760
+    for p in ("test", "explore", "select"):                       # legacy years can never be loaded for any purpose
         with pytest.raises(PermissionError):
-            roles.load_point_year(STATE, 0, MEDOID0, 2024, purpose=p)
+            roles.load_point_year(STATE, 0, MEDOID0, 2013, purpose=p)
     with pytest.raises(roles.HeldOutLockError):                  # second acquisition refused
         roles.acquire_test_lock("run-002", "abc123")
     # a fresh process (flag reset) still cannot load test years while the lock file exists unowned
     monkeypatch.setattr(roles, "_lock_held_by_this_process", False)
     with pytest.raises(roles.HeldOutLockError):
-        roles.load_point_year(STATE, 0, MEDOID0, 2014, purpose="test")
+        roles.load_point_year(STATE, 0, MEDOID0, 2009, purpose="test")
 
 
 def test_real_lock_records_the_single_held_out_run():
-    """After G10 (2026-10-27) the real lock exists. It must name the run that produced g10_heldout_results.csv and refuse a second run."""
+    """After the one-shot 2006-2010 test (c17, 2026-11-24) the real, hash-keyed lock exists. It must name the run that produced
+    c17_test_by_year.csv (the common-plant protocol's output, next to the lock) and refuse a second run.
+    (This used to read the legacy g10_heldout_results.csv, which belongs to the retired 2011-2015 test and is never written
+    beside the new lock; the test was stale, not the lock.)"""
     import json as _json
     if not roles.TEST_LOCK_PATH.exists():
         pytest.skip("held-out test not run yet")
     lock = _json.loads(roles.TEST_LOCK_PATH.read_text())
-    held = pd.read_csv(roles.TEST_LOCK_PATH.parent / "g10_heldout_results.csv")
+    held = pd.read_csv(roles.TEST_LOCK_PATH.parent / "c17_test_by_year.csv")
     assert set(held.run_id) == {lock["run_id"]}
+    assert sorted(held.year.unique()) == list(range(2006, 2011))
     with pytest.raises(roles.HeldOutLockError):
         roles.acquire_test_lock("another-run", "x")
 
@@ -106,20 +111,22 @@ def test_inventory_meets_acceptance_rule():
     checked.
     """
     inv = pd.read_csv(roles.INVENTORY_PATH)
-    assert len(inv) == 45 and set(inv.cluster_id) == {0, 1, 2}
-    assert set(inv.year) == set(range(2011, 2026))
+    assert len(inv) == 60 and set(inv.cluster_id) == {0, 1, 2}       # 3 medoids x (2006-2010, 2011-2015, 2016-2025)
+    assert set(inv.year) == set(range(2006, 2026))
     assert inv["accepted"].all()
     assert (inv["pct_valid"] >= 98.0).all() and (inv["max_gap_h"] <= 3).all()
     assert inv["hourly_sequence_ok"].all() and (inv["n_hours_after_leap_drop"] == 8760).all()
-    assert set(inv.groupby("year").role.first()) == {"test", "explore", "select", "used_test_v1"}
+    assert set(inv.groupby("year").role.first()) == {"test", "legacy", "explore", "select", "report"}
     for _, r in inv.iterrows():
         assert roles.point_year_path(STATE, r.cluster_id, r.point_id, r.year).exists()
 
     # the held-out years must be present AND carry their real provenance
-    held = inv[inv.year.between(2011, 2015)]
+    held = inv[inv.year.between(2006, 2010)]
     assert len(held) == 15 and (held.role == "test").all()
-    assert (held.time_standard == "LST->UTC(-5h, measured)").all(), \
-        "held-out provenance must not be recorded as plain UTC -- it was converted"
+    assert (held.time_standard == "UTC").all()                       # fetched directly as UTC (c1_fetch_confirmatory_2006_2010.py)
+    legacy = inv[inv.year.between(2011, 2015)]
+    assert len(legacy) == 15 and (legacy.role == "legacy").all()
+    assert (legacy.time_standard == "LST->UTC(-5h, measured)").all(),         "legacy provenance must not be recorded as plain UTC -- it was converted"
     assert (inv[inv.year >= 2016].time_standard == "UTC").all()
 
 
@@ -142,10 +149,12 @@ def test_held_out_years_never_overlap_the_tuning_years():
     held_out = set(roles.years_for("test"))
     assert not (tuning & held_out)
 
-    spent = {y for y in inv.year.unique() if roles.role_of(int(y)) == "used_test_v1"}
+    spent = {y for y in inv.year.unique() if roles.role_of(int(y)) in ("legacy", "report")}   # no-purpose / report-only years
     assert not (spent & tuning) and not (spent & held_out)
     for purpose in roles.PURPOSES:
         for y in spent:
+            if roles.role_of(int(y)) == purpose:
+                continue                                               # report years load for the 'report' purpose only
             with pytest.raises(PermissionError):
                 roles.load_point_year(STATE, 0, MEDOID0, int(y), purpose=purpose)
 
@@ -227,3 +236,24 @@ def test_new_cache_matches_existing_regime_weather_file(cluster, year):
     assert (old["timestamp_utc"].to_numpy() == new["timestamp_utc"].to_numpy()).all()
     assert np.allclose(old["GHI_Wm2"], new["GHI_Wm2"]) and np.allclose(old["T_amb_C"], new["T_amb_C"])
     assert (old["local_hour"].to_numpy() == new["local_hour"].to_numpy()).all()
+
+
+def test_new_lock_namespace_is_keyed_to_hardware_and_never_the_legacy_lock():
+    """Plan section 7.5: the old results/held_out_test.lock must not be loadable in the common-plant namespace."""
+    assert roles.TEST_LOCK_PATH.parent.name == f"common100L_{roles.hardware_hash()}"
+    assert roles.TEST_LOCK_PATH.resolve() != roles.LEGACY_LOCK_PATH.resolve()
+    assert len(roles.hardware_hash()) == 12
+
+
+def test_common_plant_config_values():
+    """The frozen common plant (rules R1, R4, R6, R7)."""
+    from src.io_utils import load_system_config
+    from src.design.space import load_space
+    cfg, sp = load_system_config(), load_space()
+    assert cfg["tank"]["volume_L"] == 100.0 and cfg["collector"]["area_m2"] == 2.0
+    assert sp["variables"]["pcm_volume_fraction"] == {"min": 0.02, "max": 0.40}
+    assert sp["variables"]["flow_rate_kg_s"]["min"] == sp["variables"]["flow_rate_kg_s"]["max"] == 0.030
+    assert sp["model"]["stack_anchors"] == ["bottom", "center", "top"]
+    import pandas as pd
+    d = pd.read_csv("data/demand/demand_profile_tamilnadu.csv")
+    assert abs(d["draw_volume_L"].sum() - 175.0) < 1e-6          # 175 L/day of 45 C water (amended 2026-11-23)

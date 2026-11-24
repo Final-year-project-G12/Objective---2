@@ -29,7 +29,7 @@ from scenarios import (SCENARIOS, V_TANK_M3, WALL_M, N_OPT_3D, R_SCALE_2D, drawn
 def n3d_for(r_in, fraction):
     v = v_outer(r_in)
     lo = math.ceil(0.02 * V_TANK_M3 / v - 1e-9)
-    hi = math.floor(0.30 * V_TANK_M3 / v + 1e-9)
+    hi = math.floor(0.40 * V_TANK_M3 / v + 1e-9)
     return int(min(max(round(fraction * V_TANK_M3 / v), lo), hi))
 
 

@@ -16,6 +16,35 @@ const ROOT = path.join(__dirname, "..");
 const FIGURES = path.join(ROOT, "ansys", "figures");
 const PLOTS = path.join(ROOT, "results", "plots");
 
+// ── live numbers ────────────────────────────────────────────────────────────────
+// Every design / plant / test number in this guide is READ at build time from the Objective-2 outputs, so the document cannot drift from them
+// (an earlier version had the legacy 2.5 m2 / 104-98-105-capsule numbers typed in by hand).
+const RES = path.join(ROOT, "results");
+const RUN_DIR = fs.readdirSync(RES).filter((d) => d.startsWith("common100L_")).sort()[0];
+const ENV = JSON.parse(fs.readFileSync(path.join(RES, RUN_DIR, "o3_environment_contract_tamilnadu.json"), "utf8"));
+const DES = ENV.static_design_per_regime;
+const PLANT = ENV.plant;
+
+function readCsv(file) {                                   // small RFC-4180-ish parser (the criteria titles contain commas inside quotes)
+  const rows = []; let row = [], cur = "", q = false;
+  const text = fs.readFileSync(file, "utf8");
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (q) { if (ch === '"' && text[i + 1] === '"') { cur += '"'; i++; } else if (ch === '"') q = false; else cur += ch; }
+    else if (ch === '"') q = true;
+    else if (ch === ",") { row.push(cur); cur = ""; }
+    else if (ch === "\n" || ch === "\r") { if (ch === "\r" && text[i + 1] === "\n") i++; row.push(cur); cur = ""; if (row.length > 1 || row[0] !== "") rows.push(row); row = []; }
+    else cur += ch;
+  }
+  if (cur !== "" || row.length) { row.push(cur); rows.push(row); }
+  const head = rows[0];
+  return rows.slice(1).map((r) => Object.fromEntries(head.map((h, i) => [h, r[i]])));
+}
+const CRIT_DIR = path.join(ROOT, "ansys", "criteria_common");
+const CRIT_NODE = readCsv(path.join(CRIT_DIR, "SUMMARY_all_criteria.csv"));
+const CRIT_FLUENT = readCsv(path.join(CRIT_DIR, "FLUENT_summary_all_criteria.csv"));
+const f1 = (x) => Number(x).toFixed(1), f2 = (x) => Number(x).toFixed(2), f0 = (x) => Math.round(Number(x)).toString();
+
 const INK = "1A1A1A", MUTED = "5A5A5A", RULE = "C8C8C8", HDR = "F0F0F0";
 const BODY = 22;  // 11 pt
 const SMALL = 18;  // 9 pt
@@ -142,27 +171,25 @@ children.push(new Paragraph({ text: "" }));
 // OPTIMAL DESIGNS TABLE
 children.push(H2("The Three Optimal Designs — All Parameters"));
 
+children.push(P(`Common plant for all regimes: ${PLANT.tank_volume_L} L tank, ${f1(PLANT.collector_area_m2)} m² collector, ${PLANT.demand_daily_total_L} L/day of ${PLANT.delivery_target_temp_C} °C water. Read from the sealed Objective-2 contract (run ${ENV.immutable_result_record.run_id}).`, { size: SMALL, color: MUTED }));
+
 children.push(table(
-  ["Regime", "PCM", "Capsules", "Diameter", "PCM Mass", "Flow Rate", "Arrangement"],
-  [
-    ["0", "PureTemp 58", "104", "81.6 mm", "24.81 kg", "0.0388 kg/s", "Staggered"],
-    ["1", "RT57HC", "98", "81.6 mm", "23.64 kg", "0.0295 kg/s", "Staggered"],
-    ["2", "RT57HC", "105", "81.6 mm", "25.33 kg", "0.0267 kg/s", "Staggered"],
-  ],
-  [1000, 1300, 1100, 1200, 1200, 1200, 1400]
+  ["Regime", "PCM (O1 rank)", "Capsules", "Outer Ø", "PCM fraction", "PCM mass", "Flow (frozen)", "Arrangement"],
+  DES.map((d) => [String(d.regime_id), `${d.selected_pcm} (#${d.selected_pcm_o1_rank})`, String(d.n_capsules), `${f1(d.capsule_outer_diameter_mm)} mm`,
+                  `${f1(d.pcm_volume_fraction * 100)} %`, `${f1(d.pcm_mass_kg)} kg`, `${f2(d.nominal_flow_kg_s)} kg/s`, d.arrangement]),
+  [800, 1800, 1000, 1000, 1200, 1100, 1300, 1300]
 ));
 
 children.push(P(""));
 
+children.push(P("One-shot confirmatory test on 2006–2010 (run once under a lock; PCM tank minus the same-flow plain-water tank):", { size: SMALL, color: MUTED }));
 children.push(table(
-  ["Regime", "PCM Tm (°C)", "Useful Energy (kWh/yr)", "Solar Fraction", "Max Water (°C)", "Max PCM (°C)"],
-  [
-    ["0", "58.0", "1,668.65", "65.2%", "72.3", "62.3"],
-    ["1", "56.5", "1,763.44", "57.8%", "72.4", "62.4"],
-    ["2", "54.0", "1,679.40", "64.7%", "72.4", "62.4"],
-  ],
-  [1000, 1200, 1700, 1200, 1200, 1200]
+  ["Regime", "Gain (kWh/yr)", "Worst anchor", "Years PCM wins", "× core band", "× full band", "Extra overheat h/yr", "Peak PCM / water (°C)"],
+  DES.map((d) => { const t = d.one_shot_test_2006_2010; return [String(d.regime_id), f1(t.gain_mean_kWh), f1(t.gain_worst_anchor_mean_kWh), t.years_pcm_better,
+    f2(t.gain_over_core_band), f2(t.gain_over_full_band), f0(t.overheat_extra_hours_per_year), `${f1(t.t_pcm_max_C)} / ${f1(t.t_water_max_C)}`]; }),
+  [800, 1100, 1100, 1200, 1000, 1000, 1400, 1500]
 ));
+children.push(P("All three regimes ended at the same geometry (40 mm radius, 140 capsules): both the radius bound and the 40 % PCM-fraction cap are binding, so the design is the corner of the search box. The regimes differ only in PCM and weather.", { size: SMALL, color: MUTED }));
 
 children.push(new Paragraph({ text: "" }));
 
@@ -178,19 +205,21 @@ children.push(table(
     ["Tank height", "799", "mm"],
     ["Tank insulation", "50", "mm"],
     ["Tank wall U-value", "0.8", "W/m²K"],
-    ["Collector area", "2.5", "m²"],
-    ["Collector (FRτα)", "0.75", "–"],
-    ["Collector (FRUL)", "4.5", "W/m²K"],
+    ["Collector area", f1(PLANT.collector_area_m2), "m²"],
+    ["Storage per collector area", String(PLANT.storage_per_collector_area_L_m2), "L/m²"],
+    ["Collector (FRτα)", String(PLANT.collector_fr_tau_alpha), "– (not re-fitted for 2.0 m²)"],
+    ["Collector (FRUL)", String(PLANT.collector_fr_ul_W_m2K), "W/m²K (not re-fitted)"],
     ["Capsule material (shell)", "Aluminum (Al)", "–"],
-    ["Capsule shell thickness", "1.0", "mm"],
-    ["Mains temperature (est.)", "28.5 avg", "°C"],
-    ["Demand target", "45", "°C"],
+    ["Capsule shell thickness", String(PLANT.capsule_wall_thickness_m * 1000), "mm"],
+    ["Daily demand", String(PLANT.demand_daily_total_L), "L/day of 45 °C water"],
+    ["Mains temperature (per regime)", Object.values(ENV.demand.mains_temperature_C).map((v) => f1(v)).join(" / "), "°C"],
+    ["Delivery target", String(PLANT.delivery_target_temp_C), "°C"],
     ["Max safe water temp", "75", "°C"],
     ["Max safe PCM temp", "65", "°C"],
     ["Pump efficiency", "0.6", "–"],
     ["Max system pressure", "3.5", "bar"],
   ],
-  [3000, 1500, 1000]
+  [3000, 2000, 3000]
 ));
 
 children.push(new Paragraph({ text: "" }));
@@ -209,7 +238,7 @@ try {
 
 children.push(cap("Figure 1 — Tank, 34 PCM capsules in staggered arrangement, collector panel with absorber and riser."));
 children.push(cap("Cell zones: Tank water (31,008), PCM (4,847), Capsule shell (511), Collector (3,200), Absorber (1,200), Riser (2,200)."));
-children.push(cap("Total mesh: 42,966 cells. Geometry from optimal design; capsule radius derived from diameter by optimizer."));
+children.push(cap("Total mesh: 42,966 cells. This is a REPRESENTATIVE schematic (34 capsules of 42 mm) used to show the structure and heat path; it is NOT the optimised design, which has 140 capsules of 81.6 mm."));
 
 children.push(new Paragraph({ text: "" }));
 
@@ -517,18 +546,24 @@ children.push(P(""));
 // WHAT THE OUTPUTS MEAN
 children.push(H2("What the Outputs Tell You"));
 
-children.push(H3("Useful Energy (kWh/yr)"));
-children.push(P("Heat delivered to demand hours (evening) above 45 °C target. Higher is better. Range: 1,668–1,763 kWh/yr."));
+const TT = DES.map((d) => d.one_shot_test_2006_2010);
+const rng = (a, fn) => `${fn(Math.min(...a))}–${fn(Math.max(...a))}`;
 
-children.push(H3("Solar Fraction"));
-children.push(P("Fraction of annual demand met by solar (PCM + tank + collector). Range: 57.8–65.2%."));
+children.push(H3("Paired gain (kWh/yr)"));
+children.push(P(`Extra heat delivered at ≥ 45 °C between 18:00 and 09:00 compared with an identical tank without PCM, same flow and weather. Higher is better. One-shot test range: ${rng(TT.map((t) => t.gain_mean_kWh), f1)} kWh/yr, positive in every test year of every regime.`));
+
+children.push(H3("Margin over the repeatability band"));
+children.push(P(`How many times larger than the noise floor the gain is. Against the core band (years, timestep, nodes, PCM properties, anchor): ${rng(TT.map((t) => t.gain_over_core_band), f1)}×. Against the full band, which also includes mains-temperature and demand variation: only ${rng(TT.map((t) => t.gain_over_full_band), f1)}×. The sign never changes; the size depends on how noise is counted.`));
+
+children.push(H3("Overheat-guard hours (the cost of PCM)"));
+children.push(P(`The capsules displace water in the fixed 100 L tank, so the collector trips the safety shield more often: +${rng(TT.map((t) => t.overheat_extra_hours_per_year), f0)} hours per year versus the plain tank. PCM wins on delivered energy but is always worse on this metric.`));
 
 children.push(H3("Constraint Margins"));
-children.push(P("How much headroom below the hard safety limits:"));
-children.push(B("Water max: 75 °C hard limit. Designs peak at 72.3–72.4 °C → ~2.7 °C margin"));
-children.push(B("PCM max: 65 °C hard limit. Designs peak at 62.3–62.4 °C → ~2.7 °C margin"));
+children.push(P("How much headroom below the hard safety limits (worst test year, worst anchor):"));
+children.push(B(`Water max: 75 °C hard limit. Designs peak at ${rng(TT.map((t) => t.t_water_max_C), f1)} °C`));
+children.push(B(`PCM max: 65 °C hard limit. Designs peak at ${rng(TT.map((t) => t.t_pcm_max_C), f1)} °C`));
 
-children.push(P("All three designs stay safely within limits under nominal operation."));
+children.push(P("All three designs stay within the limits, with zero hours over them, in every test year."));
 
 children.push(P(""));
 
@@ -545,6 +580,93 @@ children.push(B("Temporal resolution: Figures 1–2 are energy-only (no flowing 
 children.push(B("These cases verify that the physics assumptions made in the fast tank model are sound. They do not re-derive the optimal designs — designs were chosen by the tank model + NSGA-II, then verified here in CFD."));
 
 children.push(P(""));
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FIGURE 6 — SEVEN WHAT-IF DESIGNS (numbers read from ansys/criteria_common/*.csv at build time)
+const CRITDIR = path.join(ROOT, "ansys");
+const imgW = (file, w, ratio) => new Paragraph({
+  spacing: { after: 60 }, alignment: AlignmentType.CENTER,
+  children: [new ImageRun({ type: "png", data: fs.readFileSync(file), transformation: { width: w, height: Math.round(w / ratio) } })],
+});
+function pairRow(dir, key, capText) {
+  const f = (s) => path.join(CRITDIR, dir, "figures", `${key}_${s}_END.png`);
+  const cell = (file, label) => new TableCell({
+    width: { size: 4900, type: WidthType.DXA },
+    margins: { top: 20, bottom: 20, left: 40, right: 40 },
+    borders: { top: { style: BorderStyle.NONE }, bottom: { style: BorderStyle.NONE }, left: { style: BorderStyle.NONE }, right: { style: BorderStyle.NONE } },
+    children: [imgW(file, 300, 960 / 720), new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 40 },
+      children: [new TextRun({ text: label, size: CAPTION, color: MUTED, font: "Calibri", italics: true })] })],
+  });
+  return [new Table({
+    width: { size: 9800, type: WidthType.DXA }, columnWidths: [4900, 4900],
+    borders: { top: { style: BorderStyle.NONE }, bottom: { style: BorderStyle.NONE }, left: { style: BorderStyle.NONE }, right: { style: BorderStyle.NONE },
+               insideHorizontal: { style: BorderStyle.NONE }, insideVertical: { style: BorderStyle.NONE } },
+    rows: [new TableRow({ children: [cell(f("temp"), "Temperature after 1 h"), cell(f("liqfrac"), "Liquid fraction after 1 h")] })],
+  }), cap(capText)];
+}
+
+children.push(new Paragraph({ pageBreakBefore: true, children: [new TextRun({ text: "", size: 1 })] }));
+children.push(H2("Figure 6: Seven What-If Designs — Fewer or More Capsules, and How the Final One Is Chosen"));
+children.push(P("Objective 2 searched thousands of designs and kept one. To show WHY that one, seven designs for Regime 0 (PureTemp 58, the common plant) were each run two ways: the fast tank model (it applies the same selection funnel that chose the optimum, so every design gets a verdict) and ANSYS Fluent (a one-hour whole-tank discharge: capsules start hot and melted, tank water cold, no sun, so you watch the PCM heat the water). Each has its own folder, ansys/criteria_<n>_<name>/, with its parameters (criteria.json), code, mesh, node-model verdict, Fluent log, time series and pictures."));
+
+children.push(H3("The seven designs and how their parameters vary"));
+children.push(table(
+  ["Design", "Capsules", "Radius (mm)", "PCM fraction", "Flow (kg/s)", "Arrangement", "PCM mass (kg)"],
+  CRIT_NODE.map((c) => [c.criteria, c.N, f1(c.R_in_mm), `${f1(c.fraction_pct)} %`, f2(c.flow), c.arr, f1(c.pcm_mass_kg)]),
+  [3000, 900, 1100, 1200, 1000, 1500, 1100], { tiny: true }
+));
+children.push(B("1 · MAX: every knob at its upper bound (radius 40 mm, fraction 40 %, flow 0.050). The capsule count is capped at 140, so it has the SAME geometry as the optimum and differs only in flow."));
+children.push(B("2 · MIN: every knob at its lower bound: 380 tiny capsules of 10 mm radius holding 2 % PCM, flow 0.010, single layer."));
+children.push(B("3 · NOT optimal, but working: a real design the funnel evaluated (the weakest of its six finalists, 132 capsules), so it passes every hard gate."));
+children.push(B("4–6 · Only the capsule COUNT changes (radius 40 mm, flow 0.030, staggered kept optimal): 30 capsules (your wish), 14 (10 % of optimal), 70 (50 %)."));
+
+children.push(H3("Why each is not the final design (tank-model verdict, select years 2020–21)"));
+children.push(table(
+  ["Design", "Gain (kWh/yr)", "% of optimal", "Overheat h/yr", "Funnel verdict"],
+  CRIT_NODE.map((c) => [c.criteria, f1(c.g_window), `${f0(c.pct_of_optimal)} %`, f0(c.d_overheat), c.verdict]),
+  [2500, 1000, 900, 1000, 4400], { tiny: true }
+));
+children.push(P("Reading the verdicts. Rule A: a gain inside the repeatability band is indistinguishable from a plain tank. S0: the design must be within one band of the best gain. S1: among designs tied on gain, the one with the fewest overheat-guard hours wins. So the optimum is not simply \"the most PCM\": designs 1 and 3 tie it on gain and lose only on overheating, which is why the tie-break rules matter."));
+
+children.push(H3("What ANSYS Fluent shows for each (1 h whole-tank discharge)"));
+children.push(table(
+  ["Design", "Capsules drawn / real", "Water rise (K)", "PCM end (°C)", "Liquid fraction end", "Heat to water (kJ/m)"],
+  CRIT_FLUENT.map((c) => [c.criteria, `${c.drawn} / ${c.n_3d}`, f2(c.water_rise_K), f1(c.pcm_end_C), f2(c.liq_frac_end), f0(c.heat_to_water_kJ_per_m)]),
+  [3200, 1400, 1100, 1100, 1500, 1500], { tiny: true }
+));
+try {
+  children.push(imgW(path.join(CRITDIR, "criteria_common", "FLUENT_comparison_all_criteria.png"), 640, 2210 / 650));
+  children.push(cap("Water temperature, capsule temperature and liquid fraction for all seven designs. More PCM warms the water more; the minimum design (green) has so little PCM that it has handed over all its stored heat (fully solidified) within about ten minutes, after which the capsules only cool."));
+} catch (e) { children.push(P("(comparison chart not found)", { color: "FF0000" })); }
+
+children.push(H3("Pictures: the optimum, a 30-capsule tank, and the minimum design"));
+try {
+  const t = (i) => CRIT_FLUENT[i];
+  children.push(...pairRow("criteria_0_optimal_reference", "criteria_0_optimal_reference", `0 · Optimal: ${t(0).n_3d} capsules (34 drawn). Water +${f1(t(0).water_rise_K)} K; every capsule solidifies from the outside in, warming the water around it.`));
+  children.push(...pairRow("criteria_4_only_30_capsules", "criteria_4_only_30_capsules", `4 · Only 30 capsules (7 drawn). Water +${f1(t(4).water_rise_K)} K: the PCM works, but there is too little of it to warm the tank much.`));
+  children.push(...pairRow("criteria_2_min_all", "criteria_2_min_all", `2 · Minimum parameters (${t(2).n_3d} tiny capsules, ${t(2).drawn} drawn). The PCM is fully ${Number(t(2).liq_frac_end) === 0 ? "solid" : "spent"} within the hour and the water barely warms (+${f1(t(2).water_rise_K)} K).`));
+} catch (e) { children.push(P("(criteria pictures not found — run ansys/criteria_common/run_all_fluent.py)", { color: "FF0000" })); }
+
+children.push(H3("The same seven over a whole year, for all three regimes (MATLAB view of the tank-model output)"));
+const M1_REG = [[0, "m1"], [1, "m1_regime1"], [2, "m1_regime2"]];
+for (const [k, folder] of M1_REG) {
+  try {
+    const png = path.join(ROOT, "results", folder, "figures", "M1_C_annual_ranking.png");
+    const dim = (() => { const b = fs.readFileSync(png); return [b.readUInt32BE(16), b.readUInt32BE(20)]; })();   // PNG header: width, height
+    children.push(imgW(png, 560, dim[0] / dim[1]));
+    children.push(cap(`Regime ${k} (${DES[k].selected_pcm}): annual gain over the plain tank (left) and overheat-guard hours (right) for the seven designs, select year 2020, centre anchor. Every PCM design spends more hours in the shield than the plain tank.`));
+  } catch (e) { children.push(P(`(MATLAB figure for regime ${k} not found — run scripts/c20_m1_export.py --regime ${k}, then matlab_m1/m1_main.m)`, { color: "FF0000" })); }
+}
+children.push(P("Each regime has its own folder of MATLAB figures and animations (results/m1/, results/m1_regime1/, results/m1_regime2/): discharge test, three real weather days, annual ranking, the four Objective-1 PCMs and three animated tank cut-aways. For regime 0 the seven designs are exactly those of the ansys/criteria_* folders (both read ansys/criteria_common/scenarios.py); for regimes 1 and 2 they follow the same rules around that regime's own winner, and criterion 3 is a real funnel finalist of that regime's winning pair. The MATLAB view uses one weather year, so its gains differ from the tank-model table by a few kWh; designs 0 and 1 can swap order because their gap is far inside the repeatability band. The Fluent seven-criteria study itself covers regime 0 only.", { size: SMALL, color: MUTED }));
+
+children.push(H3("How to run a design yourself"));
+children.push(CODE("cd ansys/criteria_4_only_30_capsules"));
+children.push(CODE("python fluent_tank_discharge_criteria.py --hours 1 --live     # watch it in the Fluent window"));
+children.push(CODE("python fluent_tank_discharge_criteria.py --hours 1            # headless: numbers + pictures"));
+children.push(P("A headless one-hour run takes about 5–6 minutes. Close any other Fluent window first (one student licence at a time). The tank-model verdict for a design: python ansys/criteria_4_only_30_capsules/run_node_model.py (run from the project root)."));
+children.push(P("Honest limits. The Fluent slice is 2-D, so every design is drawn with drawn = round(N × 34/140) capsules at half the radius (the proxy rule); designs 0 and 1 give identical Fluent output because they differ only in flow and the discharge case has no flow; every kWh number comes from the tank model. This is a model-consistency check, not experimental validation.", { size: SMALL, color: MUTED }));
+
+children.push(new Paragraph({ text: "" }));
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PROVENANCE: plot code, values, validation, tank
@@ -571,21 +693,22 @@ children.push(P("Every plot script only READS saved files — nothing is re-simu
 
 children.push(H3("How the parameter values were set"));
 children.push(P("Values come from three places, never guessed into the plots:"));
-children.push(B("Fixed system constants — configs/system_config_shared.yaml (FROZEN at Phase 0A, identical for all four states). Each value is a cited engineering assumption or a solver setting: collector 2.5 m², F_R(τα)=0.75, F_R·U_L=4.5 W/m²K; tank 100 L, U=0.8 W/m²K; 0.8 mm aluminium shell (k=205); safety 75 °C water / 65 °C PCM; shield bypass 72/62 °C."));
-children.push(B("What the optimiser may vary — configs/design_space.yaml: capsule inner radius 10–40 mm, PCM volume fraction 2–30 %, flow 0.010–0.050 kg/s, arrangement {single-layer, staggered, radial}. Hard constraints: PCM peak ≤ 65 °C, water ≤ 75 °C in every simulated year."));
+children.push(B("Fixed system constants — configs/system_config_shared.yaml (FROZEN at Phase 0A, identical for all four states). Each value is a cited engineering assumption or a solver setting: collector 2.0 m² with F_R(τα)=0.75, F_R·U_L=4.5 W/m²K (legacy typical values, not re-fitted for 2.0 m²); 175 L/day demand; tank 100 L, U=0.8 W/m²K; 0.8 mm aluminium shell (k=205); safety 75 °C water / 65 °C PCM; shield bypass 72/62 °C."));
+children.push(B("What the optimiser may vary — configs/design_space.yaml: capsule inner radius 10–40 mm, PCM volume fraction 2–40 %, arrangement {single-layer, staggered, radial}; flow is frozen at 0.030 kg/s (not searched). Every design is simulated at three stack positions (bottom, centre, top). Hard constraints: PCM peak ≤ 65 °C, water ≤ 75 °C in every simulated year."));
 children.push(B("PCM thermal properties — taken from the Objective 1 database (data/objective1/pcm_database_tamilnadu.csv). No new PCMs are introduced in Objective 2; the shortlist (RT57HC, C25, C26, PureTemp 58) is Objective 1's output."));
-children.push(P("The final chosen numbers are the optimiser's own output in results/tn_optimal_designs.csv — the capsule counts, masses and flow rates quoted in the tables above are read from that file, not set by hand."));
+children.push(P("The final chosen numbers are the frozen funnel's own output (results/c16_funnel_winners.csv) and the sealed contract in results/common100L_<hash>/ — the capsule counts, masses and test gains quoted in the tables above are read from that contract when this document is built, not typed by hand. The Fluent demos read the same file through ansys/o2_designs.py."));
 
 children.push(H3("How the designs are validated"));
 children.push(B("Two independent simulators. A fast 10-node tank model evaluates and ranks designs; ANSYS Fluent is an independent CFD physics cross-check that chooses nothing — it only confirms the melting physics the tank model assumes."));
-children.push(B("Convergence gate. Annual useful energy must change < 0.05 % when the timestep is halved. Only 37.5 s passes (0.041 %); the 150 s search step has Richardson error ≤ 0.17 %, far inside the repeatability band, so design ranking is unaffected. Every reported number uses 37.5 s."));
-children.push(B("Verification gates (the config 'verification' block). Gate 1: mean residual < 0.1 % to proceed. Gate 4: solar fraction must land in the 54–84 % literature band (Singh et al. 2025); the three designs sit at 57.8–65.2 %."));
+children.push(B("Convergence gate. Annual useful energy must change < 0.05 % when the timestep is halved. Only 37.5 s passes (0.039 % from 37.5 to 18.75 s; 0.134 % at 150 → 75 s). The 150 s step is used for search and ranking only; every finalist and every reported number is re-run at 37.5 s."));
+children.push(B("Simulator verification. Energy closure ≤ 4.3·10⁻¹¹ % (gate 0.1 %); timestep change per halving ≤ 0.047 % on delivered energy (gate 0.05 %); 10 vs 20 nodes ≤ 0.71 %; IS 12976 standing loss 2.05–4.82 °C over 16 h (limit 8 °C); 95 automated tests pass. With the latent heat set to zero the same capsules deliver 184–298 kWh/yr less than the real PCM in all 18 G1 cases, so the latent heat is doing the work."));
+children.push(B("Pre-registered rules, reported as they fell. The selection funnel and the repeatability band were fixed before the select years were run; the cheap-screen fidelity rule FAILED (0 of 9 pairs), so it was not used for selection and every finalist was re-evaluated at full fidelity. The one-shot test on 2006–2010 was run once under a hash-keyed lock: PCM beat the plain tank in all 5 years of all 3 regimes."));
 children.push(B("Water-only baseline. Each design is compared against a plain-water tank at the SAME flow, weather, demand and shield, so the reported benefit is a difference, insulated from shared modelling simplifications."));
 children.push(B("CFD cross-check, honestly logged (docs/CFD_VERIFICATION.md). A v3 bug — the whole domain initialised cold, so the PCM never melted — was caught and fixed in v4: water starts at 343 K, the capsule is patched cold at 303 K and read back to confirm, and the run aborts if the initial state is wrong. The melt ordering C25 > C26 > RT57HC > PureTemp 58 follows melt point and conductivity exactly."));
 
 children.push(H3("Why the tank is fixed at 100 L"));
 children.push(B("How it's fixed: configs/system_config_shared.yaml sets tank.volume_L = 100.0, and design_space.yaml lists tank_volume_L under fixed_not_optimised — so the optimiser never changes it. H/D = 2 gives D = 0.399 m, H = 0.799 m (derived in src/design/geometry.py)."));
-children.push(B("Why 100 L: it is the project instruction for Tamil Nadu (the Rajasthan reference used 50 L). The collector was scaled to 2.5 m² to hold 40 L/m², the low end of IS 12976:2023 §4.2 (40–100 L/m²). The 50 L / 1.5 m² pairing is 33.3 L/m², which that standard flags as below band — so 100 L both follows the instruction and brings collector sizing into the Indian Standard."));
+children.push(B("Why 100 L: it is the common plant for all four states (the Rajasthan reference used 50 L). With the 2.0 m² collector it stores 50 L per m², inside the 40–100 L/m² range of IS 12976:2023 §4.2; the legacy 2.5 m² pairing (40 L/m²) is kept only as a sensitivity case. Demand is 175 L/day of 45 °C water: at 100 L/day the plain tank already met 99 % of demand, so a PCM had nothing to add (a plant scan found that PCM only helps when the plain tank leaves demand unmet)."));
 children.push(B("One consequence worth knowing: the 100 L tank is why the solver needs the finer 37.5 s step — the 50 L Rajasthan tank passed the convergence gate at 150 s; the larger tank does not. That is a property of the tank size, not a porting error."));
 
 children.push(new Paragraph({ text: "" }));
@@ -657,7 +780,7 @@ const doc = new Document({
 });
 
 Packer.toBuffer(doc).then((buf) => {
-  const out = path.join(ROOT, "O2_ANSYS_Complete_Guide.docx");
+  const out = path.join(ROOT, "docs", "reports", "O2_ANSYS_Complete_Guide.docx");
   fs.writeFileSync(out, buf);
   console.log("wrote " + out + "  (" + (buf.length / 1024).toFixed(0) + " KB)");
 });

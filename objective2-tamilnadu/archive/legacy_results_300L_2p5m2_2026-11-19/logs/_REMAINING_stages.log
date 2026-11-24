@@ -1,0 +1,99 @@
+running 11 stage(s), up to 6 processes each
+
+=== g20_gp_bo_comparison (once, 1 job(s), 1 at a time) ===
+    start all
+    FAIL  all  rc=1  (0.2 min)
+--- g20_gp_bo_comparison finished in 0.2 min, 1 failure(s)
+    [all] Traceback (most recent call last):
+              File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\scripts\g20_gp_bo_comparison.py", line 100, in <module>
+                main(int(a[0]), *(int(x) for x in a[1:4]), *( [int(a[4])] if len(a) > 4 else []))
+                         ~^^^
+            IndexError: list index out of range
+
+=== g13_issue4_shield_split (regime, 3 job(s), 3 at a time) ===
+    start 0
+    start 1
+    start 2
+    ok    1  (3.3 min)
+    ok    2  (3.3 min)
+    ok    0  (3.3 min)
+--- g13_issue4_shield_split finished in 3.3 min, 0 failure(s)
+
+=== g14_issue5_controls (regime, 3 job(s), 3 at a time) ===
+    start 0
+    start 1
+    start 2
+    ok    0  (5.8 min)
+    ok    1  (5.8 min)
+    ok    2  (5.9 min)
+--- g14_issue5_controls finished in 5.9 min, 0 failure(s)
+
+=== g15_issue6_anchor (regime, 3 job(s), 3 at a time) ===
+    start 0
+    start 1
+    start 2
+    ok    1  (11.3 min)
+    ok    2  (11.5 min)
+    ok    0  (11.6 min)
+--- g15_issue6_anchor finished in 11.6 min, 0 failure(s)
+
+=== g16_issue3_serve (regime, 3 job(s), 3 at a time) ===
+    start 0
+    start 1
+    start 2
+    ok    0  (2.1 min)
+    ok    1  (2.1 min)
+    ok    2  (2.2 min)
+--- g16_issue3_serve finished in 2.2 min, 0 failure(s)
+
+=== g17_issue2_widen (regime, 3 job(s), 3 at a time) ===
+    start 0
+    start 1
+    start 2
+    ok    1  (35.2 min)
+    ok    2  (35.7 min)
+    ok    0  (35.8 min)
+--- g17_issue2_widen finished in 35.8 min, 0 failure(s)
+
+=== g18_issue1_compare (once, 1 job(s), 1 at a time) ===
+    start all
+    ok    all  (0.2 min)
+--- g18_issue1_compare finished in 0.2 min, 0 failure(s)
+
+=== g21_sizing_study (regime, 3 job(s), 3 at a time) ===
+    start 0
+    start 1
+    start 2
+    ok    1  (4.6 min)
+    ok    0  (4.7 min)
+    ok    2  (5.0 min)
+--- g21_sizing_study finished in 5.0 min, 0 failure(s)
+
+=== g22_sensitivity_extra (regime, 3 job(s), 3 at a time) ===
+    start 0
+    start 1
+    start 2
+    ok    1  (9.7 min)
+    ok    0  (9.8 min)
+    ok    2  (9.8 min)
+--- g22_sensitivity_extra finished in 9.8 min, 0 failure(s)
+
+=== g23_chen_benchmark (regime, 3 job(s), 3 at a time) ===
+    start 0
+    start 1
+    start 2
+    ok    0  (2.8 min)
+    ok    2  (2.8 min)
+    ok    1  (2.9 min)
+--- g23_chen_benchmark finished in 2.9 min, 0 failure(s)
+
+=== g24_flow_fr_study (regime, 3 job(s), 3 at a time) ===
+    start 0
+    start 1
+    start 2
+    ok    1  (6.3 min)
+    ok    0  (6.5 min)
+    ok    2  (6.5 min)
+--- g24_flow_fr_study finished in 6.5 min, 0 failure(s)
+
+all requested stages done in 83.4 min

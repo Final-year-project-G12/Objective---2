@@ -3,7 +3,7 @@ ansys/criteria_common/run_node_model.py
 =======================================
 Runs every criteria scenario through the optimiser's OWN evaluator
 (src/optimize/evaluate.py: multi-node tank, N=10 nodes, dt=150 s, select years
-2021-2023, paired against the water-only tank at the same flow) and writes, into
+2020-2021, paired against the water-only tank at the same flow) and writes, into
 each scenario's folder:
 
     node_model_results.json     objectives, gates, funnel (S0/S1) status, deltas vs optimum
@@ -39,7 +39,7 @@ from src.io_utils import solver_overrides_for                                  #
 from config import STATE                                                       # noqa: E402
 
 ANSYS = ROOT / "ansys"
-YEAR = 2021
+YEAR = 2020
 PURPOSE = "select"
 FLOW_FOR_PLAIN = None
 
@@ -71,10 +71,11 @@ def pick_day(h, weather):
 def main(only=None):
     t0 = time.time()
     scs = [x for x in SCENARIOS if only is None or x['key'] in (only, SCENARIOS[0]['key'])]
-    sel = json.loads((ROOT / "results" / "g10_selection_r0.json").read_text())
-    band_g, band_d = sel["band"]["g_window"], sel["band"]["d_overheat"]
-    pool = pd.read_csv(ROOT / "results" / "g10_selection_candidates_r0.csv")
-    pool = pool[pool.feasible_select == True]                                  # noqa: E712
+    win = pd.read_csv(ROOT / "results" / "c16_funnel_winners.csv")
+    w0 = win[win.regime == 0].iloc[0]
+    band_g, band_d = float(w0.band_kWh), 0.0                      # core repeatability band (c15); S2 = lowest overheat among the tied
+    ev = pd.read_csv(ROOT / "results" / "c16_select_eval_all.csv")
+    pool = ev[(ev.regime == 0) & (ev.pair == w0.pair) & (ev.S0 == True)].rename(columns={"g_window_mean": "g_window", "d_overheat_mean": "d_overheat"})  # noqa: E712
     g_best = pool.g_window.max()
     s0 = pool[pool.g_window >= g_best - band_g]
     d_floor = s0.d_overheat.min()
@@ -122,7 +123,7 @@ def main(only=None):
         lines = []
         P = lines.append
         P("=" * 78)
-        P(f" {sc['title']}   (Regime {REGIME}, {PCM}, node-model on select years 2021-23)")
+        P(f" {sc['title']}   (Regime {REGIME}, {PCM}, node-model on select years 2020-21)")
         P("=" * 78)
         P(f" rule      : {sc['rule']}")
         P(f" parameters: R_in={d['R_in']*1000:.1f} mm  (capsule dia {2*(d['R_in']+0.0008)*1000:.1f} mm)"
@@ -156,7 +157,7 @@ def main(only=None):
               f"PCM mass = {r['pcm_mass_kg']:.1f} kg  (optimal {opt['pcm_mass_kg']:.1f} kg)")
             P(f" drawn in Fluent (2-D proxy): {drawn_count(r['N'])} capsules")
             P("")
-            P(" OBJECTIVES  (3 select years, paired with the water-only tank at the same flow)")
+            P(" OBJECTIVES  (select years 2020-21, centre anchor, dt 150 s; paired with the water-only tank at the same flow)")
             P(f"   g_window  (extra deliverable heat 18:00-09:00) : {r['g_window']:8.1f} kWh/yr  "
               f"+/-{r['g_window_sd']:.1f} (year sd)   [optimal {opt['g_window']:.1f}]  -> {out['pct_of_optimal_gain']:.0f} % of optimal")
             P(f"   g_annual  (extra deliverable heat, whole year) : {r['g_annual']:8.1f} kWh/yr   [optimal {opt['g_annual']:.1f}]")

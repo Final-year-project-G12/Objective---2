@@ -1,0 +1,37 @@
+{
+  "version": "funnel_v1_common100L_175Lday",
+  "frozen_utc": "2026-11-23T20:26:27Z",
+  "finalists_per_pair": 6,
+  "select_years": [
+    2020,
+    2021
+  ],
+  "fidelity": {
+    "dt_s": 37.5,
+    "anchors": [
+      "bottom",
+      "center",
+      "top"
+    ]
+  },
+  "S0": {
+    "pcm_peak_max_C": 65.0,
+    "water_peak_max_C": 75.0,
+    "hours_over_limit": 0,
+    "geometry": "valid in every anchor"
+  },
+  "S1": {
+    "rule": "worst-anchor mean paired gain (select years) > CORE repeatability band of the pair (c15: years, timestep, nodes, PCM properties, anchor; mains and demand are separate scenario sensitivities, the full band including them is reported alongside); else no PCM benefit",
+    "tie": "designs within one band of the leader's robust mean gain are tied"
+  },
+  "S2": {
+    "order": [
+      "lowest d_overheat_mean",
+      "smallest PCM volume",
+      "highest robust mean gain"
+    ]
+  },
+  "regime_rule": "same funnel across the three O1 PCMs; no passing design -> water-only",
+  "metric": "paired E_del45_window_kWh gain (PCM tank minus same-flow water-only tank)",
+  "no_reselection_after_test": true
+}

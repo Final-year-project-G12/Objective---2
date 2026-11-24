@@ -1,0 +1,11 @@
+ pair state  n_points  n_feasible  n_front  hv_common_ref  eps_g_window  eps_g_annual  eps_d_overheat within_band  hv_rel_to_best_state
+r0_p1  base       251         239       65   2.476416e+08         0.619         0.620           1.249        True                   1.0
+r0_p2  base       251         243       52   1.334314e+08           NaN           NaN             NaN         NaN                   1.0
+r0_p3  base       251         245       62   1.857052e+08           NaN           NaN             NaN         NaN                   1.0
+r1_p1  base       251         238       50   1.773709e+08         3.065         3.631          -3.981        True                   1.0
+r1_p2  base       251         243       50   8.993472e+07           NaN           NaN             NaN         NaN                   1.0
+r1_p3  base       251         251       54   7.637063e+07           NaN           NaN             NaN         NaN                   1.0
+r2_p1  base       251         240       53   2.092958e+08        11.970        13.226          -3.371        True                   1.0
+r2_p2  base       251         251       65   1.073847e+08           NaN           NaN             NaN         NaN                   1.0
+r2_p3  base       251         246       53   1.038107e+08           NaN           NaN             NaN         NaN                   1.0
+band (all regimes): {'g_window': np.float64(27.99), 'g_annual': np.float64(27.99), 'd_overheat': np.float64(107.98)}

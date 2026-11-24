@@ -1,0 +1,29 @@
+
+##### criteria_0_optimal_reference: C:\Users\jaswi\AppData\Local\Programs\Python\Python314\python.exe fluent_tank_discharge_criteria.py --print-every 10.0 --frame-every 5.0 --hours 1.0
+##### criteria_0_optimal_reference: exit 0 in 300s
+
+##### criteria_1_max_all: C:\Users\jaswi\AppData\Local\Programs\Python\Python314\python.exe fluent_tank_discharge_criteria.py --print-every 10.0 --frame-every 5.0 --hours 1.0
+##### criteria_1_max_all: exit 0 in 377s
+
+##### criteria_2_min_all: C:\Users\jaswi\AppData\Local\Programs\Python\Python314\python.exe fluent_tank_discharge_criteria.py --print-every 10.0 --frame-every 5.0 --hours 1.0
+##### criteria_2_min_all: exit 0 in 402s
+
+##### criteria_3_ok_not_optimal: C:\Users\jaswi\AppData\Local\Programs\Python\Python314\python.exe fluent_tank_discharge_criteria.py --print-every 10.0 --frame-every 5.0 --hours 1.0
+##### criteria_3_ok_not_optimal: exit 0 in 527s
+
+##### criteria_4_only_30_capsules: C:\Users\jaswi\AppData\Local\Programs\Python\Python314\python.exe fluent_tank_discharge_criteria.py --print-every 10.0 --frame-every 5.0 --hours 1.0
+##### criteria_4_only_30_capsules: exit 0 in 543s
+
+##### criteria_5_10pct_of_optimal: C:\Users\jaswi\AppData\Local\Programs\Python\Python314\python.exe fluent_tank_discharge_criteria.py --print-every 10.0 --frame-every 5.0 --hours 1.0
+##### criteria_5_10pct_of_optimal: exit 0 in 916s
+
+##### criteria_6_50pct_of_optimal: C:\Users\jaswi\AppData\Local\Programs\Python\Python314\python.exe fluent_tank_discharge_criteria.py --print-every 10.0 --frame-every 5.0 --hours 1.0
+##### criteria_6_50pct_of_optimal: exit 0 in 815s
+                         criteria  drawn  n_3d  water_start_C  water_end_C  water_rise_K  pcm_end_C  liq_frac_end  heat_to_water_kJ_per_m
+0          0. OPTIMAL (reference)     34   104           30.0        35.48          5.48      56.18          0.38                 6135.22
+1       1. MAX of every parameter     34   105           30.0        35.48          5.48      56.18          0.38                 6135.22
+2       2. MIN of every parameter    124   380           30.0        31.69          1.69      46.74          0.00                 2124.98
+3     3. NOT optimal, but working     26    80           30.0        34.10          4.10      56.17          0.38                 4784.66
+4  4. YOUR WISH: only 30 capsules     10    30           30.0        31.63          1.63      55.05          0.32                 2049.79
+5      5. 10 % of the optimal PCM      3    10           30.0        30.55          0.55      52.50          0.21                  709.34
+6      6. 50 % of the optimal PCM     17    52           30.0        32.67          2.67      55.83          0.36                 3245.47

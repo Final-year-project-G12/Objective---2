@@ -1,0 +1,12 @@
+running 1 stage(s), up to 3 processes each
+
+=== g20_gp_bo_comparison (regime, 3 job(s), 3 at a time) ===
+    start 0
+    start 1
+    start 2
+    ok    0  (23.1 min)
+    ok    1  (23.6 min)
+    ok    2  (23.9 min)
+--- g20_gp_bo_comparison finished in 23.9 min, 0 failure(s)
+
+all requested stages done in 23.9 min

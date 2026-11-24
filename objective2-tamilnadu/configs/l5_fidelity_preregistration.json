@@ -1,0 +1,37 @@
+{
+  "registered_utc": "2026-11-19T20:48:47.852786+00:00",
+  "level": "L5",
+  "registered_before": "any full-fidelity (dt 37.5 s) run of the DOE finalists",
+  "cheap_fidelity": {
+    "dt_s": 150.0,
+    "years": [
+      2017
+    ],
+    "anchors": [
+      "bottom",
+      "center",
+      "top"
+    ]
+  },
+  "full_fidelity": {
+    "dt_s": 37.5,
+    "years": [
+      2017,
+      2018
+    ],
+    "anchors": [
+      "bottom",
+      "center",
+      "top"
+    ]
+  },
+  "finalists": "top 8 geometry-valid designs per (regime, PCM) pair by CHEAP robust mean paired gain (mean over anchors of g_window)",
+  "agreement_rule": {
+    "spearman_cheap_vs_full_min": 0.8,
+    "max_abs_gain_difference_kWh": 0.5,
+    "applies_per_pair": true,
+    "pairs_required": "at least 7 of 9"
+  },
+  "if_fail": "the cheap screen is NOT used for selection: every candidate that enters the search/funnel is re-evaluated at full fidelity",
+  "note": "gains are near zero at 100 L/day, so rank agreement can fail from noise alone; that outcome is reported, not tuned away."
+}

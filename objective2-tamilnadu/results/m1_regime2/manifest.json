@@ -1,0 +1,312 @@
+{
+  "state": "tamilnadu",
+  "regime": 2,
+  "year": 2020,
+  "pcm": "RT57HC",
+  "optimum": {
+    "pcm": "RT57HC",
+    "R_in": 0.04,
+    "fraction": 0.3982879197374298,
+    "arrangement": "staggered",
+    "N": 140,
+    "note": "funnel winner"
+  },
+  "dev": false,
+  "dt_s": 37.5,
+  "anchor": "center",
+  "plant": {
+    "tank_volume_L": 100,
+    "collector_area_m2": 2.0,
+    "demand_L_day": 175,
+    "delivery_C": 45
+  },
+  "days": {
+    "clear": "2020-04-20",
+    "average": "2020-11-01",
+    "cloudy": "2020-11-25"
+  },
+  "criteria": [
+    {
+      "key": "criteria_0_optimal_reference",
+      "R_in": 0.04,
+      "fraction": 0.3982879197374298,
+      "flow": 0.03,
+      "arrangement": "staggered",
+      "title": "0 Optimal (reference)"
+    },
+    {
+      "key": "criteria_1_max_all",
+      "R_in": 0.04,
+      "fraction": 0.4,
+      "flow": 0.05,
+      "arrangement": "staggered",
+      "title": "1 Max of every parameter"
+    },
+    {
+      "key": "criteria_2_min_all",
+      "R_in": 0.01,
+      "fraction": 0.02,
+      "flow": 0.01,
+      "arrangement": "single-layer",
+      "title": "2 Min of every parameter"
+    },
+    {
+      "key": "criteria_3_ok_not_optimal",
+      "R_in": 0.034718188419938,
+      "fraction": 0.3772568090992433,
+      "flow": 0.03,
+      "arrangement": "staggered",
+      "title": "3 Working, not optimal"
+    },
+    {
+      "key": "criteria_4_only_30_capsules",
+      "R_in": 0.04,
+      "fraction": 0.08534741137230638,
+      "flow": 0.03,
+      "arrangement": "staggered",
+      "title": "4 Only 30 capsules"
+    },
+    {
+      "key": "criteria_5_10pct_of_optimal",
+      "R_in": 0.04,
+      "fraction": 0.03982879197374297,
+      "flow": 0.03,
+      "arrangement": "staggered",
+      "title": "5 10 % of optimal PCM"
+    },
+    {
+      "key": "criteria_6_50pct_of_optimal",
+      "R_in": 0.04,
+      "fraction": 0.1991439598687149,
+      "flow": 0.03,
+      "arrangement": "staggered",
+      "title": "6 50 % of optimal PCM"
+    }
+  ],
+  "geometry": {
+    "criteria_0_optimal_reference": {
+      "n_capsule": 140,
+      "capsule_diameter_m": 0.0816,
+      "pcm_thickness_m": 0.0408,
+      "fraction": 0.3982879197374298,
+      "capsules_per_node": [
+        0.0,
+        20.0,
+        20.0,
+        20.0,
+        0.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        0.0
+      ],
+      "tank_diameter_m": 0.39929454246550805,
+      "tank_height_m": 0.7985890849310161,
+      "pcm_mass_kg": 33.77840421139746
+    },
+    "criteria_1_max_all": {
+      "n_capsule": 140,
+      "capsule_diameter_m": 0.0816,
+      "pcm_thickness_m": 0.0408,
+      "fraction": 0.3982879197374298,
+      "capsules_per_node": [
+        0.0,
+        20.0,
+        20.0,
+        20.0,
+        0.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        0.0
+      ],
+      "tank_diameter_m": 0.39929454246550805,
+      "tank_height_m": 0.7985890849310161,
+      "pcm_mass_kg": 33.77840421139746
+    },
+    "criteria_2_min_all": {
+      "n_capsule": 380,
+      "capsule_diameter_m": 0.0216,
+      "pcm_thickness_m": 0.0108,
+      "fraction": 0.02005134328851712,
+      "capsules_per_node": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        206.0,
+        174.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "tank_diameter_m": 0.39929454246550805,
+      "tank_height_m": 0.7985890849310161,
+      "pcm_mass_kg": 1.432566250036946
+    },
+    "criteria_3_ok_not_optimal": {
+      "n_capsule": 201,
+      "capsule_diameter_m": 0.071036376839876,
+      "pcm_thickness_m": 0.035518188419938,
+      "fraction": 0.3772568090992433,
+      "capsules_per_node": [
+        0.0,
+        26.0,
+        26.0,
+        26.0,
+        26.0,
+        26.0,
+        26.0,
+        26.0,
+        19.0,
+        0.0
+      ],
+      "tank_diameter_m": 0.39929454246550805,
+      "tank_height_m": 0.7985890849310161,
+      "pcm_mass_kg": 31.710153443325463
+    },
+    "criteria_4_only_30_capsules": {
+      "n_capsule": 30,
+      "capsule_diameter_m": 0.0816,
+      "pcm_thickness_m": 0.0408,
+      "fraction": 0.08534741137230638,
+      "capsules_per_node": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        20.0,
+        10.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "tank_diameter_m": 0.39929454246550805,
+      "tank_height_m": 0.7985890849310161,
+      "pcm_mass_kg": 7.238229473870884
+    },
+    "criteria_5_10pct_of_optimal": {
+      "n_capsule": 14,
+      "capsule_diameter_m": 0.0816,
+      "pcm_thickness_m": 0.0408,
+      "fraction": 0.03982879197374297,
+      "capsules_per_node": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        14.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "tank_diameter_m": 0.39929454246550805,
+      "tank_height_m": 0.7985890849310161,
+      "pcm_mass_kg": 3.3778404211397457
+    },
+    "criteria_6_50pct_of_optimal": {
+      "n_capsule": 70,
+      "capsule_diameter_m": 0.0816,
+      "pcm_thickness_m": 0.0408,
+      "fraction": 0.1991439598687149,
+      "capsules_per_node": [
+        0.0,
+        0.0,
+        0.0,
+        20.0,
+        20.0,
+        20.0,
+        10.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "tank_diameter_m": 0.39929454246550805,
+      "tank_height_m": 0.7985890849310161,
+      "pcm_mass_kg": 16.88920210569873
+    }
+  },
+  "pcm_record": {
+    "name": "RT57HC",
+    "family": "Rubitherm Technologies",
+    "pcm_type": "Organic (RT-line)",
+    "Tm_C": 56.5,
+    "Tm_freezing_C": 56.5,
+    "latent_heat_kJ_kg": 240.0,
+    "density_liquid_kg_m3": 800.0,
+    "density_solid_kg_m3": 900.0,
+    "Cp_liquid_kJ_kgK": 2.0,
+    "Cp_solid_kJ_kgK": 2.0,
+    "TC_W_mK": 0.239,
+    "cycles_tested": 1404.0,
+    "cycles_tested_status": "Estimated via MICE-RF-PMM",
+    "flammable": "Yes",
+    "supercooling_K": 0.0,
+    "n_properties_imputed": 4,
+    "any_property_imputed": true,
+    "source": "manufacturer_datasheet_MICE_RF_PMM_completed",
+    "rho_H_MJ_m3": 216.0,
+    "Cp_avg_kJ_kgK": 2.0,
+    "cycles_confidence": 0.9534809845274094,
+    "in_absolute_band": true,
+    "corrosion_class": "low_organic"
+  },
+  "four_pcms": [
+    "RT57HC",
+    "n-Hexacosane (C26)",
+    "PureTemp 58",
+    "n-Pentacosane (C25)"
+  ],
+  "files": [
+    "day_criteria_0_optimal_reference_average.csv",
+    "day_criteria_0_optimal_reference_clear.csv",
+    "day_criteria_0_optimal_reference_cloudy.csv",
+    "day_criteria_1_max_all_average.csv",
+    "day_criteria_1_max_all_clear.csv",
+    "day_criteria_1_max_all_cloudy.csv",
+    "day_criteria_2_min_all_average.csv",
+    "day_criteria_2_min_all_clear.csv",
+    "day_criteria_2_min_all_cloudy.csv",
+    "day_criteria_3_ok_not_optimal_average.csv",
+    "day_criteria_3_ok_not_optimal_clear.csv",
+    "day_criteria_3_ok_not_optimal_cloudy.csv",
+    "day_criteria_4_only_30_capsules_average.csv",
+    "day_criteria_4_only_30_capsules_clear.csv",
+    "day_criteria_4_only_30_capsules_cloudy.csv",
+    "day_criteria_5_10pct_of_optimal_average.csv",
+    "day_criteria_5_10pct_of_optimal_clear.csv",
+    "day_criteria_5_10pct_of_optimal_cloudy.csv",
+    "day_criteria_6_50pct_of_optimal_average.csv",
+    "day_criteria_6_50pct_of_optimal_clear.csv",
+    "day_criteria_6_50pct_of_optimal_cloudy.csv",
+    "day_plain_average.csv",
+    "day_plain_clear.csv",
+    "day_plain_cloudy.csv",
+    "discharge_criteria_0_optimal_reference.csv",
+    "discharge_criteria_1_max_all.csv",
+    "discharge_criteria_2_min_all.csv",
+    "discharge_criteria_3_ok_not_optimal.csv",
+    "discharge_criteria_4_only_30_capsules.csv",
+    "discharge_criteria_5_10pct_of_optimal.csv",
+    "discharge_criteria_6_50pct_of_optimal.csv",
+    "pcm_PureTemp_average.csv",
+    "pcm_PureTemp_clear.csv",
+    "pcm_PureTemp_cloudy.csv",
+    "pcm_RT57HC_average.csv",
+    "pcm_RT57HC_clear.csv",
+    "pcm_RT57HC_cloudy.csv",
+    "pcm_nHexacosane_average.csv",
+    "pcm_nHexacosane_clear.csv",
+    "pcm_nHexacosane_cloudy.csv",
+    "pcm_nPentacosane_average.csv",
+    "pcm_nPentacosane_clear.csv",
+    "pcm_nPentacosane_cloudy.csv"
+  ],
+  "limits": "Visualisation of Objective 2 multi-node kernel output (hourly records; the discharge is 12 h at hourly resolution), not CFD and not experiment. Capsule arrangement shown by node (10 nodes), not true 3-D packing."
+}

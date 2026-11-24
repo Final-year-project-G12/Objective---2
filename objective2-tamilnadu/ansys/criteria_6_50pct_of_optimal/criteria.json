@@ -1,18 +1,18 @@
 {
  "key": "criteria_6_50pct_of_optimal",
  "title": "6. 50 % of the optimal PCM",
- "rule": "N = 50 % of 104 = 52 capsules (R_in, flow, arrangement kept optimal).",
- "why_not_optimal": "Half the PCM gives ~54 % of the gain - the benefit grows roughly in proportion to PCM mass up to the 30 % volume cap, which is why the optimiser pushes to the cap.",
+ "rule": "N = 50 % of the optimal capsule count (70 capsules; radius, flow, arrangement kept optimal).",
+ "why_not_optimal": "Half the PCM: see node_model_results.json for how the gain scales with PCM mass.",
  "regime": 0,
  "pcm": "PureTemp 58",
  "design": {
   "R_in": 0.04,
-  "fraction": 0.14793551304533104,
-  "flow": 0.0387608549268862,
+  "fraction": 0.1991439598687149,
+  "flow": 0.03,
   "arrangement": "staggered"
  },
- "n_3d": 52,
- "fraction_pct": 14.793551304533105,
+ "n_3d": 70,
+ "fraction_pct": 19.914395986871487,
  "frac_of_optimal_N": 0.5,
  "proxy": {
   "drawn_capsules": 17,
@@ -24,7 +24,7 @@
   "ny": 200
  },
  "run": {
-  "hours": 2.0,
+  "hours": 1.0,
   "dt_s": 60.0
  }
 }

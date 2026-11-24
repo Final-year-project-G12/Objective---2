@@ -1,0 +1,66 @@
+C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\scripts\g20_gp_bo_comparison.py:67: UserWarning: The balance properties of Sobol' points require n to be a power of 2.
+  U = qmc.Sobol(d=4, scramble=True, seed=seed).random(n_init)
+init   0 feasible=True g_window=132.10274845881295
+init   1 feasible=True g_window=65.73879156683081
+init   2 feasible=True g_window=105.25584401923422
+init   3 feasible=True g_window=74.14826722340206
+init   4 feasible=True g_window=230.7075642712849
+init   5 feasible=True g_window=-2.3045861613078613
+init   6 feasible=True g_window=141.69011586906524
+init   7 feasible=True g_window=47.19949322056298
+init   8 feasible=False g_window=nan
+init   9 feasible=True g_window=31.689438003960163
+init  10 feasible=True g_window=61.046171469282896
+init  11 feasible=True g_window=128.7093620852304
+init  12 feasible=False g_window=nan
+init  13 feasible=True g_window=37.63283664775675
+init  14 feasible=True g_window=144.53171878363327
+init  15 feasible=True g_window=34.01125960369941
+init  16 feasible=True g_window=80.73848289047517
+init  17 feasible=True g_window=19.12317551739102
+init  18 feasible=True g_window=72.35892927041785
+init  19 feasible=True g_window=89.42315640143264
+iter   0 feasible=True g_window=221.10235855355086 best=230.7075642712849
+iter   1 feasible=True g_window=200.42501516368227 best=230.7075642712849
+iter   2 feasible=True g_window=245.8029214616034 best=245.8029214616034
+iter   3 feasible=True g_window=264.9863023634448 best=264.9863023634448
+iter   4 feasible=True g_window=269.34371746526386 best=269.34371746526386
+iter   5 feasible=True g_window=269.5514462492162 best=269.5514462492162
+iter   6 feasible=False g_window=nan best=269.5514462492162
+iter   7 feasible=False g_window=nan best=269.5514462492162
+iter   8 feasible=True g_window=231.50566537357153 best=269.5514462492162
+iter   9 feasible=False g_window=nan best=269.5514462492162
+iter  10 feasible=True g_window=137.72277863832332 best=269.5514462492162
+iter  11 feasible=False g_window=nan best=269.5514462492162
+iter  12 feasible=True g_window=38.21297923844602 best=269.5514462492162
+iter  13 feasible=True g_window=70.04913148652592 best=269.5514462492162
+iter  14 feasible=True g_window=124.88439282135452 best=269.5514462492162
+iter  15 feasible=True g_window=16.588310138344333 best=269.5514462492162
+iter  16 feasible=True g_window=81.33503501974943 best=269.5514462492162
+iter  17 feasible=True g_window=121.5483323864955 best=269.5514462492162
+iter  18 feasible=True g_window=42.831572162371955 best=269.5514462492162
+iter  19 feasible=True g_window=91.91737222948943 best=269.5514462492162
+iter  20 feasible=True g_window=146.69510789137732 best=269.5514462492162
+iter  21 feasible=True g_window=8.57120675240169 best=269.5514462492162
+iter  22 feasible=True g_window=11.387322161930252 best=269.5514462492162
+iter  23 feasible=True g_window=76.92595805164792 best=269.5514462492162
+iter  24 feasible=True g_window=22.441542735365193 best=269.5514462492162
+iter  25 feasible=True g_window=53.94565883409514 best=269.5514462492162
+iter  26 feasible=True g_window=25.522777657728806 best=269.5514462492162
+iter  27 feasible=True g_window=36.879946912682314 best=269.5514462492162
+iter  28 feasible=True g_window=47.713430201997426 best=269.5514462492162
+iter  29 feasible=True g_window=-2.3450035912268503 best=269.5514462492162
+iter  30 feasible=True g_window=38.53228108829076 best=269.5514462492162
+iter  31 feasible=True g_window=87.89774504594816 best=269.5514462492162
+iter  32 feasible=False g_window=nan best=269.5514462492162
+iter  33 feasible=True g_window=122.0078820605466 best=269.5514462492162
+iter  34 feasible=True g_window=13.651524101801375 best=269.5514462492162
+iter  35 feasible=True g_window=71.32550938208576 best=269.5514462492162
+iter  36 feasible=True g_window=204.81253766148288 best=269.5514462492162
+iter  37 feasible=True g_window=166.41155580726098 best=269.5514462492162
+iter  38 feasible=True g_window=89.7781984923899 best=269.5514462492162
+iter  39 feasible=True g_window=205.5013995658287 best=269.5514462492162
+
+regime 2 / RT57HC: 60 simulator designs (20 Sobol + 40 GP rounds)
+  GP-BO best explore g_window = 269.6 kWh  (R 37.6 mm, fraction 0.297, flow 0.0387, radial)
+  NSGA-II chosen design, explore years = 264.6 kWh  (PCM RT57HC)

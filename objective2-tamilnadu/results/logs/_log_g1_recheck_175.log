@@ -1,0 +1,69 @@
+0 pcm_f30 pcm 150.0 1941.172
+0 pcm_f30 pcm 75.0 1941.166
+0 pcm_f30 pcm 37.5 1941.089
+0 pcm_f30 pcm 18.75 1941.132
+0 pcm_f30 water_only 150.0 1820.105
+0 pcm_f30 water_only 75.0 1822.501
+0 pcm_f30 water_only 37.5 1823.651
+0 pcm_f30 water_only 18.75 1824.261
+0 pcm_f40 pcm 150.0 1979.097
+0 pcm_f40 pcm 75.0 1978.981
+0 pcm_f40 pcm 37.5 1978.897
+0 pcm_f40 pcm 18.75 1978.928
+   regime  T_amb_C  T_start_C  hours    T_end_C  drop_16h_C  limit_C    col cols
+0       0     20.0       45.0     16  41.984480    3.015520      8.0  T_w_C     
+1       0     20.0       60.0     16  55.175168    4.824832      8.0  T_w_C     
+2       0     28.0       45.0     16  42.949446    2.050554      8.0  T_w_C     
+3       0     28.0       60.0     16  56.140134    3.859866      8.0  T_w_C     
+1 pcm_f30 pcm 150.0 1925.382
+1 pcm_f30 pcm 75.0 1925.614
+1 pcm_f30 pcm 37.5 1925.668
+1 pcm_f30 pcm 18.75 1925.745
+1 pcm_f30 water_only 150.0 1873.602
+1 pcm_f30 water_only 75.0 1876.069
+1 pcm_f30 water_only 37.5 1877.1
+1 pcm_f30 water_only 18.75 1877.702
+1 pcm_f40 pcm 150.0 1940.253
+1 pcm_f40 pcm 75.0 1940.346
+1 pcm_f40 pcm 37.5 1940.35
+1 pcm_f40 pcm 18.75 1940.439
+   regime  T_amb_C  T_start_C  hours    T_end_C  drop_16h_C  limit_C    col cols
+0       1     20.0       45.0     16  41.984480    3.015520      8.0  T_w_C     
+1       1     20.0       60.0     16  55.175168    4.824832      8.0  T_w_C     
+2       1     28.0       45.0     16  42.949446    2.050554      8.0  T_w_C     
+3       1     28.0       60.0     16  56.140134    3.859866      8.0  T_w_C     
+2 pcm_f30 pcm 150.0 1869.405
+2 pcm_f30 pcm 75.0 1869.406
+2 pcm_f30 pcm 37.5 1869.357
+2 pcm_f30 pcm 18.75 1869.444
+2 pcm_f30 water_only 150.0 1774.245
+2 pcm_f30 water_only 75.0 1776.378
+2 pcm_f30 water_only 37.5 1777.377
+2 pcm_f30 water_only 18.75 1777.958
+2 pcm_f40 pcm 150.0 1899.058
+2 pcm_f40 pcm 75.0 1899.009
+2 pcm_f40 pcm 37.5 1898.988
+2 pcm_f40 pcm 18.75 1899.034
+   regime  T_amb_C  T_start_C  hours    T_end_C  drop_16h_C  limit_C    col cols
+0       2     20.0       45.0     16  41.984480    3.015520      8.0  T_w_C     
+1       2     20.0       60.0     16  55.175168    4.824832      8.0  T_w_C     
+2       2     28.0       45.0     16  42.949446    2.050554      8.0  T_w_C     
+3       2     28.0       60.0     16  56.140134    3.859866      8.0  T_w_C     
+0 RT57HC 0.3
+0 RT57HC 0.4
+0 n-Hexacosane (C26) 0.3
+0 n-Hexacosane (C26) 0.4
+0 PureTemp 58 0.3
+0 PureTemp 58 0.4
+1 RT57HC 0.3
+1 RT57HC 0.4
+1 n-Hexacosane (C26) 0.3
+1 n-Hexacosane (C26) 0.4
+1 n-Pentacosane (C25) 0.3
+1 n-Pentacosane (C25) 0.4
+2 RT57HC 0.3
+2 RT57HC 0.4
+2 n-Pentacosane (C25) 0.3
+2 n-Pentacosane (C25) 0.4
+2 n-Hexacosane (C26) 0.3
+2 n-Hexacosane (C26) 0.4

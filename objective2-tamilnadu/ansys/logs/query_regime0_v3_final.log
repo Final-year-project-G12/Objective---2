@@ -1,0 +1,91 @@
+﻿Launching Fluent...
+Connected.
+'file' is deprecated. Use 'settings.file' instead.
+Fast-loading "C:\PROGRA~1\ANSYSI~1\ANSYSS~1\v261\fluent\fluent26.1.0\\addons\afd\lib\hdfio.bin"
+Done.
+
+Reading from Jaswita:"C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\ansys_openfoam_case\regime0_v3_c26_melting.cas.h5" in NODE0 mode ...
+  Reading mesh ...
+        2690 cells,     2 cell zones ...
+           1585 triangular cells,  zone id: 1
+           1105 triangular cells,  zone id: 2
+        4106 faces,     9 face zones ...
+           2298 2D interior faces,  zone id: 3
+             10 2D pressure-outlet faces,  zone id: 4
+             20 2D axis faces,  zone id: 5
+             48 2D wall faces,  zone id: 6
+             20 2D axis faces,  zone id: 7
+             51 2D interior faces,  zone id: 8
+             10 2D velocity-inlet faces,  zone id: 9
+           1615 2D interior faces,  zone id: 10
+             34 2D axis faces,  zone id: 11
+        1417 nodes,     1 node zone  ...
+  Done.
+
+
+Building...
+     mesh
+	distributing mesh
+		parts..,
+		faces..,
+		nodes..,
+		cells..,
+        bandwidth reduction using Reverse Cuthill-McKee: 772/23 = 33.5652
+     materials,
+     interface,
+     domains,
+	mixture
+     zones,
+	default_interior-9
+	interface-2_l_6
+	2_l_8
+	default_interior-8
+	2_l_7
+	2_l_9
+	2_l_10
+	2_l_11
+	2_l_5
+	3_s_2
+	3_s_1
+     parallel,
+Done.
+Warning: The use of axis boundary conditions is not appropriate for
+         a 2D/3D flow problem. Please consider changing the zone
+         type to symmetry or wall, or the problem to axisymmetric.
+
+Warning: The use of axis boundary conditions is not appropriate for
+         a 2D/3D flow problem. Please consider changing the zone
+         type to symmetry or wall, or the problem to axisymmetric.
+
+
+Reading from Jaswita:"C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\ansys_openfoam_case\regime0_v3_c26_melting.dat.h5" in NODE0 mode ...
+
+
+  Reading results.
+Parallel variables...
+Done.
+Case+data loaded.
+'solution' is deprecated. Use 'settings.solution' instead.
+'solution' is deprecated. Use 'settings.solution' instead.
+
+     capsule_liqfrac
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                           3_s_2                   0
+Volume-averaged liquid fraction in capsule: [{'capsule_liqfrac': [0.0, '']}]
+
+        capsule_tmax
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           3_s_2           323.99663
+Max temperature in capsule (K): [{'capsule_tmax': [323.9966310156855, 'K']}]
+
+        capsule_tmin
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                           3_s_2           298.33975
+Min temperature in capsule (K): [{'capsule_tmin': [298.3397503353683, 'K']}]
+Clean exit.

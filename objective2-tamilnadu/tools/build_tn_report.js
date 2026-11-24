@@ -390,7 +390,7 @@ const doc = new Document({
 });
 
 Packer.toBuffer(doc).then((buf) => {
-  const out = path.join(ROOT, "O2_TamilNadu_Pipeline_Report.docx");
+  const out = path.join(ROOT, "docs", "reports", "O2_TamilNadu_Pipeline_Report.docx");
   fs.writeFileSync(out, buf);
   console.log("wrote " + out + "  (" + (buf.length / 1024).toFixed(0) + " KB)");
 });

@@ -1,26 +1,29 @@
 # objective3 — handoff material
 
-Objective-3 hand-off, kept out of Objective 2's `results/` on purpose.
+Objective-3 hand-off for the **common-plant** Tamil Nadu run (100 L / 2.0 m² / 175 L/day). Rebuilt 2026-11-24.
 
 | file | what |
 |---|---|
-| `obj3_environment_contract_tamilnadu_v3.json` | **the contract Objective 3 reads.** Built 2026-11-09 from the current Objective 2 results |
-| `OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md` | how to use it, and the three constraints that must not be violated |
+| `o3_environment_contract_tamilnadu.json` | **the contract Objective 3 reads**: plant, limits, designs, action space, state schema, reward terms, acceptance tests, weather roles, caveats |
+| `o3_contract_tamilnadu.json` | the **immutable result record** (sealed under the one-shot lock; the environment contract points at it by hash) |
+| `*.sha256` | their hashes |
+| `OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md` | how to use it, the constraints, what the design is not |
 
-**Regenerate** after any change to Objective 2's results:
+The authoritative copies are in `../results/common100L_5e66ebc47a07/`. Check before loading:
 
 ```bash
-python scripts/g25_obj3_contract.py                      # direct
-python scripts/tn_run_all.py --only g25_obj3_contract    # via the pipeline (stage 31)
+python scripts/c24_check_o3_environment_contract.py
 ```
 
-The generator is `src/handoff/build_obj3_contract_tamilnadu.py`. It stays in the
-Objective-2 tree because it reads Objective-2 results and is a pipeline stage.
+Rebuild only if Objective 2's inputs change (the one-shot test lock stays spent):
 
-**Superseded.** The 2026-10-27 contract and handoff document are archived at
-`../archive/superseded_obj3_contract_2026-10-27/`. They describe designs that no
-longer exist (50 L tank, radial capsules, n-Hexacosane) and claim PCM loses to a
-plain tank — the opposite of the current held-out result. Do not use them.
+```bash
+python scripts/c23_build_o3_environment_contract.py
+```
 
-`build_obj3_contract_v2.py` in `src/handoff/` is **Rajasthan-only** and cannot
-produce a Tamil Nadu contract; it is kept for when Rajasthan is run.
+**Superseded, archived, do not use:**
+- `../archive/superseded_obj3_contract_2026-11-09/`: legacy plant (2.5 m², 300 L/day, 98–105 capsules, 2011–15 test).
+- `../archive/superseded_obj3_contract_2026-10-27/`: older still (50 L tank, C26/C25, radial capsules).
+
+`scripts/g25_obj3_contract.py` and `src/handoff/build_obj3_contract_tamilnadu.py` are **disabled** (they rebuild the legacy contract).
+`src/handoff/build_obj3_contract_v2.py` is Rajasthan-only.

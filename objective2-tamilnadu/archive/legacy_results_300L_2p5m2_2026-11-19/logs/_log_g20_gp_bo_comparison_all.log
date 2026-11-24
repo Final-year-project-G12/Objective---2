@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\scripts\g20_gp_bo_comparison.py", line 100, in <module>
+    main(int(a[0]), *(int(x) for x in a[1:4]), *( [int(a[4])] if len(a) > 4 else []))
+             ~^^^
+IndexError: list index out of range

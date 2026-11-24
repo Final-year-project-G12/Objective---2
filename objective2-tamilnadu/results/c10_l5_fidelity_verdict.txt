@@ -1,0 +1,1 @@
+0 of 9 pairs pass (rule: >=7). cheap screen NOT used for selection: all funnel candidates are re-evaluated at full fidelity

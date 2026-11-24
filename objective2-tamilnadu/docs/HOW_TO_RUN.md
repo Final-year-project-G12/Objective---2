@@ -1,5 +1,21 @@
 # How to Run — Tamil Nadu
 
+> ## CURRENT RUN (common plant: 100 L / 2.0 m² / 175 L/day) — added 2026-11-24
+>
+> Everything below the next banner is the **legacy** runbook (2.5 m² / 300 L/day, 2011–15 test). The current Objective 2 is the `c*` script chain:
+>
+> ```bash
+> python scripts/run_o2_pipeline.py        # DOE -> fidelity -> surrogates -> search -> grid+band -> funnel -> ONE-SHOT TEST (c17) -> status in results/pipeline_status.json
+> python scripts/run_post_o2.py            # L4 sensitivity, Fluent seven criteria, MATLAB M1, results docs
+> python scripts/c23_build_o3_environment_contract.py   # Objective-3 environment contract (needs c17 done)
+> python scripts/c24_check_o3_environment_contract.py   # 33 independent checks of that contract
+> python -m pytest tests -q                # 95 pass, 1 skipped
+> ```
+>
+> **Never run `scripts/c17_l9_test_and_contract.py` by hand**: it spends the one-shot 2006–2010 test lock, and a second run fails closed. It is already spent for hardware
+> hash `5e66ebc47a07`. Results: `docs/RESULTS_COMMON_PLANT.md`; history: `docs/COMMON_PLANT_REBUILD_LOG.md`; changes from the plan: `docs/PLAN_DEVIATIONS.md`;
+> input-to-output walk-through: `docs/OBJ2_DATA_FLOW_INPUT_TO_OUTPUT.md`. The legacy `g25` contract generators are disabled.
+
 > ## STOP - CORRECTED 2026-11-09. Read this before anything below it.
 >
 > **Everything below this banner describes pipelines that NO LONGER EXIST.**

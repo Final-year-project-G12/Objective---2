@@ -1,0 +1,17 @@
+1 pcm_f30 pcm 150.0 1535.853
+1 pcm_f30 pcm 75.0 1535.94
+1 pcm_f30 pcm 37.5 1536.141
+1 pcm_f30 pcm 18.75 1536.219
+1 pcm_f30 water_only 150.0 1536.628
+1 pcm_f30 water_only 75.0 1538.687
+1 pcm_f30 water_only 37.5 1539.783
+1 pcm_f30 water_only 18.75 1540.377
+1 pcm_f40 pcm 150.0 1526.936
+1 pcm_f40 pcm 75.0 1526.933
+1 pcm_f40 pcm 37.5 1527.017
+1 pcm_f40 pcm 18.75 1527.075
+   regime  T_amb_C  T_start_C  hours    T_end_C  drop_16h_C  limit_C    col cols
+0       1     20.0       45.0     16  41.984480    3.015520      8.0  T_w_C     
+1       1     20.0       60.0     16  55.175168    4.824832      8.0  T_w_C     
+2       1     28.0       45.0     16  42.949446    2.050554      8.0  T_w_C     
+3       1     28.0       60.0     16  56.140134    3.859866      8.0  T_w_C     

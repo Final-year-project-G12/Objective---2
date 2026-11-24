@@ -72,6 +72,11 @@ def _load_yaml(p: Path):
 
 
 def build() -> Path:
+    import os
+    if os.environ.get("O2_ALLOW_LEGACY_CONTRACT") != "1":
+        raise SystemExit(
+            "DISABLED (2026-11-24): this generator builds the LEGACY contract (2.5 m2 collector, 300 L/day, 98-105 capsules, "
+            "2011-2015 test). Use scripts/c23_build_o3_environment_contract.py. Set O2_ALLOW_LEGACY_CONTRACT=1 to run it anyway.")
     if not OLD.exists():
         raise FileNotFoundError(
             f"Generic-block source not found: {OLD}\n"

@@ -34,8 +34,10 @@ def _weather(cluster_id: int, year: int, purpose: str):
     return roles.load_point_year(STATE, cluster_id, CURRENT_MEDOIDS[cluster_id], year, purpose)
 
 
-def evaluate_design(cluster_id, pcm, r_in_m, fraction, flow, arrangement, purpose="explore", years=None):
-    """Simulate one design for every weather year of `purpose` (or the given subset)."""
+def evaluate_design(cluster_id, pcm, r_in_m, fraction, flow, arrangement, purpose="explore", years=None, stack_anchor=None, dt_s=None):
+    """Simulate one design for every weather year of `purpose` (or the given subset). `stack_anchor` (bottom/center/top)
+    defaults to the configured value. `dt_s` overrides the solver timestep (multi-fidelity); the
+    water-only twin is then run EXACTLY at that dt instead of read from the baseline grid. See evaluate_design_robust for the three-anchor objective (rule R7)."""
     years = list(years) if years is not None else roles.years_for(purpose)
     dv = to_design(r_in_m, fraction, flow, arrangement)
     cfg = load_system_config()
@@ -51,10 +53,17 @@ def evaluate_design(cluster_id, pcm, r_in_m, fraction, flow, arrangement, purpos
     for y in years:
         r = run_case(STATE, cluster_id, pcm, dv, design_bounds=geometry_bounds(), weather=_weather(cluster_id, y, purpose),
                      tank_model=sp["model"]["tank_model"], n_nodes=sp["model"]["n_nodes"],
-                     stack_anchor=sp["model"]["stack_anchor"], compute_tes_metrics=True, night_day_stride=0,
-                     system_config_overrides=solver_overrides_for(purpose))
+                     stack_anchor=stack_anchor or sp["model"]["stack_anchor"], compute_tes_metrics=True, night_day_stride=0,
+                     system_config_overrides=({"solver": {"timestep_s": float(dt_s)}} if dt_s else solver_overrides_for(purpose)))
         m, t = r["metrics"], r["tes"]
-        p = plain_at(cluster_id, y, flow, purpose)
+        if dt_s:
+            rp = run_case(STATE, cluster_id, None, dv, design_bounds=geometry_bounds(), weather=_weather(cluster_id, y, purpose),
+                          tank_model=sp["model"]["tank_model"], n_nodes=sp["model"]["n_nodes"], compute_tes_metrics=True,
+                          night_day_stride=0, system_config_overrides={"solver": {"timestep_s": float(dt_s)}})
+            p = {"E_del45_window_kWh": rp["tes"]["E_del45_window_kWh"], "E_del45_annual_kWh": rp["tes"]["E_del45_annual_kWh"],
+                 "useful_energy_kWh": rp["metrics"]["useful_energy_kWh"], "shield_water_h": rp["metrics"]["shield_water_h"]}
+        else:
+            p = plain_at(cluster_id, y, flow, purpose)
         per_year.append({
             "year": y,
             "g_window": t["E_del45_window_kWh"] - p["E_del45_window_kWh"],
@@ -76,6 +85,27 @@ def evaluate_design(cluster_id, pcm, r_in_m, fraction, flow, arrangement, purpos
     out["feasible"] = bool(out["t_pcm_max"] <= sp["constraints"]["pcm_peak_limit_C"]
                            and out["t_water_max"] <= sp["constraints"]["water_peak_limit_C"])
     return out
+
+
+def evaluate_design_robust(cluster_id, pcm, r_in_m, fraction, flow, arrangement, purpose="explore", years=None,
+                           band=0.0, objective="g_window"):
+    """Rule R7 (robust stack anchor): evaluate the design at every anchor in design_space.yaml `model.stack_anchors`.
+    Returns {anchor: result, 'robust': {mean_gain, worst_gain, worst_anchor, rejected, reason}}. The ranking value is the MEAN
+    paired gain over anchors; a design is REJECTED when its worst-anchor gain is below zero or inside the water-only
+    repeatability `band` (kWh). Never picks the best anchor after seeing outcomes."""
+    anchors = load_space()["model"]["stack_anchors"]
+    res = {a: evaluate_design(cluster_id, pcm, r_in_m, fraction, flow, arrangement, purpose, years, stack_anchor=a) for a in anchors}
+    if not all(r["valid"] for r in res.values()):
+        res["robust"] = {"mean_gain": float("nan"), "worst_gain": float("nan"), "worst_anchor": None, "rejected": True,
+                         "reason": next(r["reason"] for r in res.values() if not r["valid"])}
+        return res
+    gains = {a: r[objective] for a, r in res.items()}
+    worst_a = min(gains, key=gains.get)
+    worst = gains[worst_a]
+    rej = worst <= max(0.0, band)
+    res["robust"] = {"mean_gain": float(np.mean(list(gains.values()))), "worst_gain": float(worst), "worst_anchor": worst_a,
+                     "rejected": bool(rej), "reason": ("worst-anchor gain <= 0 or inside band" if rej else "")}
+    return res
 
 
 def flatten(res: dict) -> dict:

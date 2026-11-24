@@ -1,0 +1,7 @@
+criteria_0_optimal_reference         N3d= 140 frac= 39.8% drawn= 34 r2d=20.0mm mesh=260x200
+criteria_1_max_all                   N3d= 140 frac= 39.8% drawn= 34 r2d=20.0mm mesh=260x200
+criteria_2_min_all                   N3d= 380 frac=  2.0% drawn= 92 r2d=5.0mm mesh=340x260
+criteria_3_ok_not_optimal            N3d= 132 frac= 37.5% drawn= 32 r2d=20.0mm mesh=260x200
+criteria_4_only_30_capsules          N3d=  30 frac=  8.5% drawn=  7 r2d=20.0mm mesh=260x200
+criteria_5_10pct_of_optimal          N3d=  14 frac=  4.0% drawn=  3 r2d=20.0mm mesh=260x200
+criteria_6_50pct_of_optimal          N3d=  70 frac= 19.9% drawn= 17 r2d=20.0mm mesh=260x200

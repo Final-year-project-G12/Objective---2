@@ -1,5 +1,9 @@
 # Objective 2 — what this folder is doing
 
+> **Updated 2026-11-24.** The plant is now the **common plant: 100 L tank, 2.0 m² collector, 175 L/day**; flow is frozen at 0.030 kg/s (it is no longer searched), the PCM
+> fraction cap is 40 %, and the one-shot test is on 2006–2010. Parts of the narrative below were written for the legacy plant (2.5 m², 300 L/day, 104/98/105 capsules,
+> 2011–15 test) and are kept for the record. Current: `docs/RESULTS_COMMON_PLANT.md`, `docs/OBJ2_DATA_FLOW_INPUT_TO_OUTPUT.md`, `docs/PLAN_DEVIATIONS.md`, `objective3/`.
+
 **One sentence:** for each of Tamil Nadu's three climate regimes, find the PCM
 capsule design and flow rate that make a 100 L solar water tank deliver the
 most useful hot water in the evening — and prove it beats the same tank with
@@ -131,8 +135,8 @@ the enthalpy-porosity model built in.
 | Why two simulators? | `docs/SIMULATOR_AND_CFD.md` |
 | What does the CFD show, and what went wrong? | `docs/CFD_VERIFICATION.md` |
 | How do I run it? | `README.md`, `ansys/HOW_TO_RUN_ANSYS.md` |
-| How does weather enter the model? | `O2_Climate_Parameters_and_Simulators.docx` |
-| The full write-up | `O2_TamilNadu_Pipeline_Report.docx` |
+| How does weather enter the model? | `docs/reports/O2_Climate_Parameters_and_Simulators.docx` |
+| The full write-up | `docs/reports/O2_TamilNadu_Common_Plant_Report.docx` (current). `O2_TamilNadu_Pipeline_Report.docx` is the LEGACY plant (2.5 m², 104 capsules) |
 
 ```bash
 python scripts/tn_run_all.py --all --keep-going --workers 6   # the pipeline

@@ -1,0 +1,10 @@
+test 0 chosen PureTemp 58
+test 0 best_of_pcm RT57HC
+test 0 best_of_pcm n-Hexacosane (C26)
+test 1 chosen RT57HC
+test 1 best_of_pcm n-Hexacosane (C26)
+test 1 best_of_pcm n-Pentacosane (C25)
+test 2 chosen RT57HC
+test 2 best_of_pcm n-Pentacosane (C25)
+test 2 best_of_pcm n-Hexacosane (C26)
+held-out test complete heldout_2da11230bfb5 45 rows

@@ -133,7 +133,7 @@ def load_design_bounds():
         "capsule_diameter_m": dict(ge["capsule_diameter_m"]),
         "capsule_count": dict(ge["capsule_count"]),
         "pcm_volume_fraction": {"min": ge["pcm_volume_fraction_min"], "max": v["pcm_volume_fraction"]["max"]},
-        "flow_rate_kg_s": dict(v["flow_rate_kg_s"]),
+        "flow_rate_kg_s": dict(ge.get("flow_rate_kg_s", v["flow_rate_kg_s"])),   # validity range; the searched flow is frozen in `variables`
         "geometry": {"spacing_min_m": ge["spacing_min_m"], "passage_min_fraction": ge["passage_min_fraction"]},
     }
 

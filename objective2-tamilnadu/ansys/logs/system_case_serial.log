@@ -1,0 +1,331 @@
+I1029 09:59:45.572431   32672 chttp2_transport.cc:1400] ipv6:%5B::1%5D:64883: Got goaway [2] err=UNAVAILABLE:GOAWAY received; Error code: 2; Debug Text: Cancelling all calls {http2_error:2}
+mesh: C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\ansys_openfoam_case\system_tank_pcm_panel.msh  (2811 KB)
+Fluent connected.
+
+=== read mesh ===
+
+Reading "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\ansys_openfoam_case\system_tank_pcm_panel.msh"...
+
+Buffering for file scan...
+
+   43785 nodes.
+   31008 quadrilateral cells, zone  2.
+    4847 quadrilateral cells, zone  3.
+     511 quadrilateral cells, zone  4.
+    3200 quadrilateral cells, zone  5.
+    1200 quadrilateral cells, zone  6.
+    2200 quadrilateral cells, zone  7.
+    2194 2D interior faces, zone  8.
+    6184 2D interior faces, zone  9.
+    4189 2D interior faces, zone 10.
+   60572 2D interior faces, zone 11.
+    8686 2D interior faces, zone 12.
+     121 2D interior faces, zone 13.
+     200 2D wall faces, zone 14.
+    1168 2D wall faces, zone 15.
+     954 2D wall faces, zone 16.
+     848 2D wall faces, zone 17.
+     212 2D wall faces, zone 18.
+     232 2D wall faces, zone 19.
+     422 2D wall faces, zone 20.
+     766 2D wall faces, zone 21.
+
+Building...
+     mesh
+       Clearing partially read grid.
+
+
+Error: Failed in Fill_Domain.
+
+
+Note: It is possible that this case or mesh file needs to be first
+      processed by the serial solver.  To do this, please read
+      file into the serial solver and then save it.  Next,
+      read saved file into the parallel solver.
+
+
+Error at Node 0: Build Grid: Aborted due to critical er
+ror.
+FAILED: read mesh: RuntimeError: ()
+Traceback (most recent call last):
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 64, in step
+    out = fn()
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 102, in <lambda>
+    step("read mesh", lambda: solver.settings.file.read_mesh(file_name=str(MESH)))
+                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\solver\flobject.py", line 2272, in __call__
+    return self.execute_command(**kwds)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\solver\flobject.py", line 2212, in execute_command
+    ret = self._execute_command(*args, **scmKwds)
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\solver\flobject.py", line 2183, in _execute_command
+    ret = self.flproxy.execute_cmd(self._parent.path, self.obj_name, **kwds)
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\services\settings.py", line 79, in _fn
+    return fn(self, *args, **kwds)
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\services\settings.py", line 147, in execute_cmd
+    return self.service.execute_cmd(path, command, **kwds)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\_grpc_services\settings_service_v0.py", line 212, in execute_cmd
+    response = self._stub.ExecuteCommand(request, metadata=self._metadata)
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\grpc\_interceptor.py", line 276, in __call__
+    response, ignored_call = self._with_call(
+                             ~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\grpc\_interceptor.py", line 328, in _with_call
+    call = self._interceptor.intercept_unary_unary(
+        continuation, client_call_details, request
+    )
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\services\interceptors.py", line 175, in intercept_unary_unary
+    return self._intercept_call(continuation, client_call_details, request)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\services\interceptors.py", line 165, in _intercept_call
+    raise new_ex from None
+RuntimeError: ()
+
+=== planar ===
+'setup' is deprecated. Use 'settings.setup' instead.
+FAILED: planar: InactiveObjectError: '<session>.settings.setup.general.solver' is currently inactive.
+Traceback (most recent call last):
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 64, in step
+    out = fn()
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 103, in <lambda>
+    step("planar", lambda: setattr(solver.setup.general.solver, "two_dim_space", "planar"))
+                           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\solver\flobject.py", line 1435, in __setattr__
+    attr = getattr(self, name)
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\solver\flobject.py", line 1403, in __getattribute__
+    raise InactiveObjectError(self.python_path)
+ansys.fluent.core.solver.flobject.InactiveObjectError: '<session>.settings.setup.general.solver' is currently inactive.
+
+=== energy on ===
+FAILED: energy on: InactiveObjectError: '<session>.settings.setup.models' is currently inactive.
+Traceback (most recent call last):
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 64, in step
+    out = fn()
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 104, in <lambda>
+    step("energy on", lambda: setattr(solver.setup.models.energy, "enabled", True))
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\solver\flobject.py", line 1403, in __getattribute__
+    raise InactiveObjectError(self.python_path)
+ansys.fluent.core.solver.flobject.InactiveObjectError: '<session>.settings.setup.models' is currently inactive.
+
+=== laminar ===
+FAILED: laminar: InactiveObjectError: '<session>.settings.setup.models' is currently inactive.
+Traceback (most recent call last):
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 64, in step
+    out = fn()
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 105, in <lambda>
+    step("laminar", lambda: setattr(solver.setup.models.viscous, "model", "laminar"))
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\solver\flobject.py", line 1403, in __getattribute__
+    raise InactiveObjectError(self.python_path)
+ansys.fluent.core.solver.flobject.InactiveObjectError: '<session>.settings.setup.models' is currently inactive.
+
+=== gravity ===
+===============Message from the Cortex Process================================
+
+Compute processes interrupted. Processing can be resumed.
+
+==============================================================================
+
+
+Overwrite confirmations (/file/set-batch-options ...)
+are on -- will therefore ignore the following
+invalid command: yes
+
+OK: gravity
+
+=== solidification-melting on ===
+
+Mushy Zone Parameter
+OK: solidification-melting on
+
+=== create PCM material ===
+FAILED: create PCM material: InactiveObjectError: '<session>.settings.setup.materials.fluid.create' is currently inactive.
+Traceback (most recent call last):
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 64, in step
+    out = fn()
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 111, in make_pcm
+    solver.setup.materials.fluid.create(PCM["name"])
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\solver\flobject.py", line 2299, in __call__
+    raise InactiveObjectError(self.python_path)
+ansys.fluent.core.solver.flobject.InactiveObjectError: '<session>.settings.setup.materials.fluid.create' is currently inactive.
+
+=== water material ===
+
+Material water-liquid:
+  New property "Pure Solvent Melting Heat" has been added.
+  Selecting constant method for "Pure Solvent Melting Heat" -- data required.
+  New property "Solidus Temperature" has been added.
+  Selecting constant method for "Solidus Temperature" -- data required.
+  New property "Liquidus Temperature" has been added.
+  Selecting constant method for "Liquidus Temperature" -- data required.
+
+Material 'water-liquid' copied from 'fluent-database' database.
+
+OK: water material
+
+=== aluminium material ===
+
+Material 'aluminum' copied from 'fluent-database' database.
+
+OK: aluminium material
+
+=== assign zone materials ===
+FAILED: assign zone materials: InactiveObjectError: '<session>.settings.setup.cell_zone_conditions' is currently inactive.
+Traceback (most recent call last):
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 64, in step
+    out = fn()
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 140, in assign
+    fz = solver.setup.cell_zone_conditions.fluid
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\solver\flobject.py", line 1403, in __getattribute__
+    raise InactiveObjectError(self.python_path)
+ansys.fluent.core.solver.flobject.InactiveObjectError: '<session>.settings.setup.cell_zone_conditions' is currently inactive.
+
+=== wall boundary conditions ===
+FAILED: wall boundary conditions: InactiveObjectError: '<session>.settings.setup.boundary_conditions' is currently inactive.
+Traceback (most recent call last):
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 64, in step
+    out = fn()
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 150, in walls
+    w = solver.setup.boundary_conditions.wall
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\solver\flobject.py", line 1403, in __getattribute__
+    raise InactiveObjectError(self.python_path)
+ansys.fluent.core.solver.flobject.InactiveObjectError: '<session>.settings.setup.boundary_conditions' is currently inactive.
+
+=== freeze flow equations ===
+FAILED: freeze flow equations: InactiveObjectError: '<session>.settings.solution.controls' is currently inactive.
+Traceback (most recent call last):
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 64, in step
+    out = fn()
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 170, in freeze_flow
+    eq = solver.settings.solution.controls.equations
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\solver\flobject.py", line 1403, in __getattribute__
+    raise InactiveObjectError(self.python_path)
+ansys.fluent.core.solver.flobject.InactiveObjectError: '<session>.settings.solution.controls' is currently inactive.
+
+=== initialize ===
+'solution' is deprecated. Use 'settings.solution' instead.
+FAILED: initialize: InactiveObjectError: '<session>.settings.solution.initialization' is currently inactive.
+Traceback (most recent call last):
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 64, in step
+    out = fn()
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 179, in <lambda>
+    setattr(solver.solution.initialization, "initialization_type", "standard"),
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\solver\flobject.py", line 1435, in __setattr__
+    attr = getattr(self, name)
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\solver\flobject.py", line 1403, in __getattribute__
+    raise InactiveObjectError(self.python_path)
+ansys.fluent.core.solver.flobject.InactiveObjectError: '<session>.settings.solution.initialization' is currently inactive.
+
+=== save mesh-only case ===
+'file' is deprecated. Use 'settings.file' instead.
+FAILED: save mesh-only case: InactiveObjectError: '<session>.settings.file.write_case' is currently inactive.
+Traceback (most recent call last):
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 64, in step
+    out = fn()
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 184, in <lambda>
+    lambda: solver.file.write_case(
+            ~~~~~~~~~~~~~~~~~~~~~~^
+        file_name=str(CASE_DIR / "system_tank_pcm_panel_setup.cas.h5")))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\solver\flobject.py", line 2268, in __call__
+    raise InactiveObjectError(self.python_path)
+ansys.fluent.core.solver.flobject.InactiveObjectError: '<session>.settings.file.write_case' is currently inactive.
+
+=== iterate 300 ===
+FAILED: iterate 300: InactiveObjectError: '<session>.settings.solution.run_calculation.iterate' is currently inactive.
+Traceback (most recent call last):
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 64, in step
+    out = fn()
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 188, in <lambda>
+    lambda: solver.solution.run_calculation.iterate(iter_count=args.iters))
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\solver\flobject.py", line 2268, in __call__
+    raise InactiveObjectError(self.python_path)
+ansys.fluent.core.solver.flobject.InactiveObjectError: '<session>.settings.solution.run_calculation.iterate' is currently inactive.
+
+=== save case+data ===
+FAILED: save case+data: InactiveObjectError: '<session>.settings.file.write_case_data' is currently inactive.
+Traceback (most recent call last):
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 64, in step
+    out = fn()
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 191, in <lambda>
+    lambda: solver.file.write_case_data(
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        file_name=str(CASE_DIR / "system_tank_pcm_panel_solved.cas.h5")))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\solver\flobject.py", line 2268, in __call__
+    raise InactiveObjectError(self.python_path)
+ansys.fluent.core.solver.flobject.InactiveObjectError: '<session>.settings.file.write_case_data' is currently inactive.
+
+=== contours ===
+
+Error: api-set-var: the object is not active
+Error Object: "results/graphics/picture/use-window-resolution?"
+FAILED: contours: RuntimeError: api-set-var: the object is not active
+Error Object: results/graphics/picture/use-window-resolution?
+Traceback (most recent call last):
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 64, in step
+    out = fn()
+  File "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\src\cfd\setup_system_case.py", line 199, in contours
+    g.picture.use_window_resolution = False
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\solver\flobject.py", line 1445, in __setattr__
+    return attr.set_state(value)
+           ~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\solver\flobject.py", line 1083, in set_state
+    self.flproxy.set_var(
+    ~~~~~~~~~~~~~~~~~~~~^
+        self.path,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        ),
+        ^^
+    )
+    ^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\services\settings.py", line 79, in _fn
+    return fn(self, *args, **kwds)
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\services\settings.py", line 96, in set_var
+    self.service.set_var(path, value)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\_grpc_services\settings_service_v0.py", line 123, in set_var
+    self._stub.SetVar(request, metadata=self._metadata)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\grpc\_interceptor.py", line 276, in __call__
+    response, ignored_call = self._with_call(
+                             ~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<4 lines>...
+        compression=compression,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\grpc\_interceptor.py", line 328, in _with_call
+    call = self._interceptor.intercept_unary_unary(
+        continuation, client_call_details, request
+    )
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\services\interceptors.py", line 175, in intercept_unary_unary
+    return self._intercept_call(continuation, client_call_details, request)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jaswi\AppData\Local\Programs\Python\Python314\Lib\site-packages\ansys\fluent\core\services\interceptors.py", line 165, in _intercept_call
+    raise new_ex from None
+RuntimeError: api-set-var: the object is not active
+Error Object: results/graphics/picture/use-window-resolution?
+
+=== exit ===
+OK: exit
+
+done.

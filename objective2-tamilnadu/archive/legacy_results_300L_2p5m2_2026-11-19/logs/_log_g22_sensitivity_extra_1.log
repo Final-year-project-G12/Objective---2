@@ -1,0 +1,18 @@
+base         g_window=229.2 delta=+0.0 (band 26.0) PCM peak 63.7 C
+mains-2K     g_window=212.9 delta=-16.3 (band 26.0) PCM peak 63.7 C
+mains+2K     g_window=243.8 delta=+14.6 (band 26.0) PCM peak 63.7 C
+mains 18C (cold end) g_window=229.2 delta=+0.0 (band 26.0) PCM peak 63.7 C
+mains 30C (hot end) g_window=259.0 delta=+29.7 (band 26.0) PCM peak 63.7 C
+demand x0.8  g_window=207.9 delta=-21.3 (band 26.0) PCM peak 63.8 C
+demand x1.2  g_window=234.9 delta=+5.7 (band 26.0) PCM peak 63.7 C
+shield off   g_window=225.9 delta=-3.3 (band 26.0) PCM peak 99.4 C
+conv 1       g_window=249.2 delta=+20.0 (band 26.0) PCM peak 63.0 C
+conv 4       g_window=210.4 delta=-18.8 (band 26.0) PCM peak 64.5 C
+viscosity x0.5 (CFD-mapped) g_window=224.1 delta=-5.2 (band 26.0) PCM peak 63.9 C
+viscosity x2 (CFD-mapped) g_window=234.5 delta=+5.2 (band 26.0) PCM peak 63.6 C
+expansion x0.5 (CFD-mapped) g_window=235.1 delta=+5.8 (band 26.0) PCM peak 63.6 C
+expansion x2 (CFD-mapped) g_window=223.3 delta=-6.0 (band 26.0) PCM peak 63.9 C
+density -10% g_window=187.0 delta=-42.2 (band 26.0) PCM peak 63.9 C
+Cp -10%      g_window=218.6 delta=-10.6 (band 26.0) PCM peak 63.8 C
+density +10% g_window=264.7 delta=+35.5 (band 26.0) PCM peak 63.4 C
+Cp +10%      g_window=239.5 delta=+10.3 (band 26.0) PCM peak 63.5 C

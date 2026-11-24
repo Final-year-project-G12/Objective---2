@@ -21,7 +21,10 @@ code itself is adopted rather than re-derived.
 What differs from her tree, deliberately and only here:
   * STATE = "tamilnadu", with her state-config format filled from Tamil Nadu's
     own Objective 1 output (regimes, PCM shortlists, mains temperatures).
-  * tank.volume_L = 100 and collector.area_m2 = 2.5 (she uses 50 L / 1.5 m2).
+  * COMMON-PLANT REBUILD (2026-11-20): tank.volume_L = 100, collector.area_m2 = 2.0, demand 100 L/day, flow frozen at
+    0.030 kg/s, PCM fraction up to 40 %, years 2016-19 / 2020-21 / 2006-10 test. See docs/COMMON_PLANT_REBUILD_LOG.md.
+    (Until 2026-11-19 this was 100 L / 2.5 m2 / 300 L/day, now legacy.)
+  * [legacy text] tank.volume_L = 100 and collector.area_m2 = 2.5 (she uses 50 L / 1.5 m2).
     The tank size is a project instruction; the collector is scaled with it to
     keep 40 L/m2, the low end of IS 12976:2023's 40-100 L/m2 band -- her
     33.3 L/m2 sits below that band, which her own report flags as a caveat.

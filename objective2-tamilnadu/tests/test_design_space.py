@@ -25,19 +25,19 @@ from config import STATE
 def test_approved_ranges_are_what_the_user_approved():
     v = space.load_space()["variables"]
     assert v["inner_radius_m"] == {"min": 0.010, "max": 0.040}
-    assert v["pcm_volume_fraction"] == {"min": 0.02, "max": 0.30}
-    assert v["flow_rate_kg_s"] == {"min": 0.010, "max": 0.050}
+    assert v["pcm_volume_fraction"] == {"min": 0.02, "max": 0.40}          # common plant: cap raised 0.30 -> 0.40 (rule R4)
+    assert v["flow_rate_kg_s"] == {"min": 0.030, "max": 0.030}            # frozen design-only flow (rule R6)
     assert v["arrangement"] == ["single-layer", "staggered", "radial"]
     assert space.load_space()["constraints"]["pcm_peak_limit_C"] == 65.0
     assert space.load_space()["model"]["n_nodes"] == 10
 
 
 @pytest.mark.parametrize("r", [0.010, 0.0175, 0.025, 0.040])
-@pytest.mark.parametrize("f", [0.02, 0.05, 0.12, 0.20, 0.30])
-def test_count_rule_keeps_the_fraction_inside_2_to_30_percent(r, f):
+@pytest.mark.parametrize("f", [0.02, 0.05, 0.12, 0.20, 0.30, 0.40])
+def test_count_rule_keeps_the_fraction_inside_2_to_40_percent(r, f):
     dv = space.to_design(r, f, 0.03, "staggered")
     frac = dv.n_capsule * space.capsule_outer_volume_m3(r) / space.v_tank_m3()
-    assert 0.02 - 1e-9 <= frac <= 0.30 + 1e-9
+    assert 0.02 - 1e-9 <= frac <= 0.40 + 1e-9
     assert dv.capsule_diameter_m == pytest.approx(2 * (r + 0.0008))
 
 
@@ -195,3 +195,17 @@ def test_select_and_explore_baselines_exist_but_no_test_baseline():
     for c in range(3):
         assert baseline.grid_path("explore", c).exists() and baseline.grid_path("select", c).exists()
         assert not baseline.grid_path("test", c).exists()
+
+
+def test_robust_anchor_objective_follows_rule_r7():
+    """Rule R7: all three anchors are evaluated; ranking value = mean paired gain; reject if worst-anchor gain <= band."""
+    r = evaluate.evaluate_design_robust(0, "RT57HC", 0.025, 0.30, 0.030, "staggered", years=[2017])
+    anchors = space.load_space()["model"]["stack_anchors"]
+    assert set(anchors) <= set(r) and "robust" in r
+    g = {a: r[a]["g_window"] for a in anchors}
+    rb = r["robust"]
+    assert rb["mean_gain"] == pytest.approx(sum(g.values()) / 3)
+    assert rb["worst_gain"] == pytest.approx(min(g.values())) and g[rb["worst_anchor"]] == min(g.values())
+    assert rb["rejected"] == (min(g.values()) <= 0.0)
+    big = evaluate.evaluate_design_robust(0, "RT57HC", 0.025, 0.30, 0.030, "staggered", years=[2017], band=1e6)
+    assert big["robust"]["rejected"]                                   # inside an arbitrarily wide band -> rejected

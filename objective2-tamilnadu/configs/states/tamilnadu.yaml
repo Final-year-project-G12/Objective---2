@@ -43,7 +43,7 @@
 # ----------------------------------------------------------------------------
 
 state: tamilnadu
-state_config_version: state_config_tamilnadu_v3.0_2026-09-18
+state_config_version: state_config_tamilnadu_v5.0_2026-11-23_common100L_175Lday
 objective1_manifest: data/objective1/manifest.json
 shared_config:
   system_config: configs/system_config_shared.yaml
@@ -51,9 +51,13 @@ shared_config:
 pareto_tolerance_pct: 5.0
 demand_profile:
   file: data/demand/demand_profile_tamilnadu.csv
-  daily_total_L: 300.0
+  daily_total_L: 175.0
   documented_reason: >
-    Matches 04b_climate_signature.py's DRAW_VOLUME_L=300 assumption
+    COMMON PLANT, DEMAND AMENDED 2026-11-23 (user decision): 175 L/day of 45 C water drawn from the 100 L tank = the 45 C equivalent of
+    a 100 LPD heater rated at ~60 C stored water (plan Rev 9 note; 171-191 L/day for Tamil Nadu mains 24-28.5 C). The earlier 100 L/day
+    reading left the plain tank covering 99 % of demand, so no PCM benefit was possible (docs/COMMON_PLANT_REBUILD_LOG.md, plant scan).
+    100 and 150 L/day are sensitivity cases; 300 L/day (legacy) too. Was: 100 L/day (Rev 9), 300 L/day (legacy).
+    Legacy value was 300 L/day: it matched 04b_climate_signature.py's DRAW_VOLUME_L=300 assumption
     (Avargani et al. 2021) so Objective 1's L_required figures and
     Objective 2's simulated solar fraction evaluate the same household.
     Unaffected by the 2026-09-17 Objective 1 refresh (Objective 2's own

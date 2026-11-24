@@ -1,0 +1,88 @@
+band (all regimes): {'g_window': np.float64(27.991), 'g_annual': np.float64(27.989), 'd_overheat': np.float64(107.983)}
+
+ g9_seed_stability
+ pair     hv_seed1     hv_seed2     hv_seed3    hv_spread     hv_union      hv_band  spread_within_band  feasible_fraction_final
+r0_p1 1.698939e+08 1.679253e+08 1.679032e+08  1990712.237 1.724814e+08 41058545.529                True                      1.0
+r0_p2 1.270743e+08 1.264237e+08 1.267631e+08   650650.749 1.295420e+08 34142552.584                True                      1.0
+r0_p3 1.809113e+08 1.778112e+08 1.788680e+08  3100156.001 1.826169e+08 42417309.051                True                      1.0
+r1_p1 9.257913e+07 8.566698e+07 1.031922e+08 17525268.629 1.051795e+08 28764371.727                True                      1.0
+r1_p2 8.500478e+07 8.614397e+07 8.619878e+07  1193998.389 8.811207e+07 25826933.858                True                      1.0
+r1_p3 7.035772e+07 7.140085e+07 7.037624e+07  1043130.395 7.285966e+07 22842419.313                True                      1.0
+r2_p1 1.264600e+08 1.224237e+08 1.280867e+08  5663005.403 1.297457e+08 33582784.916                True                      1.0
+r2_p2 9.864397e+07 9.935137e+07 1.012770e+08  2633042.183 1.039107e+08 29452191.269                True                      1.0
+r2_p3 9.743234e+07 9.809668e+07 9.778341e+07   664347.921 1.011531e+08 28739215.839                True                      1.0
+
+ g9_al_summary
+ pair  rounds  n_train_final     hv_first      hv_last  hv_gain_pct  mean_abs_err_g_annual_first_round  mean_abs_err_tpcm_first_round
+r0_p1       5            176 1.276011e+08 1.686492e+08       32.169                             13.089                          0.248
+r0_p2       5            176 9.644753e+07 1.273561e+08       32.047                              7.933                          0.130
+r0_p3       5            176 1.315849e+08 1.799234e+08       36.736                              9.227                          0.258
+r1_p1       5            176 8.123145e+07 1.056157e+08       30.018                              9.730                          0.206
+r1_p2       5            176 6.611006e+07 8.515106e+07       28.802                             13.803                          0.175
+r1_p3       5            176 5.531501e+07 7.309065e+07       32.135                              6.035                          0.214
+r2_p1       5            176 9.572850e+07 1.275421e+08       33.233                              9.758                          0.177
+r2_p2       5            176 7.160087e+07 1.007518e+08       40.713                              8.129                          0.319
+r2_p3       5            176 7.566947e+07 9.875464e+07       30.508                             10.246                          0.100
+
+ g9_grid_check
+ pair  n_grid_ok  n_grid_rejected  n_grid_feasible  n_grid_front  n_final_front      hv_grid     hv_final  hv_ratio_final_over_grid  eps_g_window  eps_g_annual  eps_d_overheat  band_g_window  band_g_annual  band_d_overheat  within_band
+r0_p1        665               55              603            11             65 2.247481e+08 2.478234e+08                     1.103         0.619         0.620           1.249         27.991         27.989          107.983         True
+r1_p1        665               55              603            10             50 1.623501e+08 1.777519e+08                     1.095         3.065         3.631          -3.981         27.991         27.989          107.983         True
+r2_p1        665               55              608            11             53 2.059265e+08 2.093242e+08                     1.016        11.970        13.226          -3.371         27.991         27.989          107.983         True
+
+ g9_boundary_check
+ pair                                            bound  share_of_front  n_front
+r0_p1                      R_in at 10 mm end (<=11 mm)           0.000       65
+r0_p1                      R_in at 40 mm end (>=39 mm)           1.000       65
+r0_p1                  fraction at 2 % floor (<=2.5 %)           0.000       65
+r0_p1                  fraction at 30 % cap (>=29.5 %)           0.292       65
+r0_p1 flow at 0.010 floor (<=0.0125)  [MODEL ARTEFACT]           0.200       65
+r0_p1                     flow at 0.050 cap (>=0.0475)           0.000       65
+r0_p2                      R_in at 10 mm end (<=11 mm)           0.000       52
+r0_p2                      R_in at 40 mm end (>=39 mm)           1.000       52
+r0_p2                  fraction at 2 % floor (<=2.5 %)           0.000       52
+r0_p2                  fraction at 30 % cap (>=29.5 %)           0.173       52
+r0_p2 flow at 0.010 floor (<=0.0125)  [MODEL ARTEFACT]           0.212       52
+r0_p2                     flow at 0.050 cap (>=0.0475)           0.000       52
+r0_p3                      R_in at 10 mm end (<=11 mm)           0.000       62
+r0_p3                      R_in at 40 mm end (>=39 mm)           1.000       62
+r0_p3                  fraction at 2 % floor (<=2.5 %)           0.000       62
+r0_p3                  fraction at 30 % cap (>=29.5 %)           0.226       62
+r0_p3 flow at 0.010 floor (<=0.0125)  [MODEL ARTEFACT]           0.016       62
+r0_p3                     flow at 0.050 cap (>=0.0475)           0.000       62
+r1_p1                      R_in at 10 mm end (<=11 mm)           0.000       50
+r1_p1                      R_in at 40 mm end (>=39 mm)           0.980       50
+r1_p1                  fraction at 2 % floor (<=2.5 %)           0.000       50
+r1_p1                  fraction at 30 % cap (>=29.5 %)           0.080       50
+r1_p1 flow at 0.010 floor (<=0.0125)  [MODEL ARTEFACT]           0.000       50
+r1_p1                     flow at 0.050 cap (>=0.0475)           0.000       50
+r1_p2                      R_in at 10 mm end (<=11 mm)           0.000       50
+r1_p2                      R_in at 40 mm end (>=39 mm)           0.920       50
+r1_p2                  fraction at 2 % floor (<=2.5 %)           0.000       50
+r1_p2                  fraction at 30 % cap (>=29.5 %)           0.160       50
+r1_p2 flow at 0.010 floor (<=0.0125)  [MODEL ARTEFACT]           0.160       50
+r1_p2                     flow at 0.050 cap (>=0.0475)           0.000       50
+r1_p3                      R_in at 10 mm end (<=11 mm)           0.000       54
+r1_p3                      R_in at 40 mm end (>=39 mm)           1.000       54
+r1_p3                  fraction at 2 % floor (<=2.5 %)           0.000       54
+r1_p3                  fraction at 30 % cap (>=29.5 %)           0.259       54
+r1_p3 flow at 0.010 floor (<=0.0125)  [MODEL ARTEFACT]           0.315       54
+r1_p3                     flow at 0.050 cap (>=0.0475)           0.019       54
+r2_p1                      R_in at 10 mm end (<=11 mm)           0.000       53
+r2_p1                      R_in at 40 mm end (>=39 mm)           1.000       53
+r2_p1                  fraction at 2 % floor (<=2.5 %)           0.000       53
+r2_p1                  fraction at 30 % cap (>=29.5 %)           0.208       53
+r2_p1 flow at 0.010 floor (<=0.0125)  [MODEL ARTEFACT]           0.075       53
+r2_p1                     flow at 0.050 cap (>=0.0475)           0.000       53
+r2_p2                      R_in at 10 mm end (<=11 mm)           0.000       65
+r2_p2                      R_in at 40 mm end (>=39 mm)           1.000       65
+r2_p2                  fraction at 2 % floor (<=2.5 %)           0.000       65
+r2_p2                  fraction at 30 % cap (>=29.5 %)           0.185       65
+r2_p2 flow at 0.010 floor (<=0.0125)  [MODEL ARTEFACT]           0.277       65
+r2_p2                     flow at 0.050 cap (>=0.0475)           0.015       65
+r2_p3                      R_in at 10 mm end (<=11 mm)           0.000       53
+r2_p3                      R_in at 40 mm end (>=39 mm)           1.000       53
+r2_p3                  fraction at 2 % floor (<=2.5 %)           0.000       53
+r2_p3                  fraction at 30 % cap (>=29.5 %)           0.302       53
+r2_p3 flow at 0.010 floor (<=0.0125)  [MODEL ARTEFACT]           0.283       53
+r2_p3                     flow at 0.050 cap (>=0.0475)           0.000       53

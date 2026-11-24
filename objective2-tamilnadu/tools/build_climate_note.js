@@ -91,6 +91,8 @@ const QUESTIONS = [
   "Is the optimal design found in ANSYS — and why is the tank 100 L?",
   "Why does the picture change colour from blue to red?",
   "What does each ANSYS view of the tank actually show?",
+  "What happens with fewer capsules (say only 30), and how is the final design chosen?",
+  "Why 175 L/day, and does the PCM win in every way?",
 ];
 
 let QN = 0;
@@ -155,7 +157,7 @@ const contentsRows = QUESTIONS.map((q, i) => new TableRow({
       width: { size: 9100, type: WidthType.DXA },
       margins: { top: 28, bottom: 28, left: 40, right: 80 },
       children: [new Paragraph({ children: [new TextRun({
-        text: q + (i === 7 ? "    (Q1–Q8 original · Q9–Q13 added)" : ""),
+        text: q + (i === 7 ? "    (Q1–Q8 original · Q9–Q15 added)" : ""),
         size: SMALL, color: i < 8 ? INK : "1F5C73", font: "Calibri",
       })] })],
     }),
@@ -195,7 +197,7 @@ ch.push(PR([
   " for a flat-plate collector, which balances heat gained from the sun against heat lost to the air:",
 ]));
 ch.push(CODE("Q_useful = A_c × [ F_R(τα) × I_t  −  F_R·U_L × (T_in − T_amb) ]"));
-ch.push(P("I_t is the irradiance, T_amb the air temperature, T_in the water entering the collector; the fixed numbers (area 2.5 m², F_R(τα) = 0.75, F_R·U_L = 4.5) come from the config file."));
+ch.push(P("I_t is the irradiance, T_amb the air temperature, T_in the water entering the collector; the fixed numbers (area 2.0 m², F_R(τα) = 0.75, F_R·U_L = 4.5; the F_R values are legacy typical values, not re-fitted for 2.0 m²) come from the config file."));
 ch.push(PR([
   { t: "Is it from a paper? ", b: true },
   "Yes — it is a standard collector equation (classic work by Hottel & Whillier and by Bliss in the "
@@ -279,9 +281,9 @@ ch.push(Q());
 ch.push(PR([
   "From files, never typed by hand. Fixed constants (tank 100 L, collector, safety limits) are in ",
   { t: "configs/system_config_shared.yaml", b: true }, "; the ranges the optimiser may vary (capsule size, "
-  + "PCM amount, flow, layout) are in ", { t: "configs/design_space.yaml", b: true },
+  + "PCM amount, layout; flow is frozen at 0.030 kg/s) are in ", { t: "configs/design_space.yaml", b: true },
   "; PCM properties come from the Objective 1 database; the final chosen numbers are in ",
-  { t: "results/tn_optimal_designs.csv", b: true },
+  { t: "results/c16_funnel_winners.csv", b: true },
   ". To change one, widen the min/max in design_space.yaml and re-run the optimiser, or edit the CSV / "
   + "pass --regime for a one-off ANSYS run.",
 ]));
@@ -292,9 +294,10 @@ ch.push(PR([
   { t: "No — the optimum is not found in ANSYS. ", b: true },
   "The fast tank model plus the NSGA-II search pick the best design inside the bounds; ANSYS only confirms "
   + "it melts correctly. The tank is fixed at ", { t: "100 L", b: true },
-  " because it is a project instruction for Tamil Nadu (Rajasthan used 50 L), locked as “not optimised”; "
-  + "the collector was scaled to 2.5 m² to keep 40 litres per m², the low end of Indian Standard "
-  + "IS 12976:2023.",
+  " because it is the common plant for all four states (Rajasthan used 50 L), locked as “not optimised”; "
+  + "with the 2.0 m² collector that is 50 litres per m², inside the 40–100 L/m² range of Indian Standard "
+  + "IS 12976:2023. The daily draw is 175 L/day: at 100 L/day the plain tank already met 99 % of demand, so a PCM "
+  + "had nothing to add.",
 ]));
 
 // Q12
@@ -319,11 +322,11 @@ ch.push(P("There are three things you can open in ANSYS, and each shows a differ
 ch.push(table(
   ["View (file → what to display)", "What it shows / means"],
   [
-    ["Tank geometry + capsules\nsystem_tank_pcm_panel_setup.cas.h5 → Mesh",
+    ["Tank geometry + capsules — system_tank_pcm_panel_setup.cas.h5 → Mesh",
      "The STRUCTURE only: the 100 L tank, the 34 PCM capsules in a staggered layout, and the collector panel, absorber and riser — each a coloured zone. It is the geometry check (the thing modelled is the thing meant). No physics yet, just the shapes."],
-    ["Tank temperature / heat path\nsystem_tank_pcm_panel_solved.cas.h5 → Contours → Temperature",
+    ["Tank temperature / heat path — system_tank_pcm_panel_solved.cas.h5 → Contours → Temperature",
      "WHERE THE HEAT IS: absorber ~139 °C → panel ~125 °C → riser ~61 °C → tank water ~32 °C → PCM ~31.6 °C. It proves heat flows correctly from the hot collector down into the cool tank. It is an energy-only snapshot, so the PCM stays solid — it shows the heat path, not melting."],
-    ["A capsule melting live (animated)\npython fluent_live_demo.py",
+    ["A capsule melting live (animated) — python fluent_live_demo.py",
      "The PCM ACTUALLY MELTING: one capsule in hot water, the liquid-fraction contour re-drawing as the solve runs, so the blue solid core shrinks and the melt front moves inward over time. This is the proof the PCM stores heat by melting — and it is the only one of the three that animates."],
   ],
   [3600, 6200]));
@@ -331,6 +334,66 @@ ch.push(PR([
   { t: "In short: ", b: true },
   "the first shows the shape, the second shows the heat reaching the tank, and the third shows the PCM "
   + "melting. The first two are static solved snapshots you can zoom and rotate; only the live demo moves.",
+]));
+
+// ── numbers for Q14 / Q15 are READ from the Objective-2 outputs at build time (nothing typed by hand) ──
+function readCsv(file) {
+  const rows = []; let row = [], cur = "", q = false;
+  const text = fs.readFileSync(file, "utf8");
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (q) { if (c === '"' && text[i + 1] === '"') { cur += '"'; i++; } else if (c === '"') q = false; else cur += c; }
+    else if (c === '"') q = true;
+    else if (c === ",") { row.push(cur); cur = ""; }
+    else if (c === "\n" || c === "\r") { if (c === "\r" && text[i + 1] === "\n") i++; row.push(cur); cur = ""; if (row.length > 1 || row[0] !== "") rows.push(row); row = []; }
+    else cur += c;
+  }
+  if (cur !== "" || row.length) { row.push(cur); rows.push(row); }
+  return rows.slice(1).map((r) => Object.fromEntries(rows[0].map((h, i) => [h, r[i]])));
+}
+const RES = path.join(ROOT, "results");
+const RUN_DIR = fs.readdirSync(RES).filter((d) => d.startsWith("common100L_")).sort()[0];
+const ENV = JSON.parse(fs.readFileSync(path.join(RES, RUN_DIR, "o3_environment_contract_tamilnadu.json"), "utf8"));
+const CN = readCsv(path.join(ROOT, "ansys", "criteria_common", "SUMMARY_all_criteria.csv"));
+const CF = readCsv(path.join(ROOT, "ansys", "criteria_common", "FLUENT_summary_all_criteria.csv"));
+const T = ENV.static_design_per_regime.map((d) => d.one_shot_test_2006_2010);
+const rg = (a, d = 1) => `${Math.min(...a).toFixed(d)}–${Math.max(...a).toFixed(d)}`;
+
+// Q14
+ch.push(Q());
+ch.push(P("Seven designs were tried for Regime 0 (PureTemp 58): the optimum, six alternatives that each change something, including your 30-capsule idea. Each runs in the fast tank model, which applies the same selection funnel that chose the optimum (so every design gets a verdict), and in ANSYS Fluent as a one-hour whole-tank discharge."));
+ch.push(table(
+  ["Design", "Capsules", "Gain (% of optimal)", "Water warms (Fluent, 1 h)", "Why it is not the final design"],
+  CN.map((c, i) => [c.criteria, c.N, `${Math.round(Number(c.pct_of_optimal))} %`, `+${Number(CF[i].water_rise_K).toFixed(1)} K`, c.verdict]),
+  [2300, 800, 1100, 1300, 4300]));
+ch.push(PR([
+  { t: "So with only 30 capsules ", b: true },
+  `the PCM still works and still beats the plain tank, but it delivers ${Math.round(Number(CN[4].pct_of_optimal))} % of the optimal gain and warms the water ${Number(CF[4].water_rise_K).toFixed(1)} K instead of ${Number(CF[0].water_rise_K).toFixed(1)} K: too little PCM to matter much. `,
+  { t: "How the final one is chosen: ", b: true },
+  "a design must pass the hard limits (PCM ≤ 65 °C, water ≤ 75 °C), beat the plain tank by more than the noise band, stay within one band of the best gain, and then the one with the fewest overheat hours wins. "
+  + "More PCM is not automatically better: designs 1 and 3 tie the optimum on gain and lose only on overheating.",
+]));
+try {
+  ch.push(img(path.join(ROOT, "ansys", "criteria_common", "FLUENT_comparison_all_criteria.png"), 560, 2210 / 650));
+  ch.push(cap("ANSYS Fluent, one hour: water temperature, capsule temperature and liquid fraction for all seven designs. More PCM warms the water more; the minimum design runs out of stored heat within about ten minutes."));
+} catch (e) {}
+
+// Q15
+ch.push(Q());
+ch.push(PR([
+  "At the first target, ", { t: "100 L/day", b: true },
+  ", the plain tank already covered 99 % of the demand, so a PCM had nothing to add (its gain was about −0.6 kWh/yr). A plant scan found the rule: ",
+  { t: "a PCM only adds delivered energy when the plain tank leaves demand unmet", b: true },
+  " (with the 2.0 m² collector: about +75 kWh/yr at 150 L/day and +154 at 200). ",
+  { t: "175 L/day", b: true },
+  " of 45 °C water is the 45 °C equivalent of a 100 L/day heater rated at 60 °C, so it is a realistic draw, not a tuned one.",
+]));
+ch.push(PR([
+  { t: "Does the PCM win in every way? No. ", b: true },
+  `On the one-shot test (2006–2010) it beats the plain tank in every year of every regime, by ${rg(T.map((t) => t.gain_mean_kWh))} kWh/yr. But it is always worse on overheat-guard hours: `
+  + `+${rg(T.map((t) => t.overheat_extra_hours_per_year), 0)} hours a year, because the capsules take the place of water in a fixed 100 L tank. And the margin depends on how noise is counted: `
+  + `${rg(T.map((t) => t.gain_over_core_band))}× the core noise band, but only ${rg(T.map((t) => t.gain_over_full_band))}× the full band that also includes mains-temperature and demand changes. `
+  + "The sign is solid; the size is less certain.",
 ]));
 
 ch.push(P(""));
@@ -347,7 +410,7 @@ const doc = new Document({
 });
 
 Packer.toBuffer(doc).then((buf) => {
-  const out = path.join(ROOT, "O2_Climate_Parameters_and_Simulators.docx");
+  const out = path.join(ROOT, "docs", "reports", "O2_Climate_Parameters_and_Simulators.docx");
   fs.writeFileSync(out, buf);
   console.log("wrote " + out + "  (" + (buf.length / 1024).toFixed(0) + " KB)");
 });

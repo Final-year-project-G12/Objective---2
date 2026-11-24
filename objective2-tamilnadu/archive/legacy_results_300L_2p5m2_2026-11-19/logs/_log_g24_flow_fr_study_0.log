@@ -1,0 +1,14 @@
+FR flow-dependent=False q=0.010  plain E_del45  1378.5  g_window   28.9  PCM peak 62.2
+FR flow-dependent=False q=0.015  plain E_del45  1331.3  g_window  114.9  PCM peak 62.2
+FR flow-dependent=False q=0.020  plain E_del45  1295.1  g_window  183.0  PCM peak 62.2
+FR flow-dependent=False q=0.030  plain E_del45  1260.9  g_window  264.1  PCM peak 63.1
+FR flow-dependent=False q=0.040  plain E_del45  1245.3  g_window  286.3  PCM peak 63.4
+FR flow-dependent=False q=0.050  plain E_del45  1236.1  g_window  289.7  PCM peak 63.5
+FR flow-dependent=True  q=0.010  plain E_del45  1363.8  g_window   36.5  PCM peak 62.2
+FR flow-dependent=True  q=0.015  plain E_del45  1321.7  g_window  118.1  PCM peak 62.2
+FR flow-dependent=True  q=0.020  plain E_del45  1290.1  g_window  183.5  PCM peak 62.2
+FR flow-dependent=True  q=0.030  plain E_del45  1260.9  g_window  264.1  PCM peak 63.1
+FR flow-dependent=True  q=0.040  plain E_del45  1247.6  g_window  287.5  PCM peak 63.4
+FR flow-dependent=True  q=0.050  plain E_del45  1239.8  g_window  291.7  PCM peak 63.5
+flow_dependent_fr=False: plain tank best flow 0.010, g_window best flow 0.050, g_window range over flow 260.8 kWh
+flow_dependent_fr=True: plain tank best flow 0.010, g_window best flow 0.050, g_window range over flow 255.2 kWh

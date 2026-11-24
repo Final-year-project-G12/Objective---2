@@ -1,0 +1,69 @@
+0 RT57HC reference -0.02
+0 RT57HC F_R*tau-alpha -10% -0.42
+0 RT57HC F_R*tau-alpha +10% 0.15
+0 RT57HC F_R*U_L -10% 0.07
+0 RT57HC F_R*U_L +10% -0.14
+0 RT57HC area 2.5 m2 (legacy) 0.19
+0 RT57HC mains -3 C -0.2
+0 RT57HC mains +3 C 0.07
+0 RT57HC 70 L/day 0.13
+0 RT57HC 150 L/day 71.14
+0 RT57HC 300 L/day (legacy) 180.45
+0 RT57HC anchor bottom -0.19
+0 RT57HC anchor top 0.02
+0 RT57HC latent -10% -0.16
+0 RT57HC latent +10% 0.11
+0 RT57HC Tm -1.5 K 0.33
+0 RT57HC Tm +1.5 K -0.39
+0 RT57HC conductivity -20% -0.02
+0 RT57HC conductivity +20% -0.02
+0 RT57HC flow 0.015 + F_R(flow) ON -0.06
+0 RT57HC flow 0.050 + F_R(flow) ON 0.0
+0 RT57HC flow 0.015 (F_R const) -0.02
+0 RT57HC flow 0.050 (F_R const) -0.02
+0 n-Hexacosane (C26) reference -0.2
+0 n-Hexacosane (C26) F_R*tau-alpha -10% -0.65
+0 n-Hexacosane (C26) F_R*tau-alpha +10% 0.01
+0 n-Hexacosane (C26) F_R*U_L -10% -0.09
+0 n-Hexacosane (C26) F_R*U_L +10% -0.36
+0 n-Hexacosane (C26) area 2.5 m2 (legacy) 0.07
+0 n-Hexacosane (C26) mains -3 C -0.45
+0 n-Hexacosane (C26) mains +3 C -0.06
+0 n-Hexacosane (C26) 70 L/day 0.12
+0 n-Hexacosane (C26) 150 L/day 66.83
+0 n-Hexacosane (C26) 300 L/day (legacy) 149.33
+0 n-Hexacosane (C26) anchor bottom -0.37
+0 n-Hexacosane (C26) anchor top -0.19
+0 n-Hexacosane (C26) latent -10% -0.35
+0 n-Hexacosane (C26) latent +10% -0.07
+0 n-Hexacosane (C26) Tm -1.5 K 0.16
+0 n-Hexacosane (C26) Tm +1.5 K -0.6
+0 n-Hexacosane (C26) conductivity -20% -0.21
+0 n-Hexacosane (C26) conductivity +20% -0.2
+0 n-Hexacosane (C26) flow 0.015 + F_R(flow) ON -0.25
+0 n-Hexacosane (C26) flow 0.050 + F_R(flow) ON -0.18
+0 n-Hexacosane (C26) flow 0.015 (F_R const) -0.19
+0 n-Hexacosane (C26) flow 0.050 (F_R const) -0.21
+0 PureTemp 58 reference -0.23
+0 PureTemp 58 F_R*tau-alpha -10% -0.57
+0 PureTemp 58 F_R*tau-alpha +10% 0.0
+0 PureTemp 58 F_R*U_L -10% -0.11
+0 PureTemp 58 F_R*U_L +10% -0.36
+0 PureTemp 58 area 2.5 m2 (legacy) 0.04
+0 PureTemp 58 mains -3 C -0.44
+0 PureTemp 58 mains +3 C -0.05
+0 PureTemp 58 70 L/day 0.13
+0 PureTemp 58 150 L/day 66.97
+0 PureTemp 58 300 L/day (legacy) 165.91
+0 PureTemp 58 anchor bottom -0.36
+0 PureTemp 58 anchor top -0.2
+0 PureTemp 58 latent -10% -0.35
+0 PureTemp 58 latent +10% -0.11
+0 PureTemp 58 Tm -1.5 K 0.1
+0 PureTemp 58 Tm +1.5 K -0.5
+0 PureTemp 58 conductivity -20% -0.24
+0 PureTemp 58 conductivity +20% -0.23
+0 PureTemp 58 flow 0.015 + F_R(flow) ON -0.29
+0 PureTemp 58 flow 0.050 + F_R(flow) ON -0.21
+0 PureTemp 58 flow 0.015 (F_R const) -0.23
+0 PureTemp 58 flow 0.050 (F_R const) -0.24

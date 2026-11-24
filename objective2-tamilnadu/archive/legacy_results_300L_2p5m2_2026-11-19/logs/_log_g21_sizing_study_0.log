@@ -1,0 +1,10 @@
+  50.0 L same_fraction N= 52 valid=True g_window=193.13679908297155
+  50.0 L same_count    N=104 valid=False g_window=None
+  60.0 L same_fraction N= 62 valid=True g_window=224.3724439164439
+  60.0 L same_count    N=104 valid=False g_window=None
+  75.0 L same_fraction N= 78 valid=True g_window=264.96758537009066
+  75.0 L same_count    N=104 valid=False g_window=None
+ 112.5 L same_fraction N=117 valid=True g_window=284.1144896974517
+ 112.5 L same_count    N=104 valid=True g_window=262.05643770835616
+ 150.0 L same_fraction N=156 valid=True g_window=201.08246249416464
+ 150.0 L same_count    N=104 valid=True g_window=150.18382721232337

@@ -1,0 +1,2 @@
+scenarios.py regenerated: optimum PureTemp 58 R_in=40.0 mm fraction=0.398 N=140 staggered
+build_criteria_folders.py cap 0.40; run_node_model.py reads the new funnel

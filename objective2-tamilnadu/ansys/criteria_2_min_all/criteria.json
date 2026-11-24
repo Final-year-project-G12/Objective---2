@@ -1,8 +1,8 @@
 {
  "key": "criteria_2_min_all",
  "title": "2. MIN of every parameter",
- "rule": "Every knob at its lower bound: R_in 10 mm, PCM fraction 2 %, flow 0.010 kg/s, loosest packing (single-layer).  N = 380 tiny capsules but only ~2 % of the tank volume (1.4 kg of PCM).",
- "why_not_optimal": "Almost no PCM (1.4 kg, 2 % of the tank), so almost no latent storage: the gain (2.2 kWh/yr) is ~1 % of the optimum and far inside the repeatability band - indistinguishable from plain water.",
+ "rule": "Every knob at its lower bound: R_in 10 mm, PCM fraction 2 %, flow 0.010 kg/s, single-layer packing.",
+ "why_not_optimal": "Almost no PCM, so almost no latent storage: see node_model_results.json for the gain relative to the optimum.",
  "regime": 0,
  "pcm": "PureTemp 58",
  "design": {
@@ -13,9 +13,9 @@
  },
  "n_3d": 380,
  "fraction_pct": 2.005134328851712,
- "frac_of_optimal_N": 3.6538461538461537,
+ "frac_of_optimal_N": 2.7142857142857144,
  "proxy": {
-  "drawn_capsules": 124,
+  "drawn_capsules": 92,
   "r_in_2d_m": 0.005,
   "rule": "drawn = round(N_3d*34/104); r_2d = 0.5*R_in_3d  (optimal = 34 capsules / 20 mm)"
  },
@@ -24,7 +24,7 @@
   "ny": 260
  },
  "run": {
-  "hours": 2.0,
+  "hours": 1.0,
   "dt_s": 60.0
  }
 }

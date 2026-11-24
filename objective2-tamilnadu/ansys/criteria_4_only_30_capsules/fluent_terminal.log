@@ -1,0 +1,2569 @@
+
+=== WHOLE-TANK DISCHARGE - 4. YOUR WISH: only 30 capsules ===
+  3-D design : R_in 40.0 mm, 30 capsules (21 % of optimal 104), fraction 8.5 %, flow 0.0300 kg/s, staggered
+  drawn here : 7 capsules, inner R 20.0 mm (2-D proxy), mesh 40998 cells; PCM area 89.6 cm2, water area 3090 cm2
+  capsules start MELTED at 70 C, tank water starts COLD at 30 C, no sun
+  PCM: PureTemp 58, Tm 58.0 C, k 0.2 W/mK, L 225 kJ/kg
+  run: 60.0 s x 60 = 1.0 h physical
+
+LAUNCH OK
+
+Reading "C:\Users\jaswi\OneDrive\Desktop\ALL\SEM_7\project\jammalamadugu\new_obj\objective2_design_optimization\ansys\criteria_4_only_30_capsules\mesh\tank_criteria.msh"...
+
+Buffering for file scan...
+
+   41653 nodes.
+   35258 quadrilateral cells, zone  2.
+    1022 quadrilateral cells, zone  3.
+      86 quadrilateral cells, zone  4.
+    3200 quadrilateral cells, zone  5.
+    1200 quadrilateral cells, zone  6.
+     232 quadrilateral cells, zone  7.
+    2194 2D interior faces, zone  8.
+    6184 2D interior faces, zone  9.
+     398 2D interior faces, zone 10.
+   69916 2D interior faces, zone 11.
+    1834 2D interior faces, zone 12.
+      10 2D interior faces, zone 13.
+     200 2D wall faces, zone 14.
+       8 2D wall faces, zone 15.
+       8 2D wall faces, zone 16.
+     265 2D wall faces, zone 17.
+     169 2D wall faces, zone 18.
+     155 2D wall faces, zone 19.
+     212 2D wall faces, zone 20.
+     224 2D wall faces, zone 21.
+     758 2D wall faces, zone 22.
+     116 2D wall faces, zone 23.
+
+Building...
+     mesh
+	auto partitioning mesh by Metis (fast),
+	distributing mesh
+		parts..,
+		faces..,
+		nodes..,
+		cells..,
+        bandwidth reduction using Reverse Cuthill-McKee: 200/121 = 1.65289
+     materials,
+     interface,
+     domains,
+     zones,
+	wall_absorber_panel-shadow
+	wall_panel_riser-shadow
+	wall_riser_water-shadow
+	wall_pcm_water-shadow
+	wall_shell_water-shadow
+	wall_pcm_shell-shadow
+	wall_riser_ext
+	wall_water_ext
+	wall_panel_ext
+	wall_absorber_ext
+	wall_pcm_shell
+	wall_shell_water
+	wall_pcm_water
+	wall_riser_water
+	wall_panel_riser
+	wall_absorber_panel
+	int_shell
+	int_pcm
+	int_water
+	int_riser
+	int_panel
+	int_absorber
+	riser
+	absorber
+	panel
+	shell
+	pcm
+	water
+     parallel,
+Done.
+  ok: read mesh
+'setup' is deprecated. Use 'settings.setup' instead.
+  ok: planar
+  ok: energy on
+  ok: laminar
+
+Mushy Zone Parameter
+Pseudo Time Method settings are adjusted.
+
+Material air:
+  New property "Pure Solvent Melting Heat" has been added.
+  Selecting constant method for "Pure Solvent Melting Heat" -- data required.
+  New property "Solidus Temperature" has been added.
+  Selecting constant method for "Solidus Temperature" -- data required.
+  New property "Liquidus Temperature" has been added.
+  Selecting constant method for "Liquidus Temperature" -- data required.
+
+
+Available material properties or methods have changed.
+Please confirm the property values before continuing.
+
+  ok: solidification-melting on
+  ok: create PCM material
+
+Material water-liquid:
+  New property "Pure Solvent Melting Heat" has been added.
+  Selecting constant method for "Pure Solvent Melting Heat" -- data required.
+  New property "Solidus Temperature" has been added.
+  Selecting constant method for "Solidus Temperature" -- data required.
+  New property "Liquidus Temperature" has been added.
+  Selecting constant method for "Liquidus Temperature" -- data required.
+
+Material 'water-liquid' copied from 'fluent-database' database.
+
+  ok: water material
+
+Material 'aluminum-1' copied from 'fluent-database' database.
+  ok: aluminium material
+
+  ok: assign zone materials
+  ok: adiabatic external walls (no solar)
+  ok: freeze flow (energy-only)
+'solution' is deprecated. Use 'settings.solution' instead.
+The following solver settings object method could also be used to execute the above command:
+<solver_session>.settings.solution.initialization.initialization_type = 'standard'
+  ok: initialize cold
+The following solver settings object method could also be used to execute the above command:
+<solver_session>.settings.solution.initialization.patch.calculate_patch(domain = '', cell_zones = ["pcm"], registers = [], variable = 'temperature', reference_frame = 'Relative to Cell Zone', use_custom_field_function = False, custom_field_function_name = '', value = 343.15)
+  ok: patch capsules hot
+'solution' is deprecated. Use 'settings.solution' instead.
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm              343.15
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water              303.15
+
+  start: capsules 70.00 C (melted), tank water 30.00 C
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm                   1
+
+Error: api-set-var: the object is not active
+Error Object: "results/graphics/picture/use-window-resolution?"
+Creating zone surface for water zone
+Creating zone surface for pcm zone
+Creating zone surface for shell zone
+Creating zone surface for panel zone
+Creating zone surface for absorber zone
+Creating zone surface for riser zone
+  saved criteria_4_only_30_capsules_temp_START.png: OK
+  saved criteria_4_only_30_capsules_liqfrac_START.png: OK
+'setup' is deprecated. Use 'settings.setup' instead.
+  ok: transient
+
+   sim time | TANK WATER avg     max |  PCM avg  PCM min | liq.frac state         | heat->water | wall
+  ----------------------------------------------------------------------------------------------------
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+     1  2.9611e-05  0:00:02   29
+     2  1.9520e-05  0:00:08   28
+     3  1.4246e-06  0:00:07   27
+     4  5.1561e-08  0:00:06   26
+!    4 solution is converged
+Flow time = 60s, time step = 1
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           303.26456
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           314.55039
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           339.52033
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           331.46934
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.94361231
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+     4  5.1561e-08  0:00:06   30
+!    4 solution is converged
+     5  1.3746e-05  0:00:05   29
+     6  1.6297e-06  0:00:04   28
+     7  1.5554e-07  0:00:04   27
+!    7 solution is converged
+Flow time = 120s, time step = 2
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           303.35336
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           317.91095
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           338.20499
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           328.44389
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.88972712
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+     7  1.5554e-07  0:00:04   30
+     8  9.6672e-06  0:00:04   29
+     9  5.0611e-07  0:00:03   28
+!    9 solution is converged
+Flow time = 180s, time step = 3
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           303.42469
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           319.08618
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           337.19196
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           326.58612
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.84761278
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+     9  5.0611e-07  0:00:03   30
+    10  7.5588e-06  0:00:03   29
+    11  6.2486e-07  0:00:03   28
+!   11 solution is converged
+Flow time = 240s, time step = 4
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           303.48408
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           319.94269
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm            336.3436
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           324.13089
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm           0.8131549
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    11  6.2486e-07  0:00:03   30
+    12  6.2263e-06  0:00:03   29
+    13  5.1007e-07  0:00:03   28
+!   13 solution is converged
+Flow time = 300s, time step = 5
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           303.53322
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           320.61215
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           335.54275
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           322.43991
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.78625903
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    13  5.1007e-07  0:00:03   30
+    14  5.1181e-06  0:00:02   29
+    15  4.6578e-07  0:00:02   28
+!   15 solution is converged
+Flow time = 360s, time step = 6
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           303.57527
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           321.07755
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           334.88046
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm            321.7448
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.76280166
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    15  4.6578e-07  0:00:02   30
+    16  4.4030e-06  0:00:02   29
+    17  2.9036e-07  0:00:02   28
+!   17 solution is converged
+Flow time = 420s, time step = 7
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           303.61309
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           321.43288
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           334.34775
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           321.33609
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.74090047
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    17  2.9036e-07  0:00:02   30
+    18  3.9575e-06  0:00:02   29
+    19  2.1711e-07  0:00:02   28
+!   19 solution is converged
+Flow time = 480s, time step = 8
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           303.64779
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           321.72625
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           333.91023
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm            321.0528
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.72011584
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    19  2.1711e-07  0:00:02   30
+    20  3.6415e-06  0:00:02   29
+    21  1.4041e-07  0:00:02   28
+!   21 solution is converged
+Flow time = 540s, time step = 9
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           303.68007
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           322.00833
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           333.52516
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           320.81963
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.70056213
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    21  1.4041e-07  0:00:02   30
+    22  3.3807e-06  0:00:02   29
+    23  1.1905e-07  0:00:02   28
+!   23 solution is converged
+Flow time = 600s, time step = 10
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           303.71022
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           322.21431
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           333.17854
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           320.63413
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.68214558
+  t=    10min |      30.56 C   49.06 |  60.03 C  47.48 C |    0.682 solidifying   |    713.8 kJ |    46s
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    23  1.1905e-07  0:00:02   30
+    24  3.1589e-06  0:00:02   29
+    25  1.6265e-07  0:00:02   28
+!   25 solution is converged
+Flow time = 660s, time step = 11
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           303.73837
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           322.52406
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           332.85227
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           320.48278
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.66499363
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    25  1.6265e-07  0:00:02   30
+    26  2.9511e-06  0:00:02   29
+    27  1.1091e-07  0:00:02   28
+!   27 solution is converged
+Flow time = 720s, time step = 12
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           303.76473
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           322.86758
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           332.55542
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           320.35741
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm            0.648832
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    27  1.1091e-07  0:00:02   30
+    28  2.7663e-06  0:00:02   29
+    29  1.0503e-07  0:00:02   28
+!   29 solution is converged
+Flow time = 780s, time step = 13
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           303.78955
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           323.18683
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           332.28731
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           320.25223
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.63349415
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    29  1.0503e-07  0:00:02   30
+    30  2.6061e-06  0:00:02   29
+    31  1.0344e-07  0:00:02   28
+!   31 solution is converged
+Flow time = 840s, time step = 14
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           303.81299
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water            323.4839
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           332.04339
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           319.96685
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.61890721
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    31  1.0344e-07  0:00:02   30
+    32  2.4633e-06  0:00:02   29
+    33  9.9481e-08  0:00:02   28
+!   33 solution is converged
+Flow time = 900s, time step = 15
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           303.83517
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           323.76069
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           331.82114
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           319.75425
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.60501324
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    33  9.9481e-08  0:00:02   30
+    34  2.3321e-06  0:00:02   29
+    35  1.0142e-07  0:00:02   28
+!   35 solution is converged
+Flow time = 960s, time step = 16
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           303.85619
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           324.01894
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           331.61165
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           319.60254
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.59183895
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    35  1.0142e-07  0:00:02   30
+    36  2.2131e-06  0:00:02   29
+    37  7.7073e-08  0:00:02   28
+!   37 solution is converged
+Flow time = 1020s, time step = 17
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           303.87616
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           324.26018
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           331.41696
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           319.43404
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.57927911
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    37  7.7073e-08  0:00:02   30
+    38  2.1068e-06  0:00:02   29
+    39  6.0813e-08  0:00:02   28
+!   39 solution is converged
+Flow time = 1080s, time step = 18
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           303.89519
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           324.48581
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           331.23911
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           319.27843
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.56722338
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    39  6.0813e-08  0:00:02   30
+    40  2.0101e-06  0:00:02   29
+    41  7.1436e-08  0:00:02   28
+!   41 solution is converged
+Flow time = 1140s, time step = 19
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           303.91336
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           324.69709
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           331.07048
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           319.14936
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.55569948
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    41  7.1436e-08  0:00:02   30
+    42  1.9230e-06  0:00:02   29
+    43  6.9133e-08  0:00:02   28
+!   43 solution is converged
+Flow time = 1200s, time step = 20
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water            303.9307
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           324.89514
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           330.90208
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           319.03958
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.54479868
+  t=    20min |      30.78 C   51.75 |  57.75 C  45.89 C |    0.545 solidifying   |    994.8 kJ |    92s
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    43  6.9133e-08  0:00:02   30
+    44  1.8411e-06  0:00:02   29
+    45  6.4179e-08  0:00:02   28
+!   45 solution is converged
+Flow time = 1260s, time step = 21
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           303.94726
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           325.08101
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           330.74035
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm            318.8872
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.53439304
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    45  6.4179e-08  0:00:02   30
+    46  1.7644e-06  0:00:02   29
+    47  5.7894e-08  0:00:02   28
+!   47 solution is converged
+Flow time = 1320s, time step = 22
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           303.96313
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           325.25546
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           330.59044
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           318.72806
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm           0.5243727
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    47  5.7894e-08  0:00:02   30
+    48  1.6936e-06  0:00:02   29
+    49  4.1372e-08  0:00:02   28
+!   49 solution is converged
+Flow time = 1380s, time step = 23
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           303.97841
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           325.41689
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           330.45555
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           318.59442
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.51461602
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    49  4.1372e-08  0:00:02   30
+    50  1.6308e-06  0:00:02   29
+    51  3.8958e-08  0:00:02   28
+!   51 solution is converged
+Flow time = 1440s, time step = 24
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           303.99319
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           325.55639
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           330.33213
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           318.44939
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.50510411
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    51  3.8958e-08  0:00:02   30
+    52  1.5758e-06  0:00:02   29
+    53  3.4788e-08  0:00:02   28
+!   53 solution is converged
+Flow time = 1500s, time step = 25
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.00751
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           325.68525
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           330.21531
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           318.31057
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm           0.4958555
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    53  3.4788e-08  0:00:02   30
+    54  1.5264e-06  0:00:02   29
+    55  3.1036e-08  0:00:02   28
+!   55 solution is converged
+Flow time = 1560s, time step = 26
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.02142
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           325.80692
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           330.10163
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           318.18815
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm           0.4868831
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    55  3.1036e-08  0:00:02   30
+    56  1.4813e-06  0:00:02   29
+    57  3.1081e-08  0:00:02   28
+!   57 solution is converged
+Flow time = 1620s, time step = 27
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.03494
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           325.92387
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           329.99281
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           318.07834
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.47814171
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    57  3.1081e-08  0:00:02   30
+    58  1.4406e-06  0:00:02   29
+    59  3.0781e-08  0:00:02   28
+!   59 solution is converged
+Flow time = 1680s, time step = 28
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.04809
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           326.03604
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           329.88494
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           317.97726
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.46965867
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    59  3.0781e-08  0:00:02   30
+    60  1.4028e-06  0:00:02   29
+    61  2.5096e-08  0:00:02   28
+!   61 solution is converged
+Flow time = 1740s, time step = 29
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.06092
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           326.14225
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           329.78212
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           317.88292
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.46136155
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    61  2.5096e-08  0:00:02   30
+    62  1.3684e-06  0:00:02   29
+    63  2.5245e-08  0:00:02   28
+!   63 solution is converged
+Flow time = 1800s, time step = 30
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.07343
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           326.24288
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           329.68228
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           317.79441
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm           0.4532605
+  t=    30min |      30.92 C   53.09 |  56.53 C  44.64 C |    0.453 solidifying   |   1176.7 kJ |   139s
+  saved criteria_4_only_30_capsules_temp_MID.png: OK
+  saved criteria_4_only_30_capsules_liqfrac_MID.png: OK
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    63  2.5245e-08  0:00:02   30
+    64  1.3358e-06  0:00:02   29
+    65  2.2974e-08  0:00:02   28
+!   65 solution is converged
+Flow time = 1860s, time step = 31
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.08565
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           326.33826
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           329.58425
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           317.71113
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.44535604
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    65  2.2974e-08  0:00:02   30
+    66  1.3048e-06  0:00:02   29
+    67  2.5593e-08  0:00:02   28
+!   67 solution is converged
+Flow time = 1920s, time step = 32
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water            304.0976
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           326.42869
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm            329.4869
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           317.63237
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.43765263
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    67  2.5593e-08  0:00:02   30
+    68  1.2757e-06  0:00:02   29
+    69  2.4147e-08  0:00:02   28
+!   69 solution is converged
+Flow time = 1980s, time step = 33
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.10927
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           326.51443
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           329.38961
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           317.52159
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.43014823
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    69  2.4147e-08  0:00:02   30
+    70  1.2482e-06  0:00:02   29
+    71  1.9199e-08  0:00:02   28
+!   71 solution is converged
+Flow time = 2040s, time step = 34
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.12069
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           326.59574
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           329.29571
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           317.42142
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.42279204
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    71  1.9199e-08  0:00:02   30
+    72  1.2220e-06  0:00:02   29
+    73  1.8289e-08  0:00:02   28
+!   73 solution is converged
+Flow time = 2100s, time step = 35
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.13188
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           326.67286
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           329.20471
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           317.33229
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.41557904
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    73  1.8289e-08  0:00:02   30
+    74  1.1969e-06  0:00:02   29
+    75  1.8095e-08  0:00:02   28
+!   75 solution is converged
+Flow time = 2160s, time step = 36
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.14284
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           326.74602
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           329.11599
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           317.25143
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.40850352
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    75  1.8095e-08  0:00:02   30
+    76  1.1733e-06  0:00:02   29
+    77  1.7001e-08  0:00:02   28
+!   77 solution is converged
+Flow time = 2220s, time step = 37
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.15359
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           326.81543
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           329.02883
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           317.17684
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.40156371
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    77  1.7001e-08  0:00:02   30
+    78  1.1511e-06  0:00:02   29
+    79  1.5769e-08  0:00:02   28
+!   79 solution is converged
+Flow time = 2280s, time step = 38
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.16415
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water            326.8813
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           328.94235
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm            317.1072
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.39476284
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    79  1.5769e-08  0:00:02   30
+    80  1.1298e-06  0:00:02   29
+    81  1.5250e-08  0:00:02   28
+!   81 solution is converged
+Flow time = 2340s, time step = 39
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.17452
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           326.94382
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           328.85857
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           317.04159
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.38807001
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    81  1.5250e-08  0:00:02   30
+    82  1.1095e-06  0:00:02   29
+    83  1.7436e-08  0:00:02   28
+!   83 solution is converged
+Flow time = 2400s, time step = 40
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.18471
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           327.00316
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm            328.7745
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           316.96341
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.38151909
+  t=    40min |      31.03 C   53.85 |  55.62 C  43.81 C |    0.382 solidifying   |   1318.5 kJ |   188s
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    83  1.7436e-08  0:00:02   30
+    84  1.0895e-06  0:00:02   29
+    85  1.6188e-08  0:00:05   28
+!   85 solution is converged
+Flow time = 2460s, time step = 41
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.19471
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           327.05949
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           328.68929
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           316.87161
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.37511636
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    85  1.6188e-08  0:00:05   30
+    86  1.0700e-06  0:00:04   29
+    87  1.5196e-08  0:00:04   28
+!   87 solution is converged
+Flow time = 2520s, time step = 42
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.20454
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           327.11297
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           328.60598
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           316.78306
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm           0.3688213
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    87  1.5196e-08  0:00:04   30
+    88  1.0514e-06  0:00:03   29
+    89  1.6835e-08  0:00:03   28
+!   89 solution is converged
+Flow time = 2580s, time step = 43
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water            304.2142
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           327.16375
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           328.52191
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           316.69784
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.36266344
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    89  1.6835e-08  0:00:03   30
+    90  1.0333e-06  0:00:03   29
+    91  1.3500e-08  0:00:03   28
+!   91 solution is converged
+Flow time = 2640s, time step = 44
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water            304.2237
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           327.21197
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           328.44034
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           316.61599
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.35659657
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    91  1.3500e-08  0:00:03   30
+    92  1.0161e-06  0:00:02   29
+    93  1.3880e-08  0:00:02   28
+!   93 solution is converged
+Flow time = 2700s, time step = 45
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.23304
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           327.25775
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           328.35967
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           316.53743
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.35063691
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    93  1.3880e-08  0:00:02   30
+    94  9.9943e-07  0:00:02   29
+!   94 solution is converged
+Flow time = 2760s, time step = 46
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.24218
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           327.30181
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm            328.2816
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           316.45891
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.34530125
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    94  9.9943e-07  0:00:02   30
+    95  9.4532e-07  0:00:02   29
+!   95 solution is converged
+Flow time = 2820s, time step = 47
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.25118
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           327.34283
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           328.21084
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           316.38612
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.34000685
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    95  9.4532e-07  0:00:02   30
+    96  9.3107e-07  0:00:02   29
+!   96 solution is converged
+Flow time = 2880s, time step = 48
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.26006
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water            327.3813
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           328.13972
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           316.28907
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.33478071
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    96  9.3107e-07  0:00:02   30
+    97  9.1781e-07  0:00:02   29
+!   97 solution is converged
+Flow time = 2940s, time step = 49
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.26881
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water            327.4176
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           328.06899
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           316.19811
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.32962693
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    97  9.1781e-07  0:00:02   30
+    98  9.0473e-07  0:00:02   29
+!   98 solution is converged
+Flow time = 3000s, time step = 50
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.27744
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           327.45196
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           328.00047
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           316.11332
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.32454161
+  t=    50min |      31.13 C   54.30 |  54.85 C  42.96 C |    0.325 solidifying   |   1436.6 kJ |   233s
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    98  9.0473e-07  0:00:02   30
+    99  8.9247e-07  0:00:02   29
+!   99 solution is converged
+Flow time = 3060s, time step = 51
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.28596
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           327.48452
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           327.93099
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           316.03444
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.31954953
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+    99  8.9247e-07  0:00:02   30
+   100  8.8035e-07  0:00:01   29
+!  100 solution is converged
+Flow time = 3120s, time step = 52
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.29437
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           327.51539
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           327.86168
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           315.96073
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.31463894
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+   100  8.8035e-07  0:00:02   30
+   101  8.6868e-07  0:00:01   29
+!  101 solution is converged
+Flow time = 3180s, time step = 53
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.30267
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           327.54467
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           327.79195
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           315.89127
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.30982057
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+   101  8.6868e-07  0:00:01   30
+   102  8.5717e-07  0:00:01   29
+!  102 solution is converged
+Flow time = 3240s, time step = 54
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.31085
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           327.57244
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           327.72094
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           315.82121
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.30507948
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+   102  8.5717e-07  0:00:01   30
+   103  8.4562e-07  0:00:01   29
+!  103 solution is converged
+Flow time = 3300s, time step = 55
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.31892
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           327.59875
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm            327.6509
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           315.74735
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.30039754
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+   103  8.4562e-07  0:00:01   30
+   104  8.3418e-07  0:00:01   29
+!  104 solution is converged
+Flow time = 3360s, time step = 56
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.32689
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           327.62369
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           327.58206
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           315.67416
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.29575959
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+   104  8.3418e-07  0:00:01   30
+   105  8.2299e-07  0:00:01   29
+!  105 solution is converged
+Flow time = 3420s, time step = 57
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.33476
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           327.64869
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           327.51573
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           315.60273
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.29119342
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+   105  8.2299e-07  0:00:01   30
+   106  8.1317e-07  0:00:01   29
+!  106 solution is converged
+Flow time = 3480s, time step = 58
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.34253
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           327.67245
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           327.44683
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           315.53381
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.28670962
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+   106  8.1317e-07  0:00:01   30
+   107  8.0292e-07  0:00:01   29
+!  107 solution is converged
+Flow time = 3540s, time step = 59
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.35021
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           327.69501
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           327.37918
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           315.46762
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.28229415
+
+Updating solution at time level N...
+ done.
+
+  iter      energy     time/iter
+   107  8.0292e-07  0:00:01   30
+   108  7.9325e-07  0:00:01   29
+!  108 solution is converged
+Flow time = 3600s, time step = 60
+
+s_average_temperature_water
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                           water           304.35778
+
+s_max_temperature_water
+ -------------------
+                             Max                 [K]
+-------------------------------- -------------------
+                           water           327.71641
+
+s_average_temperature_pcm
+ -------------------
+                  Volume-Average                 [K]
+-------------------------------- -------------------
+                             pcm           327.30971
+
+s_min_temperature_pcm
+ -------------------
+                             Min                 [K]
+-------------------------------- -------------------
+                             pcm           315.40407
+
+s_average_liquid_fraction_pcm
+ -------------------
+                  Volume-Average                    
+-------------------------------- -------------------
+                             pcm          0.27795511
+  t=    60min |      31.21 C   54.57 |  54.16 C  42.25 C |    0.278 solidifying   |   1539.0 kJ |   278s
+  saved criteria_4_only_30_capsules_temp_END.png: OK
+  saved criteria_4_only_30_capsules_liqfrac_END.png: OK
+
+  RESULT [4. YOUR WISH: only 30 capsules]: tank water 30.00 C -> 31.21 C (+1.21 K); capsules liquid fraction 1.000 -> 0.278; heat given to water 1539.0 kJ per m depth
+  time series: criteria_4_only_30_capsules_discharge_timeseries.csv
+DONE

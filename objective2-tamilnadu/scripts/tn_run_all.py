@@ -134,7 +134,7 @@ def run_stage(name, shape, max_par, dry=False):
             # sanitised, length-capped version of them
             tag = re.sub(r"[^A-Za-z0-9._-]+", "_", "_".join(job)) or "all"
             tag = tag[:60].strip("_")
-            log = ROOT / "results" / f"_log_{name}_{tag}.log"
+            log = ROOT / "results" / "logs" / f"_log_{name}_{tag}.log"
             fh = open(log, "w", encoding="utf-8")
             p = subprocess.Popen([sys.executable, str(script)] + job, cwd=str(ROOT),
                                  stdout=fh, stderr=subprocess.STDOUT, env=env)

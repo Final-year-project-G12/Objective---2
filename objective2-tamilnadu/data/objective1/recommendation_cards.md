@@ -2,14 +2,14 @@
 
 Generated from 3 climate regimes (GMM clustering, 133 population points).
 
-**Physics validation summary (Phase 7):** mean Spearman rho across clusters = 0.169 (MCDM consensus rank vs. simulated annual solar fraction, grey-box lumped-enthalpy tank model driven by each cluster's medoid point's real 10-year daily climate data). See `10_physics_validation.py`'s docstring for the full stated assumption list (tank size, collector efficiency, draw schedule) before quoting this number without qualification.
+**Physics validation summary (Phase 7):** mean Spearman rho across clusters = -0.069 (MCDM consensus rank vs. simulated annual solar fraction, grey-box lumped-enthalpy tank model driven by each cluster's medoid point's real 10-year daily climate data). See `10_physics_validation.py`'s docstring for the full stated assumption list (tank size, collector efficiency, draw schedule) before quoting this number without qualification.
 
 
 ## Cluster 0
 
 - **Points in regime:** 46
 - **Population covered:** 20,468,850
-- **Medoid point (highest membership confidence):** TNP_0006 (10.875, 78.625)
+- **Medoid point (highest membership confidence):** TNP_0011 (8.125, 77.375)
 
 **Climate signature (population-weighted mean):**
 
@@ -45,13 +45,13 @@ Generated from 3 climate regimes (GMM clustering, 133 population points).
 
 | PCM | Consensus rank | Simulated solar fraction | In 54-84% benchmark band? | Complete cycles/yr |
 |---|---|---|---|---|
-| RT57HC | 1 | 55.4% | Yes | 167 |
-| n-Hexacosane (C26) | 2 | 52.1% | No | 167 |
-| PureTemp 58 | 3 | 51.9% | No | 143 |
-| PlusICE A58 | 4 | 51.9% | No | 143 |
-| CrodaTherm 60 | 5 | 38.3% | No | 110 |
+| RT57HC | 1 | 54.6% | Yes | 71 |
+| n-Hexacosane (C26) | 2 | 59.1% | Yes | 70 |
+| PureTemp 58 | 3 | 54.7% | Yes | 42 |
+| PlusICE A58 | 4 | 54.5% | Yes | 43 |
+| CrodaTherm 60 | 5 | 80.9% | Yes | 17 |
 
-*Spearman rho (MCDM rank vs. simulated solar fraction) for this cluster: 0.381 — weak agreement — diagnose before trusting the MCDM ranking here*
+*Spearman rho (MCDM rank vs. simulated solar fraction) for this cluster: -0.333 — weak agreement — diagnose before trusting the MCDM ranking here*
 
 **Caveats:** thermal conductivity / density / specific heat not reported in the source data for the literature-added candidates (see 06_build_pcm_database.py); Phase 7's tank/collector parameters are stated assumptions, not measurements (see 10_physics_validation.py's docstring).
 

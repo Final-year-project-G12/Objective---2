@@ -1,0 +1,69 @@
+1 RT57HC reference -0.95
+1 RT57HC F_R*tau-alpha -10% -2.29
+1 RT57HC F_R*tau-alpha +10% -0.3
+1 RT57HC F_R*U_L -10% -0.59
+1 RT57HC F_R*U_L +10% -1.37
+1 RT57HC area 2.5 m2 (legacy) -0.21
+1 RT57HC mains -3 C -1.31
+1 RT57HC mains +3 C -0.6
+1 RT57HC 70 L/day 0.23
+1 RT57HC 150 L/day 74.89
+1 RT57HC 300 L/day (legacy) 111.92
+1 RT57HC anchor bottom -1.38
+1 RT57HC anchor top -0.92
+1 RT57HC latent -10% -1.26
+1 RT57HC latent +10% -0.68
+1 RT57HC Tm -1.5 K 0.18
+1 RT57HC Tm +1.5 K -2.1
+1 RT57HC conductivity -20% -1.0
+1 RT57HC conductivity +20% -0.92
+1 RT57HC flow 0.015 + F_R(flow) ON -1.19
+1 RT57HC flow 0.050 + F_R(flow) ON -0.86
+1 RT57HC flow 0.015 (F_R const) -0.98
+1 RT57HC flow 0.050 (F_R const) -0.93
+1 n-Hexacosane (C26) reference -1.41
+1 n-Hexacosane (C26) F_R*tau-alpha -10% -2.83
+1 n-Hexacosane (C26) F_R*tau-alpha +10% -0.66
+1 n-Hexacosane (C26) F_R*U_L -10% -1.02
+1 n-Hexacosane (C26) F_R*U_L +10% -1.84
+1 n-Hexacosane (C26) area 2.5 m2 (legacy) -0.51
+1 n-Hexacosane (C26) mains -3 C -1.85
+1 n-Hexacosane (C26) mains +3 C -0.95
+1 n-Hexacosane (C26) 70 L/day 0.15
+1 n-Hexacosane (C26) 150 L/day 63.82
+1 n-Hexacosane (C26) 300 L/day (legacy) 86.94
+1 n-Hexacosane (C26) anchor bottom -1.78
+1 n-Hexacosane (C26) anchor top -1.47
+1 n-Hexacosane (C26) latent -10% -1.71
+1 n-Hexacosane (C26) latent +10% -1.12
+1 n-Hexacosane (C26) Tm -1.5 K -0.26
+1 n-Hexacosane (C26) Tm +1.5 K -2.55
+1 n-Hexacosane (C26) conductivity -20% -1.45
+1 n-Hexacosane (C26) conductivity +20% -1.38
+1 n-Hexacosane (C26) flow 0.015 + F_R(flow) ON -1.62
+1 n-Hexacosane (C26) flow 0.050 + F_R(flow) ON -1.33
+1 n-Hexacosane (C26) flow 0.015 (F_R const) -1.39
+1 n-Hexacosane (C26) flow 0.050 (F_R const) -1.41
+1 n-Pentacosane (C25) reference 0.28
+1 n-Pentacosane (C25) F_R*tau-alpha -10% -0.3
+1 n-Pentacosane (C25) F_R*tau-alpha +10% 0.49
+1 n-Pentacosane (C25) F_R*U_L -10% 0.45
+1 n-Pentacosane (C25) F_R*U_L +10% 0.12
+1 n-Pentacosane (C25) area 2.5 m2 (legacy) 0.42
+1 n-Pentacosane (C25) mains -3 C 0.38
+1 n-Pentacosane (C25) mains +3 C 0.28
+1 n-Pentacosane (C25) 70 L/day 0.34
+1 n-Pentacosane (C25) 150 L/day 78.88
+1 n-Pentacosane (C25) 300 L/day (legacy) 118.08
+1 n-Pentacosane (C25) anchor bottom -0.27
+1 n-Pentacosane (C25) anchor top 0.42
+1 n-Pentacosane (C25) latent -10% -0.05
+1 n-Pentacosane (C25) latent +10% 0.6
+1 n-Pentacosane (C25) Tm -1.5 K 1.33
+1 n-Pentacosane (C25) Tm +1.5 K -0.82
+1 n-Pentacosane (C25) conductivity -20% 0.24
+1 n-Pentacosane (C25) conductivity +20% 0.31
+1 n-Pentacosane (C25) flow 0.015 + F_R(flow) ON 0.11
+1 n-Pentacosane (C25) flow 0.050 + F_R(flow) ON 0.34
+1 n-Pentacosane (C25) flow 0.015 (F_R const) 0.16
+1 n-Pentacosane (C25) flow 0.050 (F_R const) 0.32

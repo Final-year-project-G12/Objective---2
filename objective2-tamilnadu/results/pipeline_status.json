@@ -1,0 +1,62 @@
+{
+  "wait_doe": {
+    "state": "DONE",
+    "note": "",
+    "time": "2026-11-23 23:53:29"
+  },
+  "c10_fidelity": {
+    "state": "DONE",
+    "note": "",
+    "time": "2026-11-24 00:19:12"
+  },
+  "c10_summary": {
+    "state": "DONE",
+    "note": "",
+    "time": "2026-11-24 00:19:12"
+  },
+  "c11_surrogates": {
+    "state": "DONE",
+    "note": "",
+    "time": "2026-11-24 00:34:13"
+  },
+  "c14_search": {
+    "state": "DONE",
+    "note": "",
+    "time": "2026-11-24 01:26:19"
+  },
+  "c15_grid_band": {
+    "state": "DONE",
+    "note": "",
+    "time": "2026-11-24 01:56:24"
+  },
+  "c16_freeze": {
+    "state": "DONE",
+    "note": "",
+    "time": "2026-11-24 01:56:27"
+  },
+  "c16_evaluate": {
+    "state": "DONE",
+    "note": "",
+    "time": "2026-11-24 02:12:35"
+  },
+  "c16_select": {
+    "state": "DONE",
+    "note": "",
+    "time": "2026-11-24 02:12:38"
+  },
+  "c17_test": {
+    "state": "DONE",
+    "note": "",
+    "time": "2026-11-24 02:21:45"
+  },
+  "post_o2": {
+    "state": "DONE",
+    "note": "",
+    "time": "2026-11-24 03:28:20"
+  },
+  "pipeline": {
+    "state": "COMPLETE",
+    "note": "",
+    "time": "2026-11-24 03:28:20"
+  }
+}

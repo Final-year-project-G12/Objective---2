@@ -66,11 +66,15 @@ def pcm_properties(name):
 
 
 def regime_pcm(regime):
-    if OPTIMAL_CSV.exists():
-        d = pd.read_csv(OPTIMAL_CSV)
+    """The regime's CURRENT winning PCM (common plant), via o2_designs.py; the source is printed. The dictionary below is only a last resort."""
+    import o2_designs
+    d = o2_designs.load()
+    if d is not None:
         row = d[d.regime == regime]
         if len(row) and pd.notna(row.iloc[0].get("pcm")):
+            print(f"  design source: {row.iloc[0]['source']}", flush=True)
             return str(row.iloc[0]["pcm"])
+    print("  design source: hard-coded last resort (no current design file found)", flush=True)
     return {0: "PureTemp 58", 1: "RT57HC", 2: "RT57HC"}[regime]
 
 

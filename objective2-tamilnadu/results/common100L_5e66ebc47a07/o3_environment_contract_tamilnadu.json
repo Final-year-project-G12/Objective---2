@@ -1,0 +1,784 @@
+{
+ "schema": "o3_environment_contract_common100L_v1",
+ "state": "tamilnadu",
+ "generated_utc": "2026-11-24T02:02:55.679701+00:00",
+ "built_by": "scripts/c23_build_o3_environment_contract.py",
+ "immutable_result_record": {
+  "file": "results/common100L_5e66ebc47a07/o3_contract_tamilnadu.json",
+  "sha256": "9264c320ef884c19e8a1eab00666b71a7a0539de9e2dc50cc1fdecaf3871eadd",
+  "schema": "o3_contract_common100L_v1",
+  "run_id": "test_20261124_021241",
+  "hardware_hash": "5e66ebc47a07",
+  "funnel_sha256": "36060c237f8b11dac65757bfa6de9d86bfc233e0a93382f05e4cf1a67aa81999",
+  "how_verified": "SHA-256 of the file re-computed and compared with o3_contract_tamilnadu.sha256; funnel hash compared across the contract, the lock and configs/funnel_frozen.sha256; hardware hash recomputed from the configs.",
+  "rule": "This environment contract NEVER replaces the immutable record. If the two ever disagree, the immutable record wins."
+ },
+ "supersession_note": "SUPERSEDES objective3/obj3_environment_contract_tamilnadu_v3.json (contract_version obj3_contract_v3.0_2026-11-09) and objective3/OBJECTIVE3_INPUTS_AND_NEXT_STEPS.md of the same date, now archived in archive/superseded_obj3_contract_2026-11-09/. That contract described the LEGACY plant: 100 L tank with a 2.5 m2 collector, 300 L/day demand, a 30 % PCM-fraction cap, 98-105 capsules, flow searched, and a held-out test on 2011-2015. The common-plant rebuild changed ALL of these: 100 L / 2.0 m2 / 175 L/day, fraction cap 40 %, 140 capsules, flow frozen at 0.030 kg/s, a hardware-hash-keyed one-shot test on 2006-2010. No number from the older contracts may be used. Any cached copy must be discarded.",
+ "plant": {
+  "tank_volume_L": 100.0,
+  "tank_height_to_diameter_ratio": 2.0,
+  "tank_insulation_m": 0.05,
+  "tank_U_W_m2K": 0.8,
+  "collector_area_m2": 2.0,
+  "storage_per_collector_area_L_m2": 50.0,
+  "collector_fr_tau_alpha": 0.75,
+  "collector_fr_ul_W_m2K": 4.5,
+  "collector_flow_dependent_fr_enabled": false,
+  "min_irradiance_cutoff_Wm2": 10.0,
+  "capsule_wall_material": "aluminium",
+  "capsule_wall_thickness_m": 0.0008,
+  "liquid_convection_enhancement": 2.0,
+  "melting_half_width_K": 1.0,
+  "delivery_target_temp_C": 45.0,
+  "demand_daily_total_L": 175.0,
+  "config_version": "config_v2.0_2026-11-20-common-100L-2p0m2",
+  "design_space_version": "design_space_o2_v4_common100L_cap40_flow0p030_2026-11-20",
+  "WARNING": "100 L / 2.0 m2 / 175 L/day is the COMMON plant. Do not mix in the legacy 2.5 m2 collector, the 300 L/day draw or the 50 L tank.",
+  "limitation_F_R_not_refitted": "fr_tau_alpha and fr_ul are the legacy typical-flat-plate values; they were NOT re-fitted for the 2.0 m2 absorber basis. The configs are hash-sealed under the one-shot lock, so changing them now would invalidate the test. Their effect is reported as a sensitivity (parameter_sensitivity below)."
+ },
+ "global_limits": {
+  "delivery_target_temp_C": 45.0,
+  "max_safe_water_temp_C": 75.0,
+  "max_safe_pcm_temp_C": 65.0,
+  "max_pressure_bar": 3.5,
+  "flow_min_kg_s": 0.01,
+  "flow_max_kg_s": 0.05,
+  "pump_efficiency": 0.6,
+  "note": "HARD limits. The controller may never command a flow outside the envelope, nor drive water above max_safe_water_temp_C or PCM above max_safe_pcm_temp_C."
+ },
+ "safety_shield": {
+  "enabled": true,
+  "bypass_water_C": 72.0,
+  "bypass_pcm_C": 62.0,
+  "guard_band_K": 3.0,
+  "enforced_in": "src/simulation/tank_model_multinode.py, inside the physics, NOT in the policy",
+  "note": "Already enforced, not a specification to implement. It forces the collector off at the bypass temperatures. Objective 3's job is a BETTER controller than this reactive trip: one that anticipates the limit instead of reacting at it.",
+  "cost_it_creates": "PCM tanks spend MORE hours in the shield than the plain tank (see test_overheat_extra_h per regime). This is where a controller can add value.",
+  "standard": "IS 12976:2023 Sec 8.2 describes this mechanism for overheat protection."
+ },
+ "demand": {
+  "file": "data/demand/demand_profile_tamilnadu.csv",
+  "sha256": "31fc744908cad77434355d6bfa9e97cb6bd250319505f4959406665f19418dce",
+  "daily_total_L": 175.0,
+  "shape": "24 hourly draw fractions summing to 1 (columns hour, draw_fraction, draw_volume_L, draw_mass_kg); draw_volume_L = draw_fraction x daily_total_L",
+  "delivery_window_for_reward": "18:00-09:00 (the window of the g_window metric, src/optimize/evaluate.py)",
+  "sensitivity_cases": "100, 150 and the legacy 300 L/day are reported as SENSITIVITY cases only (results/c7_l4_sensitivity_r*.csv); they are not the plant.",
+  "mains_temperature_C": {
+   "0": 28.463,
+   "1": 23.969,
+   "2": 27.768
+  },
+  "mains_note": "one constant per regime, from Objective 1's climate signature; it does not vary through the year in the model"
+ },
+ "time_step_s": 150,
+ "time_step_confirm_s": 37.5,
+ "time_step_note": "150 s is the SEARCH step; 37.5 s is the CONFIRMATION step and every number in the immutable record was produced at 37.5 s with three anchors. State which step an O3 environment uses; a controller trained at 150 s must be re-checked at 37.5 s.",
+ "static_design_per_regime": [
+  {
+   "regime_id": 0,
+   "label": "coastal/interior lowland (46 pts, medoid elev 156 m)",
+   "medoid_point_id": "TNP_0006",
+   "medoid_matches_CURRENT_MEDOIDS": true,
+   "n_points": 46,
+   "population_covered": 20468850,
+   "T_mains_est_C": 28.463,
+   "o1_pcm_shortlist": [
+    "RT57HC",
+    "n-Hexacosane (C26)",
+    "PureTemp 58"
+   ],
+   "selected_pcm": "PureTemp 58",
+   "selected_pcm_o1_rank": 3,
+   "capsule_inner_radius_m": 0.04,
+   "capsule_inner_diameter_mm": 80.0,
+   "capsule_outer_diameter_mm": 81.6,
+   "n_capsules": 140,
+   "pcm_volume_fraction": 0.3982879197374298,
+   "pcm_mass_kg": 33.4030886090486,
+   "arrangement": "staggered",
+   "nominal_flow_kg_s": 0.03,
+   "flow_envelope_kg_s": [
+    0.01,
+    0.05
+   ],
+   "stack_anchor": "robust(bottom,centre,top)",
+   "bound_status": {
+    "radius_at_upper_bound": true,
+    "capsule_count_at_fraction_cap": true,
+    "fraction_cap": 0.4,
+    "max_count_allowed_at_cap": 140,
+    "reading": "Both the 40 mm radius bound and the 40 % fraction cap are binding: the optimum is the corner of the search box, not an interior point."
+   },
+   "select_years_2020_2021": {
+    "g_window_mean_kWh": 129.52086582679945,
+    "g_window_worst_anchor_kWh": 124.1722540691382,
+    "d_overheat_mean_h": 848.1035879629629,
+    "t_pcm_max_C": 62.30461417721233,
+    "funnel_leader_gain_kWh": 138.34123808056142,
+    "n_designs_tied_with_leader": 18
+   },
+   "repeatability_band": {
+    "core_kWh": 30.43158737037613,
+    "full_incl_mains_and_demand_kWh": 99.42508264187008,
+    "definition": "core = years, timestep, nodes, PCM properties, anchor; full adds mains and demand (see docs/PLAN_DEVIATIONS.md for why the funnel uses the core band)"
+   },
+   "one_shot_test_2006_2010": {
+    "gain_mean_kWh": 137.29874961482932,
+    "gain_worst_anchor_mean_kWh": 132.3853920800076,
+    "gain_min_year_kWh": 135.04289702683323,
+    "years_pcm_better": "5 of 5",
+    "gain_over_core_band": 4.511718299272284,
+    "gain_over_full_band": 1.3809266833539429,
+    "overheat_extra_hours_per_year": 937.0462962962964,
+    "t_pcm_max_C": 62.30928164376956,
+    "t_water_max_C": 72.0941757532082,
+    "hours_over_limit": 0.0
+   },
+   "report_only_2022_2025": {
+    "gain_mean_kWh": 129.73957046928328,
+    "years": [
+     2022,
+     2023,
+     2024,
+     2025
+    ],
+    "note": "2024-2025 carry prior project exposure; report-only, never used to choose."
+   }
+  },
+  {
+   "regime_id": 1,
+   "label": "elevated/hill interior, Nilgiris-adjacent (41 pts, medoid elev 627 m)",
+   "medoid_point_id": "TNP_0007",
+   "medoid_matches_CURRENT_MEDOIDS": true,
+   "n_points": 41,
+   "population_covered": 20422160,
+   "T_mains_est_C": 23.969,
+   "o1_pcm_shortlist": [
+    "RT57HC",
+    "n-Hexacosane (C26)",
+    "n-Pentacosane (C25)"
+   ],
+   "selected_pcm": "RT57HC",
+   "selected_pcm_o1_rank": 1,
+   "capsule_inner_radius_m": 0.04,
+   "capsule_inner_diameter_mm": 80.0,
+   "capsule_outer_diameter_mm": 81.6,
+   "n_capsules": 140,
+   "pcm_volume_fraction": 0.3982879197374298,
+   "pcm_mass_kg": 33.77840421139746,
+   "arrangement": "staggered",
+   "nominal_flow_kg_s": 0.03,
+   "flow_envelope_kg_s": [
+    0.01,
+    0.05
+   ],
+   "stack_anchor": "robust(bottom,centre,top)",
+   "bound_status": {
+    "radius_at_upper_bound": true,
+    "capsule_count_at_fraction_cap": true,
+    "fraction_cap": 0.4,
+    "max_count_allowed_at_cap": 140,
+    "reading": "Both the 40 mm radius bound and the 40 % fraction cap are binding: the optimum is the corner of the search box, not an interior point."
+   },
+   "select_years_2020_2021": {
+    "g_window_mean_kWh": 117.20272272542564,
+    "g_window_worst_anchor_kWh": 103.5402434563208,
+    "d_overheat_mean_h": 574.9346064814814,
+    "t_pcm_max_C": 62.45520116042908,
+    "funnel_leader_gain_kWh": 131.6057126361934,
+    "n_designs_tied_with_leader": 12
+   },
+   "repeatability_band": {
+    "core_kWh": 27.312102455266704,
+    "full_incl_mains_and_demand_kWh": 66.51483769669728,
+    "definition": "core = years, timestep, nodes, PCM properties, anchor; full adds mains and demand (see docs/PLAN_DEVIATIONS.md for why the funnel uses the core band)"
+   },
+   "one_shot_test_2006_2010": {
+    "gain_mean_kWh": 122.3545816291316,
+    "gain_worst_anchor_mean_kWh": 108.84294326358932,
+    "gain_min_year_kWh": 110.73118827738632,
+    "years_pcm_better": "5 of 5",
+    "gain_over_core_band": 4.479866822026272,
+    "gain_over_full_band": 1.839508083700954,
+    "overheat_extra_hours_per_year": 627.2693287037038,
+    "t_pcm_max_C": 62.45221518534016,
+    "t_water_max_C": 72.11878731088973,
+    "hours_over_limit": 0.0
+   },
+   "report_only_2022_2025": {
+    "gain_mean_kWh": 120.3340084397396,
+    "years": [
+     2022,
+     2023,
+     2024,
+     2025
+    ],
+    "note": "2024-2025 carry prior project exposure; report-only, never used to choose."
+   }
+  },
+  {
+   "regime_id": 2,
+   "label": "coastal metro lowland, largest population (46 pts, medoid elev 44 m)",
+   "medoid_point_id": "TNP_0001",
+   "medoid_matches_CURRENT_MEDOIDS": true,
+   "n_points": 46,
+   "population_covered": 30335760,
+   "T_mains_est_C": 27.768,
+   "o1_pcm_shortlist": [
+    "RT57HC",
+    "n-Pentacosane (C25)",
+    "n-Hexacosane (C26)"
+   ],
+   "selected_pcm": "RT57HC",
+   "selected_pcm_o1_rank": 1,
+   "capsule_inner_radius_m": 0.04,
+   "capsule_inner_diameter_mm": 80.0,
+   "capsule_outer_diameter_mm": 81.6,
+   "n_capsules": 140,
+   "pcm_volume_fraction": 0.3982879197374298,
+   "pcm_mass_kg": 33.77840421139746,
+   "arrangement": "staggered",
+   "nominal_flow_kg_s": 0.03,
+   "flow_envelope_kg_s": [
+    0.01,
+    0.05
+   ],
+   "stack_anchor": "robust(bottom,centre,top)",
+   "bound_status": {
+    "radius_at_upper_bound": true,
+    "capsule_count_at_fraction_cap": true,
+    "fraction_cap": 0.4,
+    "max_count_allowed_at_cap": 140,
+    "reading": "Both the 40 mm radius bound and the 40 % fraction cap are binding: the optimum is the corner of the search box, not an interior point."
+   },
+   "select_years_2020_2021": {
+    "g_window_mean_kWh": 120.09539235421204,
+    "g_window_worst_anchor_kWh": 113.51978780125148,
+    "d_overheat_mean_h": 895.0078125,
+    "t_pcm_max_C": 62.45354060189089,
+    "funnel_leader_gain_kWh": 130.83267026216154,
+    "n_designs_tied_with_leader": 18
+   },
+   "repeatability_band": {
+    "core_kWh": 21.137571809029424,
+    "full_incl_mains_and_demand_kWh": 90.15942190107543,
+    "definition": "core = years, timestep, nodes, PCM properties, anchor; full adds mains and demand (see docs/PLAN_DEVIATIONS.md for why the funnel uses the core band)"
+   },
+   "one_shot_test_2006_2010": {
+    "gain_mean_kWh": 133.98514913956154,
+    "gain_worst_anchor_mean_kWh": 127.86474080364913,
+    "gain_min_year_kWh": 118.54756617148882,
+    "years_pcm_better": "5 of 5",
+    "gain_over_core_band": 6.33871999821316,
+    "gain_over_full_band": 1.4860914845546869,
+    "overheat_extra_hours_per_year": 997.6591435185186,
+    "t_pcm_max_C": 62.460074151948405,
+    "t_water_max_C": 72.16525851257636,
+    "hours_over_limit": 0.0
+   },
+   "report_only_2022_2025": {
+    "gain_mean_kWh": 123.5996335940042,
+    "years": [
+     2022,
+     2023,
+     2024,
+     2025
+    ],
+    "note": "2024-2025 carry prior project exposure; report-only, never used to choose."
+   }
+  }
+ ],
+ "one_shot_test": {
+  "status": "SPENT. Run once, locked. Do not re-run and do not tune against these years.",
+  "years": [
+   2006,
+   2007,
+   2008,
+   2009,
+   2010
+  ],
+  "run_id": "test_20261124_021241",
+  "locked_utc": "2026-11-23T20:42:41.371084+00:00",
+  "lock_file": "results/common100L_5e66ebc47a07/held_out_test.lock",
+  "selection_fingerprint": "36060c237f8b11dac65757bfa6de9d86bfc233e0a93382f05e4cf1a67aa81999",
+  "designs_tested": "the 3 funnel winners (one per regime); a design was not tested unless the frozen funnel had selected it",
+  "gates": {
+   "years_pcm_beats_plain_tank": {
+    "0": "5 of 5",
+    "1": "5 of 5",
+    "2": "5 of 5"
+   },
+   "pcm_peak_under_65C": "max 62.46 C",
+   "water_peak_under_75C": "max 72.17 C",
+   "hours_over_limit": 0.0
+  }
+ },
+ "weather_sequences": {
+  "roles": {
+   "test": [
+    2006,
+    2007,
+    2008,
+    2009,
+    2010
+   ],
+   "legacy": [
+    2011,
+    2012,
+    2013,
+    2014,
+    2015
+   ],
+   "explore": [
+    2016,
+    2017,
+    2018,
+    2019
+   ],
+   "select": [
+    2020,
+    2021
+   ],
+   "report": [
+    2022,
+    2023,
+    2024,
+    2025
+   ]
+  },
+  "medoid_points": {
+   "0": "TNP_0006",
+   "1": "TNP_0007",
+   "2": "TNP_0001"
+  },
+  "mapping_for_O3": {
+   "training": {
+    "years": [
+     2016,
+     2017,
+     2018,
+     2019
+    ],
+    "role": "explore"
+   },
+   "validation": {
+    "years": [
+     2020,
+     2021
+    ],
+    "role": "select",
+    "note": "these two years also chose the O2 DESIGN; they did not touch a controller, but say so in any O3 report"
+   },
+   "final_report": {
+    "years": [
+     2022,
+     2023
+    ],
+    "role": "report",
+    "note": "recommendation, not an O2 rule: pre-register these before the first run"
+   },
+   "forbidden": {
+    "years": [
+     2006,
+     2007,
+     2008,
+     2009,
+     2010,
+     2011,
+     2012,
+     2013,
+     2014,
+     2015,
+     2024,
+     2025
+    ],
+    "note": "2006-2010: one-shot test SPENT. 2011-2015: legacy test, accepted for no purpose. 2024-2025: project-exposed."
+   }
+  },
+  "enforcement": "src/weather/roles.py::load_point_year(..., purpose=...) refuses a year whose role differs from the stated purpose; the test years additionally need acquire_test_lock(), which refuses because the lock exists.",
+  "weather_sha256": "see immutable_result_record: every point-year file is hashed there"
+ },
+ "flow_policy": {
+  "O2_design_flow_kg_s": 0.03,
+  "status": "FROZEN in Objective 2 as a design value (rule R6); it was never searched, so it is NOT an optimum to defend.",
+  "O3_role": "flow becomes an ACTION inside flow_envelope_kg_s. collector_flow_dependent_fr_enabled is false, so F_R does not vary with flow in this model: a flow-sensitivity learned from the model is partly an artefact of that."
+ },
+ "action_space": {
+  "discrete_version": {
+   "actions": [
+    "charge",
+    "discharge",
+    "bypass"
+   ],
+   "note": "simulator applies a validated flow-rate and valve command for each mode"
+  },
+  "hybrid_version": {
+   "mode": [
+    "charge",
+    "discharge",
+    "bypass"
+   ],
+   "continuous": {
+    "flow_rate_kg_s": "within this regime's flow_envelope_kg_s above"
+   },
+   "note": "preferred if hardware can modulate pump/valve continuously -- this project's pump range (0.010-0.050 kg/s) is continuous, so the hybrid version is RECOMMENDED"
+  },
+  "recommended": "hybrid_version",
+  "hard_rule": "the controller must never command a flow or temperature outside this regime's flow_envelope_kg_s / max_safe_water_temp_C / max_safe_pcm_temp_C -- the safety shield below overrides the policy if it tries"
+ },
+ "reset_scenarios": [
+  {
+   "name": "fully_solid",
+   "initial_pcm_state": "solid",
+   "initial_water_temp_C": 30.0,
+   "note": "matches src/simulation/tank_model.py's default cold-start condition"
+  },
+  {
+   "name": "partially_charged",
+   "initial_pcm_state": "mid",
+   "initial_water_temp_C": 30.0,
+   "note": "PCM initialized at Tm_C (roughly 50% notional charge state)"
+  },
+  {
+   "name": "fully_liquid",
+   "initial_pcm_state": "liquid",
+   "initial_water_temp_C": 30.0,
+   "note": "stresses discharge-heavy policies from a fully-charged start"
+  }
+ ],
+ "dynamic_state_schema": {
+  "description": "One observation per control timestep. Fields marked measurable=false need an estimator (energy-balance + calibrated melt-fraction observer), not a raw sensor.",
+  "fields": [
+   {
+    "name": "I_t",
+    "unit": "W/m2",
+    "measurable": true,
+    "source": "pyranometer or weather feed"
+   },
+   {
+    "name": "T_amb_t",
+    "unit": "C",
+    "measurable": true,
+    "source": "ambient sensor"
+   },
+   {
+    "name": "T_water_t",
+    "unit": "C",
+    "measurable": true,
+    "source": "tank thermocouple"
+   },
+   {
+    "name": "T_pcm_t",
+    "unit": "C",
+    "measurable": false,
+    "source": "estimator (no direct PCM sensor assumed)"
+   },
+   {
+    "name": "f_melt_t",
+    "unit": "fraction [0,1]",
+    "measurable": false,
+    "source": "estimator, derived from T_pcm_t via the frozen enthalpy model"
+   },
+   {
+    "name": "H_pcm_t",
+    "unit": "J/kg",
+    "measurable": false,
+    "source": "estimator (integral of Q_pcm)"
+   },
+   {
+    "name": "T_in_t",
+    "unit": "C",
+    "measurable": true,
+    "source": "mains/inlet sensor"
+   },
+   {
+    "name": "T_out_t",
+    "unit": "C",
+    "measurable": true,
+    "source": "delivery-point sensor"
+   },
+   {
+    "name": "D_t",
+    "unit": "kg/s or L",
+    "measurable": true,
+    "source": "flow meter at the draw-off point"
+   },
+   {
+    "name": "t_day",
+    "unit": "hour of day [0,24)",
+    "measurable": true,
+    "source": "clock"
+   },
+   {
+    "name": "d_season",
+    "unit": "categorical/cyclical encoding",
+    "measurable": true,
+    "source": "calendar"
+   },
+   {
+    "name": "mdot_t",
+    "unit": "kg/s",
+    "measurable": true,
+    "source": "commanded/measured pump flow"
+   },
+   {
+    "name": "dp_t",
+    "unit": "Pa",
+    "measurable": true,
+    "source": "differential pressure sensor or Ergun estimate from mdot_t"
+   },
+   {
+    "name": "E_unmet_t",
+    "unit": "kWh (cumulative)",
+    "measurable": false,
+    "source": "estimator, from T_out_t vs delivery target"
+   },
+   {
+    "name": "mode_t",
+    "unit": "categorical {charge, discharge, bypass}",
+    "measurable": true,
+    "source": "controller's own last commanded mode"
+   },
+   {
+    "name": "T_water_top_C",
+    "unit": "C",
+    "measurable": true,
+    "source": "sensor at the tank outlet: the DELIVERY temperature"
+   },
+   {
+    "name": "T_water_bottom_C",
+    "unit": "C",
+    "measurable": true,
+    "source": "sensor at the collector return: the collector INLET"
+   },
+   {
+    "name": "recoverable_energy_above_45C_kWh",
+    "unit": "kWh",
+    "measurable": false,
+    "source": "estimator, not a raw sensor"
+   }
+  ],
+  "stratification_note": "The tank is stratified and multi-node (n_nodes = 10). Delivery temperature is the TOP node; the collector inlet is the BOTTOM node."
+ },
+ "acceptance_test_before_drl_training": [
+  "every action stays within flow_envelope_kg_s / temperature limits above",
+  "charge/discharge/bypass transitions are physically valid",
+  "the environment conserves energy (reuse Phase 4 Gate 1's <0.1% residual check)",
+  "the safety shield cannot be bypassed by the policy",
+  "the same seed reproduces the same trajectory",
+  "simulator output matches this Objective 2 re-evaluation for identical actions",
+  "with the baseline controller (the unmodified kernel behaviour: collector on whenever irradiance >= the cutoff and the shield allows), the stepper reproduces the per-year paired gains in immutable_result_record's c17 tables to within the repeatability band",
+  "the environment is built for the COMMON plant: the plant block of this contract equals the configs it was built from (check config_version)",
+  "no weather year with role test, legacy or project-exposed report is ever loaded"
+ ],
+ "reward_function": {
+  "status": "SUGGESTED. Weights are deliberately NOT chosen: Objective 3 sets and justifies them.",
+  "formula": "r_t = w1*E_del45_t - w2*overheat_step_t - w3*safety_violation_t - w4*bypass_switch_t",
+  "term_definitions": {
+   "E_del45_t": "energy delivered up to the 45 C target in this step (the g_window metric counts 18:00-09:00)",
+   "overheat_step_t": "shield-active time in the step (the quantity behind d_overheat)",
+   "safety_violation_t": "1 if TOP water >= bypass_water_C or PCM >= bypass_pcm_C, else 0",
+   "bypass_switch_t": "1 if the mode changes into bypass at this step, else 0"
+  },
+  "normalisation": "compute from the water-only twin of the regime's design over the explore years [2016, 2017, 2018, 2019]",
+  "removed_terms": "pump energy: the model has only an Ergun pressure drop across the capsule bed"
+ },
+ "parameter_sensitivity": {
+  "what": "change in g_window (kWh/yr) vs the L4 sensitivity reference design when one input is moved; read from results/c7_l4_sensitivity_r*.csv",
+  "scope_warning": "measured on the L4 REFERENCE design, not on the funnel winner, and in select-year weather; use for SIZE and SIGN only",
+  "by_regime_for_selected_pcm": {
+   "0": {
+    "F_R*tau-alpha -10%": -14.4,
+    "F_R*tau-alpha +10%": 7.4,
+    "F_R*U_L -10%": 2.5,
+    "F_R*U_L +10%": -2.8,
+    "area 2.5 m2 (legacy)": 9.3,
+    "mains -3 C": 0.5,
+    "mains +3 C": -9.0,
+    "70 L/day": -94.9,
+    "150 L/day": 52.9,
+    "300 L/day (legacy)": 73.4,
+    "anchor bottom": -8.5,
+    "anchor top": -3.8,
+    "latent -10%": -13.4,
+    "latent +10%": 10.3,
+    "Tm -1.5 K": 10.3,
+    "Tm +1.5 K": -11.4,
+    "conductivity -20%": 2.7,
+    "conductivity +20%": -1.9,
+    "flow 0.015 + F_R(flow) ON": -23.4,
+    "flow 0.050 + F_R(flow) ON": 2.8,
+    "flow 0.015 (F_R const)": -23.6,
+    "flow 0.050 (F_R const)": 1.8
+   },
+   "1": {
+    "F_R*tau-alpha -10%": -29.8,
+    "F_R*tau-alpha +10%": 20.0,
+    "F_R*U_L -10%": 6.0,
+    "F_R*U_L +10%": -6.4,
+    "area 2.5 m2 (legacy)": 29.9,
+    "mains -3 C": -12.4,
+    "mains +3 C": 7.8,
+    "70 L/day": -65.4,
+    "150 L/day": 22.8,
+    "300 L/day (legacy)": 13.8,
+    "anchor bottom": -14.2,
+    "anchor top": -1.4,
+    "latent -10%": -16.6,
+    "latent +10%": 13.6,
+    "Tm -1.5 K": 18.1,
+    "Tm +1.5 K": -18.2,
+    "conductivity -20%": 2.9,
+    "conductivity +20%": -2.0,
+    "flow 0.015 + F_R(flow) ON": -18.1,
+    "flow 0.050 + F_R(flow) ON": 4.2,
+    "flow 0.015 (F_R const)": -13.3,
+    "flow 0.050 (F_R const)": 1.9
+   },
+   "2": {
+    "F_R*tau-alpha -10%": -17.1,
+    "F_R*tau-alpha +10%": 9.8,
+    "F_R*U_L -10%": 3.2,
+    "F_R*U_L +10%": -3.5,
+    "area 2.5 m2 (legacy)": 13.0,
+    "mains -3 C": -1.7,
+    "mains +3 C": -6.9,
+    "70 L/day": -92.3,
+    "150 L/day": 47.8,
+    "300 L/day (legacy)": 59.1,
+    "anchor bottom": -8.9,
+    "anchor top": -0.7,
+    "latent -10%": -13.2,
+    "latent +10%": 10.3,
+    "Tm -1.5 K": 12.6,
+    "Tm +1.5 K": -12.9,
+    "conductivity -20%": 2.1,
+    "conductivity +20%": -1.4,
+    "flow 0.015 + F_R(flow) ON": -13.9,
+    "flow 0.050 + F_R(flow) ON": 3.4,
+    "flow 0.015 (F_R const)": -12.0,
+    "flow 0.050 (F_R const)": 2.2
+   }
+  }
+ },
+ "design_space_caveats": {
+  "NOT_A_GLOBAL_OPTIMUM": true,
+  "statement": "The designs are the best found WITHIN the declared box under a pre-declared funnel. They are not proven global optima.",
+  "searched_bounds": {
+   "capsule_inner_radius_m": [
+    0.01,
+    0.04
+   ],
+   "pcm_volume_fraction": [
+    0.02,
+    0.4
+   ],
+   "flow_kg_s": "frozen at 0.03",
+   "arrangement": [
+    "single-layer",
+    "staggered",
+    "radial"
+   ]
+  },
+  "binding_bounds": "BOTH the radius bound (40 mm) and the fraction cap (40 %) are binding in all three regimes. The 30 % cap of the legacy run moved to 40 % and the optimum moved with it, so the true optimum may lie beyond this box.",
+  "identical_geometry_in_all_regimes": "all three regimes ended at the same geometry (R 40 mm, 140 capsules, staggered). They differ only in PCM and weather, so do not read regime-to-regime geometry differences into the result.",
+  "fraction_cap_is_a_count_cap": "N = floor(0.40 x V_tank / V_capsule_outer) = 140; the realised fraction is 0.3983, slightly under 0.40",
+  "cheap_screen_fidelity": "0 of 9 pairs pass (rule: >=7). cheap screen NOT used for selection: all funnel candidates are re-evaluated at full fidelity; pairs passing the pre-registered rule: 0 of 9 (Spearman 1.00 in every pair, but max difference 3.66-4.30 kWh against the 0.5 kWh limit)",
+  "band_definition": "the funnel used the CORE band. Against the FULL band (mains and demand variation included) the test gain is only 1.38x (regime 0), 1.84x (regime 1), 1.49x (regime 2) the band, versus 4.51x, 4.48x, 6.34x against the core band. The sign survives either way (PCM wins in every test year), the margin is much thinner against the full band, and regime 1 has the narrowest worst-anchor gain."
+ },
+ "temperature_specification": {
+  "o2": {
+   "o2_delivery_target_temp_C": {
+    "value": 45.0,
+    "meaning": "threshold at which O2 MEASURES usable delivered energy"
+   },
+   "o2_max_pcm_temp_C": {
+    "value": 65.0,
+    "meaning": "PCM material-stability ceiling"
+   },
+   "o2_max_water_temp_C": {
+    "value": 75.0,
+    "meaning": "scald prevention"
+   }
+  },
+  "o1_Tm_target_C": {
+   "value": 67.0,
+   "meaning": "aspirational PCM melt target Objective 1 sized against (60 C delivery + 7 K approach)",
+   "binds": false
+  },
+  "selected_pcm_melt_points_C": "PureTemp 58 = 58.0, RT57HC = 56.5 (data/objective1/pcm_database_tamilnadu.csv)",
+  "service_mismatch": "Objective 1 sizes latent heat for a 60 C delivery; Objective 2 scores delivered energy at 45 C. O2's paired comparison is sound (both arms use the same metric), but the 45 C screen (scripts/c2_pcm_identity_check_45C.py) found lower-melting PCMs would do better at 100 L/day. Not acted on: PCMs come from Objective 1 only (user decision)."
+ },
+ "verification_status": {
+  "simulator_verification": {
+   "status": "DONE",
+   "energy_balance_max_abs_residual_pct": 4.3797637533452085e-11,
+   "evidence_files": [
+    "results/c4_l3_r*_timestep.csv",
+    "results/c4_l3_r*_nodes.csv",
+    "results/c4_l3_r*_standing_loss.csv",
+    "results/c5_g1_geometry_summary.csv",
+    "results/c6_g1_pairs_r*.csv"
+   ],
+   "test_suite": {
+    "command": "python -m pytest tests -q",
+    "summary": "95 passed, 1 skipped, 3 warnings in 77.29s (0:01:17)",
+    "returncode": 0
+   }
+  },
+  "model_consistency_cross_check": {
+   "status": "DONE, with stated limits",
+   "method": "ANSYS Fluent, enthalpy-porosity: one capsule 6 h charge; one capsule 1 h discharge; whole-tank 2-D discharge; the seven criteria (ansys/criteria_*/)",
+   "limits": [
+    "2-D symmetry-slice, buoyancy off, first-order upwind: melt fractions are conservative",
+    "capsule count drawn in 2-D is a proxy (drawn = round(N x 34/104)); every kWh number comes from the node model",
+    "criteria 0 and 1 differ only in flow and the Fluent discharge case has no flow, so Fluent cannot separate them"
+   ]
+  },
+  "experimental_validation": {
+   "status": "NOT DONE",
+   "scope": "Objective 4"
+  },
+  "weather_2006_2010": "sunrise/sunset geometry check covered 0 days for 2006-2010; timing was verified against the 2017 clear-sky profile (docs/PLAN_DEVIATIONS.md). Not GHI-audited against plant outcomes before the test.",
+  "o1_physics_agreement": "Objective 1's MCDM ranking vs its own physics model is weak and not statistically significant (mean Spearman rho = +0.169; p = 0.12-0.96; n = 8-10 per cluster): the shortlist is a consensus ranking, not a physics-confirmed one.",
+  "wording_rule": "Say 'simulator verification', 'model consistency cross-check', 'experimental validation'. Never 'CFD-validated'."
+ },
+ "deferred_future_work": [
+  "re-fit F_R*tau-alpha and F_R*U_L for the 2.0 m2 basis (would need a new lock and a new test; today it is a stated sensitivity)",
+  "extend the search box: both the 40 mm radius and the 40 % fraction are binding",
+  "flow-dependent collector F_R (disabled; flow behaviour is partly a model artefact)",
+  "PCMs outside Objective 1's shortlist (a 45 C screen favours lower-melting PCMs; not acted on by decision)",
+  "regime-0 medoid is one of 24 tied points; each regime uses one medoid weather point",
+  "node count N = 10 vs 20 is inside the band, not removed",
+  "experimental validation (Objective 4)"
+ ],
+ "objective_boundary": "Objective 1 selected the PCM shortlist. Objective 2 selected the physical design (PCM identity, capsule geometry, arrangement) and the validated operating envelope. OBJECTIVE 3 SELECTS THE REAL-TIME ACTION AND NOTHING ELSE. It must not change PCM identity, capsule geometry, tank volume, collector area, safety limits or the released physics model, and must not re-cluster or merge the regimes.",
+ "provenance": {
+  "sha256_of_every_file_read": {
+   "results/common100L_5e66ebc47a07/o3_contract_tamilnadu.json": "9264c320ef884c19e8a1eab00666b71a7a0539de9e2dc50cc1fdecaf3871eadd",
+   "results/common100L_5e66ebc47a07/c17_summary.csv": "bad87174e5bbf2c7970135a9d07b4b6a7c33ade65024fef451e00303a5296e12",
+   "results/common100L_5e66ebc47a07/c17_test_by_year.csv": "220386a6a610a0d3fe297da895676ed94337496d2aa5fe261ee99ce4a33497f0",
+   "results/common100L_5e66ebc47a07/c17_report_only_by_year.csv": "967e10597785753d91b32aacc3d0913415fdc89953126337e701a96ee65abeb4",
+   "results/common100L_5e66ebc47a07/held_out_test.lock": "eccf7cf09e2e62e2fbb6ac3068373f3cf7df5558c71f387d5941a2791a50f2f7",
+   "results/c16_funnel_winners.csv": "8afd27086d9a2b9c2bc88a047f3e977798f7696ae571a453badc04f55abc0887",
+   "results/c10_l5_fidelity_summary.csv": "8a35f72ce3479e5640184fa1f80cf60ec449cd536370a7d12f2a5b4a53f5da9a",
+   "configs/funnel_frozen.json": "36060c237f8b11dac65757bfa6de9d86bfc233e0a93382f05e4cf1a67aa81999",
+   "configs/system_config_shared.yaml": "6187ba80ec2ab2be656e07a86418becde0ac8fc3284b5407efc494327f4ac105",
+   "configs/design_space.yaml": "0ca4212085f05b537f8a81c6d88c8e85310878b7bc2cdc1899185224d46b4cfa",
+   "configs/states/tamilnadu.yaml": "07d1fd3764da5890950de27e77fc007e384e78d1fb687496e12a89d8777d4e77",
+   "data/demand/demand_profile_tamilnadu.csv": "31fc744908cad77434355d6bfa9e97cb6bd250319505f4959406665f19418dce",
+   "archive/superseded_obj3_contract_2026-10-27/obj3_environment_contract_tamilnadu.json": "8f4f871a49999212a9d8bbbec8756d6996018366308524bd1c498e0c9efd50c8",
+   "results/c7_l4_sensitivity_r0.csv": "cc52dde57cbbfb3d2da5c2b203b21b3ac8fdd466352818c279fceae8f7e8b627",
+   "results/c7_l4_sensitivity_r1.csv": "93422eb26c67fa009931df8ad34fc33c2d62dd7ab8eb06692c50693179125207",
+   "results/c7_l4_sensitivity_r2.csv": "1b7314c666bfa7fb1fab8eba60c9dd0d3101b812e411b62530dde276376abfb6"
+  },
+  "generic_blocks_reused_from": "archive/superseded_obj3_contract_2026-10-27/obj3_environment_contract_tamilnadu.json",
+  "generic_blocks": [
+   "action_space",
+   "reset_scenarios",
+   "dynamic_state_schema (extended)",
+   "acceptance_test (extended)"
+  ],
+  "generic_blocks_note": "checked: they contain no plant-specific numbers"
+ }
+}

@@ -1,0 +1,45 @@
++ cd /c/Users/jaswi/OneDrive/Desktop/ALL/SEM_7/project/jammalamadugu/new_obj/objective2_design_optimization/ansys
++ export V4_SCHEME=Coupled
++ V4_SCHEME=Coupled
++ export V4_ORDER=first
++ V4_ORDER=first
++ MESH='C:\fluent_work\regime0_v3_mesh_only.cas.h5'
++ ZONES='3_s_1 3_s_2 2_l_7 2_l_9 2_l_8 2_l_10 2_l_11 2_l_5'
++ VEL=5.581517e-05
++ DT=20.0
++ NSTEPS=1080
++ for PCM in c25 c26 rt57hc puretemp58
+++ date
++ echo '=== c25 v7 starting Fri Oct 30 12:27:27 IST 2026 ==='
+=== c25 v7 starting Fri Oct 30 12:27:27 IST 2026 ===
++ python pyfluent_v4_melt.py 'C:\fluent_work\regime0_v3_mesh_only.cas.h5' c25 3_s_1 3_s_2 2_l_7 2_l_9 2_l_8 2_l_10 2_l_11 2_l_5 5.581517e-05 20.0 1080 v7_c25
+++ date
++ echo '=== c25 v7 done Fri Oct 30 13:15:57 IST 2026, exit=0 ==='
+=== c25 v7 done Fri Oct 30 13:15:57 IST 2026, exit=0 ===
++ for PCM in c25 c26 rt57hc puretemp58
+++ date
++ echo '=== c26 v7 starting Fri Oct 30 13:15:57 IST 2026 ==='
+=== c26 v7 starting Fri Oct 30 13:15:57 IST 2026 ===
++ python pyfluent_v4_melt.py 'C:\fluent_work\regime0_v3_mesh_only.cas.h5' c26 3_s_1 3_s_2 2_l_7 2_l_9 2_l_8 2_l_10 2_l_11 2_l_5 5.581517e-05 20.0 1080 v7_c26
+++ date
++ echo '=== c26 v7 done Fri Oct 30 13:30:46 IST 2026, exit=0 ==='
+=== c26 v7 done Fri Oct 30 13:30:46 IST 2026, exit=0 ===
++ for PCM in c25 c26 rt57hc puretemp58
+++ date
++ echo '=== rt57hc v7 starting Fri Oct 30 13:30:46 IST 2026 ==='
+=== rt57hc v7 starting Fri Oct 30 13:30:46 IST 2026 ===
++ python pyfluent_v4_melt.py 'C:\fluent_work\regime0_v3_mesh_only.cas.h5' rt57hc 3_s_1 3_s_2 2_l_7 2_l_9 2_l_8 2_l_10 2_l_11 2_l_5 5.581517e-05 20.0 1080 v7_rt57hc
+++ date
++ echo '=== rt57hc v7 done Fri Oct 30 13:46:18 IST 2026, exit=0 ==='
+=== rt57hc v7 done Fri Oct 30 13:46:18 IST 2026, exit=0 ===
++ for PCM in c25 c26 rt57hc puretemp58
+++ date
++ echo '=== puretemp58 v7 starting Fri Oct 30 13:46:18 IST 2026 ==='
+=== puretemp58 v7 starting Fri Oct 30 13:46:18 IST 2026 ===
++ python pyfluent_v4_melt.py 'C:\fluent_work\regime0_v3_mesh_only.cas.h5' puretemp58 3_s_1 3_s_2 2_l_7 2_l_9 2_l_8 2_l_10 2_l_11 2_l_5 5.581517e-05 20.0 1080 v7_puretemp58
+++ date
++ echo '=== puretemp58 v7 done Fri Oct 30 14:02:00 IST 2026, exit=0 ==='
+=== puretemp58 v7 done Fri Oct 30 14:02:00 IST 2026, exit=0 ===
+++ date
++ echo '=== ALL V7 RUNS DONE Fri Oct 30 14:02:00 IST 2026 ==='
+=== ALL V7 RUNS DONE Fri Oct 30 14:02:00 IST 2026 ===

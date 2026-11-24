@@ -87,18 +87,27 @@ def pcm_properties(name: str) -> dict:
 
 
 def optimal_design(regime: int) -> dict:
-    """The optimiser's answer if it exists, otherwise the deployable fallback."""
-    if OPTIMAL_CSV.exists():
-        d = pd.read_csv(OPTIMAL_CSV)
+    """The CURRENT optimiser answer (common plant), read by o2_designs.py; the legacy table is only a last resort.
+
+    Until 2026-11-24 this read results/tn_optimal_designs.csv, which was archived with the legacy results; the demo then fell back SILENTLY to
+    the hard-coded legacy table (regime 0 -> n-Hexacosane). Now the source is always printed, and a legacy source is flagged.
+    NOTE: flow_velocity is the legacy 2-D slice inlet velocity (the v3 mesh); it is NOT derived from the frozen 0.030 kg/s. Melting here is
+    conduction-limited, so it hardly matters, but do not quote it as a design value.
+    """
+    import o2_designs
+    d = o2_designs.load()
+    if d is not None:
         row = d[d.regime == regime]
         if len(row) and pd.notna(row.iloc[0].get("pcm")):
             r = row.iloc[0]
-            print(f"  design source: {OPTIMAL_CSV.name} (optimiser output)")
+            print(f"  design source: {r['source']}")
+            print(f"  NOTE: inlet velocity {FALLBACK[regime]['flow_velocity']:.3e} m/s is the legacy 2-D slice value, NOT derived from the "
+                  f"frozen 0.030 kg/s; the capsule mesh is the proven v3 mesh unless --rebuild-mesh is given.")
             return dict(pcm=str(r["pcm"]), R_capsule_m=float(r["R_in_m"]),
                         flow_velocity=FALLBACK[regime]["flow_velocity"],
                         fraction=r.get("fraction"), n_capsule=r.get("N"),
                         pcm_mass_kg=r.get("pcm_mass_kg"))
-    print(f"  design source: FALLBACK (v3 deployable) -- {OPTIMAL_CSV.name} not written yet")
+    print("  design source: HARD-CODED LEGACY FALLBACK -- no current design file found (this is NOT the common-plant design)")
     return dict(FALLBACK[regime])
 
 

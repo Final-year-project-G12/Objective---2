@@ -1,0 +1,24 @@
+2 1 1
+2 1 2
+2 1 4
+2 1 5
+2 1 6
+2 1 7
+2 1 9
+invalid runs: [{'run': 3, 'reason': 'bounds_violation'}, {'run': 8, 'reason': 'passage_blocked'}]
+2 2 1
+2 2 2
+2 2 4
+2 2 5
+2 2 6
+2 2 7
+2 2 9
+invalid runs: [{'run': 3, 'reason': 'bounds_violation'}, {'run': 8, 'reason': 'passage_blocked'}]
+2 3 1
+2 3 2
+2 3 4
+2 3 5
+2 3 6
+2 3 7
+2 3 9
+invalid runs: [{'run': 3, 'reason': 'bounds_violation'}, {'run': 8, 'reason': 'passage_blocked'}]

@@ -34,6 +34,12 @@ REQUIRED = [
 
 
 def main() -> int:
+    import os
+    if os.environ.get("O2_ALLOW_LEGACY_CONTRACT") != "1":
+        print("DISABLED (2026-11-24). This stage builds the LEGACY contract (2.5 m2 collector, 300 L/day, 98-105 capsules, 2011-2015 test).\n"
+              "The current handoff is scripts/c23_build_o3_environment_contract.py (verify with scripts/c24_check_o3_environment_contract.py).\n"
+              "To rebuild the legacy contract anyway for a historical comparison: set O2_ALLOW_LEGACY_CONTRACT=1.")
+        return 2
     root = Path(__file__).resolve().parent.parent
     missing = [r for r in REQUIRED if not (root / r).exists()]
     if missing:

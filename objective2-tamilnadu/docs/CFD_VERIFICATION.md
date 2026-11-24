@@ -1,3 +1,5 @@
+> **LEGACY DOCUMENT** - written for the old plant (2.5 m2 collector, 300 L/day, 30 % cap, 2011-2015 test). Current results: `docs/RESULTS_COMMON_PLANT.md`.
+
 # 19 — CFD Cross-Verification: ANSYS Fluent & OpenFOAM (2026-10, updated 2026-10-29)
 
 ## 🔴 2026-10-29 — the v3 cases reported liquid fraction = 0, and the cause was the initial condition

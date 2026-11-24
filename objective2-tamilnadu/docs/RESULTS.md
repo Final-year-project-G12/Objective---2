@@ -1,3 +1,5 @@
+> **LEGACY DOCUMENT** - written for the old plant (2.5 m2 collector, 300 L/day, 30 % cap, 2011-2015 test). Current results: `docs/RESULTS_COMMON_PLANT.md`.
+
 # Objective 2 — Current Results (Tamil Nadu)
 
 ## ✅ 2026-10-30 — CURRENT. Everything below the 2026-10-28 banner is superseded.

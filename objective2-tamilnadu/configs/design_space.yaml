@@ -1,19 +1,22 @@
 # Objective 2 rework - APPROVED design space (Rajasthan folder only).
 # Approved by the user on 2026-10-26 after the G7 sensitivity study (docs/PROGRESS.md section 9).
 # The `geometry_engine` block below is what src/design/constraints.check_design enforces (read by io_utils.load_design_bounds()).
-version: design_space_o2_v3_cap30_2026-10-27
+version: design_space_o2_v4_common100L_cap40_flow0p030_2026-11-20
 
+# COMMON-PLANT REBUILD 2026-11-20 (docs/plan/Unified_Objectives_2_3_Rebuild_Plan_Four_States_REVISED_v1.docx, rules R1/R4/R6/R7):
+#   fraction cap 0.30 -> 0.40; flow frozen at 0.030 kg/s (not searched); plant 100 L / 2.0 m2 / 100 L/day.
+#   Everything decided under the 30 % cap, the legacy plant or the free-flow box is not valid for this box.
 # DECLARED CHANGE 2026-10-27 (user decision after issue 2 of docs/PROGRESS.md): pcm_volume_fraction max 0.20 -> 0.30.
 # Reason: the 20 % cap was the only bound that limited the result (widened-bound diagnostic, section 5e of docs/04_RESULTS.md).
 # Everything decided under the 20 % cap is not valid for this box.
 
 variables:
   inner_radius_m:      {min: 0.010, max: 0.040}   # PCM thickness = sphere inner radius (decision D3); outer D = 2*(R_in + wall)
-  pcm_volume_fraction: {min: 0.02,  max: 0.30}    # capsule OUTER volume / tank volume; count N is derived (below)
-  flow_rate_kg_s:      {min: 0.010, max: 0.050}   # kept as in the legacy bounds (decision: option b, see flow_note)
+  pcm_volume_fraction: {min: 0.02,  max: 0.40}    # capsule OUTER volume / tank volume; count N is derived (below)
+  flow_rate_kg_s:      {min: 0.030, max: 0.030}   # FROZEN design-only value (rule R6, Revision 10): not searched; F_R(flow) is a sensitivity study only
   arrangement:         [single-layer, staggered, radial]
 
-count_rule: "N = clip(round(f * V_tank / V_capsule_outer(R)), ceil(0.02*V_tank/V), floor(0.30*V_tank/V))"
+count_rule: "N = clip(round(f * V_tank / V_capsule_outer(R)), ceil(0.02*V_tank/V), floor(0.40*V_tank/V))"
 
 constraints:
   pcm_peak_limit_C: 65.0       # a design whose PCM peak exceeds this in ANY simulated year is INFEASIBLE (user decision)
@@ -23,7 +26,8 @@ constraints:
 model:
   tank_model: multinode
   n_nodes: 10                  # user decision; N-sensitivity (10 -> 20: 0.15-0.25 pp on the gain) goes into the WP6 band
-  stack_anchor: center         # ablated in G11
+  stack_anchor: center         # per-anchor run value; the objective evaluates ALL of stack_anchors below (rule R7)
+  stack_anchors: [bottom, center, top]   # robust objective: rank on mean paired gain; reject if worst-anchor gain < 0 or inside the water-only band
   timestep_s: 150              # same value as solver.timestep_s in system_config_shared.yaml
 
 baseline: "water-only tank at the SAME flow, weather year, demand, shield and tank model (user decision)"
@@ -42,6 +46,7 @@ geometry_engine:
   pcm_thickness_m:    {min: 0.004, max: 0.2}
   capsule_diameter_m: {min: 0.01,  max: 0.2}
   capsule_count:      {min: 1, max: 5000, step: 1}
+  flow_rate_kg_s:     {min: 0.010, max: 0.050}   # VALIDITY range only (pump limits) so flow-sensitivity runs stay valid; the SEARCH flow is frozen in `variables`
   pcm_volume_fraction_min: 0.0       # loading floor of the geometry check; the 2 % floor is applied by space.count_for_fraction
   spacing_min_m: 0.003               # minimum capsule surface-to-surface clearance
   passage_min_fraction: 0.05         # minimum free-flow (void) volume fraction of the tank

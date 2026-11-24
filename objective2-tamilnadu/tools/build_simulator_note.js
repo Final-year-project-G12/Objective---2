@@ -119,7 +119,7 @@ function figurePair() {
     rows: [new TableRow({ children: [
       cell([
         img("01_system_mesh_zones.png", 150, 1076 / 1257),
-        cap("Figure 1 — the modelled system: 100 L tank, 34 PCM capsules, collector channel, "
+        cap("Figure 1 — the modelled system: 100 L tank, 34 drawn PCM capsules, collector channel, "
           + "absorber plate and riser, as six separate Fluent cell zones over 42,966 cells."),
         cap("It is the geometry check: confirming the thing meshed is the thing meant, before any "
           + "physics is solved on it."),
@@ -144,7 +144,7 @@ children.push(new Paragraph({
     bold: true, size: 28, color: INK, font: "Calibri",
   })],
 }));
-children.push(P("Objective 2 — PCM capsule tank, Tamil Nadu · 31 October 2026",
+children.push(P("Objective 2 — PCM capsule tank, Tamil Nadu · common plant · refreshed 24 November 2026",
   { color: MUTED, size: SMALL, after: 110 }));
 
 children.push(H("The objective"));
@@ -169,7 +169,7 @@ children.push(table(
   ],
   [1300, 4400, 4400]));
 children.push(P(
-  "Not alternatives. The search ran over 1,100 design evaluations before anything was chosen: at "
+  "Not alternatives. The search ran over thousands of design evaluations before anything was chosen: at "
   + "CFD speed that is years of compute. CFD is how we test the assumptions that buy the speed.",
   { after: 40 }));
 
@@ -186,7 +186,7 @@ children.push(table(
   [
     ["CFD solver", "OpenFOAM chtMultiRegionFoam", "ANSYS Fluent 2026 R1 Student"],
     ["phase change in CFD", "not modelled — sensible heating only", "enthalpy-porosity, melt front resolved"],
-    ["tank volume", "50 L", "100 L, collector scaled to keep 40 L/m²"],
+    ["tank / collector / draw", "50 L, 1.5 m²", "100 L, 2.0 m², 175 L/day (common plant)"],
     ["surrogate model", "XGBoost", "stacked ensemble, chosen over 5 families in all 9 pairs"],
     ["tank model", "hers", "hers, adopted unchanged"],
   ],
@@ -200,9 +200,9 @@ children.push(H("What we run in Fluent"));
 children.push(P(
   "A half-disk capsule in a water annulus, meshed in gmsh, solved 2-D planar: solid at 30 °C in "
   + "water held at the 70 °C collector delivery temperature for a six-hour charging window. "
-  + "Geometry, PCM identity and flow rate are read from the optimiser's own output. It yields melt "
-  + "curves for all four PCMs, a flow-rate sweep showing the benefit saturating where the optimiser "
-  + "settled, and the whole-system heat path.", { after: 40 }));
+  + "PCM identity and capsule geometry are read from the optimiser's own output. It yields melt "
+  + "curves for all four PCMs, a discharge study (the PCM heating the water), seven what-if designs "
+  + "(fewer or more capsules) and the whole-system heat path.", { after: 40 }));
 
 children.push(figurePair());
 
@@ -228,7 +228,7 @@ const doc = new Document({
 });
 
 Packer.toBuffer(doc).then((buf) => {
-  const out = path.join(ROOT, "O2_Simulators_and_CFD_1page.docx");
+  const out = path.join(ROOT, "docs", "reports", "O2_Simulators_and_CFD_1page.docx");
   fs.writeFileSync(out, buf);
   console.log("wrote " + out + "  (" + (buf.length / 1024).toFixed(0) + " KB)");
 });

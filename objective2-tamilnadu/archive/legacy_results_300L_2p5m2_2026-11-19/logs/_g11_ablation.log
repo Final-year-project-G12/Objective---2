@@ -1,0 +1,12 @@
+running 1 stage(s), up to 3 processes each
+
+=== g11_ablation (regime, 3 job(s), 3 at a time) ===
+    start 0
+    start 1
+    start 2
+    ok    2  (7.3 min)
+    ok    1  (7.6 min)
+    ok    0  (8.7 min)
+--- g11_ablation finished in 8.7 min, 0 failure(s)
+
+all requested stages done in 8.7 min

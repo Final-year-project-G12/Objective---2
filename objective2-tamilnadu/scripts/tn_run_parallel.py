@@ -80,7 +80,7 @@ def main():
         env.setdefault(var, "1")
 
     max_par = args.workers or min(len(jobs), max(1, (os.cpu_count() or 2) - 1))
-    log_dir = ROOT / "results"
+    log_dir = ROOT / "results" / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"{name}: {len(jobs)} jobs, {max_par} at a time, state={STATE}")

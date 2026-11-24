@@ -1,22 +1,22 @@
 {
  "key": "criteria_0_optimal_reference",
  "title": "0. OPTIMAL (reference)",
- "rule": "The optimiser's selected design (S0/S1/S2 funnel winner): the largest radius, ~30 % PCM fraction, a high-but-not-maximum flow.",
+ "rule": "The Objective 2 funnel winner for regime 0 (S0/S1/S2 frozen before the select years were run).",
  "why_not_optimal": "It IS the optimum - reference for every other run.",
  "regime": 0,
  "pcm": "PureTemp 58",
  "design": {
-  "R_in": 0.0399999921398018,
-  "fraction": 0.29587085509033423,
-  "flow": 0.0387608549268862,
+  "R_in": 0.04,
+  "fraction": 0.3982879197374298,
+  "flow": 0.03,
   "arrangement": "staggered"
  },
- "n_3d": 104,
- "fraction_pct": 29.58708550903342,
+ "n_3d": 140,
+ "fraction_pct": 39.82879197374297,
  "frac_of_optimal_N": 1.0,
  "proxy": {
   "drawn_capsules": 34,
-  "r_in_2d_m": 0.0199999960699009,
+  "r_in_2d_m": 0.02,
   "rule": "drawn = round(N_3d*34/104); r_2d = 0.5*R_in_3d  (optimal = 34 capsules / 20 mm)"
  },
  "mesh": {
@@ -24,7 +24,7 @@
   "ny": 200
  },
  "run": {
-  "hours": 2.0,
+  "hours": 1.0,
   "dt_s": 60.0
  }
 }

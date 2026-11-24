@@ -1,0 +1,147 @@
+r1 REF single y2018 PLAIN              R=20 N=0 valid=True 4.3s
+r1 REF multinode y2018 PLAIN              R=20 N=0 valid=True 4.3s
+r1 A_thickness single y2018 RT57HC             R=10 N=1194 valid=True 15.5s
+r1 A_thickness single y2018 RT57HC             R=15 N=354 valid=True 11.1s
+r1 A_thickness single y2018 RT57HC             R=20 N=149 valid=True 8.5s
+r1 A_thickness single y2018 RT57HC             R=25 N=76 valid=True 8.3s
+r1 A_thickness single y2018 RT57HC             R=30 N=44 valid=True 8.8s
+r1 A_thickness single y2018 RT57HC             R=40 N=19 valid=True 9.5s
+r1 A_thickness multinode y2018 RT57HC             R=10 N=1194 valid=True 4.0s
+r1 A_thickness multinode y2018 RT57HC             R=15 N=354 valid=True 2.9s
+r1 A_thickness multinode y2018 RT57HC             R=20 N=149 valid=True 2.9s
+r1 A_thickness multinode y2018 RT57HC             R=25 N=76 valid=True 2.8s
+r1 A_thickness multinode y2018 RT57HC             R=30 N=44 valid=True 2.9s
+r1 A_thickness multinode y2018 RT57HC             R=40 N=19 valid=True 2.8s
+r1 B_count multinode y2018 RT57HC             R=20 N=13 valid=True 2.7s
+r1 B_count multinode y2018 RT57HC             R=20 N=27 valid=True 2.5s
+r1 B_count multinode y2018 RT57HC             R=20 N=53 valid=True 2.6s
+r1 B_count multinode y2018 RT57HC             R=20 N=93 valid=True 2.6s
+r1 B_count multinode y2018 RT57HC             R=20 N=133 valid=True 2.8s
+r1 B_count multinode y2018 RT57HC             R=20 N=199 valid=True 2.5s
+r1 B_count multinode y2018 RT57HC             R=20 N=265 valid=True 2.5s
+r1 B_count multinode y2018 RT57HC             R=20 N=398 valid=True 3.0s
+r1 B_count multinode y2018 RT57HC             R=20 N=531 valid=False 0.0s
+r1 A_thickness single y2018 n-Hexacosane (C26) R=10 N=1194 valid=True 16.1s
+r1 A_thickness single y2018 n-Hexacosane (C26) R=15 N=354 valid=True 10.0s
+r1 A_thickness single y2018 n-Hexacosane (C26) R=20 N=149 valid=True 10.4s
+r1 A_thickness single y2018 n-Hexacosane (C26) R=25 N=76 valid=True 9.5s
+r1 A_thickness single y2018 n-Hexacosane (C26) R=30 N=44 valid=True 8.4s
+r1 A_thickness single y2018 n-Hexacosane (C26) R=40 N=19 valid=True 9.6s
+r1 A_thickness multinode y2018 n-Hexacosane (C26) R=10 N=1194 valid=True 4.8s
+r1 A_thickness multinode y2018 n-Hexacosane (C26) R=15 N=354 valid=True 3.3s
+r1 A_thickness multinode y2018 n-Hexacosane (C26) R=20 N=149 valid=True 3.5s
+r1 A_thickness multinode y2018 n-Hexacosane (C26) R=25 N=76 valid=True 2.8s
+r1 A_thickness multinode y2018 n-Hexacosane (C26) R=30 N=44 valid=True 2.7s
+r1 A_thickness multinode y2018 n-Hexacosane (C26) R=40 N=19 valid=True 2.5s
+r1 B_count multinode y2018 n-Hexacosane (C26) R=20 N=13 valid=True 2.8s
+r1 B_count multinode y2018 n-Hexacosane (C26) R=20 N=27 valid=True 2.8s
+r1 B_count multinode y2018 n-Hexacosane (C26) R=20 N=53 valid=True 3.2s
+r1 B_count multinode y2018 n-Hexacosane (C26) R=20 N=93 valid=True 3.4s
+r1 B_count multinode y2018 n-Hexacosane (C26) R=20 N=133 valid=True 3.3s
+r1 B_count multinode y2018 n-Hexacosane (C26) R=20 N=199 valid=True 3.2s
+r1 B_count multinode y2018 n-Hexacosane (C26) R=20 N=265 valid=True 3.4s
+r1 B_count multinode y2018 n-Hexacosane (C26) R=20 N=398 valid=True 3.6s
+r1 B_count multinode y2018 n-Hexacosane (C26) R=20 N=531 valid=False 0.0s
+r1 A_thickness single y2018 n-Pentacosane (C25 R=10 N=1194 valid=True 15.7s
+r1 A_thickness single y2018 n-Pentacosane (C25 R=15 N=354 valid=True 11.3s
+r1 A_thickness single y2018 n-Pentacosane (C25 R=20 N=149 valid=True 10.2s
+r1 A_thickness single y2018 n-Pentacosane (C25 R=25 N=76 valid=True 9.2s
+r1 A_thickness single y2018 n-Pentacosane (C25 R=30 N=44 valid=True 9.2s
+r1 A_thickness single y2018 n-Pentacosane (C25 R=40 N=19 valid=True 9.1s
+r1 A_thickness multinode y2018 n-Pentacosane (C25 R=10 N=1194 valid=True 4.6s
+r1 A_thickness multinode y2018 n-Pentacosane (C25 R=15 N=354 valid=True 3.6s
+r1 A_thickness multinode y2018 n-Pentacosane (C25 R=20 N=149 valid=True 3.3s
+r1 A_thickness multinode y2018 n-Pentacosane (C25 R=25 N=76 valid=True 2.9s
+r1 A_thickness multinode y2018 n-Pentacosane (C25 R=30 N=44 valid=True 2.6s
+r1 A_thickness multinode y2018 n-Pentacosane (C25 R=40 N=19 valid=True 2.8s
+r1 B_count multinode y2018 n-Pentacosane (C25 R=20 N=13 valid=True 3.0s
+r1 B_count multinode y2018 n-Pentacosane (C25 R=20 N=27 valid=True 3.0s
+r1 B_count multinode y2018 n-Pentacosane (C25 R=20 N=53 valid=True 2.8s
+r1 B_count multinode y2018 n-Pentacosane (C25 R=20 N=93 valid=True 2.9s
+r1 B_count multinode y2018 n-Pentacosane (C25 R=20 N=133 valid=True 2.7s
+r1 B_count multinode y2018 n-Pentacosane (C25 R=20 N=199 valid=True 3.3s
+r1 B_count multinode y2018 n-Pentacosane (C25 R=20 N=265 valid=True 3.2s
+r1 B_count multinode y2018 n-Pentacosane (C25 R=20 N=398 valid=True 3.5s
+r1 B_count multinode y2018 n-Pentacosane (C25 R=20 N=531 valid=False 0.0s
+r1 C_flow multinode y2018 RT57HC             R=20 N=149 valid=True 3.0s
+r1 C_flow multinode y2018 RT57HC             R=20 N=149 valid=True 3.0s
+r1 C_flow multinode y2018 RT57HC             R=20 N=149 valid=True 2.8s
+r1 C_flow multinode y2018 RT57HC             R=20 N=149 valid=True 3.4s
+r1 C_flow multinode y2018 RT57HC             R=20 N=149 valid=True 2.7s
+r1 D_arrangement multinode y2018 RT57HC             R=20 N=149 valid=True 2.4s
+r1 D_arrangement multinode y2018 RT57HC             R=20 N=149 valid=True 2.5s
+r1 D_arrangement multinode y2018 RT57HC             R=20 N=149 valid=True 3.3s
+r1 REF single y2019 PLAIN              R=20 N=0 valid=True 3.7s
+r1 REF multinode y2019 PLAIN              R=20 N=0 valid=True 2.1s
+r1 A_thickness single y2019 RT57HC             R=10 N=1194 valid=True 15.9s
+r1 A_thickness single y2019 RT57HC             R=15 N=354 valid=True 10.7s
+r1 A_thickness single y2019 RT57HC             R=20 N=149 valid=True 9.6s
+r1 A_thickness single y2019 RT57HC             R=25 N=76 valid=True 9.2s
+r1 A_thickness single y2019 RT57HC             R=30 N=44 valid=True 8.4s
+r1 A_thickness single y2019 RT57HC             R=40 N=19 valid=True 10.3s
+r1 A_thickness multinode y2019 RT57HC             R=10 N=1194 valid=True 4.6s
+r1 A_thickness multinode y2019 RT57HC             R=15 N=354 valid=True 3.2s
+r1 A_thickness multinode y2019 RT57HC             R=20 N=149 valid=True 2.4s
+r1 A_thickness multinode y2019 RT57HC             R=25 N=76 valid=True 2.6s
+r1 A_thickness multinode y2019 RT57HC             R=30 N=44 valid=True 2.6s
+r1 A_thickness multinode y2019 RT57HC             R=40 N=19 valid=True 2.8s
+r1 B_count multinode y2019 RT57HC             R=20 N=13 valid=True 2.4s
+r1 B_count multinode y2019 RT57HC             R=20 N=27 valid=True 2.5s
+r1 B_count multinode y2019 RT57HC             R=20 N=53 valid=True 2.7s
+r1 B_count multinode y2019 RT57HC             R=20 N=93 valid=True 2.7s
+r1 B_count multinode y2019 RT57HC             R=20 N=133 valid=True 2.8s
+r1 B_count multinode y2019 RT57HC             R=20 N=199 valid=True 2.8s
+r1 B_count multinode y2019 RT57HC             R=20 N=265 valid=True 3.1s
+r1 B_count multinode y2019 RT57HC             R=20 N=398 valid=True 2.9s
+r1 B_count multinode y2019 RT57HC             R=20 N=531 valid=False 0.0s
+r1 A_thickness single y2019 n-Hexacosane (C26) R=10 N=1194 valid=True 17.2s
+r1 A_thickness single y2019 n-Hexacosane (C26) R=15 N=354 valid=True 11.7s
+r1 A_thickness single y2019 n-Hexacosane (C26) R=20 N=149 valid=True 9.7s
+r1 A_thickness single y2019 n-Hexacosane (C26) R=25 N=76 valid=True 9.2s
+r1 A_thickness single y2019 n-Hexacosane (C26) R=30 N=44 valid=True 8.8s
+r1 A_thickness single y2019 n-Hexacosane (C26) R=40 N=19 valid=True 9.9s
+r1 A_thickness multinode y2019 n-Hexacosane (C26) R=10 N=1194 valid=True 4.9s
+r1 A_thickness multinode y2019 n-Hexacosane (C26) R=15 N=354 valid=True 3.4s
+r1 A_thickness multinode y2019 n-Hexacosane (C26) R=20 N=149 valid=True 3.3s
+r1 A_thickness multinode y2019 n-Hexacosane (C26) R=25 N=76 valid=True 2.9s
+r1 A_thickness multinode y2019 n-Hexacosane (C26) R=30 N=44 valid=True 2.7s
+r1 A_thickness multinode y2019 n-Hexacosane (C26) R=40 N=19 valid=True 3.0s
+r1 B_count multinode y2019 n-Hexacosane (C26) R=20 N=13 valid=True 3.1s
+r1 B_count multinode y2019 n-Hexacosane (C26) R=20 N=27 valid=True 2.7s
+r1 B_count multinode y2019 n-Hexacosane (C26) R=20 N=53 valid=True 2.6s
+r1 B_count multinode y2019 n-Hexacosane (C26) R=20 N=93 valid=True 3.1s
+r1 B_count multinode y2019 n-Hexacosane (C26) R=20 N=133 valid=True 2.9s
+r1 B_count multinode y2019 n-Hexacosane (C26) R=20 N=199 valid=True 3.1s
+r1 B_count multinode y2019 n-Hexacosane (C26) R=20 N=265 valid=True 3.4s
+r1 B_count multinode y2019 n-Hexacosane (C26) R=20 N=398 valid=True 3.7s
+r1 B_count multinode y2019 n-Hexacosane (C26) R=20 N=531 valid=False 0.0s
+r1 A_thickness single y2019 n-Pentacosane (C25 R=10 N=1194 valid=True 15.1s
+r1 A_thickness single y2019 n-Pentacosane (C25 R=15 N=354 valid=True 11.4s
+r1 A_thickness single y2019 n-Pentacosane (C25 R=20 N=149 valid=True 10.3s
+r1 A_thickness single y2019 n-Pentacosane (C25 R=25 N=76 valid=True 8.0s
+r1 A_thickness single y2019 n-Pentacosane (C25 R=30 N=44 valid=True 9.3s
+r1 A_thickness single y2019 n-Pentacosane (C25 R=40 N=19 valid=True 10.0s
+r1 A_thickness multinode y2019 n-Pentacosane (C25 R=10 N=1194 valid=True 5.2s
+r1 A_thickness multinode y2019 n-Pentacosane (C25 R=15 N=354 valid=True 3.4s
+r1 A_thickness multinode y2019 n-Pentacosane (C25 R=20 N=149 valid=True 2.9s
+r1 A_thickness multinode y2019 n-Pentacosane (C25 R=25 N=76 valid=True 2.9s
+r1 A_thickness multinode y2019 n-Pentacosane (C25 R=30 N=44 valid=True 2.9s
+r1 A_thickness multinode y2019 n-Pentacosane (C25 R=40 N=19 valid=True 3.2s
+r1 B_count multinode y2019 n-Pentacosane (C25 R=20 N=13 valid=True 3.5s
+r1 B_count multinode y2019 n-Pentacosane (C25 R=20 N=27 valid=True 3.1s
+r1 B_count multinode y2019 n-Pentacosane (C25 R=20 N=53 valid=True 3.3s
+r1 B_count multinode y2019 n-Pentacosane (C25 R=20 N=93 valid=True 3.3s
+r1 B_count multinode y2019 n-Pentacosane (C25 R=20 N=133 valid=True 3.0s
+r1 B_count multinode y2019 n-Pentacosane (C25 R=20 N=199 valid=True 3.4s
+r1 B_count multinode y2019 n-Pentacosane (C25 R=20 N=265 valid=True 3.2s
+r1 B_count multinode y2019 n-Pentacosane (C25 R=20 N=398 valid=True 3.1s
+r1 B_count multinode y2019 n-Pentacosane (C25 R=20 N=531 valid=False 0.0s
+r1 C_flow multinode y2019 RT57HC             R=20 N=149 valid=True 3.0s
+r1 C_flow multinode y2019 RT57HC             R=20 N=149 valid=True 3.4s
+r1 C_flow multinode y2019 RT57HC             R=20 N=149 valid=True 2.3s
+r1 C_flow multinode y2019 RT57HC             R=20 N=149 valid=True 2.3s
+r1 C_flow multinode y2019 RT57HC             R=20 N=149 valid=True 2.4s
+r1 D_arrangement multinode y2019 RT57HC             R=20 N=149 valid=True 2.1s
+r1 D_arrangement multinode y2019 RT57HC             R=20 N=149 valid=True 2.1s
+r1 D_arrangement multinode y2019 RT57HC             R=20 N=149 valid=True 1.7s
+written results\g7_sensitivity_r1.csv
