@@ -1,5 +1,7 @@
 # Objective 2 — Rajasthan
 
+> **2026-11-25: current pipeline = common-plant rebuild** (100 L tank, 2.0 m2, declared 175 L/day, 2006-2010 one-shot test, flow fixed 0.030 kg/s). Start at `docs/REBUILD_COMMON100L.md` and `docs/RESULTS_COMMON_PLANT.md`. Run `python pipeline.py --state rajasthan --stage status`. The text below describes the legacy v3 50 L pipeline (`results_legacy_50L_v3/`).
+
 Design optimisation of the PCM storage unit (capsule inner radius, PCM amount via capsule count, flow rate, arrangement) for
 Rajasthan's three Objective 1 climate regimes, on a grey-box simulator.
 

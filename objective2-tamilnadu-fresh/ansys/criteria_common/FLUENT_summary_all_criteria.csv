@@ -1,0 +1,8 @@
+criteria,drawn,n_3d,water_start_C,water_end_C,water_rise_K,pcm_end_C,liq_frac_end,heat_to_water_kJ_per_m
+0. OPTIMAL (reference),34,104,30.0,35.475,5.475,56.175,0.379,6135.22
+1. MAX of every parameter,34,105,30.0,35.475,5.475,56.175,0.379,6135.22
+2. MIN of every parameter,124,380,30.0,31.689,1.689,46.735,0.0,2124.98
+"3. NOT optimal, but working",26,80,30.0,34.105,4.105,56.166,0.381,4784.66
+4. YOUR WISH: only 30 capsules,10,30,30.0,31.631,1.631,55.051,0.319,2049.79
+5. 10 % of the optimal PCM,3,10,30.0,30.547,0.547,52.495,0.213,709.34
+6. 50 % of the optimal PCM,17,52,30.0,32.667,2.667,55.831,0.363,3245.47

@@ -1,5 +1,8 @@
 # 03 - Optimisation pipeline (what was run, in order)
 
+> **2026-11-25: LEGACY.** This file describes the v3 pipeline on the legacy 50 L / 1.5 m2 plant (tested on 2011-2015). The current Rajasthan pipeline is the common-plant rebuild (100 L / 2.0 m2 / 175 L/day, 2006-2010 one-shot test): see `docs/REBUILD_COMMON100L.md` and `docs/RESULTS_COMMON_PLANT.md`. Numbers below are not the current results.
+
+
 Everything below runs on the real simulator for the 9 (regime, O1 PCM) pairs: 3 regimes x top-3 PCMs. File names are in
 `results/`; each step's evidence and caveats are in `docs/PROGRESS.md` (section in brackets).
 

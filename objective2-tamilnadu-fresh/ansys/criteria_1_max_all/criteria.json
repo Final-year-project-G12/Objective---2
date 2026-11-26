@@ -1,0 +1,30 @@
+{
+ "key": "criteria_1_max_all",
+ "title": "1. MAX of every parameter",
+ "rule": "Every knob at its upper bound: R_in 40 mm, PCM fraction 30 %, flow 0.050 kg/s, densest packing (staggered).  N follows from R and fraction (the 30 % cap at R = 40 mm gives N = 105).",
+ "why_not_optimal": "Radius and fraction were ALREADY at their bounds in the optimum (R 40 mm, 29.6 % of a 30 % cap), so the only real changes are +1 capsule and a higher flow (0.050 vs 0.0388). The gain is marginally higher but the difference sits INSIDE the repeatability band, so the funnel treats it as a tie and breaks it on cost: more PCM mass, more capsules, more overheating.",
+ "regime": 0,
+ "pcm": "PureTemp 58",
+ "design": {
+  "R_in": 0.04,
+  "fraction": 0.3,
+  "flow": 0.05,
+  "arrangement": "staggered"
+ },
+ "n_3d": 105,
+ "fraction_pct": 29.87159398030723,
+ "frac_of_optimal_N": 1.0096153846153846,
+ "proxy": {
+  "drawn_capsules": 34,
+  "r_in_2d_m": 0.02,
+  "rule": "drawn = round(N_3d*34/104); r_2d = 0.5*R_in_3d  (optimal = 34 capsules / 20 mm)"
+ },
+ "mesh": {
+  "nx": 260,
+  "ny": 200
+ },
+ "run": {
+  "hours": 2.0,
+  "dt_s": 60.0
+ }
+}

@@ -1,0 +1,76 @@
+# ============================================================================
+# o2_cfd_config_uttarakhand.yaml  --  OpenFOAM capsule / tank CFD for Objective 2 (Uttarakhand)
+# ============================================================================
+# Adapted from the shared ../../../openfoam_cfd/config/o2_cfd_config.yaml (Rajasthan, o2_cfd_v1.0).
+# The solver set-up, numerics and [ASSUMED] liquid properties are unchanged so the two states are comparable;
+# the design space, PCMs, delivery target and mains temperatures are Uttarakhand's (current chain, K = 4 regimes).
+# Provenance tags:
+#   [FROZEN]   configs/system_config_shared.yaml or configs/design_space.yaml of objective2-uttarakhand
+#   [O1-DB]    data/objective1/pcm_database_uttarakhand.csv (read at run time by name)
+#   [CORR]     same correlation the Python grey-box uses (src/simulation/heat_transfer.py)
+#   [ASSUMED]  not in any project source; typical literature-order value, must be cited or replaced
+#   [O2-SEL]   results/g10_selection_r{0,1,2,3}.json (chosen designs, select years 2021-2023)
+# ============================================================================
+
+version: "o2_cfd_uttarakhand_v1.0_2026-10-28"
+
+tank:
+  volume_L: 50.0                 # [FROZEN] tank.volume_L
+  height_to_diameter_ratio: 2.0  # [FROZEN]
+
+collector_area_m2: 1.5           # [FROZEN]
+
+water:
+  cp_J_kgK: 4186.0              # [FROZEN]
+  density_kg_m3: 1000.0         # [FROZEN]
+  conductivity_W_mK: 0.63       # [FROZEN]
+  prandtl: 4.3                  # [FROZEN]
+  dyn_viscosity_Pa_s_at_40C: 6.53e-4   # [CORR]
+
+capsule_wall:
+  material: aluminium
+  thickness_m: 0.0008           # [FROZEN]
+  conductivity_W_mK: 205.0      # [FROZEN]
+
+delivery_target_C: 50.0         # [FROZEN] delivery.target_temp_C (Uttarakhand; Rajasthan 45)
+
+# ---- the approved current design space (configs/design_space.yaml) ----------
+# The CFD capsule is the PCM sphere: make_case.py --d is the PCM diameter = 2 x inner radius (thickness = inner radius).
+design_space:
+  inner_radius_m:      {min: 0.010, max: 0.040}   # [FROZEN]
+  pcm_volume_fraction: {min: 0.02,  max: 0.30}    # [FROZEN]
+  flow_rate_kg_s:      {min: 0.010, max: 0.050}   # [FROZEN]
+  arrangement: [single-layer, staggered, radial]  # [FROZEN]
+  dT_drive_K:          {min: 5.0, max: 25.0}      # CFD-only: hot water above Tm
+
+# ---- regimes: mains temperature and chosen designs ---------------------------
+regimes:
+  0: {medoid: UKP_0014, T_mains_C: 21.82}   # [FROZEN] configs/states/uttarakhand.yaml
+  1: {medoid: UKP_0029, T_mains_C: 18.58}
+  2: {medoid: UKP_0025, T_mains_C: 17.01}
+  3: {medoid: UKP_0041, T_mains_C: 7.45}    # PCM gives no gain here (meaningful_on_primary_metric = false)
+# Chosen designs and runner-up PCMs are read from results/g10_selection_r*.json and results/g10_heldout_results.csv
+# by scripts/make_uttarakhand_cases.py, not copied here.
+
+# ---- properties the O1 database does NOT contain  [ASSUMED] ------------------
+assumed_liquid_properties:
+  dyn_viscosity_Pa_s: 3.5e-3
+  thermal_expansion_1_K: 7.0e-4
+  mushy_Cu: 1.0e+5
+  mushy_q: 1.0e-2
+
+# ---- scenario ----------------------------------------------------------------
+scenario:
+  T_init_C_below_Tm_K: 15.0     # PCM starts this far below Tm (night-cooled tank)
+  charge_window_h: 6.0
+  t_end_h: 10.0
+  sample_every_s: 10.0
+
+# ---- numerics (unchanged from the shared set-up) -----------------------------
+numerics:
+  cell_size_m: 0.0012
+  wedge_angle_deg: 5.0
+  max_co: 0.5
+  max_delta_t_s: 5.0
+  initial_delta_t_s: 0.05
+  radial_grading: 0.4

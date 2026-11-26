@@ -1,0 +1,53 @@
+{
+ "key": "criteria_4_only_30_capsules",
+ "title": "4. YOUR WISH: only 30 capsules",
+ "rule": "Only 30 real capsules (R_in 40 mm, optimal flow, staggered) = 8.5 % PCM fraction.",
+ "regime": 0,
+ "pcm": "PureTemp 58",
+ "design": {
+  "R_in": 0.04,
+  "fraction": 0.08534741137230638,
+  "flow": 0.0387608549268862,
+  "arrangement": "staggered"
+ },
+ "valid": true,
+ "reason": "",
+ "N_3d": 30,
+ "drawn_capsules_2d": 10,
+ "frac_of_optimal_N": 0.28846153846153844,
+ "N": 30,
+ "pcm_mass_kg": 7.157804701938986,
+ "g_window_kWh_yr": 83.58010630901329,
+ "g_window_sd": 2.8609696281442583,
+ "g_annual_kWh_yr": 85.69847135636132,
+ "d_overheat_h_yr": 730.4455523437326,
+ "t_pcm_max_C": 62.350512997098804,
+ "t_water_max_C": 72.04623544230469,
+ "gate_pcm_le_65": true,
+ "gate_water_le_75": true,
+ "rule_A_beats_plain_beyond_band": true,
+ "in_S0_tied_with_best": false,
+ "in_S1_low_overheat": false,
+ "pct_of_optimal_gain": 30.215140682188068,
+ "delta_vs_optimal": {
+  "N": -74,
+  "pcm_mass_kg": -17.65590363672716,
+  "g_window": -193.03653164787715,
+  "g_annual": -197.36611805974832,
+  "d_overheat": -98.17418981481455,
+  "flow": 0.0
+ },
+ "bands": {
+  "g_window_band": 28.36277516915937,
+  "d_overheat_band": 115.25279676064189,
+  "g_best_pool": 297.09042979039947
+ },
+ "verdict": "works and beats plain water, but eliminated at S0 (too far below the best g_window)",
+ "day": {
+  "index": 265,
+  "max_gain_C": 3.1235332963575644,
+  "hour_of_max_gain": 20,
+  "peak_melt_fraction": 1.0,
+  "melt_fraction_at_18h": 0.5988289112745337
+ }
+}

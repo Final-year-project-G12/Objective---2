@@ -27,8 +27,9 @@ from src.weather.roles import INVENTORY_PATH, WEATHER_POINT_YEARS_DIR, point_yea
 
 RAW_DIR = Path(__file__).resolve().parents[5] / "PCM-Selection-ML-model" / "era5-rajasthan" / "data" / "raw" / "nasapower"
 CURRENT_MEDOIDS = {0: "RJP_0132", 1: "RJP_0192", 2: "RJP_0083"}      # verified against cluster_assignments (G5 log)
-RAW_DIR_TEST = Path(__file__).resolve().parents[2] / "data" / "weather/raw_test_2011_2015"     # 2011-2015, g19_fetch_test2_weather.py
-YEARS = range(2011, 2026)
+RAW_DIR_TEST = Path(__file__).resolve().parents[2] / "data" / "weather/raw_test_2006_2010"     # rebuild L2: 2006-2010 confirmatory years (same NASA POWER request as 2016-2025)
+REGIMES = tuple(sorted(CURRENT_MEDOIDS))
+YEARS = list(range(2006, 2011)) + list(range(2016, 2026))   # rebuild: 2011-2015 (legacy v3 test) are not part of the common protocol
 MIN_VALID_FRACTION = 0.98
 MAX_FILLABLE_GAP_H = 3
 RENAME = {"ALLSKY_SFC_SW_DWN": "GHI_Wm2", "CLRSKY_SFC_SW_DWN": "GHI_clearsky_Wm2", "T2M": "T_amb_C",
@@ -135,7 +136,7 @@ def build_inventory(write: bool = True, years=None) -> pd.DataFrame:
     inv = pd.DataFrame(rows)
     if years is not None and INVENTORY_PATH.exists():
         old = pd.read_csv(INVENTORY_PATH)
-        old["role"] = old["year"].map(role_of)                      # relabelling only (2024-2025 -> used_test_v1)
+        old["role"] = old["year"].map(role_of)
         inv = pd.concat([old[~old["year"].isin(list(years))], inv], ignore_index=True)
         inv = inv.sort_values(["cluster_id", "year"]).reset_index(drop=True)
     if write:

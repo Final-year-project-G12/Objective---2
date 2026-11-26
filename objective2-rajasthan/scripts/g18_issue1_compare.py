@@ -8,9 +8,10 @@ pairs under three states, using only saved files:
           results/issue1_novert/_invalid_run1_rounds_not_extended/)
                                                                                            results/issue1_novert/g9_*_<pair>_ext.csv
   vert    base + the 24 box vertices + 3 more rounds (G9_WARM=1 G9_VERTICES=1)           results/g9_*_<pair>_ext2.csv
-Regime 0 PCM 1: its `novert` state is the historical 8-round no-vertex run (g9_*_r0_p1_ext.csv); its `vert` run continued from that state for 3 more rounds (11 rounds in total), unlike the other pairs, whose `vert` run continued from base (8 rounds in total).
+Rajasthan (port of the Rajasthan script): all twelve (regime, PCM) pairs, four regimes; every `vert` and `novert` run continued from base (8 rounds in total);
+there is no special r0_p1 state as in Rajasthan. The rank-1 pairs have a dense 720-design grid.
 Per pair and state: number of simulated points and feasible share, hypervolume of the simulated non-dominated set on a common reference point, and (for the rank-1
-pairs, which have a dense 540-design grid) the additive-epsilon gap to the grid front against the WP6 band (the G9 criterion, `g9_assess.py`).
+pairs, which have a dense 720-design grid) the additive-epsilon gap to the grid front against the WP6 band (the G9 criterion, `g9_assess.py`).
 Writes results/g18_issue1_with_without.csv.
 """
 
@@ -22,6 +23,7 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from src.weather.inventory import REGIMES
 from src.optimize.nsga2 import additive_epsilon, hypervolume, non_dominated_mask
 
 OUT = Path("results")
@@ -34,8 +36,6 @@ def F_of(df):
 
 
 def path(state, tag):
-    if state == "novert" and tag == "r0_p1":      # r0_p1 already has an 8-round no-vertex run from the original G9 follow-up (its vert run continued from it)
-        return OUT / "g9_points_r0_p1_ext.csv"
     return {"base": OUT / f"g9_points_{tag}.csv", "novert": NV / f"g9_points_{tag}_ext.csv", "vert": OUT / f"g9_points_{tag}_ext2.csv"}[state]
 
 
@@ -43,7 +43,7 @@ def main():
     band = pd.read_csv(OUT / "wp6_band.csv")
     bv = band[band.scope == "all"].set_index("objective").band.reindex(OBJ).to_numpy()
     rows = []
-    for r in range(3):
+    for r in REGIMES:
         for k in (1, 2, 3):
             tag = f"r{r}_p{k}"
             states = {s: pd.read_csv(path(s, tag)) for s in ("base", "novert", "vert") if path(s, tag).exists()}

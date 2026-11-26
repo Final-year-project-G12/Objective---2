@@ -1,0 +1,53 @@
+{
+ "key": "criteria_2_min_all",
+ "title": "2. MIN of every parameter",
+ "rule": "Every knob at its lower bound: R_in 10 mm, PCM fraction 2 %, flow 0.010 kg/s, loosest packing (single-layer).  N = 380 tiny capsules but only ~2 % of the tank volume (1.4 kg of PCM).",
+ "regime": 0,
+ "pcm": "PureTemp 58",
+ "design": {
+  "R_in": 0.01,
+  "fraction": 0.02,
+  "flow": 0.01,
+  "arrangement": "single-layer"
+ },
+ "valid": true,
+ "reason": "",
+ "N_3d": 380,
+ "drawn_capsules_2d": 124,
+ "frac_of_optimal_N": 3.6538461538461537,
+ "N": 380,
+ "pcm_mass_kg": 1.4166488472587577,
+ "g_window_kWh_yr": 2.2397958507394073,
+ "g_window_sd": 0.20779944088577326,
+ "g_annual_kWh_yr": 2.245946449118719,
+ "d_overheat_h_yr": 1417.9380787037037,
+ "t_pcm_max_C": 62.58349752469423,
+ "t_water_max_C": 72.26391251574569,
+ "gate_pcm_le_65": true,
+ "gate_water_le_75": true,
+ "rule_A_beats_plain_beyond_band": false,
+ "in_S0_tied_with_best": false,
+ "in_S1_low_overheat": false,
+ "pct_of_optimal_gain": 0.8097111826977199,
+ "delta_vs_optimal": {
+  "N": 276,
+  "pcm_mass_kg": -23.39705949140739,
+  "g_window": -274.376842106151,
+  "g_annual": -280.8186429669909,
+  "d_overheat": 589.3183365451565,
+  "flow": -0.028760854926886195
+ },
+ "bands": {
+  "g_window_band": 28.36277516915937,
+  "d_overheat_band": 115.25279676064189,
+  "g_best_pool": 297.09042979039947
+ },
+ "verdict": "eliminated at Rule A (gain inside the noise band = no better than a plain tank)",
+ "day": {
+  "index": 265,
+  "max_gain_C": 0.22368779654171078,
+  "hour_of_max_gain": 19,
+  "peak_melt_fraction": 1.0,
+  "melt_fraction_at_18h": 0.0
+ }
+}

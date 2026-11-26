@@ -1,0 +1,53 @@
+{
+ "key": "criteria_3_ok_not_optimal",
+ "title": "3. NOT optimal, but working",
+ "rule": "A real evaluated candidate from the optimiser's own list (results/g10_selection_candidates_r0.csv): N = 80 capsules, flow 0.0227.  Passes every hard gate and beats the plain tank clearly.",
+ "regime": 0,
+ "pcm": "PureTemp 58",
+ "design": {
+  "R_in": 0.04,
+  "fraction": 0.2276,
+  "flow": 0.0227,
+  "arrangement": "staggered"
+ },
+ "valid": true,
+ "reason": "",
+ "N_3d": 80,
+ "drawn_capsules_2d": 26,
+ "frac_of_optimal_N": 0.7692307692307693,
+ "N": 80,
+ "pcm_mass_kg": 19.08747920517063,
+ "g_window_kWh_yr": 187.46378146999942,
+ "g_window_sd": 6.789809714659048,
+ "g_annual_kWh_yr": 190.61769142782737,
+ "d_overheat_h_yr": 359.84426214831564,
+ "t_pcm_max_C": 62.12747481642086,
+ "t_water_max_C": 72.05004322936563,
+ "gate_pcm_le_65": true,
+ "gate_water_le_75": true,
+ "rule_A_beats_plain_beyond_band": true,
+ "in_S0_tied_with_best": false,
+ "in_S1_low_overheat": false,
+ "pct_of_optimal_gain": 67.77024797012206,
+ "delta_vs_optimal": {
+  "N": -24,
+  "pcm_mass_kg": -5.726229133495515,
+  "g_window": -89.15285648689101,
+  "g_annual": -92.44689798828227,
+  "d_overheat": -468.77548001023155,
+  "flow": -0.016060854926886196
+ },
+ "bands": {
+  "g_window_band": 28.36277516915937,
+  "d_overheat_band": 115.25279676064189,
+  "g_best_pool": 297.09042979039947
+ },
+ "verdict": "works and beats plain water, but eliminated at S0 (too far below the best g_window)",
+ "day": {
+  "index": 265,
+  "max_gain_C": 7.025962142337441,
+  "hour_of_max_gain": 20,
+  "peak_melt_fraction": 0.9917056188928093,
+  "melt_fraction_at_18h": 0.5160553892167079
+ }
+}

@@ -1,5 +1,8 @@
 # 06 - Objective 3 hand-off (contract v2)
 
+> **2026-11-25: LEGACY.** This file describes the v3 pipeline on the legacy 50 L / 1.5 m2 plant (tested on 2011-2015). The current Rajasthan pipeline is the common-plant rebuild (100 L / 2.0 m2 / 175 L/day, 2006-2010 one-shot test): see `docs/REBUILD_COMMON100L.md` and `docs/RESULTS_COMMON_PLANT.md`. Numbers below are not the current results.
+
+
 **File:** `results/obj3_environment_contract_rajasthan_v2.json`, written by `src/handoff/build_obj3_contract_v2.py`
 (`PYTHONPATH=. python -m src.handoff.build_obj3_contract_v2`).
 `results/obj3_environment_contract_rajasthan.json` is not a contract to train on: it is the template the builder copies the generic parts from (limits, action set, reward skeleton, reset scenarios, acceptance tests).

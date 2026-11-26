@@ -38,6 +38,8 @@ from src.surrogate.features import build_feature_table, feature_target_split
 
 SEARCH_SEED = 20260910
 N_CANDIDATES_PER_PAIR = 1000
+SAFE_TARGET = 5          # stop a pair once this many simulator-safe designs are found
+MAX_SIM_PER_PAIR = 40    # simulation budget per regime x PCM pair (~5 s each)
 
 RESULTS_DIR = BASE_DIR / "results"
 MODELS_DIR = BASE_DIR / "models"
@@ -187,185 +189,115 @@ def run_search(state="assam"):
     print(f"Saved screened candidates to {candidates_path.name}")
 
     # ==================================================
-    # 5% NEAR-BEST RULE AND TOP CANDIDATE SELECTION
+    # SIMULATOR-VERIFIED SAFETY FILTER (frozen 65 C PCM / 75 C water limits)
     # ==================================================
-    print("\nApplying 5% Near-Best Rule across regimes ...")
+    # The Phase 6 surrogates do not predict temperature safety (71% of the DOE
+    # breaches 65 C), so safety is enforced in the real simulator: candidates are
+    # simulated in descending predicted-useful-energy order per regime x PCM pair
+    # until SAFE_TARGET safe designs are found or MAX_SIM_PER_PAIR is reached.
+    max_allowed_w = system_config["safety"]["max_water_temp_C"]
+    max_allowed_pcm = system_config["safety"]["max_pcm_temp_C"]
+    print(f"\nSafety-verified search: limits PCM <= {max_allowed_pcm} C, water <= {max_allowed_w} C, 0 violations")
 
-    top_candidates_list = []
+    metric_map = [("useful_energy_kWh", "sim_useful_energy_kWh"), ("solar_fraction", "sim_solar_fraction"),
+                  ("unmet_energy_kWh", "sim_unmet_energy_kWh"), ("pump_energy_kWh", "sim_pump_energy_kWh"),
+                  ("pcm_mass_kg", "sim_pcm_mass_kg"), ("residual_pct_of_collector", "sim_residual_pct_of_collector"),
+                  ("max_water_temp_C", "sim_max_water_temp_C"), ("max_pcm_temp_C", "sim_max_pcm_temp_C"),
+                  ("n_safety_violations", "sim_n_safety_violations"), ("complete_melt_cycles", "sim_complete_melt_cycles"),
+                  ("mean_f_melt", "sim_mean_f_melt"), ("delivery_temp_hours", "sim_delivery_temp_hours")]
+    err_map = [("useful_energy", "pred_useful_energy_kWh", "sim_useful_energy_kWh", "_kWh"),
+               ("solar_fraction", "pred_solar_fraction", "sim_solar_fraction", ""),
+               ("unmet_energy", "pred_unmet_energy_kWh", "sim_unmet_energy_kWh", "_kWh"),
+               ("pump_energy", "pred_pump_energy_kWh", "sim_pump_energy_kWh", "_kWh")]
 
+    verified = []
     for reg in regimes:
         cid = reg["cluster_id"]
-        reg_pool = candidates_df[candidates_df["regime_id"] == cid].copy()
-        if reg_pool.empty:
-            continue
+        for pcm_id in pcm_list + ["NONE_plain_tank"]:
+            pool = candidates_df[(candidates_df["regime_id"] == cid) & (candidates_df["pcm_id"] == pcm_id)]
+            pool = pool.sort_values("pred_useful_energy_kWh", ascending=False)
+            pcm_name = None if pcm_id == "NONE_plain_tank" else pcm_id
+            n_safe, n_sim = 0, 0
+            for _, r in pool.iterrows():
+                if n_safe >= SAFE_TARGET or n_sim >= MAX_SIM_PER_PAIR:
+                    break
+                dv = DesignVector(float(r["capsule_diameter_m"]), int(r["n_capsule"]), float(r["flow_rate_kg_s"]))
+                sim_out = run_case(state, int(cid), pcm_name, dv, record_hourly=True)
+                n_sim += 1
+                if not sim_out["valid"]:
+                    continue
+                m = sim_out["metrics"]
+                row = dict(r)
+                row["sim_valid"] = True
+                for k_src, k_dst in metric_map:
+                    row[k_dst] = m[k_src]
+                for name, pk, sk, suf in err_map:
+                    row[f"err_{name}_abs{suf}"] = abs(row[pk] - row[sk])
+                    row[f"err_{name}_pct"] = abs(row[pk] - row[sk]) / row[sk] * 100.0 if row[sk] else 0.0
+                row["water_temp_safety_margin_C"] = max_allowed_w - m["max_water_temp_C"]
+                row["pcm_temp_safety_margin_C"] = (max_allowed_pcm - m["max_pcm_temp_C"]) if pcm_name else 999.0
+                row["meets_temperature_safety"] = bool(
+                    m["max_water_temp_C"] <= max_allowed_w
+                    and (pcm_name is None or m["max_pcm_temp_C"] <= max_allowed_pcm)
+                    and m["n_safety_violations"] == 0)
+                n_safe += int(row["meets_temperature_safety"])
+                verified.append(row)
+            print(f"  Regime {cid} {pcm_id}: simulated {n_sim}, safe {n_safe}")
 
-        best_useful = reg_pool["pred_useful_energy_kWh"].max()
-        threshold = 0.95 * best_useful
-
-        # Filter within 95% of best useful energy
-        near_best = reg_pool[reg_pool["pred_useful_energy_kWh"] >= threshold].copy()
-        near_best["best_regime_useful_energy_kWh"] = best_useful
-        near_best["useful_energy_fraction_of_best"] = near_best["pred_useful_energy_kWh"] / best_useful
-
-        # Multi-objective hierarchical ranking:
-        # 1. Lower unmet energy
-        # 2. Higher solar fraction
-        # 3. Lower pump energy
-        # 4. Lower PCM mass
-        # 5. Lower capsule count (simpler geometry)
-        near_best_sorted = near_best.sort_values(
-            by=["pred_unmet_energy_kWh", "pred_solar_fraction", "pred_pump_energy_kWh", "pred_pcm_mass_kg", "n_capsule"],
-            ascending=[True, False, True, True, True]
-        )
-
-        # Select top 5 candidates for this regime (including best PCM options)
-        # Ensure diverse PCM representation
-        top_pcm_candidates = []
-        for pcm in pcm_list:
-            sub = near_best_sorted[near_best_sorted["pcm_id"] == pcm]
-            if not sub.empty:
-                top_pcm_candidates.append(sub.iloc[0])
-                if len(sub) > 1:
-                    top_pcm_candidates.append(sub.iloc[1])
-
-        # Also grab top plain tank baseline
-        sub_plain = near_best_sorted[near_best_sorted["pcm_id"] == "NONE_plain_tank"]
-        if not sub_plain.empty:
-            top_pcm_candidates.append(sub_plain.iloc[0])
-
-        top_reg_df = pd.DataFrame(top_pcm_candidates).drop_duplicates()
-        top_candidates_list.append(top_reg_df)
-
-    top_df = pd.concat(top_candidates_list, ignore_index=True)
-    top_candidates_path = RESULTS_DIR / "phase7_top_candidates.csv"
-    top_df.to_csv(top_candidates_path, index=False)
-    print(f"Selected {len(top_df)} top candidates across all regimes. Saved to {top_candidates_path.name}")
+    verified_df = pd.DataFrame(verified)
+    verified_df.to_csv(RESULTS_DIR / "phase7_safety_verified_candidates.csv", index=False)
+    safe_df = verified_df[verified_df["meets_temperature_safety"]].copy()
+    print(f"Verified {len(verified_df)} candidates in the simulator; {len(safe_df)} meet the safety limits.")
 
     # ==================================================
-    # FINAL CANDIDATE SELECTION FOR SIMULATOR RE-SIMULATION
+    # 5% NEAR-BEST RULE ON THE SAFE, SIMULATOR-CONFIRMED POOL
     # ==================================================
-    print("\nSelecting final 5 candidates for full 8,760-hour physical re-simulation ...")
-
-    # Select:
-    # 1. Top deployable candidate for Regime 0 (Lower Brahmaputra Valley)
-    # 2. Top deployable candidate for Regime 1 (Upper Assam Tea Belt)
-    # 3. Top deployable candidate for Regime 2 (Barak Valley & Southern Hills)
-    # 4. Universal Cross-Regime Candidate (Regime 0 with savE® OM48)
-    # 5. Plain Tank reference baseline for Regime 0
+    print("\nApplying 5% Near-Best Rule to the safe pool (simulated useful energy) ...")
+    top_candidates_list = []
     final_selection = []
-    
-    for cid in [0, 1, 2]:
-        reg_cands = top_df[(top_df["regime_id"] == cid) & (top_df["pcm_id"] != "NONE_plain_tank")]
-        if not reg_cands.empty:
-            winner = reg_cands.sort_values(
-                by=["pred_unmet_energy_kWh", "pred_solar_fraction", "pred_pump_energy_kWh", "pred_pcm_mass_kg"],
-                ascending=[True, False, True, True]
-            ).iloc[0].to_dict()
-            winner["selection_role"] = f"Optimal Regime {cid} Candidate"
-            final_selection.append(winner)
+    unsafe_regimes = []
+    for reg in regimes:
+        cid = reg["cluster_id"]
+        reg_pool = safe_df[(safe_df["regime_id"] == cid) & (safe_df["pcm_id"] != "NONE_plain_tank")]
+        if reg_pool.empty:
+            unsafe_regimes.append(cid)
+            print(f"  [WARNING] Regime {cid}: NO PCM design meets the safety limits in the search -- no deployable PCM design.")
+            continue
+        best_useful = reg_pool["sim_useful_energy_kWh"].max()
+        near_best = reg_pool[reg_pool["sim_useful_energy_kWh"] >= 0.95 * best_useful].copy()
+        near_best["best_regime_useful_energy_kWh"] = best_useful
+        near_best["useful_energy_fraction_of_best"] = near_best["sim_useful_energy_kWh"] / best_useful
+        near_best = near_best.sort_values(
+            by=["sim_unmet_energy_kWh", "sim_solar_fraction", "sim_pump_energy_kWh", "sim_pcm_mass_kg", "n_capsule", "pcm_temp_safety_margin_C"],
+            ascending=[True, False, True, True, True, False])
+        top_candidates_list.append(near_best)
+        winner = near_best.iloc[0].to_dict()
+        winner["selection_role"] = f"Optimal Regime {cid} Candidate (safety-verified)"
+        final_selection.append(winner)
 
-    # Add Universal candidate (Regime 0 with OM48)
-    om48_cand = top_df[(top_df["regime_id"] == 0) & (top_df["pcm_id"] == "savE® OM48")]
-    if not om48_cand.empty:
-        u_row = om48_cand.iloc[0].to_dict()
-        u_row["selection_role"] = "Universal Cross-Regime Candidate (R0 OM48)"
+    top_df = pd.concat(top_candidates_list, ignore_index=True) if top_candidates_list else pd.DataFrame()
+    top_df.to_csv(RESULTS_DIR / "phase7_top_candidates.csv", index=False)
+
+    om48 = safe_df[(safe_df["regime_id"] == 0) & (safe_df["pcm_id"] == "savE® OM48")]
+    if not om48.empty:
+        u_row = om48.sort_values("sim_useful_energy_kWh", ascending=False).iloc[0].to_dict()
+        u_row["selection_role"] = "Universal Cross-Regime Candidate (R0 OM48, safety-verified)"
         final_selection.append(u_row)
-
-    # Add Plain tank reference
-    plain_cand = top_df[(top_df["regime_id"] == 0) & (top_df["pcm_id"] == "NONE_plain_tank")]
-    if not plain_cand.empty:
-        p_row = plain_cand.iloc[0].to_dict()
+    plain = safe_df[(safe_df["regime_id"] == 0) & (safe_df["pcm_id"] == "NONE_plain_tank")]
+    if not plain.empty:
+        p_row = plain.sort_values("sim_useful_energy_kWh", ascending=False).iloc[0].to_dict()
         p_row["selection_role"] = "Regime 0 Plain Tank Baseline"
         final_selection.append(p_row)
 
-    final_df = pd.DataFrame(final_selection)
-
-    print(f"\nFinal {len(final_df)} candidates selected for re-simulation:")
-    for idx, r in final_df.iterrows():
-        print(f"  [{idx+1}] Regime {r['regime_id']} ({r['regime_name']}): PCM={r['pcm_id']}, "
-              f"d={r['capsule_diameter_m']*1000:.1f}mm, N={r['n_capsule']}, flow={r['flow_rate_kg_s']:.3f}kg/s")
-
-    # ==================================================
-    # SIMULATOR RE-SIMULATION WITH sim_v1_assam
-    # ==================================================
-    print(f"\nRunning {len(final_df)} candidates through full 8,760-hour annual simulator (sim_v1_assam) ...")
-
-    sim_results = []
-    for idx, r in final_df.iterrows():
-        pcm_name = None if r["pcm_id"] == "NONE_plain_tank" else r["pcm_id"]
-        dv = DesignVector(float(r["capsule_diameter_m"]), int(r["n_capsule"]), float(r["flow_rate_kg_s"]))
-
-        print(f"  Simulating candidate {idx+1}/{len(final_df)}: Regime {r['regime_id']} + {r['pcm_id']} ...")
-        sim_out = run_case(state, int(r["regime_id"]), pcm_name, dv, record_hourly=True)
-
-        if not sim_out["valid"]:
-            print(f"    [WARNING] Simulator rejected candidate: {sim_out['reason']}")
-            continue
-
-        m = sim_out["metrics"]
-        g = sim_out["geometry"]
-
-        res_row = dict(r)
-        res_row["sim_valid"] = sim_out["valid"]
-        res_row["sim_useful_energy_kWh"] = m["useful_energy_kWh"]
-        res_row["sim_solar_fraction"] = m["solar_fraction"]
-        res_row["sim_unmet_energy_kWh"] = m["unmet_energy_kWh"]
-        res_row["sim_pump_energy_kWh"] = m["pump_energy_kWh"]
-        res_row["sim_pcm_mass_kg"] = m["pcm_mass_kg"]
-        res_row["sim_residual_pct_of_collector"] = m["residual_pct_of_collector"]
-        res_row["sim_max_water_temp_C"] = m["max_water_temp_C"]
-        res_row["sim_max_pcm_temp_C"] = m["max_pcm_temp_C"]
-        res_row["sim_n_safety_violations"] = m["n_safety_violations"]
-        res_row["sim_complete_melt_cycles"] = m["complete_melt_cycles"]
-        res_row["sim_mean_f_melt"] = m["mean_f_melt"]
-        res_row["sim_delivery_temp_hours"] = m["delivery_temp_hours"]
-
-        # Errors: absolute and percentage
-        # Useful energy error
-        pred_ue = r["pred_useful_energy_kWh"]
-        sim_ue = m["useful_energy_kWh"]
-        res_row["err_useful_energy_abs_kWh"] = abs(pred_ue - sim_ue)
-        res_row["err_useful_energy_pct"] = abs(pred_ue - sim_ue) / sim_ue * 100.0 if sim_ue else 0.0
-
-        # Solar fraction error
-        pred_sf = r["pred_solar_fraction"]
-        sim_sf = m["solar_fraction"]
-        res_row["err_solar_fraction_abs"] = abs(pred_sf - sim_sf)
-        res_row["err_solar_fraction_pct"] = abs(pred_sf - sim_sf) / sim_sf * 100.0 if sim_sf else 0.0
-
-        # Unmet energy error
-        pred_un = r["pred_unmet_energy_kWh"]
-        sim_un = m["unmet_energy_kWh"]
-        res_row["err_unmet_energy_abs_kWh"] = abs(pred_un - sim_un)
-        res_row["err_unmet_energy_pct"] = abs(pred_un - sim_un) / sim_un * 100.0 if sim_un else 0.0
-
-        # Pump energy error
-        pred_pump = r["pred_pump_energy_kWh"]
-        sim_pump = m["pump_energy_kWh"]
-        res_row["err_pump_energy_abs_kWh"] = abs(pred_pump - sim_pump)
-        res_row["err_pump_energy_pct"] = abs(pred_pump - sim_pump) / sim_pump * 100.0 if sim_pump else 0.0
-
-        # Safety margin
-        max_allowed_w = system_config["safety"]["max_water_temp_C"]
-        max_allowed_pcm = system_config["safety"]["max_pcm_temp_C"]
-        res_row["water_temp_safety_margin_C"] = max_allowed_w - m["max_water_temp_C"]
-        res_row["pcm_temp_safety_margin_C"] = (max_allowed_pcm - m["max_pcm_temp_C"]) if pcm_name else 999.0
-
-        sim_results.append(res_row)
-
-    resim_df = pd.DataFrame(sim_results)
-    resim_path = RESULTS_DIR / "phase7_resimulation_results.csv"
-    resim_df.to_csv(resim_path, index=False)
-    print(f"\nSaved re-simulation verification results to {resim_path.name}")
-
-    # Also export phase7_optimized_designs.csv and phase7_deployable_design_per_regime.csv for Phase 8 compatibility
-    deployable_rows = resim_df[resim_df["pcm_id"] != "NONE_plain_tank"].copy()
-    deployable_path = RESULTS_DIR / "phase7_deployable_design_per_regime.csv"
-    deployable_rows.to_csv(deployable_path, index=False)
-    print(f"Saved deployable designs per regime to {deployable_path.name}")
-
-    # Save full optimized pool
+    resim_df = pd.DataFrame(final_selection)
+    resim_df.to_csv(RESULTS_DIR / "phase7_resimulation_results.csv", index=False)
+    deployable_rows = resim_df[resim_df["selection_role"].str.startswith("Optimal Regime")].copy()
+    deployable_rows.to_csv(RESULTS_DIR / "phase7_deployable_design_per_regime.csv", index=False)
     resim_df.to_csv(RESULTS_DIR / "phase7_optimized_designs.csv", index=False)
+    print(f"Deployable PCM designs: {len(deployable_rows)} of {len(regimes)} regimes (no safe PCM design: {unsafe_regimes})")
+    for _, r in deployable_rows.iterrows():
+        print(f"  Regime {int(r['regime_id'])}: {r['pcm_id']} d={r['capsule_diameter_m']*1000:.1f}mm N={int(r['n_capsule'])} "
+              f"flow={r['flow_rate_kg_s']:.3f} E={r['sim_useful_energy_kWh']:.1f}kWh maxPCM={r['sim_max_pcm_temp_C']:.1f}C")
 
     # ==================================================
     # GENERATE 5 HIGH-RESOLUTION PLOTS
@@ -514,146 +446,66 @@ def run_search(state="assam"):
     print(f"  Saved: {plot5_path.name}")
 
     # ==================================================
-    # COMPILE COMPREHENSIVE MARKDOWN REPORT
+    # REPORT (every pass/fail is computed from the data and the frozen config)
     # ==================================================
     report_path = RESULTS_DIR / "phase7_optimization_report.md"
-    print(f"\nWriting comprehensive report to {report_path.name} ...")
+    print(f"\nWriting report to {report_path.name} ...")
 
-    # Check max error across re-simulated designs
-    max_err_pct = resim_df["err_useful_energy_pct"].max()
-    max_sf_err_pct = resim_df["err_solar_fraction_pct"].max()
-    verdict = "PASS — deterministic optimization completed and top candidates verified" if max_err_pct < 5.0 else "FAIL — optimization requires investigation"
+    def _status(ok):
+        return "PASS" if ok else "**FAIL**"
 
-    report_md = f"""# PHASE 7 — ASSAM MULTI-OBJECTIVE OPTIMIZATION REPORT
+    dep = deployable_rows.reset_index(drop=True)
+    max_err_pct = float(resim_df["err_useful_energy_pct"].max()) if len(resim_df) else float("nan")
+    all_regimes_covered = len(dep) == len(regimes)
+    all_safe = bool(len(dep) > 0 and dep["meets_temperature_safety"].all())
+    verdict = ("PASS -- every regime has a simulator-verified design inside the 65 C PCM / 75 C water limits"
+               if (all_regimes_covered and all_safe) else
+               f"PARTIAL/FAIL -- no safe PCM design found for regime(s) {unsafe_regimes}; those regimes have no deployable PCM recommendation")
 
-**Evaluation Date:** 2026-09-10  
-**Target Directory:** `M:\\Final_year_pro\\Objective---2\\objective2-assam`  
-**Simulator Version:** `sim_v1_assam`  
-**Screened Candidate Population:** {len(candidates_df):,} feasible designs  
-**Re-Simulation Verification Suite:** {len(resim_df)} candidates (full 8,760-hour annual runs)  
-**Final Status:** **{verdict}** (Max useful energy error = {max_err_pct:.2f}%)
-
----
-
-## 1. OPTIMIZATION OVERVIEW & SEARCH STRATEGY
-The Phase 7 multi-objective optimization performed a comprehensive search of the Assam solar water heating design space. The Phase 6 surrogate models were deployed as a fast proposal ranker to evaluate thousands of candidate configurations before subjecting final deployable candidates to full annual simulation with `sim_v1_assam`.
-
-- **Search Configuration:**
-  - 1,000 candidate design vectors generated per Regime x PCM pair ({total_candidates_generated:,} total candidates).
-  - Primary decision variables:
-    - Outer capsule diameter: d in [0.02, 0.08] m (effective feasible range [0.04, 0.08] m due to radial thickness constraint).
-    - Capsule count: N in [8, 24].
-    - HTF flow rate: m_dot in [0.010, 0.050] kg/s (36 to 180 kg/h).
-  - All 3 validated Assam PCM candidates evaluated: `savE® OM48`, `savE® OM50`, `savE® OM46` alongside `NONE_plain_tank` baselines.
-  - All 3 Assam climate clusters evaluated:
-    - **C0:** Lower Brahmaputra Valley (Medoid: ASP_0012)
-    - **C1:** Upper Assam Tea Belt (Medoid: ASP_0092)
-    - **C2:** Barak Valley & Southern Hills (Medoid: ASP_0028)
-
----
-
-## 2. FEASIBILITY-FIRST SCREENING
-Every sampled candidate was evaluated through a dual screening pipeline:
-1. **Geometric & Physical Constraint Check (`check_design`):** Enforced diameter bounds, capsule count, derived radial thickness (d/2 >= 0.02 m), hexagonal horizontal layer packing pitch (d + 3 mm), maximum stack height, void fraction (>= 20%), and Ergun pressure drop (< 6 bar).
-2. **Surrogate Feasibility Classification (`feasibility_classifier.pkl`):** Ensured the candidate's predicted feasibility probability was >= 0.50.
-- **Result:** Exactly {len(candidates_df):,} candidates successfully cleared the feasibility filter and were scored by the performance regressors.
-
----
-
-## 3. MULTI-OBJECTIVE 5% NEAR-BEST RULE
-To avoid over-optimizing a single surrogate scalar at the expense of system reliability or manufacturing complexity, the **5% Near-Best Rule** was applied in each climate regime:
-1. Identify the maximum predicted useful energy: E_max.
-2. Retain all candidates within 95% of best: E_useful >= 0.95 * E_max.
-3. Hierarchical multi-objective ranking among near-best candidates:
-   - **Rank 1 (Reliability):** Minimize unmet auxiliary heating energy (Q_unmet).
-   - **Rank 2 (Thermal efficiency):** Maximize solar fraction (SF).
-   - **Rank 3 (Parasitic losses):** Minimize pumping power (E_pump).
-   - **Rank 4 (Cost & weight):** Minimize PCM mass (m_pcm).
-   - **Rank 5 (Manufacturability):** Prefer lower capsule count (N) and standard capsule sizes.
-   - **Rank 6 (Safety):** Maximize temperature safety margin from boiling/degradation limits (95°C water / 90°C PCM).
-
-This selection identified **{len(top_df)} top candidates** across regimes, saved in [`results/phase7_top_candidates.csv`](phase7_top_candidates.csv).
-
----
-
-## 4. ACTUAL SIMULATOR RE-SIMULATION RESULTS (MANDATORY VERIFICATION)
-The top {len(resim_df)} candidates were passed to `sim_v1_assam` for full annual 8,760-hour simulations (dt=300 s, backward Euler, adaptive substepping).
-
-### Comparison: Surrogate Prediction vs. Actual Simulator Output
-
-| Regime | Candidate Role | PCM Material | d (mm) | N | Flow (kg/s) | Metric | Surrogate Prediction | Actual Simulator | Absolute Error | Pct Error (%) |
-|---|---|---|---|---|---|---|---|---|---|---|
-"""
+    lines = []
+    lines.append("# PHASE 7 -- ASSAM MULTI-OBJECTIVE OPTIMIZATION REPORT (safety-verified)\n")
+    lines.append(f"**Simulator:** `sim_v1_assam`  \n**Safety limits (frozen `system_config_shared.yaml`):** PCM <= {max_allowed_pcm} C, water <= {max_allowed_w} C, 0 safety-violation sub-hours  \n"
+                 f"**Screened surrogate pool:** {len(candidates_df):,} designs; **simulator-verified:** {len(verified_df)}; **safe:** {len(safe_df)}  \n"
+                 f"**Verdict:** {verdict}  \n**Max surrogate-vs-simulator useful-energy error (selected rows):** {max_err_pct:.2f}%\n")
+    lines.append("## Method\n")
+    lines.append(f"1,000 random designs per regime x PCM pair (3 PCMs + plain tank), geometry check + feasibility classifier (p >= 0.5), "
+                 f"Phase 6 surrogates for ranking. The surrogates do not predict temperature safety, so each pair is walked in descending predicted useful energy "
+                 f"through the real simulator until {SAFE_TARGET} safe designs are found or {MAX_SIM_PER_PAIR} simulations are spent. "
+                 f"The 5% near-best rule and the hierarchy (unmet energy, solar fraction, pump energy, PCM mass, capsule count, safety margin) are then applied to the "
+                 f"SAFE simulator-confirmed pool using simulated values. Plain tank is a reference row only.\n")
+    lines.append("## Search outcome per regime x PCM\n")
+    lines.append("| Regime | PCM | Simulated | Safe |\n|---|---|---|---|")
+    for (rid, pid), g in verified_df.groupby(["regime_id", "pcm_id"]):
+        lines.append(f"| {int(rid)} | {pid} | {len(g)} | {int(g['meets_temperature_safety'].sum())} |")
+    lines.append("\n## Selected designs (simulator values)\n")
+    lines.append("| Role | Regime | PCM | d (mm) | N | Flow (kg/s) | Useful (kWh) | Solar frac | Unmet (kWh) | Max PCM (C) | PCM margin (C) | Max water (C) | Violations | Surrogate err (%) | Safe |")
+    lines.append("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|")
     for _, r in resim_df.iterrows():
-        pname = r['pcm_id'].split()[-1] if r['pcm_id'] != 'NONE_plain_tank' else 'Plain Tank'
-        report_md += f"| **C{int(r['regime_id'])}** | {r['selection_role']} | {pname} | {r['capsule_diameter_m']*1000:.1f} | {int(r['n_capsule'])} | {r['flow_rate_kg_s']:.3f} | **Useful Energy** | {r['pred_useful_energy_kWh']:.2f} kWh | **{r['sim_useful_energy_kWh']:.2f} kWh** | {r['err_useful_energy_abs_kWh']:.2f} kWh | **{r['err_useful_energy_pct']:.2f}%** |\n"
-        report_md += f"| | | | | | | **Solar Fraction** | {r['pred_solar_fraction']*100:.2f}% | **{r['sim_solar_fraction']*100:.2f}%** | {r['err_solar_fraction_abs']*100:.4f}% | **{r['err_solar_fraction_pct']:.2f}%** |\n"
-        report_md += f"| | | | | | | **Unmet Energy** | {r['pred_unmet_energy_kWh']:.2f} kWh | **{r['sim_unmet_energy_kWh']:.2f} kWh** | {r['err_unmet_energy_abs_kWh']:.2f} kWh | **{r['err_unmet_energy_pct']:.2f}%** |\n"
-        report_md += f"| | | | | | | **Pump Energy** | {r['pred_pump_energy_kWh']*1000:.4e} Wh | **{r['sim_pump_energy_kWh']*1000:.4e} Wh** | {r['err_pump_energy_abs_kWh']*1000:.4e} Wh | **{r['err_pump_energy_pct']:.2f}%** |\n"
-
-    report_md += f"""
----
-
-## 5. PHYSICAL INTEGRITY & SAFETY ACCEPTANCE
-
-| Physical Sanity Metric | Acceptance Standard | Regime 0 Optima | Regime 1 Optima | Regime 2 Optima | Status |
-|---|---|---|---|---|---|
-| **Max Water Temp** | <= 95.0°C | {resim_df.iloc[0]['sim_max_water_temp_C']:.2f}°C | {resim_df.iloc[1]['sim_max_water_temp_C']:.2f}°C | {resim_df.iloc[2]['sim_max_water_temp_C']:.2f}°C | **PASSED** |
-| **Max PCM Temp** | <= 90.0°C | {resim_df.iloc[0]['sim_max_pcm_temp_C']:.2f}°C | {resim_df.iloc[1]['sim_max_pcm_temp_C']:.2f}°C | {resim_df.iloc[2]['sim_max_pcm_temp_C']:.2f}°C | **PASSED** |
-| **Safety Violations** | Exactly 0 hours | 0 | 0 | 0 | **PASSED** |
-| **Energy Conservation Residual** | < 0.05% of collector input | {resim_df.iloc[0]['sim_residual_pct_of_collector']:.4f}% | {resim_df.iloc[1]['sim_residual_pct_of_collector']:.4f}% | {resim_df.iloc[2]['sim_residual_pct_of_collector']:.4f}% | **PASSED** |
-| **Complete Melt Cycles** | > 0 annual cycles | {int(resim_df.iloc[0]['sim_complete_melt_cycles'])} | {int(resim_df.iloc[1]['sim_complete_melt_cycles'])} | {int(resim_df.iloc[2]['sim_complete_melt_cycles'])} | **PASSED** |
-| **Water Safety Margin** | >= 20.0°C | {resim_df.iloc[0]['water_temp_safety_margin_C']:.2f}°C | {resim_df.iloc[1]['water_temp_safety_margin_C']:.2f}°C | {resim_df.iloc[2]['water_temp_safety_margin_C']:.2f}°C | **PASSED** |
-
----
-
-## 6. REGIME-SPECIFIC RECOMMENDATIONS
-
-Analysis of the optimal configurations reveals distinct regime behaviors:
-
-1. **Regime 0 (Lower Brahmaputra Valley - Medoid ASP_0012):**
-   - **Recommended PCM:** **`savE® OM46`** (T_m = 46°C)
-   - **Optimal Design:** d = {resim_df.iloc[0]['capsule_diameter_m']*1000:.1f} mm, N = {int(resim_df.iloc[0]['n_capsule'])}, flow = {resim_df.iloc[0]['flow_rate_kg_s']:.3f} kg/s.
-   - **Performance:** Useful delivered energy = **{resim_df.iloc[0]['sim_useful_energy_kWh']:.2f} kWh/year**, Solar Fraction = **{resim_df.iloc[0]['sim_solar_fraction']*100:.2f}%**, Unmet demand = **{resim_df.iloc[0]['sim_unmet_energy_kWh']:.2f} kWh/year**.
-   - **Key Finding:** Low unmet energy and smooth phase transition in the warm humid valley.
-
-2. **Regime 1 (Upper Assam Tea Belt - Medoid ASP_0092):**
-   - **Recommended PCM:** **`savE® OM48`** (T_m = 48°C)
-   - **Optimal Design:** d = {resim_df.iloc[1]['capsule_diameter_m']*1000:.1f} mm, N = {int(resim_df.iloc[1]['n_capsule'])}, flow = {resim_df.iloc[1]['flow_rate_kg_s']:.3f} kg/s.
-   - **Performance:** Useful delivered energy = **{resim_df.iloc[1]['sim_useful_energy_kWh']:.2f} kWh/year**, Solar Fraction = **{resim_df.iloc[1]['sim_solar_fraction']*100:.2f}%**, Unmet demand = **{resim_df.iloc[1]['sim_unmet_energy_kWh']:.2f} kWh/year**.
-   - **Key Finding:** Cloudier monsoon conditions favor savE® OM48 with responsive buffering.
-
-3. **Regime 2 (Barak Valley & Southern Hills - Medoid ASP_0028):**
-   - **Recommended PCM:** **`savE® OM48`** (T_m = 48°C)
-   - **Optimal Design:** d = {resim_df.iloc[2]['capsule_diameter_m']*1000:.1f} mm, N = {int(resim_df.iloc[2]['n_capsule'])}, flow = {resim_df.iloc[2]['flow_rate_kg_s']:.3f} kg/s.
-   - **Performance:** Useful delivered energy = **{resim_df.iloc[2]['sim_useful_energy_kWh']:.2f} kWh/year**, Solar Fraction = **{resim_df.iloc[2]['sim_solar_fraction']*100:.2f}%**, Unmet demand = **{resim_df.iloc[2]['sim_unmet_energy_kWh']:.2f} kWh/year**.
-   - **Key Finding:** Highest annual delivered energy among all 3 clusters due to stronger solar irradiance.
-
----
-
-## 7. VISUAL ARTIFACTS GENERATED
-All visual artifacts have been generated and saved to `results/plots/`:
-1. `phase7_pareto_front.png` — Useful delivered energy vs. solar fraction showing the Pareto boundary.
-2. `phase7_useful_vs_unmet.png` — Useful energy vs. unmet energy trade-off across screened and near-best designs.
-3. `phase7_useful_vs_pcm_mass.png` — Useful energy vs. PCM mass illustrating storage saturation effects.
-4. `phase7_design_variable_distribution.png` — Optimal diameter, capsule count, and flow rate histograms.
-5. `phase7_surrogate_vs_simulator.png` — High-fidelity comparison confirming < {max_err_pct:.2f}% discrepancy between surrogate predictions and actual simulator outputs.
-
----
-
-## 8. FINAL PHASE 7 VERDICT
-
-# **PASS — deterministic optimization completed and top candidates verified**
-
-The Phase 7 multi-objective optimization is complete. All proposed deployable designs are validated by the full annual physical simulator `sim_v1_assam` with zero constraint violations and energy residuals < 0.05%.
-"""
+        pm = "n/a" if r["pcm_id"] == "NONE_plain_tank" else f"{r['pcm_temp_safety_margin_C']:.2f}"
+        lines.append(f"| {r['selection_role']} | {int(r['regime_id'])} | {r['pcm_id']} | {r['capsule_diameter_m']*1000:.1f} | {int(r['n_capsule'])} | "
+                     f"{r['flow_rate_kg_s']:.4f} | {r['sim_useful_energy_kWh']:.2f} | {r['sim_solar_fraction']*100:.2f}% | {r['sim_unmet_energy_kWh']:.2f} | "
+                     f"{r['sim_max_pcm_temp_C']:.2f} | {pm} | {r['sim_max_water_temp_C']:.2f} | {int(r['sim_n_safety_violations'])} | "
+                     f"{r['err_useful_energy_pct']:.2f} | {_status(r['meets_temperature_safety'])} |")
+    lines.append("\n## Acceptance checks (computed)\n")
+    lines.append("| Check | Standard | Result |\n|---|---|---|")
+    if len(dep):
+        lines.append(f"| Max water temp | <= {max_allowed_w} C | {_status((dep['sim_max_water_temp_C'] <= max_allowed_w).all())} (max {dep['sim_max_water_temp_C'].max():.2f} C) |")
+        lines.append(f"| Max PCM temp | <= {max_allowed_pcm} C | {_status((dep['sim_max_pcm_temp_C'] <= max_allowed_pcm).all())} (max {dep['sim_max_pcm_temp_C'].max():.2f} C) |")
+        lines.append(f"| Safety violations | exactly 0 | {_status((dep['sim_n_safety_violations'] == 0).all())} (max {int(dep['sim_n_safety_violations'].max())}) |")
+        lines.append(f"| Energy residual | < 0.05% of collector input | {_status((dep['sim_residual_pct_of_collector'].abs() < 0.05).all())} (max {dep['sim_residual_pct_of_collector'].abs().max():.4f}%) |")
+    lines.append(f"| Every regime has a safe PCM design | {len(regimes)} of {len(regimes)} | {_status(all_regimes_covered)} ({len(dep)} of {len(regimes)}) |")
+    if unsafe_regimes:
+        lines.append(f"\n**No deployable PCM design for regime(s) {unsafe_regimes}:** every simulated candidate breached the limits. "
+                     f"Do not hand these regimes to Objective 3 as PCM designs.")
+    lines.append("\nFull candidate-level data: `phase7_safety_verified_candidates.csv`.\n")
+    lines.append(f"## Final verdict\n\n**{verdict}**\n")
 
     with open(report_path, "w", encoding="utf-8") as f:
-        f.write(report_md)
+        f.write("\n".join(lines))
     print(f"Report written successfully to {report_path.name}")
 
     print("\n==================================================")
-    print("PHASE 7 OPTIMIZATION COMPLETE — STATUS: PASS")
+    print(f"PHASE 7 OPTIMIZATION COMPLETE -- {verdict}")
     print("==================================================")
 
 

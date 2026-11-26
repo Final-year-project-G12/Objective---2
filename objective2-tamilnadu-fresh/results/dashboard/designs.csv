@@ -1,0 +1,10 @@
+regime,role,pcm,heldout_window_kWh,heldout_annual_kWh,pcm_peak_C,water_peak_C,capsules,pcm_mass_kg,select_window_kWh,band_kWh,chosen
+0,best_of_pcm,RT57HC,304.41,310.46,63.97,72.41,105,25.33,297.09,28.36,False
+0,best_of_pcm,n-Hexacosane (C26),262.72,269.04,63.96,72.46,105,21.67,257.84,28.36,False
+0,chosen,PureTemp 58,284.15,289.93,63.39,72.33,104,24.81,283.39,28.36,True
+1,best_of_pcm,n-Hexacosane (C26),201.11,214.68,63.98,72.52,106,21.76,203.55,26.04,False
+1,best_of_pcm,n-Pentacosane (C25),216.87,231.35,64.04,72.7,105,22.55,219.78,26.04,False
+1,chosen,RT57HC,223.26,234.48,63.76,72.25,98,23.64,239.52,26.04,True
+2,best_of_pcm,n-Hexacosane (C26),242.99,250.75,64.0,72.46,105,21.67,238.14,29.5,False
+2,best_of_pcm,n-Pentacosane (C25),258.31,266.83,64.0,72.88,106,22.64,255.73,29.5,False
+2,chosen,RT57HC,269.92,275.53,63.64,72.22,105,25.33,274.68,29.5,True

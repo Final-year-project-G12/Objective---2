@@ -1,0 +1,33 @@
+{
+  "pcm": "n-Hexacosane (C26)",
+  "Tm_C": 56.5,
+  "L_kJ_kg": 256.0,
+  "rho_s": 770.0,
+  "rho_l": 770.0,
+  "cp_avg": 2290.0,
+  "k": 0.238,
+  "d_m": 0.0768004850706776,
+  "mdot_kg_s": 0.01,
+  "dT_K": 12.0,
+  "T_init_C": 41.5,
+  "T_hot_C": 68.5,
+  "h_w_W_m2K": 90.74742300602118,
+  "Re_p": 14.945403757197095,
+  "u_sup_m_s": 0.00012676811535098167,
+  "tank_volume_L": 50.0,
+  "conduction_only": false,
+  "assumed": {
+    "dyn_viscosity_Pa_s": 0.0035,
+    "thermal_expansion_1_K": 0.0007,
+    "mushy_Cu": 100000.0,
+    "mushy_q": 0.01
+  },
+  "t_end_s": 36000.0,
+  "bc_mode": "convective",
+  "wedge_deg": 5.0,
+  "n_cells_est": 1024,
+  "cell_size_m": 0.0012,
+  "Bi": 14.641693499530243,
+  "Ste": 0.10734375,
+  "config_version": "o2_cfd_uttarakhand_v1.0_2026-10-28"
+}

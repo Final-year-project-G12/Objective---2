@@ -1,3 +1,5 @@
+> **2026-11-25: LEGACY.** Describes the v3 chain on the 50 L plant (its held-out test 2011-2015). Current instructions: `docs/HOW_TO_RUN.md`.
+
 # Commands to run
 
 ## Contents
