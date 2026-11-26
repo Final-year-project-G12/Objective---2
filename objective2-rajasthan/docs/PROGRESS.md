@@ -1,5 +1,8 @@
 # O2 — Rajasthan progress log
 
+> **2026-11-25: LEGACY.** This file describes the v3 pipeline on the legacy 50 L / 1.5 m2 plant (tested on 2011-2015). The current Rajasthan pipeline is the common-plant rebuild (100 L / 2.0 m2 / 175 L/day, 2006-2010 one-shot test): see `docs/REBUILD_COMMON100L.md` and `docs/RESULTS_COMMON_PLANT.md`. Numbers below are not the current results.
+
+
 Single progress log for the implementation of
 `DOCUMENTATION PORTAL/OBJECTIVE2_REDESIGN_PROPOSED_PLAN.md` (read-only; not edited).
 Branch: `o2-redesign-rajasthan` (nothing committed). Scope: this folder only.

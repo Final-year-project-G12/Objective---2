@@ -1,0 +1,1 @@
+single case: assam cluster 0 (ASP_0012 medoid weather), savE OM48, d 0.05 m, N 14, flow 0.030 kg/s; produced 2026-11-10 by running src.simulation.run_case.run_case before and after the port (see docs/B5_LOCAL_HOUR_AND_SHIELD_PORT_2026-11-10.md)

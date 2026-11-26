@@ -12,7 +12,10 @@
 # state must re-run from DOE onward (framework doc, Phase 0 gate).
 # ============================================================================
 
-version: "config_v1.0_2026-09-05"
+version: "config_v1.1_2026-11-18-assam-aligned-shield-dt150"
+# 2026-11-18: aligned with Rajasthan/Tamil Nadu/Uttarakhand. Added the safety_shield block (enabled; the other states adopted it as the
+# single official method, IS 12976:2023 Sec 8.2) and timestep_s 300 -> 150 (the step the other states use after the dt-halving check).
+# Without the shield Assam's Phase 7 designs peaked at 79-86 C PCM against the 65 C limit.
 
 collector:
   type: flat_plate
@@ -45,6 +48,11 @@ pump:
   flow_max_kg_s: 0.050
   efficiency: 0.60
 
+safety_shield:
+  enabled: true
+  bypass_water_C: 72.0                # max_water_temp_C - 3.0 C guard band
+  bypass_pcm_C: 62.0                  # max_pcm_temp_C - 3.0 C guard band
+
 safety:
   max_water_temp_C: 75.0             # scald prevention
   max_pcm_temp_C: 65.0                # material-stability limit (Rubitherm datasheets)
@@ -64,7 +72,7 @@ water:
 solver:
   method: backward_euler_lagged_pcm  # linear-implicit water node, PCM temperature
                                        # lagged one sub-step (see src/simulation/tank_model.py docstring)
-  timestep_s: 300                     # 5 min nominal
+  timestep_s: 150                     # production step, as in the other states
   substeps_in_melt_band: 6            # extra sub-stepping when T_pcm is within the melt band
   melt_band_margin_K: 2.0             # how far outside [Ts,Tl] still counts as "fast-changing"
   abs_tol: 1.0e-6

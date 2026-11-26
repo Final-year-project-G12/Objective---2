@@ -1,0 +1,38 @@
+; tn_contours_v3.jou
+; Reads each CURRENT (v3) solved PCM melting case and writes contour images of
+; the melt front and the temperature field. Read-only: no iterations, so the
+; stored solution cannot be disturbed.
+;
+; NOTE the earlier version of this journal failed because it contained
+; /define/models/addon-module followed by a blank line -- Fluent read the blank
+; as the addon menu's "Enter Module Number" and aborted the journal. There is
+; no addon call here.
+
+/display/set/picture/driver png
+/display/set/picture/use-window-resolution no
+/display/set/picture/x-resolution 1400
+/display/set/picture/y-resolution 1000
+/display/set/picture/landscape no
+
+/file/read-case-data "regime0_v3_c26_melting.cas.h5"
+/display/set/contours/filled-contours yes
+/display/set/contours/node-values yes
+/display/contour liquid-fraction 0 1
+/display/save-picture "img_r0_v3_liquid_fraction.png"
+/display/contour temperature
+/display/save-picture "img_r0_v3_temperature.png"
+
+/file/read-case-data "regime1_v3_c26_melting.cas.h5"
+/display/contour liquid-fraction 0 1
+/display/save-picture "img_r1_v3_liquid_fraction.png"
+/display/contour temperature
+/display/save-picture "img_r1_v3_temperature.png"
+
+/file/read-case-data "regime2_v3_c25_melting.cas.h5"
+/display/contour liquid-fraction 0 1
+/display/save-picture "img_r2_v3_liquid_fraction.png"
+/display/contour temperature
+/display/save-picture "img_r2_v3_temperature.png"
+
+exit
+yes

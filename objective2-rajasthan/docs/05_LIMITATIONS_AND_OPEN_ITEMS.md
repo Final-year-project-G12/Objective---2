@@ -1,5 +1,8 @@
 # 05 - Limitations, deviations and open items
 
+> **2026-11-25: LEGACY.** This file describes the v3 pipeline on the legacy 50 L / 1.5 m2 plant (tested on 2011-2015). The current Rajasthan pipeline is the common-plant rebuild (100 L / 2.0 m2 / 175 L/day, 2006-2010 one-shot test): see `docs/REBUILD_COMMON100L.md` and `docs/RESULTS_COMMON_PLANT.md`. Numbers below are not the current results.
+
+
 ## What the results do not support
 
 0. **Still boundary-limited after the cap was raised to 30 % (v3, 2026-10-28).** Chosen designs: radius 39.5-40 mm, fraction 28.4-29.6 %. Share of the final rank-1 fronts at the cap / at the

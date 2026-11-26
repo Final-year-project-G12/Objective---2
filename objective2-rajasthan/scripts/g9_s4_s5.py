@@ -15,6 +15,13 @@ seed spread (gate: spread inside the WP6 band, checked in g9_assess.py).
 Only the simulator's numbers are ever reported; surrogate values are used to propose candidates.
 Writes results/g9_al_log_r<c>_p<k>.csv, g9_points_r<c>_p<k>.csv (every simulated design, with its origin),
 g9_seed_front_r<c>_p<k>.csv.
+
+Common-plant rebuild (2026-11-23, plan L6 / R10): the box is read from src/design/box.py (inner radius 10-40 mm, fraction 2-40 %,
+arrangement; flow fixed at 0.030 kg/s, so the decision vector is 3-D); every simulation is the CHEAP fidelity at every robust anchor
+(objectives = means over anchors). The box-vertex step is part of the method from the start: the 2^2 (R, fraction) corners x 3
+arrangements are simulated before round 1. Up to 8 active-learning rounds, stopping when the simulated-front hypervolume moves < 1 %
+for two rounds (the pre-declared front-stability rule). The committee is the four base families (nn_ensemble, xgboost, rsm_quadratic,
+gp_ard); the stacked model is their blend and is not a separate committee member.
 """
 
 import os
@@ -27,6 +34,7 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from src.design.box import f_bounds, flow_fixed, r_bounds
 from src.design.constraints import check_design
 from src.design.space import count_for_fraction, geometry_bounds, to_design, capsule_outer_volume_m3, v_tank_m3
 from src.io_utils import get_regime, load_system_config
@@ -39,7 +47,7 @@ PCM_LIMIT = 65.0
 SEEDS = (1, 2, 3)
 N_POP, N_GEN = 100, 100
 PER_ROUND = 10
-MAX_ROUNDS = int(os.environ.get("G9_MAX_ROUNDS", 5))      # G9 follow-up: r0_p1 re-run with more rounds (warm start, "_ext" outputs)
+MAX_ROUNDS = int(os.environ.get("G9_MAX_ROUNDS", 8))      # rebuild: up to 8 rounds, stop rule below
 WARM = bool(os.environ.get("G9_WARM"))
 VERTICES = bool(os.environ.get("G9_VERTICES"))           # G9 follow-up 2: simulate the design-box vertices before more AL rounds
 FROM_SUFFIX = os.environ.get("G9_FROM_SUFFIX", "")        # which saved state to continue from ("" original, "_ext" first extension)
@@ -50,14 +58,17 @@ if os.environ.get("G9_FAST"):                       # smoke test only: tiny budg
 READDIR = Path("results")                  # saved states are always read from here
 OUTDIR = Path(os.environ.get("G9_OUTDIR") or ("results/_smoke" if os.environ.get("G9_FAST") else "results"))   # G9_OUTDIR: issue-1 diagnostic runs write elsewhere
 ARR = ("single-layer", "staggered", "radial")
+COMMITTEE = ("nn_ensemble", "xgboost", "rsm_quadratic", "gp_ard")
+(RMIN, RMAX), (FMIN, FMAX) = r_bounds(), f_bounds()     # not F0: main() uses F0 for the objective matrix
+Q = flow_fixed()
 _geom_cache = {}
 
 
 def decode(u):
-    r = 0.010 + 0.030 * u[0]
-    f = 0.02 + 0.28 * u[1]       # v3 box: 2-30 %
-    q = 0.010 + 0.040 * u[2]
-    arr = ARR[min(int(u[3] * 3), 2)]
+    r = RMIN + (RMAX - RMIN) * u[0]
+    f = FMIN + (FMAX - FMIN) * u[1]    # rebuild box: 2-40 %
+    q = Q                        # fixed (plan R6)
+    arr = ARR[min(int(u[2] * 3), 2)]
     n = count_for_fraction(r, f)
     frac = n * capsule_outer_volume_m3(r) / v_tank_m3()
     return r, frac, q, arr, n
@@ -94,7 +105,7 @@ def committee_uncertainty(train, cand_frame):
     """Normalised max-over-targets std across the three families' predictions at the candidates."""
     X, Y = feature_matrix(train), train[list(TARGETS)].to_numpy(float)
     Xc = feature_matrix(cand_frame)
-    P = np.stack([FAMILIES[f]().fit(X, Y).predict(Xc) for f in FAMILIES])      # fam x n x targets
+    P = np.stack([FAMILIES[f]().fit(X, Y).predict(Xc) for f in COMMITTEE])     # fam x n x targets
     return (P.std(axis=0) / (Y.std(axis=0) + 1e-12)).max(axis=1)
 
 
@@ -119,7 +130,8 @@ def sim_rows(cid, pcm, frame, origin):
             continue
         # N may differ by one from the surrogate-side rounding: record what was actually simulated
         row = {k: res[k] for k in ("R_in_m", "fraction", "flow", "arrangement", "N", "g_window", "g_annual", "g_useful",
-                                   "d_overheat", "t_pcm_max", "pcm_mass_kg", "feasible")}
+                                   "d_overheat", "t_pcm_max", "t_water_max", "pcm_mass_kg", "feasible", "g_window_worst_anchor",
+                                   "worst_anchor")}
         row["origin"] = origin
         row["cand_pos"] = pos                      # position in the proposed batch (aligns surrogate vs simulator)
         out.append(row)
@@ -143,8 +155,15 @@ def main(cid, rank):
     doe = doe[doe.status == "ok"].copy()
     doe["origin"] = "doe"
     cols = ["R_in_m", "fraction", "flow", "arrangement", "N", "g_window", "g_annual", "g_useful", "d_overheat",
-            "t_pcm_max", "pcm_mass_kg", "feasible", "origin"]
+            "t_pcm_max", "t_water_max", "pcm_mass_kg", "feasible", "g_window_worst_anchor", "worst_anchor", "origin"]
     train = doe[cols].reset_index(drop=True)
+    if not WARM:                                # rebuild: the box vertices are part of the method from the start
+        import itertools
+        U = np.array([[a, b, c] for a, b in itertools.product((0.0, 1.0), repeat=2) for c in (0.0, 0.5, 0.99)])
+        vsim = sim_rows(cid, pcm, to_frame(U).drop_duplicates().reset_index(drop=True), "vertex")
+        print(tag, "vertices simulated", len(vsim), flush=True)
+        if len(vsim):
+            train = pd.concat([train, vsim[cols]], ignore_index=True)
     chosen = pd.read_csv("results/g8_s3_selection.csv").set_index("pair").loc[tag, "chosen"]
     F0 = objectives(train[train.feasible == True])  # noqa: E712
     span = F0.max(axis=0) - F0.min(axis=0)
@@ -159,7 +178,7 @@ def main(cid, rank):
         print(tag, "warm start at round", start, "n_train", len(train), flush=True)
         if VERTICES:                            # all 2^3 box corners (r, fraction, flow) x 3 arrangements; defined by the box only
             import itertools
-            U = np.array([[a, b, c, d] for a, b, c in itertools.product((0.0, 1.0), repeat=3) for d in (0.0, 0.5, 0.99)])
+            U = np.array([[a, b, c] for a, b in itertools.product((0.0, 1.0), repeat=2) for c in (0.0, 0.5, 0.99)])
             vfr = to_frame(U).drop_duplicates().reset_index(drop=True)
             vsim = sim_rows(cid, pcm, vfr, "vertex")
             print(tag, "vertices simulated", len(vsim), "of", len(vfr), flush=True)
@@ -172,7 +191,7 @@ def main(cid, rank):
         evaluate = make_evaluator(model)
         sets = []
         for s in SEEDS:
-            res = nsga2(evaluate, 4, n_pop=N_POP, n_gen=N_GEN, seed=s * 101 + rnd)
+            res = nsga2(evaluate, 3, n_pop=N_POP, n_gen=N_GEN, seed=s * 101 + rnd)
             sets.append(res)
         cand_U = np.vstack([r["X"][(r["G"] <= 0) & non_dominated_mask(r["F"])] for r in sets])
         cand = to_frame(cand_U).drop_duplicates().reset_index(drop=True)
@@ -191,8 +210,8 @@ def main(cid, rank):
             break
         unc = committee_uncertainty(train, cand)
         cand = cand.assign(unc=unc).sort_values("unc", ascending=False)
-        chosen_rows, sel = [], []
-        z = np.column_stack([cand.R_in_m / 0.03, cand.fraction / 0.3, cand.flow / 0.04,
+        sel = []
+        z = np.column_stack([(cand.R_in_m - RMIN) / (RMAX - RMIN), (cand.fraction - FMIN) / (FMAX - FMIN),
                              cand.arrangement.map({a: i for i, a in enumerate(ARR)}) / 2.0])
         for i in range(len(cand)):
             if all(np.linalg.norm(z[i] - z[j]) > 0.05 for j in sel):

@@ -1,5 +1,24 @@
 # Objective 2 - Rajasthan: pipeline documentation (v3, 2026-10-28)
 
+> **2026-11-25: LEGACY.** This file describes the v3 pipeline on the legacy 50 L / 1.5 m2 plant (tested on 2011-2015). The current Rajasthan pipeline is the common-plant rebuild (100 L / 2.0 m2 / 175 L/day, 2006-2010 one-shot test): see `docs/REBUILD_COMMON100L.md` and `docs/RESULTS_COMMON_PLANT.md`. Numbers below are not the current results.
+
+
+## Current documents (common-plant rebuild, 2026-11)
+
+| file | what |
+|---|---|
+| `../OVERVIEW.md` | what the folder does, what it found, what not to claim |
+| `REBUILD_COMMON100L.md` | decision record, frozen protocols, level tracker, declared 175 L/day deviation |
+| `RESULTS_COMMON_PLANT.md` | all current results |
+| `PLAN_DEVIATIONS.md` | changes from the plan |
+| `CORRECTIONS.md` | corrections log |
+| `HOW_TO_RUN.md` | commands, timings, troubleshooting |
+| `OBJ2_DATA_FLOW_INPUT_TO_OUTPUT.md` | inputs, stages, outputs |
+| `CFD_VERIFICATION.md` | OpenFOAM single-capsule cross-check (not validation) |
+| `viva.md` | viva quick reference |
+| `../objective3/` | Objective 3 contract and notes |
+
+
 These documents describe what is in the code and the saved results (`docs/PROGRESS.md` is the day-by-day log with every gate).
 
 > **Current version: v3 (PCM fraction cap 30 %), completed 2026-10-28** (`docs/PROGRESS.md` section 26). The cap was raised from 20 % as a declared change;

@@ -1,5 +1,8 @@
 # 02 - Weather, year roles and the design space
 
+> **2026-11-25: LEGACY.** This file describes the v3 pipeline on the legacy 50 L / 1.5 m2 plant (tested on 2011-2015). The current Rajasthan pipeline is the common-plant rebuild (100 L / 2.0 m2 / 175 L/day, 2006-2010 one-shot test): see `docs/REBUILD_COMMON100L.md` and `docs/RESULTS_COMMON_PLANT.md`. Numbers below are not the current results.
+
+
 ## 1. Weather inventory (`src/weather/inventory.py`)
 
 - **Points:** the current Objective 1 medoids only: cluster 0 = RJP_0132, cluster 1 = RJP_0192, cluster 2 = RJP_0083

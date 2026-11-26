@@ -1,0 +1,5 @@
+regime_id,pcm_id,capsule_diameter_m,n_capsule,flow_rate_kg_s,arrangement
+0,PureTemp 58,0.05,14,0.03,staggered
+1,PureTemp 58,0.05,14,0.03,staggered
+2,PureTemp 58,0.05,14,0.03,staggered
+3,PureTemp 53,0.05,14,0.03,staggered

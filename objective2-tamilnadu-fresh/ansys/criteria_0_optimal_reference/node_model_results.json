@@ -1,0 +1,53 @@
+{
+ "key": "criteria_0_optimal_reference",
+ "title": "0. OPTIMAL (reference)",
+ "rule": "The optimiser's selected design (S0/S1/S2 funnel winner): the largest radius, ~30 % PCM fraction, a high-but-not-maximum flow.",
+ "regime": 0,
+ "pcm": "PureTemp 58",
+ "design": {
+  "R_in": 0.0399999921398018,
+  "fraction": 0.29587085509033423,
+  "flow": 0.0387608549268862,
+  "arrangement": "staggered"
+ },
+ "valid": true,
+ "reason": "",
+ "N_3d": 104,
+ "drawn_capsules_2d": 34,
+ "frac_of_optimal_N": 1.0,
+ "N": 104,
+ "pcm_mass_kg": 24.813708338666146,
+ "g_window_kWh_yr": 276.61663795689043,
+ "g_window_sd": 8.713202671232223,
+ "g_annual_kWh_yr": 283.06458941610964,
+ "d_overheat_h_yr": 828.6197421585472,
+ "t_pcm_max_C": 62.34015727291967,
+ "t_water_max_C": 72.06847166054456,
+ "gate_pcm_le_65": true,
+ "gate_water_le_75": true,
+ "rule_A_beats_plain_beyond_band": true,
+ "in_S0_tied_with_best": true,
+ "in_S1_low_overheat": true,
+ "pct_of_optimal_gain": 100.0,
+ "delta_vs_optimal": {
+  "N": 0,
+  "pcm_mass_kg": 0.0,
+  "g_window": 0.0,
+  "g_annual": 0.0,
+  "d_overheat": 0.0,
+  "flow": 0.0
+ },
+ "bands": {
+  "g_window_band": 28.36277516915937,
+  "d_overheat_band": 115.25279676064189,
+  "g_best_pool": 297.09042979039947
+ },
+ "verdict": "OPTIMAL (this is the selected design)",
+ "day": {
+  "index": 265,
+  "max_gain_C": 9.438462231678699,
+  "hour_of_max_gain": 20,
+  "peak_melt_fraction": 1.0,
+  "melt_fraction_at_18h": 0.5175210981413227
+ }
+}

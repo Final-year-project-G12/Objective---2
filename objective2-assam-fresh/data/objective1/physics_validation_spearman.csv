@@ -1,0 +1,4 @@
+cluster_id,n_candidates,kendalls_w_cluster,candidate_pool_undersized,borda_copeland_top3_disagree,spearman_rho_vs_borda,p_value_vs_borda,spearman_rho_vs_copeland,p_value_vs_copeland
+0,9,0.3875,False,True,-0.38494060802763264,0.3062985352866241,-0.401677156202747,0.2838999763379956
+1,14,0.6346153846153846,False,False,0.1252747252747253,0.6695823965448444,,
+2,16,0.6341911764705882,False,False,-0.09734555627678164,0.719856987992733,,

@@ -1,5 +1,8 @@
 # 07 - OpenFOAM check of the two lumped-capsule constants (plan item WP2-C), status 2026-10-29
 
+> **2026-11-25: LEGACY.** This file describes the v3 pipeline on the legacy 50 L / 1.5 m2 plant (tested on 2011-2015). The current Rajasthan pipeline is the common-plant rebuild (100 L / 2.0 m2 / 175 L/day, 2006-2010 one-shot test): see `docs/REBUILD_COMMON100L.md` and `docs/RESULTS_COMMON_PLANT.md`. Numbers below are not the current results.
+
+
 > **Terminology (2026-11-10).** The file name says "validation" but this is a *CFD model-consistency cross-check*, not validation: the setup does not reproduce Tan et al. 2009, and no experiment of the project capsules exists. Simulator verification, CFD cross-checking and experimental validation are three separate claims; only the first two exist, and the CFD one is incomplete. Never write "CFD-validated".
 
 **Update 2026-11-10 (B2, B3; sections 6 and 7): a closure switch `cfd_closure_v1` exists (unvalidated, off by default) and OpenFOAM-only checks were run (GCI not defined, time step, one freezing case, spot-checks of the three chosen designs); all remain model-to-model, the benchmark is still not reproduced and no reported result uses them. Fluent comparison, C4 and C6 are not done.**

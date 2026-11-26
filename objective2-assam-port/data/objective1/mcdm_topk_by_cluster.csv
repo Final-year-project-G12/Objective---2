@@ -1,0 +1,10 @@
+cluster_id,consensus_rank,pcm_id,candidate_pool_status
+0,1,savE® OM48,physics_validated_no_mcdm
+0,2,savE® OM50,physics_validated_no_mcdm
+0,3,savE® OM46,physics_validated_no_mcdm
+1,1,savE® OM48,physics_validated_no_mcdm
+1,2,savE® OM50,physics_validated_no_mcdm
+1,3,savE® OM46,physics_validated_no_mcdm
+2,1,savE® OM48,physics_validated_no_mcdm
+2,2,savE® OM50,physics_validated_no_mcdm
+2,3,savE® OM46,physics_validated_no_mcdm

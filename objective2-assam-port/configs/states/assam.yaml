@@ -1,0 +1,89 @@
+# ============================================================================
+# states/assam.yaml  -  per-state inputs for the Assam port of the Tamil Nadu pipeline (2026-11-19)
+# ============================================================================
+# Same format as states/tamilnadu.yaml. Assam's regimes, medoids, demand and mains temperatures are carried over from the
+# earlier Assam tree (objective2-assam, state_config_assam_v1.0) and from Assam's Objective-1 outputs:
+#   data/objective1/cluster_profiles_assam.csv, cluster_assignments_assam.csv (129 grid points, K=3 GMM),
+#   manifest_assam.json (O1 commit e5a5e820), swh_design_specification_assam.csv, physics_validation_assam.csv.
+#
+# NOTE ON THE PCM SHORTLIST (read before quoting it anywhere)
+# Objective 1 produced NO confirmed-feasible K=3 MCDM ranking for Assam (strict evidence audit n_confirmed = 0 in every
+# cluster); the historical K=4 MCDM ranking was physically invalidated in O1 Phase 10 (rho = -0.52 to -0.64). The shortlist
+# below is therefore a ranking by O1's lumped-enthalpy physics model on 10-year simulations (savE OM48 #1 for delivery,
+# savE OM50 #2), NOT an MCDM consensus. data/objective1/mcdm_topk_by_cluster.csv for Assam was written from this shortlist so that
+# src/io_utils.o1_top3() works unchanged; its `candidate_pool_status` column says `physics_validated_no_mcdm`.
+# Tamil Nadu and Rajasthan shortlists ARE MCDM consensus ranks, so Assam's is a weaker O1 input than theirs.
+#
+# SYSTEM SIZE: 50 L tank / 1.5 m2 collector / 100 L/day (configs/system_config_shared.yaml), Assam's own O1 household.
+# Tamil Nadu is 100 L / 2.5 m2 / 300 L/day, so absolute kWh figures are not comparable across the two states.
+# ============================================================================
+
+state: assam
+state_config_version: state_config_assam_v2.0_tn_port_2026-11-19
+objective1_manifest: data/objective1/manifest.json
+shared_config:
+  system_config: configs/system_config_shared.yaml
+  design_bounds: configs/design_space.yaml
+pareto_tolerance_pct: 5.0
+demand_profile:
+  file: data/demand/demand_profile_assam.csv
+  daily_total_L: 100.0
+  documented_reason: >
+    Matches Assam Objective 1's SWH design specification (05b_swh_design_specification.py) and 10-year physics validation
+    (10_physics_validation.py) at 100 L/day (50 L morning at 07:00 IST, 50 L evening at 19:00 IST), so O1 sizing and O2
+    simulated performance evaluate the same household. See data/demand/ASSAM_DEMAND_VALIDATION.md.
+mains_temperature_C:
+  range_low: 16.59
+  range_high: 19.89
+  source: >
+    Per-medoid T_mains_est_C from Assam's Objective 1 (regimes below): 19.89 / 19.10 / 16.59 C. (The earlier Assam tree
+    used a state-level 15-28 C band from O2_Updated_MultiState_Framework.md; the medoid range is used here as for Tamil Nadu.)
+climate_signature_sanity_check:
+  annual_GHI_daily_kWh_expected_band: [2.0, 4.5]
+  humidity_signature_expected: "humid-subtropical: prolonged monsoonal cloud attenuation, RH > 70%"
+  status: PASSED
+  evidence: >
+    cluster_profiles_assam.csv: GHI_daily_kWh_est in [3.68, 4.08] kWh/m2/day. (The 2025 ERA5 export gave 2.28-2.52 kWh/m2/day
+    for the same medoids -- the ERA5 and O1 estimates differ, and the NASA POWER 2011-2025 series used in this port is a third
+    source; compare the point-year GHI totals in data/weather/point_years/weather_inventory.csv before quoting any of them.)
+
+# 3 Level-A GMM regimes (K=3, Assam Objective 1). Do not re-cluster.
+regimes:
+  - cluster_id: 0
+    label: "Lower Brahmaputra Valley, moist valley regime (33 pts)"
+    n_points: 33
+    population_covered: 4757891
+    Tm_target_C: 44.0
+    o1_Tm_target_C: 44.0
+    T_mains_est_C: 19.89
+    L_required_kJ_per_kg: 252.09
+    medoid_point_id: ASP_0012
+    weather_hourly: data/weather/weather_regime_assam_cluster0_hourly.csv
+    pcm_shortlist: ["savE® OM48", "savE® OM50", "savE® OM46"]
+
+  - cluster_id: 1
+    label: "Upper Assam Tea Belt, warm valley regime (61 pts)"
+    n_points: 61
+    population_covered: 4271199
+    Tm_target_C: 44.0
+    o1_Tm_target_C: 44.0
+    T_mains_est_C: 19.10
+    L_required_kJ_per_kg: 258.69
+    medoid_point_id: ASP_0092
+    weather_hourly: data/weather/weather_regime_assam_cluster1_hourly.csv
+    pcm_shortlist: ["savE® OM48", "savE® OM50", "savE® OM46"]
+
+  - cluster_id: 2
+    label: "Barak Valley and Southern Hills, elevated cooler hill regime (35 pts)"
+    n_points: 35
+    population_covered: 2466324
+    Tm_target_C: 44.0
+    o1_Tm_target_C: 44.0
+    T_mains_est_C: 16.59
+    L_required_kJ_per_kg: 279.70
+    medoid_point_id: ASP_0028
+    weather_hourly: data/weather/weather_regime_assam_cluster2_hourly.csv
+    pcm_shortlist: ["savE® OM48", "savE® OM50", "savE® OM46"]
+
+pcm_database_file: data/objective1/pcm_database_assam.csv
+pcm_mcdm_topk_file: data/objective1/mcdm_topk_by_cluster.csv

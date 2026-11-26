@@ -1,0 +1,30 @@
+{
+ "key": "criteria_3_ok_not_optimal",
+ "title": "3. NOT optimal, but working",
+ "rule": "A real evaluated candidate from the optimiser's own list (results/g10_selection_candidates_r0.csv): N = 80 capsules, flow 0.0227.  Passes every hard gate and beats the plain tank clearly.",
+ "why_not_optimal": "Falls outside S0 (not within the tie-band of the best g_window): ~23 % less PCM and a slower flow (0.0227 vs 0.0388), so it delivers ~32 % less extra evening heat. Trade-off: far less overheating (shield-hours) - so it is a genuinely working, cheaper design.",
+ "regime": 0,
+ "pcm": "PureTemp 58",
+ "design": {
+  "R_in": 0.04,
+  "fraction": 0.2276,
+  "flow": 0.0227,
+  "arrangement": "staggered"
+ },
+ "n_3d": 80,
+ "fraction_pct": 22.759309699281697,
+ "frac_of_optimal_N": 0.7692307692307693,
+ "proxy": {
+  "drawn_capsules": 26,
+  "r_in_2d_m": 0.02,
+  "rule": "drawn = round(N_3d*34/104); r_2d = 0.5*R_in_3d  (optimal = 34 capsules / 20 mm)"
+ },
+ "mesh": {
+  "nx": 260,
+  "ny": 200
+ },
+ "run": {
+  "hours": 2.0,
+  "dt_s": 60.0
+ }
+}

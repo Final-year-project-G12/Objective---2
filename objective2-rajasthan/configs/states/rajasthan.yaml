@@ -8,7 +8,7 @@
 # ============================================================================
 
 state: rajasthan
-state_config_version: state_config_rajasthan_v3_2026-10-28
+state_config_version: state_config_rajasthan_common100L_2026-11-24
 objective1_manifest: data/objective1/manifest.json
 shared_config:
   system_config: configs/system_config_shared.yaml
@@ -16,7 +16,9 @@ shared_config:
 pareto_tolerance_pct: 5.0
 demand_profile:
   file: data/demand/demand_profile_rajasthan.csv
-  daily_total_L: 300.0
+  daily_total_L: 175.0              # DECLARED DEVIATION 2026-11-25 from plan R1 (100 L/day), same as Tamil Nadu (docs/PLAN_DEVIATIONS.md there): 175 L/day of 45 C water.
+                                    # Evidence: r12_plant_scan (explore years only) gives PCM gain ~ -1..-5 kWh/yr at 100 L/day (plain tank meets 98-99 %); see docs/REBUILD_COMMON100L.md section 8.
+                                    # 100 L/day profile: data/legacy/demand_profile_rajasthan_100L.csv; legacy 300 L/day: data/legacy/demand_profile_rajasthan_300L.csv
   documented_reason: 'Matches 04_climate_signature_rajasthan.py''s DRAW_VOLUME_L=300 assumption (Avargani
     et al. 2021) so Objective 1''s L_required figures and Objective 2''s simulated solar fraction evaluate
     the same household. Identical daily total to Tamil Nadu (state-invariant demand) so the four-state

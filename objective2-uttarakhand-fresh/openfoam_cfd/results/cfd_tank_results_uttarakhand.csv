@@ -1,0 +1,13 @@
+case,kind,regime,T_mains_C,status
+cases_tank/r0_charge,tank_charge,0,21.821,not run
+cases_tank/r0_draw,tank_draw,0,21.821,not run
+cases_tank/r0_idle,tank_idle,0,21.821,not run
+cases_tank/r1_charge,tank_charge,1,18.581,not run
+cases_tank/r1_draw,tank_draw,1,18.581,not run
+cases_tank/r1_idle,tank_idle,1,18.581,not run
+cases_tank/r2_charge,tank_charge,2,17.006,not run
+cases_tank/r2_draw,tank_draw,2,17.006,not run
+cases_tank/r2_idle,tank_idle,2,17.006,not run
+cases_tank/r3_charge,tank_charge,3,7.447,not run
+cases_tank/r3_draw,tank_draw,3,7.447,not run
+cases_tank/r3_idle,tank_idle,3,7.447,not run
